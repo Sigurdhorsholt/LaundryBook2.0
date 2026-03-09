@@ -1,0 +1,40 @@
+services:
+  - type: web
+    name: laundrybook-api
+    runtime: docker
+    dockerfilePath: ./Dockerfile
+    branch: prod           # only deploy from prod branch
+    plan: free
+    healthCheckPath: /health
+    envVars:
+      - key: ASPNETCORE_ENVIRONMENT
+        value: Production
+
+      - key: DatabaseProvider
+        value: PostgreSQL
+
+      # Render injects the internal connection string from the linked database
+      - key: ConnectionStrings__DefaultConnection
+        fromDatabase:
+          name: laundrybook-db
+          property: connectionString
+
+      # Generate a secure random JWT key on first deploy — stored as a secret
+      - key: Jwt__Key
+        generateValue: true
+
+      - key: Jwt__Issuer
+        value: LaundryBook
+
+      - key: Jwt__Audience
+        value: LaundryBook
+
+      # CORS origin for the production frontend — set this to your Cloudflare Pages domain
+      - key: AllowedOrigins__0
+        value: https://your-app.pages.dev   # TODO: replace with actual domain
+
+databases:
+  - name: laundrybook-db
+    plan: free              # free tier expires after 90 days — upgrade when live
+    databaseName: laundrybook
+    user: laundrybook

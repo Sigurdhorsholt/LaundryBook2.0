@@ -15,10 +15,20 @@ public static class DependencyInjection
         IConfiguration configuration,
         IHostEnvironment environment)
     {
+        var connectionString = configuration.GetConnectionString("DefaultConnection")
+            ?? throw new InvalidOperationException("Connection string 'DefaultConnection' is not configured.");
+
+        var provider = configuration["DatabaseProvider"] ?? "Sqlite";
+
         services.AddDbContext<AppDbContext>(options =>
-            options.UseSqlite(
-                configuration.GetConnectionString("DefaultConnection"),
-                b => b.MigrationsAssembly(typeof(AppDbContext).Assembly.FullName)));
+        {
+            if (provider.Equals("PostgreSQL", StringComparison.OrdinalIgnoreCase))
+                options.UseNpgsql(connectionString,
+                    b => b.MigrationsAssembly(typeof(AppDbContext).Assembly.FullName));
+            else
+                options.UseSqlite(connectionString,
+                    b => b.MigrationsAssembly(typeof(AppDbContext).Assembly.FullName));
+        });
 
         services.AddScoped<IAppDbContext>(sp => sp.GetRequiredService<AppDbContext>());
 

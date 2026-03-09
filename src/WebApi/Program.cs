@@ -1,6 +1,8 @@
 using Application;
 using Infrastructure;
+using Infrastructure.Persistence;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using WebApi.Middleware;
@@ -15,11 +17,14 @@ builder.Services.AddInfrastructure(builder.Configuration, builder.Environment);
 builder.Services.AddControllers();
 builder.Services.AddOpenApi();
 
-// CORS — allow Vite dev server
+// CORS — dev: Vite server, prod: configured origins (e.g. Cloudflare Pages domain)
+var allowedOrigins = builder.Configuration.GetSection("AllowedOrigins").Get<string[]>()
+    ?? ["http://localhost:5173"];
+
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("ViteDev", policy =>
-        policy.WithOrigins("http://localhost:5173")
+    options.AddPolicy("Frontend", policy =>
+        policy.WithOrigins(allowedOrigins)
               .AllowAnyHeader()
               .AllowAnyMethod()
               .AllowCredentials()); // required for httpOnly cookies
@@ -56,13 +61,21 @@ builder.Services.AddAuthorization();
 
 var app = builder.Build();
 
+// Auto-run migrations on startup (safe for single-instance; works for both SQLite and PostgreSQL)
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    db.Database.Migrate();
+}
+
 app.UseMiddleware<ExceptionHandlingMiddleware>();
 
+app.UseCors("Frontend");
+
 if (app.Environment.IsDevelopment())
-{
     app.MapOpenApi();
-    app.UseCors("ViteDev");
-}
+
+app.MapGet("/health", () => Results.Ok(new { status = "healthy" }));
 
 app.UseAuthentication();
 app.UseAuthorization();

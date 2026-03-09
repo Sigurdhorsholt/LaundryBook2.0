@@ -1,0 +1,13 @@
+**/.git
+**/.idea
+**/.vs
+**/bin
+**/obj
+**/node_modules
+frontend/dist
+**/*.db
+**/*.db-shm
+**/*.db-wal
+**/*.user
+**/*.suo
+**/Thumbs.db

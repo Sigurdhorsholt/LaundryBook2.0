@@ -3,3 +3,17 @@ obj/
 /packages/
 riderModule.iml
 /_ReSharper.Caches/
+
+# SQLite dev database
+*.db
+*.db-shm
+*.db-wal
+
+# Frontend
+frontend/node_modules/
+frontend/dist/
+
+# User secrets / env
+appsettings.*.json
+!appsettings.json
+!appsettings.Development.json
