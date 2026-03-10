@@ -34,6 +34,7 @@ builder.Services.AddCors(options =>
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     {
+        options.MapInboundClaims = false; // keep claim names as-is (e.g. "sub", not ClaimTypes.NameIdentifier)
         options.TokenValidationParameters = new TokenValidationParameters
         {
             ValidateIssuer = true,

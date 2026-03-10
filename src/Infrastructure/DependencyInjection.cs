@@ -1,4 +1,6 @@
 using Application.Common.Interfaces;
+using FirebaseAdmin;
+using Google.Apis.Auth.OAuth2;
 using Infrastructure.Auth;
 using Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
@@ -38,14 +40,47 @@ public static class DependencyInjection
         services.AddScoped<IJwtService, JwtService>();
         services.AddScoped<ICurrentUserService, CurrentUserService>();
 
-        // IDP — swap this registration to change identity provider
-        if (environment.IsDevelopment())
-            services.AddScoped<IIdentityProvider, DevIdentityProvider>();
+        // IDP — use FirebaseIdentityProvider when Firebase:ProjectId is configured,
+        // otherwise fall back to DevIdentityProvider (useful for local dev without Firebase).
+        var firebaseProjectId = configuration["Firebase:ProjectId"];
+        if (!string.IsNullOrEmpty(firebaseProjectId))
+        {
+            InitializeFirebase(configuration, firebaseProjectId);
+            services.AddScoped<IIdentityProvider, FirebaseIdentityProvider>();
+        }
         else
-            // TODO: register FirebaseIdentityProvider (or other) for production
+        {
             services.AddScoped<IIdentityProvider, DevIdentityProvider>();
+        }
 
         return services;
+    }
+
+    private static void InitializeFirebase(IConfiguration configuration, string projectId)
+    {
+        // Only initialize once (guard against hot-reload or multiple calls)
+        if (FirebaseApp.DefaultInstance != null)
+            return;
+
+        GoogleCredential credential;
+
+        var serviceAccountPath = configuration["Firebase:ServiceAccountPath"];
+        if (!string.IsNullOrEmpty(serviceAccountPath) && File.Exists(serviceAccountPath))
+        {
+            credential = GoogleCredential.FromFile(serviceAccountPath);
+        }
+        else
+        {
+            // Fall back to Application Default Credentials
+            // (works on GCP, Cloud Run, or when GOOGLE_APPLICATION_CREDENTIALS env var is set)
+            credential = GoogleCredential.GetApplicationDefault();
+        }
+
+        FirebaseApp.Create(new AppOptions
+        {
+            Credential = credential,
+            ProjectId = projectId,
+        });
     }
 
     /// <summary>

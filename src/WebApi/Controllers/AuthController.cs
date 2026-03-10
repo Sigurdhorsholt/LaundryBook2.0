@@ -18,8 +18,8 @@ public class AuthController(IMediator mediator) : ControllerBase
         Response.Cookies.Append("access_token", result.JwtToken, new CookieOptions
         {
             HttpOnly = true,
-            Secure = true,
-            SameSite = SameSiteMode.Strict,
+            Secure = Request.IsHttps,   // false in HTTP dev, true in HTTPS prod
+            SameSite = SameSiteMode.Lax,
             Expires = DateTimeOffset.UtcNow.AddHours(8),
         });
 

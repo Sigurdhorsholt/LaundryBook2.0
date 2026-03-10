@@ -1,33 +1,20 @@
-import { useLazyPingQuery } from './features/ping/pingApi'
-import './App.css'
+import { Routes, Route, Navigate } from 'react-router-dom'
+import { LoginPage } from './pages/LoginPage'
+import { DashboardPage } from './pages/DashboardPage'
+import { ProtectedRoute } from './shared/ProtectedRoute'
 
 function App() {
-  const [ping, { data, isFetching, isError, error }] = useLazyPingQuery()
-
   return (
-    <div className="card">
-      <h1>LaundryBook</h1>
-      <button onClick={() => ping()} disabled={isFetching}>
-        {isFetching ? 'Pinging…' : 'Ping backend'}
-      </button>
+    <Routes>
+      <Route path="/login" element={<LoginPage />} />
 
-      {data && (
-        <table>
-          <tbody>
-            <tr><th>message</th><td>{data.message}</td></tr>
-            <tr><th>environment</th><td>{data.environment}</td></tr>
-            <tr><th>server time</th><td>{new Date(data.serverTime).toLocaleString()}</td></tr>
-            <tr><th>version</th><td>{data.version}</td></tr>
-          </tbody>
-        </table>
-      )}
+      <Route element={<ProtectedRoute />}>
+        <Route path="/" element={<DashboardPage />} />
+      </Route>
 
-      {isError && (
-        <p style={{ color: 'red' }}>
-          {JSON.stringify(error)}
-        </p>
-      )}
-    </div>
+      {/* Catch-all: redirect unknown routes to root (ProtectedRoute handles auth) */}
+      <Route path="*" element={<Navigate to="/" replace />} />
+    </Routes>
   )
 }
 
