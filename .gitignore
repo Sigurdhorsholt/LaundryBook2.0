@@ -17,3 +17,7 @@ frontend/dist/
 appsettings.*.json
 !appsettings.json
 !appsettings.Development.json
+# Local env files
+.env
+.env.local
+.env.*

@@ -9,7 +9,7 @@ export default defineConfig({
     // Proxy API calls to .NET backend during development
     proxy: {
       '/api': {
-        target: 'http://localhost:5000',
+        target: 'http://localhost:5106',
         changeOrigin: true,
       },
     },

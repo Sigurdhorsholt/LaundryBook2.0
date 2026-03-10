@@ -1,0 +1,21 @@
+services:
+  db:
+    image: postgres:17
+    container_name: laundrybook-db
+    environment:
+      POSTGRES_USER: laundrybook
+      POSTGRES_PASSWORD: localdev
+      POSTGRES_DB: laundrybookdb
+      POSTGRES_HOST_AUTH_METHOD: trust
+    ports:
+      - "5432:5432"
+    volumes:
+      - laundrybook-pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U laundrybook -d laundrybookdb"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  laundrybook-pgdata:
