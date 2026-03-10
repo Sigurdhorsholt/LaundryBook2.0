@@ -32,7 +32,7 @@ public class BookingConfiguration : IEntityTypeConfiguration<Booking>
 
         // Prevent double-booking: unique index per slot + machine + date (when machine is set)
         builder.HasIndex(b => new { b.TimeSlotTemplateId, b.MachineId, b.Date })
-            .HasFilter("[MachineId] IS NOT NULL AND [Status] = 0");
+            .HasFilter("\"MachineId\" IS NOT NULL AND \"Status\" = 0");
 
         // Prevent double-booking entire room per slot + room + date
         builder.HasIndex(b => new { b.TimeSlotTemplateId, b.LaundryRoomId, b.Date });

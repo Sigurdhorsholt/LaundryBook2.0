@@ -15,11 +15,11 @@ namespace Infrastructure.Persistence.Migrations
                 name: "Properties",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "TEXT", nullable: false),
-                    Name = table.Column<string>(type: "TEXT", nullable: false),
-                    Address = table.Column<string>(type: "TEXT", nullable: false),
-                    CreatedAt = table.Column<DateTime>(type: "TEXT", nullable: false),
-                    UpdatedAt = table.Column<DateTime>(type: "TEXT", nullable: true)
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    Name = table.Column<string>(type: "text", nullable: false),
+                    Address = table.Column<string>(type: "text", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -30,13 +30,13 @@ namespace Infrastructure.Persistence.Migrations
                 name: "Users",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "TEXT", nullable: false),
-                    ExternalId = table.Column<string>(type: "TEXT", maxLength: 256, nullable: false),
-                    Email = table.Column<string>(type: "TEXT", maxLength: 256, nullable: false),
-                    FirstName = table.Column<string>(type: "TEXT", maxLength: 100, nullable: false),
-                    LastName = table.Column<string>(type: "TEXT", maxLength: 100, nullable: false),
-                    CreatedAt = table.Column<DateTime>(type: "TEXT", nullable: false),
-                    UpdatedAt = table.Column<DateTime>(type: "TEXT", nullable: true)
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    ExternalId = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: false),
+                    Email = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: false),
+                    FirstName = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
+                    LastName = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -47,10 +47,10 @@ namespace Infrastructure.Persistence.Migrations
                 name: "ComplexSettings",
                 columns: table => new
                 {
-                    PropertyId = table.Column<Guid>(type: "TEXT", nullable: false),
-                    BookingMode = table.Column<int>(type: "INTEGER", nullable: false),
-                    CancellationWindowMinutes = table.Column<int>(type: "INTEGER", nullable: false),
-                    MaxConcurrentBookingsPerUser = table.Column<int>(type: "INTEGER", nullable: false)
+                    PropertyId = table.Column<Guid>(type: "uuid", nullable: false),
+                    BookingMode = table.Column<int>(type: "integer", nullable: false),
+                    CancellationWindowMinutes = table.Column<int>(type: "integer", nullable: false),
+                    MaxConcurrentBookingsPerUser = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -67,13 +67,13 @@ namespace Infrastructure.Persistence.Migrations
                 name: "LaundryRooms",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "TEXT", nullable: false),
-                    PropertyId = table.Column<Guid>(type: "TEXT", nullable: false),
-                    Name = table.Column<string>(type: "TEXT", nullable: false),
-                    Description = table.Column<string>(type: "TEXT", nullable: true),
-                    IsActive = table.Column<bool>(type: "INTEGER", nullable: false),
-                    CreatedAt = table.Column<DateTime>(type: "TEXT", nullable: false),
-                    UpdatedAt = table.Column<DateTime>(type: "TEXT", nullable: true)
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    PropertyId = table.Column<Guid>(type: "uuid", nullable: false),
+                    Name = table.Column<string>(type: "text", nullable: false),
+                    Description = table.Column<string>(type: "text", nullable: true),
+                    IsActive = table.Column<bool>(type: "boolean", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -90,11 +90,11 @@ namespace Infrastructure.Persistence.Migrations
                 name: "UserComplexMemberships",
                 columns: table => new
                 {
-                    UserId = table.Column<Guid>(type: "TEXT", nullable: false),
-                    PropertyId = table.Column<Guid>(type: "TEXT", nullable: false),
-                    Role = table.Column<int>(type: "INTEGER", nullable: false),
-                    ApartmentNumber = table.Column<string>(type: "TEXT", maxLength: 20, nullable: true),
-                    JoinedAt = table.Column<DateTime>(type: "TEXT", nullable: false)
+                    UserId = table.Column<Guid>(type: "uuid", nullable: false),
+                    PropertyId = table.Column<Guid>(type: "uuid", nullable: false),
+                    Role = table.Column<int>(type: "integer", nullable: false),
+                    ApartmentNumber = table.Column<string>(type: "character varying(20)", maxLength: 20, nullable: true),
+                    JoinedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -117,13 +117,13 @@ namespace Infrastructure.Persistence.Migrations
                 name: "LaundryMachines",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "TEXT", nullable: false),
-                    LaundryRoomId = table.Column<Guid>(type: "TEXT", nullable: false),
-                    Name = table.Column<string>(type: "TEXT", nullable: false),
-                    MachineType = table.Column<int>(type: "INTEGER", nullable: false),
-                    IsActive = table.Column<bool>(type: "INTEGER", nullable: false),
-                    CreatedAt = table.Column<DateTime>(type: "TEXT", nullable: false),
-                    UpdatedAt = table.Column<DateTime>(type: "TEXT", nullable: true)
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    LaundryRoomId = table.Column<Guid>(type: "uuid", nullable: false),
+                    Name = table.Column<string>(type: "text", nullable: false),
+                    MachineType = table.Column<int>(type: "integer", nullable: false),
+                    IsActive = table.Column<bool>(type: "boolean", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -140,13 +140,13 @@ namespace Infrastructure.Persistence.Migrations
                 name: "TimeSlotTemplates",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "TEXT", nullable: false),
-                    LaundryRoomId = table.Column<Guid>(type: "TEXT", nullable: false),
-                    StartTime = table.Column<TimeOnly>(type: "TEXT", nullable: false),
-                    EndTime = table.Column<TimeOnly>(type: "TEXT", nullable: false),
-                    IsActive = table.Column<bool>(type: "INTEGER", nullable: false),
-                    CreatedAt = table.Column<DateTime>(type: "TEXT", nullable: false),
-                    UpdatedAt = table.Column<DateTime>(type: "TEXT", nullable: true)
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    LaundryRoomId = table.Column<Guid>(type: "uuid", nullable: false),
+                    StartTime = table.Column<TimeOnly>(type: "time without time zone", nullable: false),
+                    EndTime = table.Column<TimeOnly>(type: "time without time zone", nullable: false),
+                    IsActive = table.Column<bool>(type: "boolean", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -163,16 +163,16 @@ namespace Infrastructure.Persistence.Migrations
                 name: "Bookings",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "TEXT", nullable: false),
-                    UserId = table.Column<Guid>(type: "TEXT", nullable: false),
-                    LaundryRoomId = table.Column<Guid>(type: "TEXT", nullable: false),
-                    TimeSlotTemplateId = table.Column<Guid>(type: "TEXT", nullable: false),
-                    MachineId = table.Column<Guid>(type: "TEXT", nullable: true),
-                    Date = table.Column<DateOnly>(type: "TEXT", nullable: false),
-                    Status = table.Column<int>(type: "INTEGER", nullable: false),
-                    CancelledAt = table.Column<DateTime>(type: "TEXT", nullable: true),
-                    CreatedAt = table.Column<DateTime>(type: "TEXT", nullable: false),
-                    UpdatedAt = table.Column<DateTime>(type: "TEXT", nullable: true)
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    UserId = table.Column<Guid>(type: "uuid", nullable: false),
+                    LaundryRoomId = table.Column<Guid>(type: "uuid", nullable: false),
+                    TimeSlotTemplateId = table.Column<Guid>(type: "uuid", nullable: false),
+                    MachineId = table.Column<Guid>(type: "uuid", nullable: true),
+                    Date = table.Column<DateOnly>(type: "date", nullable: false),
+                    Status = table.Column<int>(type: "integer", nullable: false),
+                    CancelledAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -221,7 +221,7 @@ namespace Infrastructure.Persistence.Migrations
                 name: "IX_Bookings_TimeSlotTemplateId_MachineId_Date",
                 table: "Bookings",
                 columns: new[] { "TimeSlotTemplateId", "MachineId", "Date" },
-                filter: "[MachineId] IS NOT NULL AND [Status] = 0");
+                filter: "\"MachineId\" IS NOT NULL AND \"Status\" = 0");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Bookings_UserId",
