@@ -1,5 +1,6 @@
 import { baseApi } from '../../app/baseApi'
 
+// @ts-ignore
 export enum UserRole {
   Resident = 0,
   ComplexAdmin = 1,

@@ -58,22 +58,28 @@ public static class DependencyInjection
 
     private static void InitializeFirebase(IConfiguration configuration, string projectId)
     {
-        // Only initialize once (guard against hot-reload or multiple calls)
         if (FirebaseApp.DefaultInstance != null)
             return;
 
         GoogleCredential credential;
 
-        var serviceAccountPath = configuration["Firebase:ServiceAccountPath"];
-        if (!string.IsNullOrEmpty(serviceAccountPath) && File.Exists(serviceAccountPath))
+        // Priority 1: inline JSON from config or env var (recommended for Render/Railway)
+        var serviceAccountJson = configuration["Firebase:ServiceAccountJson"]
+            ?? Environment.GetEnvironmentVariable("FIREBASE_SERVICE_ACCOUNT_JSON");
+
+        if (!string.IsNullOrEmpty(serviceAccountJson))
         {
-            credential = GoogleCredential.FromFile(serviceAccountPath);
+            credential = GoogleCredential.FromJson(serviceAccountJson);
         }
+        // Priority 2: path to a service account JSON file (local dev)
         else
         {
-            // Fall back to Application Default Credentials
-            // (works on GCP, Cloud Run, or when GOOGLE_APPLICATION_CREDENTIALS env var is set)
-            credential = GoogleCredential.GetApplicationDefault();
+            var serviceAccountPath = configuration["Firebase:ServiceAccountPath"];
+            if (!string.IsNullOrEmpty(serviceAccountPath) && File.Exists(serviceAccountPath))
+                credential = GoogleCredential.FromFile(serviceAccountPath);
+            else
+                // Priority 3: Application Default Credentials (GCP/Cloud Run, GOOGLE_APPLICATION_CREDENTIALS)
+                credential = GoogleCredential.GetApplicationDefault();
         }
 
         FirebaseApp.Create(new AppOptions
@@ -105,7 +111,7 @@ public static class DependencyInjection
             Username = userInfo.Length > 0 ? userInfo[0] : string.Empty,
             Password = userInfo.Length > 1 ? userInfo[1] : string.Empty,
             SslMode = SslMode.Require,
-            TrustServerCertificate = true, // Render uses self-signed certs internally
+            TrustServerCertificate = true,
         }.ConnectionString;
     }
 }
