@@ -15,7 +15,7 @@ export function LoginPage() {
   // If already authenticated, skip the login page
   const { data: user, isLoading: isCheckingSession } = useMeQuery()
   if (isCheckingSession) return null
-  if (user) return <Navigate to="/" replace />
+  if (user) return <Navigate to="/dashboard" replace />
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
@@ -25,7 +25,7 @@ export function LoginPage() {
       const credential = await signInWithEmailAndPassword(firebaseAuth, email, password)
       const idToken = await credential.user.getIdToken()
       await login({ idToken }).unwrap()
-      navigate('/', { replace: true })
+      navigate('/dashboard', { replace: true })
     } catch (err: unknown) {
       if (err instanceof Error) {
         setError(err.message)
