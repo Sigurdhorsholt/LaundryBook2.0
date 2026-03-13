@@ -21,6 +21,7 @@ export function LandingPage() {
                         className="navbar-brand d-flex align-items-center gap-2 fw-bold text-decoration-none"
                         href="/"
                         style={{color: '#0d1b2a', fontSize: '1.15rem', letterSpacing: '-0.2px'}}
+                        onClick={() => navigate('/')}
                     >
                         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#1565c0" strokeWidth="2"
                              strokeLinecap="round" strokeLinejoin="round">

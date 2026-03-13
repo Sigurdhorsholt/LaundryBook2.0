@@ -33,7 +33,7 @@ export function AppLayout() {
 
           {/* Brand */}
           <NavLink
-            to="/dashboard"
+            to="/laundry"
             className="navbar-brand d-flex align-items-center gap-2 fw-bold text-decoration-none"
             style={{ color: '#0d1b2a', fontSize: '1.1rem', letterSpacing: '-0.2px' }}
           >

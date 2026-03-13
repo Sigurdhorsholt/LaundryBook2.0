@@ -6,8 +6,13 @@ export function ProtectedRoute() {
 
   if (isLoading) {
     return (
-      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
-        Loading…
+      <div
+        className="d-flex align-items-center justify-content-center"
+        style={{ minHeight: '100vh' }}
+      >
+        <div className="spinner-border text-primary" role="status" style={{ width: '1.5rem', height: '1.5rem', borderWidth: '2px' }}>
+          <span className="visually-hidden">Indlæser…</span>
+        </div>
       </div>
     )
   }
