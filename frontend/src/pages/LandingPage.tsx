@@ -1,8 +1,9 @@
-import {Navigate, useNavigate} from 'react-router-dom'
+import {Navigate} from 'react-router-dom'
 import {useMeQuery} from '../features/auth/authApi'
+import {useModal} from '../shared/modals/useModal'
 
 export function LandingPage() {
-    const navigate = useNavigate()
+    const {openModal} = useModal()
     const {data: user, isLoading} = useMeQuery()
 
     if (isLoading) return null
@@ -21,7 +22,6 @@ export function LandingPage() {
                         className="navbar-brand d-flex align-items-center gap-2 fw-bold text-decoration-none"
                         href="/"
                         style={{color: '#0d1b2a', fontSize: '1.15rem', letterSpacing: '-0.2px'}}
-                        onClick={() => navigate('/')}
                     >
                         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#1565c0" strokeWidth="2"
                              strokeLinecap="round" strokeLinejoin="round">
@@ -34,7 +34,7 @@ export function LandingPage() {
                     <button
                         className="btn btn-primary fw-semibold px-4"
                         style={{borderRadius: '8px', fontSize: '0.9rem'}}
-                        onClick={() => navigate('/login')}
+                        onClick={() => openModal('login')}
                     >
                         Log ind
                     </button>
@@ -109,7 +109,7 @@ export function LandingPage() {
                                         boxShadow: '0 4px 24px rgba(0,0,0,0.22)',
                                         border: 'none',
                                     }}
-                                    onClick={() => navigate('/login')}
+                                    onClick={() => openModal('login')}
                                 >
                                     Log ind
                                 </button>
@@ -248,7 +248,7 @@ export function LandingPage() {
                                     fontSize: '1.05rem',
                                     border: 'none',
                                 }}
-                                onClick={() => navigate('/login')}
+                                onClick={() => openModal('login')}
                             >
                                 Log ind
                             </button>
