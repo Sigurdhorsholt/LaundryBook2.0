@@ -12,6 +12,7 @@ public class UserComplexMembership
 
     public UserRole Role { get; set; }
     public string? ApartmentNumber { get; set; }
+    public bool IsActive { get; set; } = true;
     public DateTime JoinedAt { get; set; } = DateTime.UtcNow;
 
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;

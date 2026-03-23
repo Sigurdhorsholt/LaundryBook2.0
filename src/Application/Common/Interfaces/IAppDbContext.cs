@@ -13,6 +13,7 @@ public interface IAppDbContext
     DbSet<LaundryMachine> LaundryMachines { get; }
     DbSet<TimeSlotTemplate> TimeSlotTemplates { get; }
     DbSet<Booking> Bookings { get; }
+    DbSet<UserInvite> UserInvites { get; }
 
     Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
 }

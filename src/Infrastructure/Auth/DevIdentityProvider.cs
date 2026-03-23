@@ -10,6 +10,19 @@ namespace Infrastructure.Auth;
 /// </summary>
 public class DevIdentityProvider : IIdentityProvider
 {
+    /// <summary>
+    /// Dev stub: generates a fake UID. Use this UID in a dev token
+    /// {"externalId":"&lt;returned-uid&gt;","email":"..."} to log in as the invited user.
+    /// </summary>
+    public Task<string> CreateUserAsync(string email, CancellationToken cancellationToken = default)
+        => Task.FromResult($"dev-{Guid.NewGuid():N}");
+
+    public Task DeleteUserAsync(string externalId, CancellationToken cancellationToken = default)
+        => Task.CompletedTask; // No-op in dev
+
+    public Task<string> GeneratePasswordResetLinkAsync(string email, CancellationToken cancellationToken = default)
+        => Task.FromResult($"http://localhost:5173/set-password?dev=true&email={Uri.EscapeDataString(email)}");
+
     public Task<ExternalAuthResult> VerifyTokenAsync(string idToken, CancellationToken cancellationToken = default)
     {
         try

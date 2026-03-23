@@ -3,7 +3,7 @@ import type { FeatureKey } from '../config/features'
 import { UserRole } from '../features/auth/authApi'
 
 import { LandingPage } from '../pages/LandingPage'
-import { LoginPage } from '../pages/LoginPage'
+import { JoinPage } from '../pages/JoinPage'
 import { SmartRedirectPage } from '../pages/SmartRedirectPage'
 import { LaundryPage } from '../pages/laundry/LaundryPage'
 import { AdminDashboardPage } from '../pages/admin/AdminDashboardPage'
@@ -53,9 +53,9 @@ const Icon = {
 export const routes: AppRoute[] = [
 
   // ── Public / bare ───────────────────────────────────────────────────────────
-  { path: '/',     component: LandingPage,       layout: 'bare', protected: false },
-  { path: '/login', component: LoginPage,          layout: 'bare', protected: false },
-  { path: '/dashboard', component: SmartRedirectPage, layout: 'bare', protected: true },
+  { path: '/',          component: LandingPage,          layout: 'bare', protected: false },
+  { path: '/join',      component: JoinPage,             layout: 'bare', protected: false },
+  { path: '/dashboard', component: SmartRedirectPage,    layout: 'bare', protected: true },
 
   // ── Resident shell ──────────────────────────────────────────────────────────
   {

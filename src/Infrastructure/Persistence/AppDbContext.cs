@@ -14,6 +14,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
     public DbSet<LaundryMachine> LaundryMachines => Set<LaundryMachine>();
     public DbSet<TimeSlotTemplate> TimeSlotTemplates => Set<TimeSlotTemplate>();
     public DbSet<Booking> Bookings => Set<Booking>();
+    public DbSet<UserInvite> UserInvites => Set<UserInvite>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

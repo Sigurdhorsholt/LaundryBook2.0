@@ -45,6 +45,13 @@ public class PropertiesController(IMediator mediator) : ControllerBase
         return NoContent();
     }
 
+    [HttpGet("{id:guid}/members")]
+    public async Task<IActionResult> GetMembers(Guid id, CancellationToken ct)
+    {
+        var members = await mediator.Send(new GetPropertyMembersQuery(id), ct);
+        return Ok(members);
+    }
+
     [HttpPost("{id:guid}/members")]
     public async Task<IActionResult> AddMember(Guid id, [FromBody] AddMemberRequest request, CancellationToken ct)
     {
@@ -57,11 +64,49 @@ public class PropertiesController(IMediator mediator) : ControllerBase
         return Ok(new { userId });
     }
 
+    [HttpPut("{id:guid}/members/{userId:guid}")]
+    public async Task<IActionResult> UpdateMember(Guid id, Guid userId, [FromBody] UpdateMemberRequest request, CancellationToken ct)
+    {
+        await mediator.Send(new UpdateMemberCommand(id, userId, request.ApartmentNumber, request.Role, request.IsActive), ct);
+        return NoContent();
+    }
+
     [HttpDelete("{id:guid}/members/{userId:guid}")]
     public async Task<IActionResult> RemoveMember(Guid id, Guid userId, CancellationToken ct)
     {
         await mediator.Send(new RemoveMemberCommand(id, userId), ct);
         return NoContent();
+    }
+
+    [HttpPost("{id:guid}/members/{userId:guid}/force-password-reset")]
+    public async Task<IActionResult> ForcePasswordReset(Guid id, Guid userId, CancellationToken ct)
+    {
+        await mediator.Send(new ForcePasswordResetCommand(id, userId), ct);
+        return NoContent();
+    }
+
+    [HttpPost("{id:guid}/members/invite")]
+    public async Task<IActionResult> InviteByEmail(Guid id, [FromBody] InviteByEmailRequest request, CancellationToken ct)
+    {
+        var email = await mediator.Send(new InviteUserByEmailCommand(
+            id,
+            request.Email,
+            request.Role,
+            request.ApartmentNumber), ct);
+
+        return Ok(new { email });
+    }
+
+    [HttpPost("{id:guid}/members/invite-token")]
+    public async Task<IActionResult> CreateInviteToken(Guid id, [FromBody] CreateInviteTokenRequest request, CancellationToken ct)
+    {
+        var token = await mediator.Send(new CreateInviteTokenCommand(
+            id,
+            request.Role,
+            request.ApartmentNumber,
+            request.IsMultiUse), ct);
+
+        return Ok(new { token });
     }
 }
 
@@ -74,3 +119,18 @@ public record AddMemberRequest(
     string Email,
     UserRole Role,
     string? ApartmentNumber);
+
+public record InviteByEmailRequest(
+    string Email,
+    UserRole Role,
+    string? ApartmentNumber);
+
+public record UpdateMemberRequest(
+    string? ApartmentNumber,
+    UserRole Role,
+    bool IsActive);
+
+public record CreateInviteTokenRequest(
+    UserRole Role,
+    string? ApartmentNumber,
+    bool IsMultiUse = false);

@@ -17,7 +17,7 @@ public class GetCurrentUserQueryHandler(
             ?? throw new UnauthorizedAccessException("User is not authenticated.");
 
         var user = await db.Users
-            .Include(u => u.Memberships)
+            .Include(u => u.Memberships.Where(m => m.IsActive))
                 .ThenInclude(m => m.Property)
             .FirstOrDefaultAsync(u => u.Id == userId, cancellationToken)
             ?? throw new UnauthorizedAccessException("User not found.");
