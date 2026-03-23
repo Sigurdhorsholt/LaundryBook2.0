@@ -8,20 +8,24 @@ namespace WebApi.Controllers;
 
 [ApiController]
 [Route("api/auth")]
-public class AuthController(IMediator mediator) : ControllerBase
+public class AuthController(IMediator mediator, IWebHostEnvironment env) : ControllerBase
 {
+    // SameSite=None is required when the frontend and API are on different domains (prod).
+    // SameSite=Lax is fine for local dev where both run on localhost.
+    private CookieOptions AuthCookieOptions() => new()
+    {
+        HttpOnly = true,
+        Secure = true,
+        SameSite = env.IsDevelopment() ? SameSiteMode.Lax : SameSiteMode.None,
+        Expires = DateTimeOffset.UtcNow.AddHours(8),
+    };
+
     [HttpPost("login")]
     public async Task<IActionResult> Login([FromBody] LoginRequest request, CancellationToken ct)
     {
         var result = await mediator.Send(new LoginCommand(request.IdToken), ct);
 
-        Response.Cookies.Append("access_token", result.JwtToken, new CookieOptions
-        {
-            HttpOnly = true,
-            Secure = Request.IsHttps,   // false in HTTP dev, true in HTTPS prod
-            SameSite = SameSiteMode.Lax,
-            Expires = DateTimeOffset.UtcNow.AddHours(8),
-        });
+        Response.Cookies.Append("access_token", result.JwtToken, AuthCookieOptions());
 
         return Ok(new { result.UserId });
     }
@@ -54,13 +58,7 @@ public class AuthController(IMediator mediator) : ControllerBase
         var result = await mediator.Send(
             new RedeemInviteCommand(request.IdToken, request.InviteToken, request.ApartmentNumber), ct);
 
-        Response.Cookies.Append("access_token", result.JwtToken, new CookieOptions
-        {
-            HttpOnly = true,
-            Secure = Request.IsHttps,
-            SameSite = SameSiteMode.Lax,
-            Expires = DateTimeOffset.UtcNow.AddHours(8),
-        });
+        Response.Cookies.Append("access_token", result.JwtToken, AuthCookieOptions());
 
         return Ok(new { result.UserId });
     }
