@@ -40,6 +40,31 @@ public class AuthController(IMediator mediator) : ControllerBase
         var user = await mediator.Send(new GetCurrentUserQuery(), ct);
         return Ok(user);
     }
+
+    [HttpGet("invite-info")]
+    public async Task<IActionResult> GetInviteInfo([FromQuery] string token, CancellationToken ct)
+    {
+        var info = await mediator.Send(new GetInviteInfoQuery(token), ct);
+        return Ok(info);
+    }
+
+    [HttpPost("redeem-invite")]
+    public async Task<IActionResult> RedeemInvite([FromBody] RedeemInviteRequest request, CancellationToken ct)
+    {
+        var result = await mediator.Send(
+            new RedeemInviteCommand(request.IdToken, request.InviteToken, request.ApartmentNumber), ct);
+
+        Response.Cookies.Append("access_token", result.JwtToken, new CookieOptions
+        {
+            HttpOnly = true,
+            Secure = Request.IsHttps,
+            SameSite = SameSiteMode.Lax,
+            Expires = DateTimeOffset.UtcNow.AddHours(8),
+        });
+
+        return Ok(new { result.UserId });
+    }
 }
 
 public record LoginRequest(string IdToken);
+public record RedeemInviteRequest(string IdToken, string InviteToken, string? ApartmentNumber);

@@ -2,6 +2,7 @@ using Application.Common.Interfaces;
 using FirebaseAdmin;
 using Google.Apis.Auth.OAuth2;
 using Infrastructure.Auth;
+using Infrastructure.Email;
 using Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -52,6 +53,12 @@ public static class DependencyInjection
         {
             services.AddScoped<IIdentityProvider, DevIdentityProvider>();
         }
+
+        // Email service — use Mailgun when an API key is configured, otherwise log to console (dev)
+        if (!string.IsNullOrEmpty(configuration["Mailgun:ApiKey"]))
+            services.AddHttpClient<IEmailService, MailgunEmailService>();
+        else
+            services.AddScoped<IEmailService, DevEmailService>();
 
         return services;
     }

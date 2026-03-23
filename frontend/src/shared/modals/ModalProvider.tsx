@@ -1,11 +1,15 @@
 import { useAppSelector } from '../../app/hooks'
 import { useModal } from './useModal'
 import { LoginModal } from '../../features/auth/LoginModal'
+import { InviteUserModal } from '../../features/users/InviteUserModal'
+import { EditMemberModal } from '../../features/users/EditMemberModal'
 
 // ── Register modals here ─────────────────────────────────────────────────────
 // Add new entries as: 'modal-name': ComponentWithOnCloseProp
-const MODALS: Record<string, React.ComponentType<{ onClose: () => void }>> = {
+const MODALS: Record<string, React.ComponentType<any>> = {
   login: LoginModal,
+  inviteUser: InviteUserModal,
+  editMember: EditMemberModal,
 }
 // ─────────────────────────────────────────────────────────────────────────────
 
