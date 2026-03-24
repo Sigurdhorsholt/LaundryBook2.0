@@ -27,6 +27,7 @@ export interface InviteInfoDto {
   role: number
   isMultiUse: boolean
   apartmentNumber: string | null
+  email: string | null
 }
 
 export const authApi = baseApi.injectEndpoints({
@@ -57,13 +58,21 @@ export const authApi = baseApi.injectEndpoints({
       query: (token) => `/api/auth/invite-info?token=${encodeURIComponent(token)}`,
     }),
 
-    redeemInvite: builder.mutation<{ userId: string }, { idToken: string; inviteToken: string; apartmentNumber?: string }>({
+    redeemInvite: builder.mutation<{ userId: string }, { idToken: string; inviteToken: string; apartmentNumber?: string; firstName: string; lastName: string }>({
       query: (body) => ({
         url: '/api/auth/redeem-invite',
         method: 'POST',
         body,
       }),
       invalidatesTags: ['Auth'],
+    }),
+
+    forgotPassword: builder.mutation<void, { email: string }>({
+      query: (body) => ({
+        url: '/api/auth/forgot-password',
+        method: 'POST',
+        body,
+      }),
     }),
   }),
 })
@@ -74,4 +83,5 @@ export const {
   useMeQuery,
   useGetInviteInfoQuery,
   useRedeemInviteMutation,
+  useForgotPasswordMutation,
 } = authApi

@@ -52,11 +52,18 @@ public class AuthController(IMediator mediator, IWebHostEnvironment env) : Contr
         return Ok(info);
     }
 
+    [HttpPost("forgot-password")]
+    public async Task<IActionResult> ForgotPassword([FromBody] ForgotPasswordRequest request, CancellationToken ct)
+    {
+        await mediator.Send(new ForgotPasswordCommand(request.Email), ct);
+        return NoContent();
+    }
+
     [HttpPost("redeem-invite")]
     public async Task<IActionResult> RedeemInvite([FromBody] RedeemInviteRequest request, CancellationToken ct)
     {
         var result = await mediator.Send(
-            new RedeemInviteCommand(request.IdToken, request.InviteToken, request.ApartmentNumber), ct);
+            new RedeemInviteCommand(request.IdToken, request.InviteToken, request.ApartmentNumber, request.FirstName, request.LastName), ct);
 
         Response.Cookies.Append("access_token", result.JwtToken, AuthCookieOptions());
 
@@ -65,4 +72,5 @@ public class AuthController(IMediator mediator, IWebHostEnvironment env) : Contr
 }
 
 public record LoginRequest(string IdToken);
-public record RedeemInviteRequest(string IdToken, string InviteToken, string? ApartmentNumber);
+public record ForgotPasswordRequest(string Email);
+public record RedeemInviteRequest(string IdToken, string InviteToken, string? ApartmentNumber, string FirstName, string LastName);

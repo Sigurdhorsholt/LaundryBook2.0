@@ -8,7 +8,7 @@ namespace Application.Features.Auth.Queries;
 
 public record GetInviteInfoQuery(string Token) : IRequest<InviteInfoDto>;
 
-public record InviteInfoDto(UserRole Role, bool IsMultiUse, string? ApartmentNumber);
+public record InviteInfoDto(UserRole Role, bool IsMultiUse, string? ApartmentNumber, string? Email);
 
 public class GetInviteInfoQueryHandler(IAppDbContext db) : IRequestHandler<GetInviteInfoQuery, InviteInfoDto>
 {
@@ -20,6 +20,6 @@ public class GetInviteInfoQueryHandler(IAppDbContext db) : IRequestHandler<GetIn
                 cancellationToken)
             ?? throw new NotFoundException("UserInvite", request.Token);
 
-        return new InviteInfoDto(invite.Role, invite.IsMultiUse, invite.ApartmentNumber);
+        return new InviteInfoDto(invite.Role, invite.IsMultiUse, invite.ApartmentNumber, invite.Email);
     }
 }

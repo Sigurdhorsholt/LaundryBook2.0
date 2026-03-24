@@ -24,6 +24,14 @@ export interface CreateInviteTokenRequest {
   isMultiUse?: boolean
 }
 
+export interface PendingInviteDto {
+  inviteId: string
+  email: string
+  role: UserRole
+  apartmentNumber: string | null
+  expiresAt: string
+}
+
 export interface UpdateMemberRequest {
   apartmentNumber: string | null
   role: UserRole
@@ -77,6 +85,19 @@ export const usersApi = baseApi.injectEndpoints({
         body,
       }),
     }),
+
+    getPendingInvites: builder.query<PendingInviteDto[], string>({
+      query: (propertyId) => `/api/properties/${propertyId}/members/pending`,
+      providesTags: (_result, _err, propertyId) => [{ type: 'Auth', id: `pending-${propertyId}` }],
+    }),
+
+    resendInvite: builder.mutation<void, { propertyId: string; inviteId: string }>({
+      query: ({ propertyId, inviteId }) => ({
+        url: `/api/properties/${propertyId}/members/pending/${inviteId}/resend`,
+        method: 'POST',
+      }),
+      invalidatesTags: (_result, _err, { propertyId }) => [{ type: 'Auth', id: `pending-${propertyId}` }],
+    }),
   }),
 })
 
@@ -87,4 +108,6 @@ export const {
   useRemoveMemberMutation,
   useForcePasswordResetMutation,
   useCreateInviteTokenMutation,
+  useGetPendingInvitesQuery,
+  useResendInviteMutation,
 } = usersApi

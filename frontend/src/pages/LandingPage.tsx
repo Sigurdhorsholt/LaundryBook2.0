@@ -1,6 +1,7 @@
 import {Navigate} from 'react-router-dom'
 import {useMeQuery} from '../features/auth/authApi'
 import {useModal} from '../shared/modals/useModal'
+import {PublicNavbar} from '../shared/PublicNavbar'
 
 export function LandingPage() {
     const {openModal} = useModal()
@@ -12,34 +13,7 @@ export function LandingPage() {
     return (
         <div className="d-flex flex-column min-vh-100">
 
-            {/* ── Navbar ── */}
-            <nav
-                className="navbar sticky-top border-bottom"
-                style={{backgroundColor: 'rgba(255,255,255,0.92)', backdropFilter: 'blur(10px)'}}
-            >
-                <div className="container-xl px-4">
-                    <a
-                        className="navbar-brand d-flex align-items-center gap-2 fw-bold text-decoration-none"
-                        href="/"
-                        style={{color: '#0d1b2a', fontSize: '1.15rem', letterSpacing: '-0.2px'}}
-                    >
-                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#1565c0" strokeWidth="2"
-                             strokeLinecap="round" strokeLinejoin="round">
-                            <circle cx="12" cy="12" r="10"/>
-                            <circle cx="12" cy="12" r="4"/>
-                            <path d="M2 12h3M19 12h3M12 2v3M12 19v3"/>
-                        </svg>
-                        LaundryBook
-                    </a>
-                    <button
-                        className="btn btn-primary fw-semibold px-4"
-                        style={{borderRadius: '8px', fontSize: '0.9rem'}}
-                        onClick={() => openModal('login')}
-                    >
-                        Log ind
-                    </button>
-                </div>
-            </nav>
+            <PublicNavbar onLoginClick={() => openModal('login')} />
 
             {/* ── Hero ── */}
             <section

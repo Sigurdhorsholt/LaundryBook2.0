@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Navigate, useNavigate, useSearchParams } from 'react-router-dom'
 import { createUserWithEmailAndPassword } from 'firebase/auth'
 import { firebaseAuth } from '../lib/firebase'
@@ -15,7 +15,10 @@ export function JoinPage() {
     { skip: !inviteToken },
   )
 
+  const [firstName, setFirstName] = useState('')
+  const [lastName, setLastName] = useState('')
   const [email, setEmail] = useState('')
+  useEffect(() => { if (invite?.email) setEmail(invite.email) }, [invite?.email])
   const [password, setPassword] = useState('')
   const [apartment, setApartment] = useState('')
   const [error, setError] = useState<string | null>(null)
@@ -47,6 +50,8 @@ export function JoinPage() {
         idToken,
         inviteToken,
         apartmentNumber: apartment || undefined,
+        firstName,
+        lastName,
       }).unwrap()
       navigate('/dashboard', { replace: true })
     } catch (err: unknown) {
@@ -69,6 +74,38 @@ export function JoinPage() {
         </div>
 
         <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
+          <div className="d-flex gap-2">
+            <div className="flex-grow-1">
+              <label className="form-label" style={{ fontSize: '0.85rem', fontWeight: 500, color: '#0d1b2a' }}>
+                Fornavn
+              </label>
+              <input
+                className="form-control"
+                type="text"
+                placeholder="Fornavn"
+                value={firstName}
+                onChange={(e) => setFirstName(e.target.value)}
+                required
+                autoComplete="given-name"
+                autoFocus
+              />
+            </div>
+            <div className="flex-grow-1">
+              <label className="form-label" style={{ fontSize: '0.85rem', fontWeight: 500, color: '#0d1b2a' }}>
+                Efternavn
+              </label>
+              <input
+                className="form-control"
+                type="text"
+                placeholder="Efternavn"
+                value={lastName}
+                onChange={(e) => setLastName(e.target.value)}
+                required
+                autoComplete="family-name"
+              />
+            </div>
+          </div>
+
           <div>
             <label className="form-label" style={{ fontSize: '0.85rem', fontWeight: 500, color: '#0d1b2a' }}>
               E-mail
@@ -81,7 +118,8 @@ export function JoinPage() {
               onChange={(e) => setEmail(e.target.value)}
               required
               autoComplete="email"
-              autoFocus
+              readOnly={!!invite?.email}
+              style={invite?.email ? { backgroundColor: '#f8fafb', cursor: 'default' } : undefined}
             />
           </div>
 

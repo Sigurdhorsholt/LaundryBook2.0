@@ -1,8 +1,10 @@
 import { Outlet, NavLink, useNavigate, useLocation, useMatch } from 'react-router-dom'
 import { useEffect } from 'react'
+import { useDispatch } from 'react-redux'
 import { signOut } from 'firebase/auth'
 import { firebaseAuth } from '../lib/firebase'
 import { useMeQuery, useLogoutMutation, UserRole } from '../features/auth/authApi'
+import { baseApi } from '../app/baseApi'
 import { routes } from '../app/routes'
 import { isEnabled } from '../config/features'
 import { getHighestRole } from './roleUtils'
@@ -162,6 +164,7 @@ function useSidebarAutoClose() {
 
 export function AdminLayout() {
   const navigate = useNavigate()
+  const dispatch = useDispatch()
   const { data: user } = useMeQuery()
   const [logout] = useLogoutMutation()
   useSidebarAutoClose()
@@ -186,6 +189,7 @@ export function AdminLayout() {
   async function handleLogout() {
     await logout()
     await signOut(firebaseAuth)
+    dispatch(baseApi.util.resetApiState())
     navigate('/', { replace: true })
   }
 

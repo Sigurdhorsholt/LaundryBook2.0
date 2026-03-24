@@ -4,10 +4,13 @@ import { useMeQuery, UserRole } from '../../../features/auth/authApi'
 import { useModal } from '../../../shared/modals/useModal'
 import {
   useGetPropertyMembersQuery,
+  useGetPendingInvitesQuery,
   useUpdateMemberMutation,
   useRemoveMemberMutation,
   useForcePasswordResetMutation,
+  useResendInviteMutation,
   type PropertyMemberDto,
+  type PendingInviteDto,
 } from '../../../features/users/usersApi'
 
 const roleLabel: Record<UserRole, string> = {
@@ -33,15 +36,20 @@ export function PropertyUsersPage() {
   const { data: members = [], isLoading, isError } = useGetPropertyMembersQuery(propertyId!, {
     skip: !propertyId,
   })
+  const { data: pendingInvites = [] } = useGetPendingInvitesQuery(propertyId!, {
+    skip: !propertyId,
+  })
 
   const [updateMember] = useUpdateMemberMutation()
   const [removeMember] = useRemoveMemberMutation()
   const [forcePasswordReset] = useForcePasswordResetMutation()
+  const [resendInvite] = useResendInviteMutation()
 
   // Track per-row UI state
   const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null)
   const [actionLoadingId, setActionLoadingId] = useState<string | null>(null)
   const [resetSuccessId, setResetSuccessId] = useState<string | null>(null)
+  const [resendSuccessId, setResendSuccessId] = useState<string | null>(null)
 
   async function handleToggleActive(member: PropertyMemberDto) {
     setActionLoadingId(member.userId)
@@ -79,6 +87,17 @@ export function PropertyUsersPage() {
     }
   }
 
+  async function handleResendInvite(inviteId: string) {
+    setActionLoadingId(inviteId)
+    try {
+      await resendInvite({ propertyId: propertyId!, inviteId }).unwrap()
+      setResendSuccessId(inviteId)
+      setTimeout(() => setResendSuccessId(null), 3000)
+    } finally {
+      setActionLoadingId(null)
+    }
+  }
+
   return (
     <div className="p-4 p-lg-5">
       <div className="d-flex align-items-start justify-content-between mb-5 gap-3 flex-wrap">
@@ -109,7 +128,7 @@ export function PropertyUsersPage() {
           <div className="text-center py-5" style={{ color: '#dc3545', fontSize: '0.9rem' }}>
             Kunne ikke indlæse brugere.
           </div>
-        ) : members.length === 0 ? (
+        ) : members.length === 0 && pendingInvites.length === 0 ? (
           <div className="text-center py-5" style={{ color: '#a0adb8', fontSize: '0.9rem' }}>
             Ingen brugere endnu. Inviter den første beboer.
           </div>
@@ -143,6 +162,15 @@ export function PropertyUsersPage() {
                     onCancelDelete={() => setConfirmDeleteId(null)}
                   />
                 ))}
+                {pendingInvites.map((invite) => (
+                  <PendingInviteRow
+                    key={invite.inviteId}
+                    invite={invite}
+                    isActionLoading={actionLoadingId === invite.inviteId}
+                    showResendSuccess={resendSuccessId === invite.inviteId}
+                    onResend={() => handleResendInvite(invite.inviteId)}
+                  />
+                ))}
               </tbody>
             </table>
           </div>
@@ -150,7 +178,8 @@ export function PropertyUsersPage() {
       </div>
 
       <p className="mt-3" style={{ fontSize: '0.78rem', color: '#a0adb8' }}>
-        {members.length} bruger{members.length !== 1 ? 'e' : ''}
+        {members.length + pendingInvites.length} bruger{members.length + pendingInvites.length !== 1 ? 'e' : ''}
+        {pendingInvites.length > 0 && ` (${pendingInvites.length} afventer)`}
       </p>
     </div>
   )
@@ -283,6 +312,61 @@ function MemberRow({
               </li>
             </ul>
           </div>
+        )}
+      </td>
+    </tr>
+  )
+}
+
+// ── Pending invite row ────────────────────────────────────────────────────────
+
+function PendingInviteRow({
+  invite, isActionLoading, showResendSuccess, onResend,
+}: {
+  invite: PendingInviteDto
+  isActionLoading: boolean
+  showResendSuccess: boolean
+  onResend: () => void
+}) {
+  return (
+    <tr style={{ opacity: 0.7 }}>
+      <td className="px-4 py-3 align-middle">
+        <div className="d-flex align-items-center gap-3">
+          <div
+            className="rounded-circle d-flex align-items-center justify-content-center flex-shrink-0 fw-semibold"
+            style={{ width: 32, height: 32, backgroundColor: '#f0f4f8', color: '#a0adb8', fontSize: '0.78rem' }}
+          >
+            ?
+          </div>
+          <span style={{ color: '#a0adb8', fontSize: '0.85rem', fontStyle: 'italic' }}>Ikke oprettet endnu</span>
+        </div>
+      </td>
+      <td className="px-4 py-3 align-middle d-none d-md-table-cell" style={{ color: '#5a6a7a' }}>
+        {invite.email}
+      </td>
+      <td className="px-4 py-3 align-middle" style={{ color: '#a0adb8' }}>
+        {invite.apartmentNumber ?? '—'}
+      </td>
+      <td className="px-4 py-3 align-middle">
+        <span className="badge" style={{ backgroundColor: '#f0f4f8', color: '#5a6a7a', fontWeight: 500, fontSize: '0.75rem' }}>
+          {roleLabel[invite.role]}
+        </span>
+      </td>
+      <td className="px-4 py-3 align-middle">
+        <span style={{ color: '#e6a817', fontSize: '0.78rem', fontWeight: 500 }}>Afventer</span>
+      </td>
+      <td className="px-4 py-3 align-middle text-end" style={{ minWidth: 160 }}>
+        {showResendSuccess ? (
+          <span style={{ fontSize: '0.78rem', color: '#2e7d32', fontWeight: 500 }}>Sendt ✓</span>
+        ) : (
+          <button
+            className="btn btn-sm btn-outline-secondary"
+            style={{ fontSize: '0.8rem', borderRadius: '6px' }}
+            disabled={isActionLoading}
+            onClick={onResend}
+          >
+            {isActionLoading ? '…' : 'Gensend invitation'}
+          </button>
         )}
       </td>
     </tr>

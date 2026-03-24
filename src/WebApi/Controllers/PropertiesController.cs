@@ -4,13 +4,14 @@ using Domain.Enums;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 
 namespace WebApi.Controllers;
 
 [Authorize]
 [ApiController]
 [Route("api/properties")]
-public class PropertiesController(IMediator mediator) : ControllerBase
+public class PropertiesController(IMediator mediator, IConfiguration configuration) : ControllerBase
 {
     [HttpGet]
     public async Task<IActionResult> GetMyProperties(CancellationToken ct)
@@ -88,13 +89,30 @@ public class PropertiesController(IMediator mediator) : ControllerBase
     [HttpPost("{id:guid}/members/invite")]
     public async Task<IActionResult> InviteByEmail(Guid id, [FromBody] InviteByEmailRequest request, CancellationToken ct)
     {
+        var appBaseUrl = configuration["App:BaseUrl"] ?? "https://app.laundrybook.com";
         var email = await mediator.Send(new InviteUserByEmailCommand(
             id,
             request.Email,
             request.Role,
-            request.ApartmentNumber), ct);
+            request.ApartmentNumber,
+            appBaseUrl), ct);
 
         return Ok(new { email });
+    }
+
+    [HttpGet("{id:guid}/members/pending")]
+    public async Task<IActionResult> GetPendingInvites(Guid id, CancellationToken ct)
+    {
+        var result = await mediator.Send(new GetPendingInvitesQuery(id), ct);
+        return Ok(result);
+    }
+
+    [HttpPost("{id:guid}/members/pending/{inviteId:guid}/resend")]
+    public async Task<IActionResult> ResendInvite(Guid id, Guid inviteId, CancellationToken ct)
+    {
+        var appBaseUrl = configuration["App:BaseUrl"] ?? "https://app.laundrybook.com";
+        await mediator.Send(new ResendInviteCommand(id, inviteId, appBaseUrl), ct);
+        return NoContent();
     }
 
     [HttpPost("{id:guid}/members/invite-token")]

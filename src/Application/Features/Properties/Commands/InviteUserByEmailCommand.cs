@@ -4,7 +4,6 @@ using Domain.Entities;
 using Domain.Enums;
 using FluentValidation;
 using MediatR;
-using Microsoft.EntityFrameworkCore;
 
 namespace Application.Features.Properties.Commands;
 
@@ -12,7 +11,8 @@ public record InviteUserByEmailCommand(
     Guid PropertyId,
     string Email,
     UserRole Role,
-    string? ApartmentNumber) : IRequest<string>;
+    string? ApartmentNumber,
+    string AppBaseUrl) : IRequest<string>;
 
 public class InviteUserByEmailCommandValidator : AbstractValidator<InviteUserByEmailCommand>
 {
@@ -27,7 +27,6 @@ public class InviteUserByEmailCommandValidator : AbstractValidator<InviteUserByE
 
 public class InviteUserByEmailCommandHandler(
     IAppDbContext db,
-    IIdentityProvider identityProvider,
     IEmailService emailService,
     PropertyAuthorizationService auth) : IRequestHandler<InviteUserByEmailCommand, string>
 {
@@ -35,40 +34,24 @@ public class InviteUserByEmailCommandHandler(
     {
         await auth.RequireRoleAsync(request.PropertyId, UserRole.ComplexAdmin, cancellationToken);
 
-        // Reuse an existing account if the email is already in our system
-        var user = await db.Users
-            .FirstOrDefaultAsync(u => u.Email == request.Email, cancellationToken);
+        var token = Guid.NewGuid().ToString("N"); // 32-char hex, URL-safe
 
-        if (user is null)
+        db.UserInvites.Add(new UserInvite
         {
-            var externalId = await identityProvider.CreateUserAsync(request.Email, cancellationToken);
-            user = new User { ExternalId = externalId, Email = request.Email };
-            db.Users.Add(user);
-        }
-
-        var existing = await db.UserComplexMemberships
-            .FirstOrDefaultAsync(m => m.UserId == user.Id && m.PropertyId == request.PropertyId, cancellationToken);
-
-        if (existing is not null)
-        {
-            existing.Role = request.Role;
-            existing.ApartmentNumber = request.ApartmentNumber;
-        }
-        else
-        {
-            db.UserComplexMemberships.Add(new UserComplexMembership
-            {
-                UserId = user.Id,
-                PropertyId = request.PropertyId,
-                Role = request.Role,
-                ApartmentNumber = request.ApartmentNumber,
-            });
-        }
+            PropertyId = request.PropertyId,
+            Role = request.Role,
+            ApartmentNumber = request.ApartmentNumber,
+            Email = request.Email,
+            Token = token,
+            IsMultiUse = false,
+            ExpiresAt = DateTime.UtcNow.AddDays(7),
+        });
 
         await db.SaveChangesAsync(cancellationToken);
 
-        var resetLink = await identityProvider.GeneratePasswordResetLinkAsync(request.Email, cancellationToken);
-        await emailService.SendPasswordSetupEmailAsync(request.Email, resetLink, cancellationToken);
+        var joinLink = $"{request.AppBaseUrl.TrimEnd('/')}/join?token={token}";
+
+        await emailService.SendPasswordSetupEmailAsync(request.Email, joinLink, cancellationToken);
 
         return request.Email;
     }

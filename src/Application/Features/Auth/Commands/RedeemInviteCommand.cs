@@ -9,7 +9,9 @@ namespace Application.Features.Auth.Commands;
 public record RedeemInviteCommand(
     string IdToken,
     string InviteToken,
-    string? ApartmentNumber) : IRequest<RedeemInviteResult>;
+    string? ApartmentNumber,
+    string FirstName,
+    string LastName) : IRequest<RedeemInviteResult>;
 
 public record RedeemInviteResult(string JwtToken, Guid UserId);
 
@@ -33,8 +35,19 @@ public class RedeemInviteCommandHandler(
 
         if (user is null)
         {
-            user = new User { ExternalId = external.ExternalId, Email = external.Email };
+            user = new User
+            {
+                ExternalId = external.ExternalId,
+                Email = external.Email,
+                FirstName = request.FirstName,
+                LastName = request.LastName,
+            };
             db.Users.Add(user);
+        }
+        else
+        {
+            user.FirstName = request.FirstName;
+            user.LastName = request.LastName;
         }
 
         var membershipExists = await db.UserComplexMemberships

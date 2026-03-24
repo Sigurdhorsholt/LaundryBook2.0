@@ -11,6 +11,13 @@ public class UserInvite : BaseEntity
     public UserRole Role { get; set; }
     public string? ApartmentNumber { get; set; }
 
+    /// <summary>
+    /// When set, this invite was sent to a specific email address.
+    /// JoinPage will pre-fill and lock the email field.
+    /// Null for multi-use QR invites where anyone can sign up.
+    /// </summary>
+    public string? Email { get; set; }
+
     /// <summary>URL-safe token included in the QR code link.</summary>
     public string Token { get; set; } = string.Empty;
 
