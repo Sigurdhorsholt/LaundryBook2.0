@@ -11,3 +11,23 @@ body {
   background-color: #ffffff;
   color: #0d1b2a;
 }
+
+/* Admin sidebar nav links */
+.sidebar-link {
+  color: #4a5568;
+  background-color: transparent;
+  transition: background-color 0.15s, color 0.15s;
+}
+.sidebar-link:hover {
+  background-color: #f5f7fa;
+  color: #4a5568;
+}
+.sidebar-link--active,
+.sidebar-link--active:hover {
+  color: #1565c0;
+  background-color: #e8f0fe;
+}
+
+.sidebar-back-btn:hover {
+  background-color: #f5f7fa !important;
+}

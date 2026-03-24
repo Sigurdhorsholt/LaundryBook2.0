@@ -3,14 +3,22 @@ import { useModal } from './useModal'
 import { LoginModal } from '../../features/auth/LoginModal'
 import { InviteUserModal } from '../../features/users/InviteUserModal'
 import { EditMemberModal } from '../../features/users/EditMemberModal'
+import type { PropertyMemberDto } from '../../features/users/usersApi'
 
-// ── Register modals here ─────────────────────────────────────────────────────
-// Add new entries as: 'modal-name': ComponentWithOnCloseProp
-const MODALS: Record<string, React.ComponentType<any>> = {
+// ── Modal registry — add new modals here ─────────────────────────────────────
+
+type ModalRegistry = {
+  login: React.ComponentType<{ onClose: () => void }>
+  inviteUser: React.ComponentType<{ propertyId: string; onClose: () => void }>
+  editMember: React.ComponentType<{ propertyId: string; member: PropertyMemberDto; onClose: () => void }>
+}
+
+const MODALS: ModalRegistry = {
   login: LoginModal,
   inviteUser: InviteUserModal,
   editMember: EditMemberModal,
 }
+
 // ─────────────────────────────────────────────────────────────────────────────
 
 export function ModalProvider() {
@@ -19,8 +27,9 @@ export function ModalProvider() {
 
   if (!modal) return null
 
-  const Component = MODALS[modal.name]
+  const name = modal.name as keyof ModalRegistry
+  const Component = MODALS[name] as React.ComponentType<{ onClose: () => void } & Record<string, unknown>>
   if (!Component) return null
 
-  return <Component onClose={closeModal} {...(modal.props as object)} />
+  return <Component onClose={closeModal} {...(modal.props as Record<string, unknown>)} />
 }

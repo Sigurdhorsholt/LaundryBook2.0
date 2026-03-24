@@ -1,13 +1,8 @@
 import { useNavigate } from 'react-router-dom'
 import { useMeQuery, UserRole } from '../../features/auth/authApi'
 import { getHighestRole } from '../../shared/roleUtils'
-
-const roleLabel: Record<UserRole, string> = {
-  [UserRole.Resident]: 'Beboer',
-  [UserRole.ComplexAdmin]: 'Ejendomsadmin',
-  [UserRole.OrgAdmin]: 'Organisationsadmin',
-  [UserRole.SysAdmin]: 'Systemadmin',
-}
+import { ROLE_LABEL } from '../../shared/constants'
+import { IconBuilding, IconChevronRight } from '../../shared/icons'
 
 export function AdminDashboardPage() {
   const navigate = useNavigate()
@@ -29,7 +24,7 @@ export function AdminDashboardPage() {
                 className="ms-2 badge"
                 style={{ backgroundColor: '#e8f0fe', color: '#1565c0', fontWeight: 500, fontSize: '0.78rem' }}
               >
-                {roleLabel[role]}
+                {ROLE_LABEL[role]}
               </span>
             )}
           </p>
@@ -82,22 +77,17 @@ export function AdminDashboardPage() {
                     className="rounded-2 d-flex align-items-center justify-content-center flex-shrink-0"
                     style={{ width: 40, height: 40, backgroundColor: '#e8f0fe' }}
                   >
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#1565c0" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                      <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
-                      <polyline points="9 22 9 12 15 12 15 22"/>
-                    </svg>
+                    <IconBuilding size={18} color="#1565c0" />
                   </div>
                   <div style={{ minWidth: 0, flex: 1 }}>
                     <p className="fw-semibold mb-0 text-truncate" style={{ fontSize: '0.9rem', color: '#0d1b2a' }}>
                       {m.propertyName}
                     </p>
                     <p className="mb-0" style={{ fontSize: '0.78rem', color: '#5a6a7a' }}>
-                      {roleLabel[m.role]}{m.apartmentNumber ? ` · Lejl. ${m.apartmentNumber}` : ''}
+                      {ROLE_LABEL[m.role]}{m.apartmentNumber ? ` · Lejl. ${m.apartmentNumber}` : ''}
                     </p>
                   </div>
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#a0adb8" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="flex-shrink-0">
-                    <polyline points="9 18 15 12 9 6"/>
-                  </svg>
+                  <span className="flex-shrink-0"><IconChevronRight size={16} color="#a0adb8" /></span>
                 </div>
               </div>
             ))}

@@ -1,12 +1,7 @@
 import { useNavigate } from 'react-router-dom'
 import { useMeQuery, UserRole } from '../../../features/auth/authApi'
-
-const roleLabel: Record<UserRole, string> = {
-  [UserRole.Resident]: 'Beboer',
-  [UserRole.ComplexAdmin]: 'Ejendomsadmin',
-  [UserRole.OrgAdmin]: 'Organisationsadmin',
-  [UserRole.SysAdmin]: 'Systemadmin',
-}
+import { ROLE_LABEL } from '../../../shared/constants'
+import { IconBuilding } from '../../../shared/icons'
 
 export function PropertiesPage() {
   const navigate = useNavigate()
@@ -55,10 +50,7 @@ export function PropertiesPage() {
                     className="rounded-2 d-flex align-items-center justify-content-center flex-shrink-0"
                     style={{ width: 44, height: 44, backgroundColor: '#e8f0fe' }}
                   >
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#1565c0" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                      <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
-                      <polyline points="9 22 9 12 15 12 15 22" />
-                    </svg>
+                    <IconBuilding size={20} color="#1565c0" />
                   </div>
                   <div style={{ minWidth: 0 }}>
                     <p className="fw-bold mb-0 text-truncate" style={{ color: '#0d1b2a' }}>
@@ -68,7 +60,7 @@ export function PropertiesPage() {
                       className="badge"
                       style={{ backgroundColor: '#e8f0fe', color: '#1565c0', fontSize: '0.72rem', fontWeight: 500 }}
                     >
-                      {roleLabel[m.role]}
+                      {ROLE_LABEL[m.role]}
                     </span>
                   </div>
                 </div>

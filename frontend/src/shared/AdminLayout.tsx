@@ -3,19 +3,17 @@ import { useEffect } from 'react'
 import { useDispatch } from 'react-redux'
 import { signOut } from 'firebase/auth'
 import { firebaseAuth } from '../lib/firebase'
-import { useMeQuery, useLogoutMutation, UserRole } from '../features/auth/authApi'
+import { useMeQuery, useLogoutMutation } from '../features/auth/authApi'
 import { baseApi } from '../app/baseApi'
 import { routes } from '../app/routes'
 import { isEnabled } from '../config/features'
 import { getHighestRole } from './roleUtils'
-
-// ── Types ────────────────────────────────────────────────────────────────────
-
-const roleLabel: Partial<Record<UserRole, string>> = {
-  [UserRole.ComplexAdmin]: 'Ejendomsadmin',
-  [UserRole.OrgAdmin]: 'Organisationsadmin',
-  [UserRole.SysAdmin]: 'Systemadmin',
-}
+import { ROLE_LABEL } from './constants'
+import { BrandLogo } from './BrandLogo'
+import {
+  IconUsers, IconSettings, IconBuilding, IconClock, IconCalendarCheck,
+  IconChevronLeft, IconChevronRight, IconMenu,
+} from './icons'
 
 interface SubNavSection {
   title: string
@@ -32,25 +30,12 @@ function buildPropertySubNav(propertyId: string): SubNavSection[] {
         {
           path: `${base}/users`,
           label: 'Brugere',
-          icon: (
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
-              <circle cx="9" cy="7" r="4"/>
-              <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
-              <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
-            </svg>
-          ),
+          icon: <IconUsers size={15} />,
         },
         {
           path: `${base}/settings`,
           label: 'Indstillinger',
-          icon: (
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <circle cx="12" cy="12" r="3"/>
-              <path d="M19.07 4.93a10 10 0 0 1 0 14.14M4.93 4.93a10 10 0 0 0 0 14.14"/>
-              <path d="M12 2v2M12 20v2M2 12h2M20 12h2"/>
-            </svg>
-          ),
+          icon: <IconSettings size={15} />,
         },
       ],
     },
@@ -61,36 +46,19 @@ function buildPropertySubNav(propertyId: string): SubNavSection[] {
           path: `${base}/laundry`,
           label: 'Lokaler & Maskiner',
           feature: 'laundryBooking' as const,
-          icon: (
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
-              <polyline points="9 22 9 12 15 12 15 22"/>
-            </svg>
-          ),
+          icon: <IconBuilding size={15} />,
         },
         {
           path: `${base}/timeslots`,
           label: 'Tidspladser',
           feature: 'laundryBooking' as const,
-          icon: (
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <circle cx="12" cy="12" r="10"/>
-              <polyline points="12 6 12 12 16 14"/>
-            </svg>
-          ),
+          icon: <IconClock size={15} />,
         },
         {
           path: `${base}/bookings`,
           label: 'Bookinger',
           feature: 'laundryBooking' as const,
-          icon: (
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <rect x="3" y="4" width="18" height="18" rx="2"/>
-              <line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/>
-              <line x1="3" y1="10" x2="21" y2="10"/>
-              <path d="M9 16l2 2 4-4"/>
-            </svg>
-          ),
+          icon: <IconCalendarCheck size={15} />,
         },
       ],
     },
@@ -114,21 +82,10 @@ function SidebarLink({
     <NavLink
       to={to}
       end={end}
-      className="d-flex align-items-center gap-2 px-3 py-2 rounded-2 text-decoration-none fw-medium mb-1"
-      style={({ isActive }) => ({
-        fontSize: '0.875rem',
-        color: isActive ? '#1565c0' : '#4a5568',
-        backgroundColor: isActive ? '#e8f0fe' : 'transparent',
-        transition: 'background-color 0.15s, color 0.15s',
-      })}
-      onMouseEnter={(e) => {
-        const el = e.currentTarget
-        if (!el.style.backgroundColor.includes('e8f0fe')) el.style.backgroundColor = '#f5f7fa'
-      }}
-      onMouseLeave={(e) => {
-        const el = e.currentTarget
-        if (!el.style.backgroundColor.includes('e8f0fe')) el.style.backgroundColor = 'transparent'
-      }}
+      className={({ isActive }) =>
+        `sidebar-link d-flex align-items-center gap-2 px-3 py-2 rounded-2 text-decoration-none fw-medium mb-1${isActive ? ' sidebar-link--active' : ''}`
+      }
+      style={{ fontSize: '0.875rem' }}
     >
       {icon && <span className="flex-shrink-0" style={{ opacity: 0.7, display: 'flex' }}>{icon}</span>}
       {label}
@@ -213,11 +170,7 @@ export function AdminLayout() {
             aria-controls="adminSidebar"
             aria-label="Åbn menu"
           >
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
-              <line x1="3" y1="6" x2="21" y2="6"/>
-              <line x1="3" y1="12" x2="21" y2="12"/>
-              <line x1="3" y1="18" x2="21" y2="18"/>
-            </svg>
+            <IconMenu size={20} />
           </button>
 
           {/* Brand */}
@@ -226,10 +179,7 @@ export function AdminLayout() {
             className="navbar-brand d-flex align-items-center gap-2 fw-bold text-decoration-none me-auto"
             style={{ color: '#0d1b2a', fontSize: '1.05rem', letterSpacing: '-0.2px' }}
           >
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#1565c0" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="4"/>
-              <path d="M2 12h3M19 12h3M12 2v3M12 19v3"/>
-            </svg>
+            <BrandLogo size={18} />
             LaundryBook
             <span
               className="d-none d-sm-inline badge ms-1"
@@ -246,7 +196,7 @@ export function AdminLayout() {
                 {user?.firstName ? `${user.firstName} ${user.lastName}` : user?.email}
               </span>
               {role !== null && (
-                <span style={{ fontSize: '0.72rem', color: '#5a6a7a' }}>{roleLabel[role] ?? ''}</span>
+                <span style={{ fontSize: '0.72rem', color: '#5a6a7a' }}>{ROLE_LABEL[role] ?? ''}</span>
               )}
             </div>
             <button
@@ -293,15 +243,11 @@ export function AdminLayout() {
                 <>
                   {/* Back to properties */}
                   <button
-                    className="d-flex align-items-center gap-2 px-3 py-2 rounded-2 border-0 bg-transparent fw-medium mb-3 w-100 text-start"
+                    className="sidebar-back-btn d-flex align-items-center gap-2 px-3 py-2 rounded-2 border-0 bg-transparent fw-medium mb-3 w-100 text-start"
                     style={{ fontSize: '0.82rem', color: '#5a6a7a', cursor: 'pointer' }}
                     onClick={() => navigate('/admin/properties')}
-                    onMouseEnter={(e) => ((e.currentTarget as HTMLElement).style.backgroundColor = '#f5f7fa')}
-                    onMouseLeave={(e) => ((e.currentTarget as HTMLElement).style.backgroundColor = 'transparent')}
                   >
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                      <polyline points="15 18 9 12 15 6"/>
-                    </svg>
+                    <IconChevronLeft size={14} strokeWidth={2.5} />
                     Alle ejendomme
                   </button>
 

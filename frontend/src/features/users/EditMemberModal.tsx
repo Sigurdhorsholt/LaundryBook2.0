@@ -1,18 +1,14 @@
 import { useState } from 'react'
 import { ModalShell } from '../../shared/modals/ModalShell'
-import { UserRole } from '../auth/authApi'
 import { useUpdateMemberMutation, type PropertyMemberDto } from './usersApi'
+import { ROLE_OPTIONS } from '../../shared/constants'
+import type {UserRole} from "../auth/authApi.ts";
 
 interface EditMemberModalProps {
   propertyId: string
   member: PropertyMemberDto
   onClose: () => void
 }
-
-const ROLE_OPTIONS = [
-  { value: UserRole.Resident, label: 'Beboer' },
-  { value: UserRole.ComplexAdmin, label: 'Ejendomsadmin' },
-]
 
 export function EditMemberModal({ propertyId, member, onClose }: EditMemberModalProps) {
   const [apartment, setApartment] = useState(member.apartmentNumber ?? '')
