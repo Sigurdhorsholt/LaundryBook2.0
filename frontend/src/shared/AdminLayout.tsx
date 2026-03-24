@@ -12,7 +12,7 @@ import { ROLE_LABEL } from './constants'
 import { BrandLogo } from './BrandLogo'
 import {
   IconUsers, IconSettings, IconBuilding, IconClock, IconCalendarCheck,
-  IconChevronLeft, IconChevronRight, IconMenu,
+  IconChevronLeft, IconMenu,
 } from './icons'
 
 interface SubNavSection {

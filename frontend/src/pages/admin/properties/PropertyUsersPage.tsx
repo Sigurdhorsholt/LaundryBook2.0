@@ -9,6 +9,7 @@ import {
   useRemoveMemberMutation,
   useForcePasswordResetMutation,
   useResendInviteMutation,
+  type PropertyMemberDto,
 } from '../../../features/users/usersApi'
 import { MemberRow } from './MemberRow'
 import { PendingInviteRow } from './PendingInviteRow'
