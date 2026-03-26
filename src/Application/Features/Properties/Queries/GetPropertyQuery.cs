@@ -30,11 +30,13 @@ public class GetPropertyQueryHandler(
             property.Name,
             property.Address,
             property.Settings is null
-                ? new ComplexSettingsDto(Domain.Enums.BookingMode.BookSpecificMachine, 60, 2)
+                ? new ComplexSettingsDto(Domain.Enums.BookingMode.BookSpecificMachine, 60, 2, 14, Domain.Enums.BookingVisibility.ApartmentOnly)
                 : new ComplexSettingsDto(
                     property.Settings.BookingMode,
                     property.Settings.CancellationWindowMinutes,
-                    property.Settings.MaxConcurrentBookingsPerUser),
+                    property.Settings.MaxConcurrentBookingsPerUser,
+                    property.Settings.BookingLookaheadDays,
+                    property.Settings.BookingVisibility),
             property.Memberships.Select(m => new MemberDto(
                 m.UserId,
                 m.User.Email,

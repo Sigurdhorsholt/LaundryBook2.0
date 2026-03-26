@@ -36,10 +36,12 @@ public class GetMyPropertiesQueryHandler(
             p.Settings is null ? DefaultSettings() : new ComplexSettingsDto(
                 p.Settings.BookingMode,
                 p.Settings.CancellationWindowMinutes,
-                p.Settings.MaxConcurrentBookingsPerUser),
+                p.Settings.MaxConcurrentBookingsPerUser,
+                p.Settings.BookingLookaheadDays,
+                p.Settings.BookingVisibility),
             p.Memberships.Count)).ToList();
     }
 
     private static ComplexSettingsDto DefaultSettings() =>
-        new(Domain.Enums.BookingMode.BookSpecificMachine, 60, 2);
+        new(Domain.Enums.BookingMode.BookSpecificMachine, 60, 2, 14, Domain.Enums.BookingVisibility.ApartmentOnly);
 }

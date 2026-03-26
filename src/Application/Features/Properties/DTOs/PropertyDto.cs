@@ -19,7 +19,9 @@ public record PropertyDetailDto(
 public record ComplexSettingsDto(
     BookingMode BookingMode,
     int CancellationWindowMinutes,
-    int MaxConcurrentBookingsPerUser);
+    int MaxConcurrentBookingsPerUser,
+    int BookingLookaheadDays,
+    BookingVisibility BookingVisibility);
 
 public record MemberDto(
     Guid UserId,
