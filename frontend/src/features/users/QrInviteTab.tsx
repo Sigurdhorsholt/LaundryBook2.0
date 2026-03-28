@@ -9,11 +9,12 @@ type QrMode = 'specific' | 'mass'
 
 interface QrInviteTabProps {
   propertyId: string
+  roleOptions?: { value: UserRole; label: string }[]
 }
 
-export function QrInviteTab({ propertyId }: QrInviteTabProps) {
+export function QrInviteTab({ propertyId, roleOptions = ROLE_OPTIONS }: QrInviteTabProps) {
   const [mode, setMode] = useState<QrMode>('specific')
-  const [role, setRole] = useState<UserRole>(UserRole.Resident)
+  const [role, setRole] = useState<UserRole>(roleOptions[0].value)
   const [apartment, setApartment] = useState('')
   const [token, setToken] = useState<string | null>(null)
   const [isMultiUse, setIsMultiUse] = useState(false)
@@ -122,7 +123,7 @@ export function QrInviteTab({ propertyId }: QrInviteTabProps) {
             value={role}
             onChange={(e) => setRole(Number(e.target.value) as UserRole)}
           >
-            {ROLE_OPTIONS.map((o) => (
+            {roleOptions.map((o) => (
               <option key={o.value} value={o.value}>{o.label}</option>
             ))}
           </select>

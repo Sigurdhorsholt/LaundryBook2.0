@@ -1,5 +1,7 @@
 import { colors } from '../../shared/theme'
 import { IconShield } from '../../shared/icons'
+import { PropertiesList } from '../../features/properties/PropertiesList'
+import { UserTable } from '../../features/sysadmin/UserTable'
 
 export function SysAdminPage() {
   return (
@@ -18,13 +20,19 @@ export function SysAdminPage() {
           </p>
         </div>
       </div>
+
+      <div
+        className="rounded-3 p-4 mb-4"
+        style={{ border: `1px solid ${colors.borderDefault}`, backgroundColor: colors.bgCard }}
+      >
+        <PropertiesList />
+      </div>
+
       <div
         className="rounded-3 p-4"
         style={{ border: `1px solid ${colors.borderDefault}`, backgroundColor: colors.bgCard }}
       >
-        <p style={{ color: colors.textSecondary, marginBottom: 0 }}>
-          Systemadmin-funktioner implementeres her.
-        </p>
+        <UserTable />
       </div>
     </div>
   )

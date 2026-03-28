@@ -19,3 +19,14 @@ export const ROLE_OPTIONS = [
   { value: UserRole.Resident, label: 'Beboer' },
   { value: UserRole.ComplexAdmin, label: 'Ejendomsadmin' },
 ]
+
+export const ADMIN_ROLE_OPTIONS = [
+  { value: UserRole.ComplexAdmin, label: 'Ejendomsadmin' },
+  { value: UserRole.OrgAdmin, label: 'Organisationsadmin' },
+]
+
+export const ALL_MEMBER_ROLE_OPTIONS = [
+  { value: UserRole.Resident, label: 'Beboer' },
+  { value: UserRole.ComplexAdmin, label: 'Ejendomsadmin' },
+  { value: UserRole.OrgAdmin, label: 'Organisationsadmin' },
+]
