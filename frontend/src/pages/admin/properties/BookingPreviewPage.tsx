@@ -421,20 +421,17 @@ export function BookingPreviewPage() {
 
         {/* Booking grid */}
         <div className="rounded-3 overflow-hidden" style={{ border: '1px solid #e8ecf0' }}>
-          {slotsLoading ? (
-            <div className="p-4 text-center"><Spinner /></div>
-          ) : (
-            <BookingGrid
-              slots={activeSlots}
-              date={selectedDate}
-              today={todayStr}
-              bookingLookaheadDays={settings?.bookingLookaheadDays ?? 7}
-              gridBookings={gridBookings}
-              maxReached={maxReached}
-              onBook={handleBook}
-              onCancel={handleCancel}
-            />
-          )}
+          <BookingGrid
+            slots={activeSlots}
+            date={selectedDate}
+            today={todayStr}
+            bookingLookaheadDays={settings?.bookingLookaheadDays ?? 7}
+            gridBookings={gridBookings}
+            maxReached={maxReached}
+            onBook={handleBook}
+            onCancel={handleCancel}
+            loading={slotsLoading}
+          />
         </div>
 
         {/* Active user summary */}

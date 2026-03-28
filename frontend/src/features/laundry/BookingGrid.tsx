@@ -7,6 +7,7 @@
  * The grid itself only handles rendering and the date-based past/locked states.
  */
 
+import { useState, useEffect, useRef } from 'react'
 import type { TimeSlotTemplateDto } from './laundryApi'
 
 // ── Public types ───────────────────────────────────────────────────────────────
@@ -28,6 +29,7 @@ interface BookingGridProps {
   maxReached: boolean          // active user has hit their concurrent booking limit
   onBook: (slotId: string) => void
   onCancel: (slotId: string) => void
+  loading?: boolean            // shows skeleton rows while slots are fetched
 }
 
 // ── Helpers ────────────────────────────────────────────────────────────────────
@@ -57,6 +59,37 @@ function isLocked(date: string, today: string, lookaheadDays: number): boolean {
   return date > addDays(today, lookaheadDays)
 }
 
+// ── Skeleton row (Task 7) ──────────────────────────────────────────────────────
+
+function SlotSkeleton() {
+  return (
+    <div
+      style={{
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        padding: '11px 20px',
+        borderBottom: '1px solid #f0f4f8',
+      }}
+    >
+      <div
+        style={{
+          width: 80, height: 14, borderRadius: 4,
+          backgroundColor: '#e8ecf0',
+          animation: 'skeleton-pulse 1.4s ease-in-out infinite',
+        }}
+      />
+      <div
+        style={{
+          width: 64, height: 28, borderRadius: 20,
+          backgroundColor: '#e8ecf0',
+          animation: 'skeleton-pulse 1.4s ease-in-out infinite',
+        }}
+      />
+    </div>
+  )
+}
+
 // ── Component ──────────────────────────────────────────────────────────────────
 
 export function BookingGrid({
@@ -68,25 +101,81 @@ export function BookingGrid({
   maxReached,
   onBook,
   onCancel,
+  loading,
 }: BookingGridProps) {
-  if (slots.length === 0) {
+  // Task 7 — skeleton while loading
+  if (loading) {
     return (
-      <div
-        className="py-5 text-center"
-        style={{ color: '#a0adb8', fontSize: '0.9rem' }}
-      >
-        Ingen tidspladser konfigureret for dette lokale.
+      <div>
+        {Array.from({ length: 8 }, (_, i) => <SlotSkeleton key={i} />)}
       </div>
     )
   }
 
+  // Task 6C — no slots configured
+  if (slots.length === 0) {
+    return (
+      <div style={{ padding: '32px 20px', textAlign: 'center' }}>
+        <p style={{ color: '#0d1b2a', fontWeight: 600, marginBottom: 4, fontSize: '0.9rem' }}>
+          Ingen tider opsat endnu
+        </p>
+        <p style={{ color: '#a0adb8', fontSize: '0.82rem', marginBottom: 0 }}>
+          Administratoren har ikke konfigureret tidspladser for dette lokale.
+        </p>
+      </div>
+    )
+  }
+
+  // Task 6A — detect if every slot is unavailable (past, locked, or taken)
+  const allUnavailable = slots.every((slot) => {
+    const booking = gridBookings.find((b) => b.slotId === slot.id) ?? null
+    return (
+      isPast(date, slot.startTime, today) ||
+      isLocked(date, today, bookingLookaheadDays) ||
+      booking !== null
+    )
+  })
+
   return (
     <div>
+      {/* Task 6B — maxReached: single explanatory banner instead of per-row text */}
+      {maxReached && (
+        <div
+          style={{
+            padding: '10px 20px',
+            fontSize: '0.82rem',
+            display: 'flex',
+            gap: 6,
+            flexWrap: 'wrap',
+            backgroundColor: '#fff3e0',
+            borderBottom: '1px solid #ffe0b2',
+            color: '#7a3f00',
+          }}
+        >
+          <strong>Du har nået din bookinggrænse.</strong>
+          <span>Aflys en aktiv booking for at frigøre en plads.</span>
+        </div>
+      )}
+
+      {/* Task 6A — all slots taken/past banner */}
+      {!maxReached && allUnavailable && (
+        <div
+          style={{
+            padding: '10px 20px',
+            fontSize: '0.82rem',
+            backgroundColor: '#fff8e1',
+            borderBottom: '1px solid #f0e0b0',
+            color: '#7a5c00',
+          }}
+        >
+          Ingen ledige tider denne dag.
+        </div>
+      )}
+
       {slots.map((slot) => {
         const booking = gridBookings.find((b) => b.slotId === slot.id) ?? null
         const past    = isPast(date, slot.startTime, today)
         const locked  = isLocked(date, today, bookingLookaheadDays)
-        // maxReached only blocks available slots — already-booked slots ignore it
         const blocked = maxReached && booking === null && !past && !locked
 
         return (
@@ -125,8 +214,49 @@ function SlotRow({
   onBook: () => void
   onCancel: () => void
 }) {
-  const timeLabel = `${formatTime(slot.startTime)} – ${formatTime(slot.endTime)}`
-  const dimmed = past || locked
+  // Task 4 — hover state
+  const [hovered, setHovered] = useState(false)
+
+  // Task 5 — detect booking state transitions for micro-animation
+  const [justBooked,    setJustBooked]    = useState(false)
+  const [justCancelled, setJustCancelled] = useState(false)
+  const prevBookingRef = useRef<GridBooking | null>(null)
+
+  useEffect(() => {
+    const prev = prevBookingRef.current
+    prevBookingRef.current = booking
+
+    if (prev === null && booking?.isOwn) {
+      setJustBooked(true)
+      const t = setTimeout(() => setJustBooked(false), 500)
+      return () => clearTimeout(t)
+    }
+    if (prev?.isOwn && booking === null) {
+      setJustCancelled(true)
+      const t = setTimeout(() => setJustCancelled(false), 400)
+      return () => clearTimeout(t)
+    }
+  }, [booking])
+
+  const timeLabel   = `${formatTime(slot.startTime)} – ${formatTime(slot.endTime)}`
+  const dimmed      = past || locked
+  const takenByOther = booking !== null && !booking.isOwn
+  const isClickable  = !past && !locked && booking === null && !blocked
+
+  // Background — animation overrides this during the transition frames
+  const rowBg =
+    (justBooked || booking?.isOwn) ? '#f0fdf4' :
+    takenByOther                    ? '#f2f4f7' :
+    (hovered && isClickable)        ? '#f0f5ff' :
+                                      '#ffffff'
+
+  const animationStyle: React.CSSProperties = justBooked
+    ? { animation: 'slot-booked 0.45s ease-out' }
+    : justCancelled
+      ? { animation: 'slot-cancelled 0.35s ease-out' }
+      : {}
+
+  // ── Status element ───────────────────────────────────────────────────────────
 
   let status: React.ReactNode
 
@@ -144,7 +274,7 @@ function SlotRow({
           <button
             className="btn btn-sm btn-outline-secondary"
             style={{ fontSize: '0.75rem', padding: '2px 10px', borderRadius: 20 }}
-            onClick={onCancel}
+            onClick={(e) => { e.stopPropagation(); onCancel() }}
           >
             Aflys
           </button>
@@ -153,31 +283,30 @@ function SlotRow({
         )}
       </span>
     )
-  } else if (booking !== null) {
-    // Someone else's booking
+  } else if (takenByOther) {
     status = <span style={badge('#f0f4f8', '#5a6a7a')}>{booking.label}</span>
   } else if (blocked) {
-    status = <span style={{ fontSize: '0.78rem', color: '#b45309' }}>Maks. nået</span>
+    // Task 6B — no per-row text; the banner above explains the situation
+    status = null
   } else {
+    // Task 4 — Book button stays for visual affordance; row click handles the action
     status = (
       <button
         className="btn btn-sm btn-outline-primary fw-semibold"
-        style={{ fontSize: '0.78rem', borderRadius: 20, padding: '3px 16px' }}
-        onClick={onBook}
+        style={{ fontSize: '0.78rem', borderRadius: 20, padding: '3px 16px', pointerEvents: 'none' }}
+        tabIndex={-1}
+        aria-hidden
       >
         Book
       </button>
     )
   }
 
-  const takenByOther = booking !== null && !booking.isOwn
-  const rowBg =
-    booking?.isOwn ? '#f0fdf4' :
-    takenByOther    ? '#f2f4f7' :
-                      '#ffffff'
-
   return (
     <div
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+      onClick={isClickable ? onBook : undefined}
       style={{
         display: 'flex',
         alignItems: 'center',
@@ -185,8 +314,11 @@ function SlotRow({
         padding: '11px 20px',
         borderBottom: '1px solid #f0f4f8',
         backgroundColor: rowBg,
-        opacity: dimmed ? 0.45 : 1,
-        transition: 'background-color 0.1s',
+        opacity: dimmed ? 0.45 : blocked ? 0.5 : 1,
+        cursor: isClickable ? 'pointer' : 'default',
+        transition: (justBooked || justCancelled) ? 'none' : 'background-color 0.12s',
+        userSelect: 'none',
+        ...animationStyle,
       }}
     >
       <span style={{ fontSize: '0.9rem', fontWeight: 500, color: takenByOther ? '#8a9aaa' : '#0d1b2a' }}>

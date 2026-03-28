@@ -31,3 +31,23 @@ body {
 .sidebar-back-btn:hover {
   background-color: #f5f7fa !important;
 }
+
+/* ── BookingGrid animations ─────────────────────────────────────────────────── */
+
+@keyframes slot-booked {
+  0%   { transform: scaleX(0.98); background-color: #c8e6c9; }
+  60%  { transform: scaleX(1.005); }
+  100% { transform: scaleX(1);    background-color: #f0fdf4; }
+}
+
+@keyframes slot-cancelled {
+  0%   { background-color: #ffcdd2; }
+  100% { background-color: #ffffff; }
+}
+
+/* ── Skeleton loading pulse ─────────────────────────────────────────────────── */
+
+@keyframes skeleton-pulse {
+  0%, 100% { opacity: 1;    }
+  50%       { opacity: 0.45; }
+}
