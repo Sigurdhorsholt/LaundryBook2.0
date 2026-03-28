@@ -41,7 +41,9 @@ public class PropertiesController(IMediator mediator, IConfiguration configurati
             id,
             request.BookingMode,
             request.CancellationWindowMinutes,
-            request.MaxConcurrentBookingsPerUser), ct);
+            request.MaxConcurrentBookingsPerUser,
+            request.BookingLookaheadDays,
+            request.BookingVisibility), ct);
 
         return NoContent();
     }
@@ -131,7 +133,9 @@ public class PropertiesController(IMediator mediator, IConfiguration configurati
 public record UpdateSettingsRequest(
     BookingMode BookingMode,
     int CancellationWindowMinutes,
-    int MaxConcurrentBookingsPerUser);
+    int MaxConcurrentBookingsPerUser,
+    int BookingLookaheadDays,
+    BookingVisibility BookingVisibility);
 
 public record AddMemberRequest(
     string Email,

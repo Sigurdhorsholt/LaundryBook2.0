@@ -8,7 +8,7 @@ export function AdminDashboardPage() {
   const navigate = useNavigate()
   const { data: user } = useMeQuery()
   const role = user ? getHighestRole(user) : null
-  const adminMemberships = user?.memberships.filter((m) => m.role >= UserRole.ComplexAdmin) ?? []
+  const adminMemberships = user?.memberships.filter((m) => m.role >= UserRole.ComplexAdmin) ?? [];
 
   return (
     <div className="p-4 p-lg-5">

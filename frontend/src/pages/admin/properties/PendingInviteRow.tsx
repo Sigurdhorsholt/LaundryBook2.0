@@ -1,43 +1,49 @@
 import { ROLE_LABEL } from '../../../shared/constants'
 import { type PendingInviteDto } from '../../../features/users/usersApi'
 
-interface PendingInviteRowProps {
+export interface PendingInviteRowProps {
   invite: PendingInviteDto
   isActionLoading: boolean
   showResendSuccess: boolean
   onResend: () => void
 }
 
-export function PendingInviteRow({ invite, isActionLoading, showResendSuccess, onResend }: PendingInviteRowProps) {
-  const actionCell = showResendSuccess ? (
-    <span style={{ fontSize: '0.78rem', color: '#2e7d32', fontWeight: 500 }}>Sendt ✓</span>
-  ) : (
+function ResendAction({ isActionLoading, showResendSuccess, onResend }: PendingInviteRowProps) {
+  if (showResendSuccess) {
+    return <span style={{ fontSize: '0.78rem', color: '#2e7d32', fontWeight: 500 }}>Sendt ✓</span>
+  }
+  return (
     <button
       className="btn btn-sm btn-outline-secondary"
-      style={{ fontSize: '0.8rem', borderRadius: '6px' }}
+      style={{ fontSize: '0.8rem', borderRadius: '6px', whiteSpace: 'nowrap' }}
       disabled={isActionLoading}
       onClick={onResend}
     >
-      {isActionLoading ? '…' : 'Gensend invitation'}
+      {isActionLoading ? '…' : 'Gensend'}
     </button>
   )
+}
 
+// ── Desktop table row ──────────────────────────────────────────────────────────
+
+export function PendingInviteRow(props: PendingInviteRowProps) {
+  const { invite } = props
   return (
     <tr style={{ opacity: 0.7 }}>
       <td className="px-4 py-3 align-middle">
         <div className="d-flex align-items-center gap-3">
           <div
             className="rounded-circle d-flex align-items-center justify-content-center flex-shrink-0 fw-semibold"
-            style={{ width: 32, height: 32, backgroundColor: '#f0f4f8', color: '#a0adb8', fontSize: '0.78rem' }}
+            style={{ width: 36, height: 36, backgroundColor: '#f0f4f8', color: '#a0adb8', fontSize: '0.78rem' }}
           >
             ?
           </div>
-          <span style={{ color: '#a0adb8', fontSize: '0.85rem', fontStyle: 'italic' }}>Ikke oprettet endnu</span>
+          <span style={{ color: '#a0adb8', fontSize: '0.85rem', fontStyle: 'italic' }}>
+            Ikke oprettet endnu
+          </span>
         </div>
       </td>
-      <td className="px-4 py-3 align-middle d-none d-md-table-cell" style={{ color: '#5a6a7a' }}>
-        {invite.email}
-      </td>
+      <td className="px-4 py-3 align-middle" style={{ color: '#5a6a7a' }}>{invite.email}</td>
       <td className="px-4 py-3 align-middle" style={{ color: '#a0adb8' }}>
         {invite.apartmentNumber ?? '—'}
       </td>
@@ -47,11 +53,55 @@ export function PendingInviteRow({ invite, isActionLoading, showResendSuccess, o
         </span>
       </td>
       <td className="px-4 py-3 align-middle">
-        <span style={{ color: '#e6a817', fontSize: '0.78rem', fontWeight: 500 }}>Afventer</span>
+        <span style={{ color: '#e6a817', fontSize: '0.78rem', fontWeight: 500 }}>● Afventer</span>
       </td>
-      <td className="px-4 py-3 align-middle text-end" style={{ minWidth: 160 }}>
-        {actionCell}
+      <td className="px-4 py-3 align-middle text-end" style={{ whiteSpace: 'nowrap' }}>
+        <ResendAction {...props} />
       </td>
     </tr>
+  )
+}
+
+// ── Mobile card ────────────────────────────────────────────────────────────────
+
+export function PendingInviteCard(props: PendingInviteRowProps) {
+  const { invite } = props
+  return (
+    <div style={{ borderBottom: '1px solid #f0f4f8', padding: '12px 16px', opacity: 0.7 }}>
+      <div className="d-flex align-items-start gap-3">
+        <div
+          className="rounded-circle d-flex align-items-center justify-content-center flex-shrink-0 fw-semibold"
+          style={{ width: 36, height: 36, backgroundColor: '#f0f4f8', color: '#a0adb8', fontSize: '0.78rem' }}
+        >
+          ?
+        </div>
+        <div style={{ flex: 1, minWidth: 0 }}>
+          <div className="d-flex align-items-start justify-content-between gap-2">
+            <div style={{ minWidth: 0 }}>
+              <div style={{ color: '#a0adb8', fontSize: '0.85rem', fontStyle: 'italic' }}>
+                Ikke oprettet endnu
+              </div>
+              <div className="text-truncate" style={{ fontSize: '0.78rem', color: '#5a6a7a', marginTop: 1 }}>
+                {invite.email}
+              </div>
+            </div>
+            <div className="flex-shrink-0">
+              <ResendAction {...props} />
+            </div>
+          </div>
+          <div className="d-flex align-items-center gap-2 flex-wrap mt-2">
+            {invite.apartmentNumber && (
+              <span style={{ fontSize: '0.75rem', color: '#a0adb8' }}>
+                Lejl. {invite.apartmentNumber}
+              </span>
+            )}
+            <span className="badge" style={{ backgroundColor: '#f0f4f8', color: '#5a6a7a', fontWeight: 500, fontSize: '0.72rem' }}>
+              {ROLE_LABEL[invite.role]}
+            </span>
+            <span style={{ fontSize: '0.75rem', fontWeight: 500, color: '#e6a817' }}>● Afventer</span>
+          </div>
+        </div>
+      </div>
+    </div>
   )
 }

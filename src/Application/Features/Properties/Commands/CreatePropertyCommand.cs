@@ -37,6 +37,8 @@ public class CreatePropertyCommandHandler(
                 BookingMode = BookingMode.BookSpecificMachine,
                 CancellationWindowMinutes = 60,
                 MaxConcurrentBookingsPerUser = 2,
+                BookingLookaheadDays = 14,
+                BookingVisibility = BookingVisibility.ApartmentOnly,
             }
         };
 

@@ -2,6 +2,6 @@ namespace Domain.Enums;
 
 public enum BookingMode
 {
-    BookEntireRoom,
-    BookSpecificMachine
+    BookEntireRoom = 0,
+    BookSpecificMachine = 1,
 }

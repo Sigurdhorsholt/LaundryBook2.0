@@ -11,7 +11,7 @@ import { getHighestRole } from './roleUtils'
 import { ROLE_LABEL } from './constants'
 import { BrandLogo } from './BrandLogo'
 import {
-  IconUsers, IconSettings, IconBuilding, IconClock, IconCalendarCheck,
+  IconUsers, IconSettings, IconBuilding, IconClock, IconCalendarCheck, IconCalendar,
   IconChevronLeft, IconMenu,
 } from './icons'
 
@@ -59,6 +59,12 @@ function buildPropertySubNav(propertyId: string): SubNavSection[] {
           label: 'Bookinger',
           feature: 'laundryBooking' as const,
           icon: <IconCalendarCheck size={15} />,
+        },
+        {
+          path: `${base}/preview`,
+          label: 'Forhåndsvisning',
+          feature: 'laundryBooking' as const,
+          icon: <IconCalendar size={15} />,
         },
       ],
     },

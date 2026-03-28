@@ -12,14 +12,18 @@ public record UpdateComplexSettingsCommand(
     Guid PropertyId,
     BookingMode BookingMode,
     int CancellationWindowMinutes,
-    int MaxConcurrentBookingsPerUser) : IRequest;
+    int MaxConcurrentBookingsPerUser,
+    int BookingLookaheadDays,
+    BookingVisibility BookingVisibility) : IRequest;
 
 public class UpdateComplexSettingsCommandValidator : AbstractValidator<UpdateComplexSettingsCommand>
 {
     public UpdateComplexSettingsCommandValidator()
     {
-        RuleFor(x => x.CancellationWindowMinutes).GreaterThanOrEqualTo(0);
+        RuleFor(x => x.CancellationWindowMinutes).GreaterThanOrEqualTo(0).LessThanOrEqualTo(10080); // max 7 days
         RuleFor(x => x.MaxConcurrentBookingsPerUser).GreaterThan(0).LessThanOrEqualTo(10);
+        RuleFor(x => x.BookingLookaheadDays).GreaterThan(0).LessThanOrEqualTo(30);
+        RuleFor(x => x.BookingVisibility).IsInEnum();
     }
 }
 
@@ -38,6 +42,9 @@ public class UpdateComplexSettingsCommandHandler(
         settings.BookingMode = request.BookingMode;
         settings.CancellationWindowMinutes = request.CancellationWindowMinutes;
         settings.MaxConcurrentBookingsPerUser = request.MaxConcurrentBookingsPerUser;
+        settings.BookingLookaheadDays = request.BookingLookaheadDays;
+        settings.BookingVisibility = request.BookingVisibility;
+        settings.UpdatedAt = DateTime.UtcNow;
 
         await db.SaveChangesAsync(cancellationToken);
     }
