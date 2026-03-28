@@ -16,7 +16,6 @@ frontend/dist/
 # User secrets / env
 appsettings.*.json
 !appsettings.json
-!appsettings.Development.json
 # Local env files
 .env
 .env.local

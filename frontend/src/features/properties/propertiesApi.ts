@@ -45,6 +45,20 @@ export interface UpdateComplexSettingsRequest {
 
 export const propertiesApi = baseApi.injectEndpoints({
   endpoints: (build) => ({
+    getMyProperties: build.query<PropertyDto[], void>({
+      query: () => '/api/properties',
+      providesTags: [{ type: 'Property', id: 'LIST' }],
+    }),
+
+    createProperty: build.mutation<{ id: string }, { name: string; address: string }>({
+      query: (body) => ({
+        url: '/api/properties',
+        method: 'POST',
+        body,
+      }),
+      invalidatesTags: [{ type: 'Property', id: 'LIST' }],
+    }),
+
     getProperty: build.query<PropertyDetailDto, string>({
       query: (id) => `/api/properties/${id}`,
       providesTags: (_result, _err, id) => [{ type: 'Property', id }],
@@ -63,4 +77,9 @@ export const propertiesApi = baseApi.injectEndpoints({
   }),
 })
 
-export const { useGetPropertyQuery, useUpdateComplexSettingsMutation } = propertiesApi
+export const {
+  useGetMyPropertiesQuery,
+  useCreatePropertyMutation,
+  useGetPropertyQuery,
+  useUpdateComplexSettingsMutation,
+} = propertiesApi

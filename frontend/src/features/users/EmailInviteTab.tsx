@@ -8,11 +8,12 @@ import { colors } from '../../shared/theme'
 interface EmailInviteTabProps {
   propertyId: string
   onClose: () => void
+  roleOptions?: { value: UserRole; label: string }[]
 }
 
-export function EmailInviteTab({ propertyId, onClose }: EmailInviteTabProps) {
+export function EmailInviteTab({ propertyId, onClose, roleOptions = ROLE_OPTIONS }: EmailInviteTabProps) {
   const [email, setEmail] = useState('')
-  const [role, setRole] = useState<UserRole>(UserRole.Resident)
+  const [role, setRole] = useState<UserRole>(roleOptions[0].value)
   const [apartment, setApartment] = useState('')
   const [done, setDone] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -75,7 +76,7 @@ export function EmailInviteTab({ propertyId, onClose }: EmailInviteTabProps) {
             value={role}
             onChange={(e) => setRole(Number(e.target.value) as UserRole)}
           >
-            {ROLE_OPTIONS.map((o) => (
+            {roleOptions.map((o) => (
               <option key={o.value} value={o.value}>{o.label}</option>
             ))}
           </select>

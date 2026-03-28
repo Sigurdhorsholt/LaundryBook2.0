@@ -60,7 +60,10 @@ export const usersApi = baseApi.injectEndpoints({
         method: 'PUT',
         body,
       }),
-      invalidatesTags: (_result, _err, { propertyId }) => [{ type: 'Auth', id: `members-${propertyId}` }],
+      invalidatesTags: (_result, _err, { propertyId, userId }) => [
+        { type: 'Auth', id: `members-${propertyId}` },
+        { type: 'User', id: userId },
+      ],
     }),
 
     removeMember: builder.mutation<void, { propertyId: string; userId: string }>({
@@ -68,7 +71,11 @@ export const usersApi = baseApi.injectEndpoints({
         url: `/api/properties/${propertyId}/members/${userId}`,
         method: 'DELETE',
       }),
-      invalidatesTags: (_result, _err, { propertyId }) => [{ type: 'Auth', id: `members-${propertyId}` }],
+      invalidatesTags: (_result, _err, { propertyId, userId }) => [
+        { type: 'Auth', id: `members-${propertyId}` },
+        { type: 'User', id: userId },
+        { type: 'User', id: 'LIST' },
+      ],
     }),
 
     forcePasswordReset: builder.mutation<void, { propertyId: string; userId: string }>({

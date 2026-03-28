@@ -6,6 +6,6 @@ export const baseApi = createApi({
     baseUrl: import.meta.env.VITE_API_BASE_URL ?? '',
     credentials: 'include', // send httpOnly cookies with every request
   }),
-  tagTypes: ['Auth', 'Property', 'LaundryRoom', 'LaundryMachine', 'TimeSlot', 'Booking'],
+  tagTypes: ['Auth', 'Property', 'User', 'LaundryRoom', 'LaundryMachine', 'TimeSlot', 'Booking'],
   endpoints: () => ({}),
 })
