@@ -1,5 +1,6 @@
 import { ROLE_LABEL } from '../../../shared/constants'
 import { type PendingInviteDto } from '../../../features/users/usersApi'
+import { colors } from '../../../shared/theme'
 
 export interface PendingInviteRowProps {
   invite: PendingInviteDto
@@ -10,7 +11,7 @@ export interface PendingInviteRowProps {
 
 function ResendAction({ isActionLoading, showResendSuccess, onResend }: PendingInviteRowProps) {
   if (showResendSuccess) {
-    return <span style={{ fontSize: '0.78rem', color: '#2e7d32', fontWeight: 500 }}>Sendt ✓</span>
+    return <span style={{ fontSize: '0.78rem', color: colors.successText, fontWeight: 500 }}>Sendt ✓</span>
   }
   return (
     <button
@@ -34,21 +35,21 @@ export function PendingInviteRow(props: PendingInviteRowProps) {
         <div className="d-flex align-items-center gap-3">
           <div
             className="rounded-circle d-flex align-items-center justify-content-center flex-shrink-0 fw-semibold"
-            style={{ width: 36, height: 36, backgroundColor: '#f0f4f8', color: '#a0adb8', fontSize: '0.78rem' }}
+            style={{ width: 36, height: 36, backgroundColor: colors.bgSubtle, color: colors.textMuted, fontSize: '0.78rem' }}
           >
             ?
           </div>
-          <span style={{ color: '#a0adb8', fontSize: '0.85rem', fontStyle: 'italic' }}>
+          <span style={{ color: colors.textMuted, fontSize: '0.85rem', fontStyle: 'italic' }}>
             Ikke oprettet endnu
           </span>
         </div>
       </td>
-      <td className="px-4 py-3 align-middle" style={{ color: '#5a6a7a' }}>{invite.email}</td>
-      <td className="px-4 py-3 align-middle" style={{ color: '#a0adb8' }}>
+      <td className="px-4 py-3 align-middle" style={{ color: colors.textSecondary }}>{invite.email}</td>
+      <td className="px-4 py-3 align-middle" style={{ color: colors.textMuted }}>
         {invite.apartmentNumber ?? '—'}
       </td>
       <td className="px-4 py-3 align-middle">
-        <span className="badge" style={{ backgroundColor: '#f0f4f8', color: '#5a6a7a', fontWeight: 500, fontSize: '0.75rem' }}>
+        <span className="badge" style={{ backgroundColor: colors.bgSubtle, color: colors.textSecondary, fontWeight: 500, fontSize: '0.75rem' }}>
           {ROLE_LABEL[invite.role]}
         </span>
       </td>
@@ -67,21 +68,21 @@ export function PendingInviteRow(props: PendingInviteRowProps) {
 export function PendingInviteCard(props: PendingInviteRowProps) {
   const { invite } = props
   return (
-    <div style={{ borderBottom: '1px solid #f0f4f8', padding: '12px 16px', opacity: 0.7 }}>
+    <div style={{ borderBottom: `1px solid ${colors.borderRow}`, padding: '12px 16px', opacity: 0.7 }}>
       <div className="d-flex align-items-start gap-3">
         <div
           className="rounded-circle d-flex align-items-center justify-content-center flex-shrink-0 fw-semibold"
-          style={{ width: 36, height: 36, backgroundColor: '#f0f4f8', color: '#a0adb8', fontSize: '0.78rem' }}
+          style={{ width: 36, height: 36, backgroundColor: colors.bgSubtle, color: colors.textMuted, fontSize: '0.78rem' }}
         >
           ?
         </div>
         <div style={{ flex: 1, minWidth: 0 }}>
           <div className="d-flex align-items-start justify-content-between gap-2">
             <div style={{ minWidth: 0 }}>
-              <div style={{ color: '#a0adb8', fontSize: '0.85rem', fontStyle: 'italic' }}>
+              <div style={{ color: colors.textMuted, fontSize: '0.85rem', fontStyle: 'italic' }}>
                 Ikke oprettet endnu
               </div>
-              <div className="text-truncate" style={{ fontSize: '0.78rem', color: '#5a6a7a', marginTop: 1 }}>
+              <div className="text-truncate" style={{ fontSize: '0.78rem', color: colors.textSecondary, marginTop: 1 }}>
                 {invite.email}
               </div>
             </div>
@@ -91,11 +92,11 @@ export function PendingInviteCard(props: PendingInviteRowProps) {
           </div>
           <div className="d-flex align-items-center gap-2 flex-wrap mt-2">
             {invite.apartmentNumber && (
-              <span style={{ fontSize: '0.75rem', color: '#a0adb8' }}>
+              <span style={{ fontSize: '0.75rem', color: colors.textMuted }}>
                 Lejl. {invite.apartmentNumber}
               </span>
             )}
-            <span className="badge" style={{ backgroundColor: '#f0f4f8', color: '#5a6a7a', fontWeight: 500, fontSize: '0.72rem' }}>
+            <span className="badge" style={{ backgroundColor: colors.bgSubtle, color: colors.textSecondary, fontWeight: 500, fontSize: '0.72rem' }}>
               {ROLE_LABEL[invite.role]}
             </span>
             <span style={{ fontSize: '0.75rem', fontWeight: 500, color: '#e6a817' }}>● Afventer</span>

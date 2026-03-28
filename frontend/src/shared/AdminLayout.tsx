@@ -10,6 +10,7 @@ import { isEnabled } from '../config/features'
 import { getHighestRole } from './roleUtils'
 import { ROLE_LABEL } from './constants'
 import { BrandLogo } from './BrandLogo'
+import { colors } from './theme'
 import {
   IconUsers, IconSettings, IconBuilding, IconClock, IconCalendarCheck, IconCalendar,
   IconChevronLeft, IconMenu,
@@ -103,7 +104,7 @@ function SidebarSectionLabel({ children }: { children: React.ReactNode }) {
   return (
     <p
       className="px-2 mb-1 mt-3 text-uppercase fw-semibold"
-      style={{ fontSize: '0.67rem', letterSpacing: '0.09em', color: '#b0bec5' }}
+      style={{ fontSize: '0.67rem', letterSpacing: '0.09em', color: colors.textMuted }}
     >
       {children}
     </p>
@@ -169,7 +170,7 @@ export function AdminLayout() {
           {/* Mobile hamburger */}
           <button
             className="btn d-lg-none p-2 me-1"
-            style={{ color: '#5a6a7a' }}
+            style={{ color: colors.textSecondary }}
             type="button"
             data-bs-toggle="offcanvas"
             data-bs-target="#adminSidebar"
@@ -183,13 +184,13 @@ export function AdminLayout() {
           <NavLink
             to="/admin"
             className="navbar-brand d-flex align-items-center gap-2 fw-bold text-decoration-none me-auto"
-            style={{ color: '#0d1b2a', fontSize: '1.05rem', letterSpacing: '-0.2px' }}
+            style={{ color: colors.textPrimary, fontSize: '1.05rem', letterSpacing: '-0.2px' }}
           >
             <BrandLogo size={18} />
             LaundryBook
             <span
               className="d-none d-sm-inline badge ms-1"
-              style={{ backgroundColor: '#e8f0fe', color: '#1565c0', fontSize: '0.7rem', fontWeight: 600 }}
+              style={{ backgroundColor: colors.primaryLight, color: colors.primary, fontSize: '0.7rem', fontWeight: 600 }}
             >
               Admin
             </span>
@@ -198,11 +199,11 @@ export function AdminLayout() {
           {/* User info + logout */}
           <div className="d-flex align-items-center gap-2 gap-sm-3">
             <div className="d-none d-md-flex flex-column align-items-end" style={{ lineHeight: 1.25 }}>
-              <span style={{ fontSize: '0.82rem', fontWeight: 600, color: '#0d1b2a' }}>
+              <span style={{ fontSize: '0.82rem', fontWeight: 600, color: colors.textPrimary }}>
                 {user?.firstName ? `${user.firstName} ${user.lastName}` : user?.email}
               </span>
               {role !== null && (
-                <span style={{ fontSize: '0.72rem', color: '#5a6a7a' }}>{ROLE_LABEL[role] ?? ''}</span>
+                <span style={{ fontSize: '0.72rem', color: colors.textSecondary }}>{ROLE_LABEL[role] ?? ''}</span>
               )}
             </div>
             <button
@@ -230,7 +231,7 @@ export function AdminLayout() {
         >
           {/* Mobile offcanvas header */}
           <div className="offcanvas-header d-lg-none border-bottom px-4 py-3">
-            <span id="adminSidebarLabel" className="fw-bold" style={{ color: '#0d1b2a' }}>Menu</span>
+            <span id="adminSidebarLabel" className="fw-bold" style={{ color: colors.textPrimary }}>Menu</span>
             <button
               type="button"
               className="btn-close"
@@ -250,7 +251,7 @@ export function AdminLayout() {
                   {/* Back to properties */}
                   <button
                     className="sidebar-back-btn d-flex align-items-center gap-2 px-3 py-2 rounded-2 border-0 bg-transparent fw-medium mb-3 w-100 text-start"
-                    style={{ fontSize: '0.82rem', color: '#5a6a7a', cursor: 'pointer' }}
+                    style={{ fontSize: '0.82rem', color: colors.textSecondary, cursor: 'pointer' }}
                     onClick={() => navigate('/admin/properties')}
                   >
                     <IconChevronLeft size={14} strokeWidth={2.5} />
@@ -258,8 +259,8 @@ export function AdminLayout() {
                   </button>
 
                   {/* Property name */}
-                  <div className="px-3 py-2 mb-1 rounded-2" style={{ backgroundColor: '#f8fafb', border: '1px solid #e8ecf0' }}>
-                    <p className="mb-0 text-truncate fw-semibold" style={{ fontSize: '0.88rem', color: '#0d1b2a' }}>
+                  <div className="px-3 py-2 mb-1 rounded-2" style={{ backgroundColor: colors.bgPage, border: `1px solid ${colors.borderDefault}` }}>
+                    <p className="mb-0 text-truncate fw-semibold" style={{ fontSize: '0.88rem', color: colors.textPrimary }}>
                       {activeProperty?.propertyName ?? 'Ejendom'}
                     </p>
                   </div>
@@ -295,8 +296,8 @@ export function AdminLayout() {
             </nav>
 
             {/* Sidebar footer — desktop only */}
-            <div className="px-4 py-3 border-top d-none d-lg-block" style={{ borderColor: '#e8ecf0' }}>
-              <p className="mb-0 text-truncate" style={{ fontSize: '0.75rem', color: '#b0bec5' }}>
+            <div className="px-4 py-3 border-top d-none d-lg-block" style={{ borderColor: colors.borderDefault }}>
+              <p className="mb-0 text-truncate" style={{ fontSize: '0.75rem', color: colors.textMuted }}>
                 {user?.email}
               </p>
             </div>
@@ -306,7 +307,7 @@ export function AdminLayout() {
         {/* Main content area — Outlet swaps here */}
         <main
           className="flex-grow-1"
-          style={{ minWidth: 0, overflowX: 'hidden', backgroundColor: '#f8fafb' }}
+          style={{ minWidth: 0, overflowX: 'hidden', backgroundColor: colors.bgPage }}
         >
           <Outlet />
         </main>

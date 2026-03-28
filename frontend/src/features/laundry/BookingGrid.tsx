@@ -9,6 +9,7 @@
 
 import { useState, useEffect, useRef } from 'react'
 import type { TimeSlotTemplateDto } from './laundryApi'
+import { colors } from '../../shared/theme'
 
 // ── Public types ───────────────────────────────────────────────────────────────
 
@@ -69,20 +70,20 @@ function SlotSkeleton() {
         alignItems: 'center',
         justifyContent: 'space-between',
         padding: '11px 20px',
-        borderBottom: '1px solid #f0f4f8',
+        borderBottom: `1px solid ${colors.borderRow}`,
       }}
     >
       <div
         style={{
           width: 80, height: 14, borderRadius: 4,
-          backgroundColor: '#e8ecf0',
+          backgroundColor: colors.borderDefault,
           animation: 'skeleton-pulse 1.4s ease-in-out infinite',
         }}
       />
       <div
         style={{
           width: 64, height: 28, borderRadius: 20,
-          backgroundColor: '#e8ecf0',
+          backgroundColor: colors.borderDefault,
           animation: 'skeleton-pulse 1.4s ease-in-out infinite',
         }}
       />
@@ -116,10 +117,10 @@ export function BookingGrid({
   if (slots.length === 0) {
     return (
       <div style={{ padding: '32px 20px', textAlign: 'center' }}>
-        <p style={{ color: '#0d1b2a', fontWeight: 600, marginBottom: 4, fontSize: '0.9rem' }}>
+        <p style={{ color: colors.textPrimary, fontWeight: 600, marginBottom: 4, fontSize: '0.9rem' }}>
           Ingen tider opsat endnu
         </p>
-        <p style={{ color: '#a0adb8', fontSize: '0.82rem', marginBottom: 0 }}>
+        <p style={{ color: colors.textMuted, fontSize: '0.82rem', marginBottom: 0 }}>
           Administratoren har ikke konfigureret tidspladser for dette lokale.
         </p>
       </div>
@@ -148,7 +149,7 @@ export function BookingGrid({
             gap: 6,
             flexWrap: 'wrap',
             backgroundColor: '#fff3e0',
-            borderBottom: '1px solid #ffe0b2',
+            borderBottom: `1px solid ${colors.warningBorder}`,
             color: '#7a3f00',
           }}
         >
@@ -163,7 +164,7 @@ export function BookingGrid({
           style={{
             padding: '10px 20px',
             fontSize: '0.82rem',
-            backgroundColor: '#fff8e1',
+            backgroundColor: colors.warningBg,
             borderBottom: '1px solid #f0e0b0',
             color: '#7a5c00',
           }}
@@ -245,10 +246,10 @@ function SlotRow({
 
   // Background — animation overrides this during the transition frames
   const rowBg =
-    (justBooked || booking?.isOwn) ? '#f0fdf4' :
-    takenByOther                    ? '#f2f4f7' :
-    (hovered && isClickable)        ? '#f0f5ff' :
-                                      '#ffffff'
+    (justBooked || booking?.isOwn) ? colors.slotOwnBg :
+    takenByOther                    ? colors.slotTakenBg :
+    (hovered && isClickable)        ? colors.primaryLighter :
+                                      colors.bgCard
 
   const animationStyle: React.CSSProperties = justBooked
     ? { animation: 'slot-booked 0.45s ease-out' }
@@ -262,14 +263,14 @@ function SlotRow({
 
   if (past || locked) {
     status = (
-      <span style={badge('#f0f4f8', '#a0adb8')}>
+      <span style={badge(colors.bgSubtle, colors.textMuted)}>
         {past ? 'Passeret' : 'Ikke tilgængeligt'}
       </span>
     )
   } else if (booking?.isOwn) {
     status = (
       <span className="d-flex align-items-center gap-2 flex-wrap justify-content-end">
-        <span style={badge('#e8f5e9', '#2e7d32')}>Min booking</span>
+        <span style={badge('#e8f5e9', colors.successText)}>Min booking</span>
         {booking.canCancel ? (
           <button
             className="btn btn-sm btn-outline-secondary"
@@ -279,12 +280,12 @@ function SlotRow({
             Aflys
           </button>
         ) : (
-          <span style={{ fontSize: '0.72rem', color: '#a0adb8' }}>Aflysfrist udløbet</span>
+          <span style={{ fontSize: '0.72rem', color: colors.textMuted }}>Aflysfrist udløbet</span>
         )}
       </span>
     )
   } else if (takenByOther) {
-    status = <span style={badge('#f0f4f8', '#5a6a7a')}>{booking.label}</span>
+    status = <span style={badge(colors.bgSubtle, colors.textSecondary)}>{booking.label}</span>
   } else if (blocked) {
     // Task 6B — no per-row text; the banner above explains the situation
     status = null
@@ -312,7 +313,7 @@ function SlotRow({
         alignItems: 'center',
         justifyContent: 'space-between',
         padding: '11px 20px',
-        borderBottom: '1px solid #f0f4f8',
+        borderBottom: `1px solid ${colors.borderRow}`,
         backgroundColor: rowBg,
         opacity: dimmed ? 0.45 : blocked ? 0.5 : 1,
         cursor: isClickable ? 'pointer' : 'default',
@@ -321,7 +322,7 @@ function SlotRow({
         ...animationStyle,
       }}
     >
-      <span style={{ fontSize: '0.9rem', fontWeight: 500, color: takenByOther ? '#8a9aaa' : '#0d1b2a' }}>
+      <span style={{ fontSize: '0.9rem', fontWeight: 500, color: takenByOther ? colors.slotTakenText : colors.textPrimary }}>
         {timeLabel}
       </span>
       {status}

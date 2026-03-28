@@ -1,5 +1,6 @@
 import { ROLE_LABEL, ROLE_BADGE_STYLE } from '../../../shared/constants'
 import { type PropertyMemberDto } from '../../../features/users/usersApi'
+import { colors } from '../../../shared/theme'
 
 export interface MemberRowProps {
   member: PropertyMemberDto
@@ -19,7 +20,7 @@ function Avatar({ initials }: { initials: string }) {
   return (
     <div
       className="rounded-circle d-flex align-items-center justify-content-center flex-shrink-0 fw-semibold"
-      style={{ width: 36, height: 36, backgroundColor: '#e8f0fe', color: '#1565c0', fontSize: '0.78rem' }}
+      style={{ width: 36, height: 36, backgroundColor: colors.primaryLight, color: colors.primary, fontSize: '0.78rem' }}
     >
       {initials}
     </div>
@@ -33,7 +34,7 @@ function Actions({
   if (isConfirmingDelete) {
     return (
       <div className="d-flex align-items-center gap-2 flex-wrap">
-        <span style={{ fontSize: '0.78rem', color: '#5a6a7a' }}>Slet bruger?</span>
+        <span style={{ fontSize: '0.78rem', color: colors.textSecondary }}>Slet bruger?</span>
         <button
           className="btn btn-danger btn-sm"
           style={{ fontSize: '0.75rem', padding: '2px 10px' }}
@@ -54,7 +55,7 @@ function Actions({
   }
 
   if (showResetSuccess) {
-    return <span style={{ fontSize: '0.78rem', color: '#2e7d32', fontWeight: 500 }}>Email sendt ✓</span>
+    return <span style={{ fontSize: '0.78rem', color: colors.successText, fontWeight: 500 }}>Email sendt ✓</span>
   }
 
   return (
@@ -111,12 +112,12 @@ export function MemberRow(props: MemberRowProps) {
       <td className="px-4 py-3 align-middle">
         <div className="d-flex align-items-center gap-3">
           <Avatar initials={initials} />
-          <span className="fw-medium" style={{ color: '#0d1b2a' }}>{displayName}</span>
+          <span className="fw-medium" style={{ color: colors.textPrimary }}>{displayName}</span>
         </div>
       </td>
-      <td className="px-4 py-3 align-middle" style={{ color: '#5a6a7a' }}>{member.email}</td>
-      <td className="px-4 py-3 align-middle" style={{ color: '#0d1b2a' }}>
-        {member.apartmentNumber ?? <span style={{ color: '#a0adb8' }}>—</span>}
+      <td className="px-4 py-3 align-middle" style={{ color: colors.textSecondary }}>{member.email}</td>
+      <td className="px-4 py-3 align-middle" style={{ color: colors.textPrimary }}>
+        {member.apartmentNumber ?? <span style={{ color: colors.textMuted }}>—</span>}
       </td>
       <td className="px-4 py-3 align-middle">
         <span className="badge" style={{ backgroundColor: badge.bg, color: badge.color, fontWeight: 500, fontSize: '0.75rem' }}>
@@ -125,8 +126,8 @@ export function MemberRow(props: MemberRowProps) {
       </td>
       <td className="px-4 py-3 align-middle">
         {member.isActive
-          ? <span style={{ color: '#2e7d32', fontSize: '0.78rem', fontWeight: 500 }}>● Aktiv</span>
-          : <span style={{ color: '#a0adb8', fontSize: '0.78rem', fontWeight: 500 }}>● Deaktiveret</span>
+          ? <span style={{ color: colors.successText, fontSize: '0.78rem', fontWeight: 500 }}>● Aktiv</span>
+          : <span style={{ color: colors.textMuted, fontSize: '0.78rem', fontWeight: 500 }}>● Deaktiveret</span>
         }
       </td>
       <td className="px-4 py-3 align-middle text-end" style={{ whiteSpace: 'nowrap' }}>
@@ -149,7 +150,7 @@ export function MemberCard(props: MemberRowProps) {
   return (
     <div
       style={{
-        borderBottom: '1px solid #f0f4f8',
+        borderBottom: `1px solid ${colors.borderRow}`,
         padding: '12px 16px',
         opacity: member.isActive ? 1 : 0.55,
       }}
@@ -160,10 +161,10 @@ export function MemberCard(props: MemberRowProps) {
           {/* Top row: name + actions */}
           <div className="d-flex align-items-start justify-content-between gap-2">
             <div style={{ minWidth: 0 }}>
-              <div className="fw-medium text-truncate" style={{ color: '#0d1b2a', fontSize: '0.9rem' }}>
+              <div className="fw-medium text-truncate" style={{ color: colors.textPrimary, fontSize: '0.9rem' }}>
                 {displayName}
               </div>
-              <div className="text-truncate" style={{ fontSize: '0.78rem', color: '#5a6a7a', marginTop: 1 }}>
+              <div className="text-truncate" style={{ fontSize: '0.78rem', color: colors.textSecondary, marginTop: 1 }}>
                 {member.email}
               </div>
             </div>
@@ -174,7 +175,7 @@ export function MemberCard(props: MemberRowProps) {
           {/* Bottom row: apartment + role badge + status */}
           <div className="d-flex align-items-center gap-2 flex-wrap mt-2">
             {member.apartmentNumber && (
-              <span style={{ fontSize: '0.75rem', color: '#a0adb8' }}>
+              <span style={{ fontSize: '0.75rem', color: colors.textMuted }}>
                 Lejl. {member.apartmentNumber}
               </span>
             )}
@@ -186,7 +187,7 @@ export function MemberCard(props: MemberRowProps) {
             </span>
             <span style={{
               fontSize: '0.75rem', fontWeight: 500,
-              color: member.isActive ? '#2e7d32' : '#a0adb8',
+              color: member.isActive ? colors.successText : colors.textMuted,
             }}>
               {member.isActive ? '● Aktiv' : '● Deaktiveret'}
             </span>

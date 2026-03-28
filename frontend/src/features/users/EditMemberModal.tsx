@@ -3,6 +3,7 @@ import { ModalShell } from '../../shared/modals/ModalShell'
 import { useUpdateMemberMutation, type PropertyMemberDto } from './usersApi'
 import { ROLE_OPTIONS } from '../../shared/constants'
 import type {UserRole} from "../auth/authApi.ts";
+import { colors } from '../../shared/theme'
 
 interface EditMemberModalProps {
   propertyId: string
@@ -40,7 +41,7 @@ export function EditMemberModal({ propertyId, member, onClose }: EditMemberModal
     <ModalShell title={`Rediger — ${displayName}`} onClose={onClose} size="sm">
       <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
         <div>
-          <label className="form-label" style={{ fontSize: '0.85rem', fontWeight: 500, color: '#0d1b2a' }}>
+          <label className="form-label" style={{ fontSize: '0.85rem', fontWeight: 500, color: colors.textPrimary }}>
             Rolle
           </label>
           <select
@@ -55,8 +56,8 @@ export function EditMemberModal({ propertyId, member, onClose }: EditMemberModal
         </div>
 
         <div>
-          <label className="form-label" style={{ fontSize: '0.85rem', fontWeight: 500, color: '#0d1b2a' }}>
-            Lejlighed <span style={{ color: '#a0adb8', fontWeight: 400 }}>(valgfri)</span>
+          <label className="form-label" style={{ fontSize: '0.85rem', fontWeight: 500, color: colors.textPrimary }}>
+            Lejlighed <span style={{ color: colors.textMuted, fontWeight: 400 }}>(valgfri)</span>
           </label>
           <input
             className="form-control"

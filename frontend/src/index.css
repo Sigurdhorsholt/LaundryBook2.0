@@ -5,31 +5,67 @@
 @import "tailwindcss/theme" layer(theme);
 @import "tailwindcss/utilities" layer(utilities);
 
+/* ── Color tokens (keep in sync with src/shared/theme.ts) ──────────────────── */
+/* To switch palette: change the four --color-primary-* variables here          */
+/* and the matching palette block in theme.ts.                                  */
+
+:root {
+  /* Active palette — Option A: Blue */
+  --color-primary:           #1565c0;
+  --color-primary-light:     #e8f0fe;
+  --color-primary-muted:     #dce8ff;
+  --color-primary-muted-text:#2c4f8c;
+
+  /* Option B — Fresh Teal (swap these four + change theme.ts) */
+  /* --color-primary:           #0f7ea6; */
+  /* --color-primary-light:     #e0f4fa; */
+  /* --color-primary-muted:     #d0eef8; */
+  /* --color-primary-muted-text:#0c5f7a; */
+
+  /* Option C — Warm Sage */
+  /* --color-primary:           #3d7a5c; */
+  /* --color-primary-light:     #e8f5ee; */
+  /* --color-primary-muted:     #d0ecdb; */
+  /* --color-primary-muted-text:#2a5c42; */
+
+  /* Stable tokens */
+  --color-text-primary:   #0d1b2a;
+  --color-text-secondary: #5a6a7a;
+  --color-text-muted:     #a0adb8;
+  --color-bg-page:        #f8fafb;
+  --color-bg-card:        #ffffff;
+  --color-bg-subtle:      #f0f4f8;
+  --color-border:         #e8ecf0;
+  --color-success:        #2e7d32;
+  --color-warning:        #b45309;
+  --color-danger:         #c62828;
+}
+
 /* Global */
 body {
   font-family: 'Inter', system-ui, sans-serif;
   background-color: #ffffff;
-  color: #0d1b2a;
+  color: var(--color-text-primary);
 }
 
 /* Admin sidebar nav links */
 .sidebar-link {
-  color: #4a5568;
+  color: var(--color-text-secondary);
   background-color: transparent;
   transition: background-color 0.15s, color 0.15s;
 }
 .sidebar-link:hover {
-  background-color: #f5f7fa;
-  color: #4a5568;
+  background-color: var(--color-bg-subtle);
+  color: var(--color-text-secondary);
 }
 .sidebar-link--active,
 .sidebar-link--active:hover {
-  color: #1565c0;
-  background-color: #e8f0fe;
+  color: var(--color-primary);
+  background-color: var(--color-primary-light);
 }
 
 .sidebar-back-btn:hover {
-  background-color: #f5f7fa !important;
+  background-color: var(--color-bg-subtle) !important;
 }
 
 /* ── BookingGrid animations ─────────────────────────────────────────────────── */

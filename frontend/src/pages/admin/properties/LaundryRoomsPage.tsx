@@ -17,6 +17,7 @@ import { ModalShell } from '../../../shared/modals/ModalShell'
 import { IconPlus } from '../../../shared/icons'
 import { useMeQuery } from '../../../features/auth/authApi'
 import { PageHeader, EmptyState, Spinner, FormError } from '../../../shared/ui'
+import { colors } from '../../../shared/theme'
 
 const MACHINE_TYPE_LABEL: Record<MachineType, string> = {
   [MachineType.Washer]: 'Vaskemaskine',
@@ -157,7 +158,7 @@ function RoomCard({
   }
 
   return (
-    <div style={{ border: '1.5px solid #e8ecf0', borderRadius: 12, backgroundColor: '#ffffff', overflow: 'hidden' }}>
+    <div style={{ border: `1.5px solid ${colors.borderDefault}`, borderRadius: 12, backgroundColor: colors.bgCard, overflow: 'hidden' }}>
 
       {/* Clickable info row — tap anywhere to expand/collapse */}
       <button
@@ -174,16 +175,16 @@ function RoomCard({
       >
         <div className="d-flex align-items-start justify-content-between gap-2">
           <div style={{ minWidth: 0 }}>
-            <div className="fw-semibold" style={{ fontSize: '1rem', color: '#0d1b2a' }}>
+            <div className="fw-semibold" style={{ fontSize: '1rem', color: colors.textPrimary }}>
               {room.name}
             </div>
             {room.description && (
-              <div style={{ fontSize: '0.82rem', color: '#5a6a7a', marginTop: 2 }}>
+              <div style={{ fontSize: '0.82rem', color: colors.textSecondary, marginTop: 2 }}>
                 {room.description}
               </div>
             )}
           </div>
-          <span style={{ fontSize: '0.75rem', color: '#a0adb8', flexShrink: 0, paddingTop: 3 }}>
+          <span style={{ fontSize: '0.75rem', color: colors.textMuted, flexShrink: 0, paddingTop: 3 }}>
             {isExpanded ? '▲' : '▼'}
           </span>
         </div>
@@ -192,8 +193,8 @@ function RoomCard({
             style={{
               display: 'inline-block',
               fontSize: '0.75rem',
-              color: '#5a6a7a',
-              backgroundColor: '#f0f4f8',
+              color: colors.textSecondary,
+              backgroundColor: colors.bgSubtle,
               borderRadius: 20,
               padding: '2px 10px',
               fontWeight: 500,
@@ -207,7 +208,7 @@ function RoomCard({
       {/* Action row */}
       <div
         className="d-flex align-items-center gap-2 px-4 pb-3 flex-wrap"
-        style={{ borderTop: '1px solid #f0f4f8' }}
+        style={{ borderTop: `1px solid ${colors.borderRow}` }}
       >
         {isConfirmingDelete ? (
           <>
@@ -250,15 +251,15 @@ function RoomCard({
 
       {/* Machines section */}
       {isExpanded && (
-        <div style={{ borderTop: '1.5px solid #e8ecf0', backgroundColor: '#f8fafb' }}>
+        <div style={{ borderTop: `1.5px solid ${colors.borderDefault}`, backgroundColor: colors.bgPage }}>
           <MachineList roomId={room.id} propertyId={propertyId} onEdit={onEditMachine} />
           <div className="px-4 pb-3 pt-2">
             <button
               className="btn btn-sm d-flex align-items-center gap-1"
-              style={{ fontSize: '0.82rem', color: '#1565c0', fontWeight: 500 }}
+              style={{ fontSize: '0.82rem', color: colors.primary, fontWeight: 500 }}
               onClick={onAddMachine}
             >
-              <IconPlus size={13} color="#1565c0" />
+              <IconPlus size={13} color={colors.primary} />
               Tilføj maskine
             </button>
           </div>
@@ -285,7 +286,7 @@ function MachineList({
 
   if (machines.length === 0) {
     return (
-      <div className="px-4 py-3" style={{ fontSize: '0.85rem', color: '#a0adb8' }}>
+      <div className="px-4 py-3" style={{ fontSize: '0.85rem', color: colors.textMuted }}>
         Ingen maskiner. Tilføj den første maskine nedenfor.
       </div>
     )
@@ -295,7 +296,7 @@ function MachineList({
     <div className="table-responsive">
       <table className="table table-hover mb-0" style={{ fontSize: '0.85rem' }}>
         <thead>
-          <tr style={{ backgroundColor: '#edf0f4' }}>
+          <tr style={{ backgroundColor: colors.bgSubtle }}>
             <th className="px-4 py-2" style={thStyle}>Navn</th>
             <th className="px-4 py-2 d-none d-sm-table-cell" style={thStyle}>Type</th>
             <th className="px-4 py-2" style={{ ...thStyle, width: 1, whiteSpace: 'nowrap' }}></th>
@@ -341,12 +342,12 @@ function MachineRow({
   return (
     <tr>
       <td className="px-4 py-2 align-middle">
-        <div style={{ fontWeight: 500, color: '#0d1b2a' }}>{machine.name}</div>
-        <div className="d-sm-none" style={{ fontSize: '0.78rem', color: '#a0adb8', marginTop: 1 }}>
+        <div style={{ fontWeight: 500, color: colors.textPrimary }}>{machine.name}</div>
+        <div className="d-sm-none" style={{ fontSize: '0.78rem', color: colors.textMuted, marginTop: 1 }}>
           {MACHINE_TYPE_LABEL[machine.machineType]}
         </div>
       </td>
-      <td className="px-4 py-2 align-middle d-none d-sm-table-cell" style={{ color: '#5a6a7a' }}>
+      <td className="px-4 py-2 align-middle d-none d-sm-table-cell" style={{ color: colors.textSecondary }}>
         {MACHINE_TYPE_LABEL[machine.machineType]}
       </td>
       <td className="px-4 py-2 align-middle" style={{ whiteSpace: 'nowrap', textAlign: 'right' }}>
@@ -638,7 +639,7 @@ function EditMachineModal({
 // ── Style helpers ──────────────────────────────────────────────────────────────
 
 const thStyle: React.CSSProperties = {
-  color: '#5a6a7a',
+  color: colors.textSecondary,
   fontSize: '0.78rem',
   fontWeight: 600,
   textTransform: 'uppercase',
@@ -648,5 +649,5 @@ const thStyle: React.CSSProperties = {
 const labelStyle: React.CSSProperties = {
   fontSize: '0.85rem',
   fontWeight: 500,
-  color: '#0d1b2a',
+  color: colors.textPrimary,
 }

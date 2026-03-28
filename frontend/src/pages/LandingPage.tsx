@@ -2,6 +2,7 @@ import {Navigate} from 'react-router-dom'
 import {useMeQuery} from '../features/auth/authApi'
 import {useModal} from '../shared/modals/useModal'
 import {PublicNavbar} from '../shared/PublicNavbar'
+import { colors } from '../shared/theme'
 
 export function LandingPage() {
     const {openModal} = useModal()
@@ -108,7 +109,7 @@ export function LandingPage() {
             </section>
 
             {/* ── Features ── */}
-            <section id="features" className="w-100 py-5" style={{backgroundColor: '#f8fafb'}}>
+            <section id="features" className="w-100 py-5" style={{backgroundColor: colors.bgPage}}>
                 <div className="container-xl px-4">
                     <div className="row justify-content-center mb-5">
                         <div className="col-12 col-lg-6 text-center">
@@ -117,12 +118,12 @@ export function LandingPage() {
                                 style={{
                                     fontSize: 'clamp(1.5rem, 3vw, 2.2rem)',
                                     letterSpacing: '-0.3px',
-                                    color: '#0d1b2a'
+                                    color: colors.textPrimary
                                 }}
                             >
                                 Alt hvad din forening har brug for
                             </h2>
-                            <p style={{color: '#5a6a7a', fontSize: '1rem'}}>
+                            <p style={{color: colors.textSecondary, fontSize: '1rem'}}>
                                 Designet til de små og mellemstore ejerforeninger.
                             </p>
                         </div>
@@ -132,7 +133,7 @@ export function LandingPage() {
                         {[
                             {
                                 icon: (
-                                    <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#1565c0"
+                                    <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke={colors.primary}
                                          strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
                                         <rect x="3" y="4" width="18" height="18" rx="2"/>
                                         <line x1="16" y1="2" x2="16" y2="6"/>
@@ -146,7 +147,7 @@ export function LandingPage() {
                             },
                             {
                                 icon: (
-                                    <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#1565c0"
+                                    <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke={colors.primary}
                                          strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
                                         <circle cx="12" cy="12" r="10"/>
                                         <circle cx="12" cy="12" r="4"/>
@@ -158,7 +159,7 @@ export function LandingPage() {
                             },
                             {
                                 icon: (
-                                    <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#1565c0"
+                                    <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke={colors.primary}
                                          strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
                                         <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
                                         <circle cx="9" cy="7" r="4"/>
@@ -174,7 +175,7 @@ export function LandingPage() {
                                 <div
                                     className="h-100 p-4 rounded-3 bg-white"
                                     style={{
-                                        border: '1px solid #e8ecf0',
+                                        border: `1px solid ${colors.borderDefault}`,
                                         transition: 'box-shadow 0.2s, transform 0.2s',
                                     }}
                                     onMouseEnter={(e) => {
@@ -189,9 +190,9 @@ export function LandingPage() {
                                     }}
                                 >
                                     <div className="mb-3">{f.icon}</div>
-                                    <h5 className="fw-bold mb-2" style={{color: '#0d1b2a'}}>{f.title}</h5>
+                                    <h5 className="fw-bold mb-2" style={{color: colors.textPrimary}}>{f.title}</h5>
                                     <p className="mb-0"
-                                       style={{color: '#5a6a7a', fontSize: '0.95rem', lineHeight: 1.65}}>{f.body}</p>
+                                       style={{color: colors.textSecondary, fontSize: '0.95rem', lineHeight: 1.65}}>{f.body}</p>
                                 </div>
                             </div>
                         ))}

@@ -15,6 +15,7 @@ import { MemberRow, MemberCard } from './MemberRow'
 import { PendingInviteRow, PendingInviteCard } from './PendingInviteRow'
 import { IconPlus } from '../../../shared/icons'
 import { PageHeader, Spinner } from '../../../shared/ui'
+import { colors } from '../../../shared/theme'
 
 export function PropertyUsersPage() {
   const { propertyId } = useParams<{ propertyId: string }>()
@@ -102,7 +103,7 @@ export function PropertyUsersPage() {
     )
   } else if (isEmpty) {
     tableContent = (
-      <div className="text-center py-5" style={{ color: '#a0adb8', fontSize: '0.9rem' }}>
+      <div className="text-center py-5" style={{ color: colors.textMuted, fontSize: '0.9rem' }}>
         Ingen brugere endnu. Inviter den første beboer.
       </div>
     )
@@ -140,7 +141,7 @@ export function PropertyUsersPage() {
         {/* ── Desktop: table (hidden below md) ── */}
         <div className="d-none d-md-block table-responsive">
           <table className="table table-hover mb-0" style={{ fontSize: '0.875rem' }}>
-            <thead style={{ backgroundColor: '#f8fafb' }}>
+            <thead style={{ backgroundColor: colors.bgPage }}>
               <tr>
                 <th className="border-0 px-4 py-3 fw-semibold" style={thStyle}>Navn</th>
                 <th className="border-0 px-4 py-3 fw-semibold" style={thStyle}>Email</th>
@@ -185,17 +186,17 @@ export function PropertyUsersPage() {
         }
       />
 
-      <div className="bg-white rounded-3" style={{ border: '1px solid #e8ecf0', overflow: 'hidden' }}>
+      <div className="bg-white rounded-3" style={{ border: `1px solid ${colors.borderDefault}`, overflow: 'hidden' }}>
         {tableContent}
       </div>
 
-      <p className="mt-3" style={{ fontSize: '0.78rem', color: '#a0adb8' }}>{countLabel}</p>
+      <p className="mt-3" style={{ fontSize: '0.78rem', color: colors.textMuted }}>{countLabel}</p>
     </div>
   )
 }
 
 const thStyle: React.CSSProperties = {
-  color: '#5a6a7a',
+  color: colors.textSecondary,
   fontSize: '0.78rem',
   textTransform: 'uppercase',
   letterSpacing: '0.05em',

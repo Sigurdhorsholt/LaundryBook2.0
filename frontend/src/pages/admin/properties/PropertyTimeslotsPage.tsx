@@ -12,6 +12,7 @@ import { ModalShell } from '../../../shared/modals/ModalShell'
 import { IconPlus } from '../../../shared/icons'
 import { useMeQuery } from '../../../features/auth/authApi'
 import { PageHeader, EmptyState, Spinner } from '../../../shared/ui'
+import { colors } from '../../../shared/theme'
 
 // ── Sandbox type ───────────────────────────────────────────────────────────────
 
@@ -287,9 +288,9 @@ function RoomCard({
   return (
     <div
       style={{
-        border: '1.5px solid #e8ecf0',
+        border: `1.5px solid ${colors.borderDefault}`,
         borderRadius: 12,
-        backgroundColor: '#ffffff',
+        backgroundColor: colors.bgCard,
         overflow: 'hidden',
       }}
     >
@@ -308,16 +309,16 @@ function RoomCard({
       >
         <div className="d-flex align-items-start justify-content-between gap-2">
           <div style={{ minWidth: 0 }}>
-            <div className="fw-semibold" style={{ fontSize: '1rem', color: '#0d1b2a' }}>
+            <div className="fw-semibold" style={{ fontSize: '1rem', color: colors.textPrimary }}>
               {room.name}
             </div>
             {room.description && (
-              <div style={{ fontSize: '0.82rem', color: '#5a6a7a', marginTop: 2 }}>
+              <div style={{ fontSize: '0.82rem', color: colors.textSecondary, marginTop: 2 }}>
                 {room.description}
               </div>
             )}
           </div>
-          <span style={{ fontSize: '0.75rem', color: '#a0adb8', flexShrink: 0, paddingTop: 3 }}>
+          <span style={{ fontSize: '0.75rem', color: colors.textMuted, flexShrink: 0, paddingTop: 3 }}>
             {isExpanded ? '▲' : '▼'}
           </span>
         </div>
@@ -325,7 +326,7 @@ function RoomCard({
 
       {/* Expanded content */}
       {isExpanded && (
-        <div style={{ borderTop: '1.5px solid #e8ecf0', backgroundColor: '#f8fafb' }}>
+        <div style={{ borderTop: `1.5px solid ${colors.borderDefault}`, backgroundColor: colors.bgPage }}>
           {isLoading ? (
             <Spinner />
           ) : (
@@ -351,7 +352,7 @@ function RoomCard({
               {pendingSlots.length > 0 ? (
                 <PendingSlotList slots={pendingSlots} onDelete={handleDeletePending} />
               ) : (
-                <div className="px-4 py-2" style={{ fontSize: '0.85rem', color: '#a0adb8' }}>
+                <div className="px-4 py-2" style={{ fontSize: '0.85rem', color: colors.textMuted }}>
                   Ingen tidspladser — brug generatoren ovenfor eller tilføj manuelt.
                 </div>
               )}
@@ -360,10 +361,10 @@ function RoomCard({
               <div className="px-4 pb-3 pt-2">
                 <button
                   className="btn btn-sm d-flex align-items-center gap-1"
-                  style={{ fontSize: '0.82rem', color: '#1565c0', fontWeight: 500 }}
+                  style={{ fontSize: '0.82rem', color: colors.primary, fontWeight: 500 }}
                   onClick={() => setShowAddModal(true)}
                 >
-                  <IconPlus size={13} color="#1565c0" />
+                  <IconPlus size={13} color={colors.primary} />
                   Tilføj enkelt tidsplads
                 </button>
               </div>
@@ -406,7 +407,7 @@ function TemplateChips({
       <div
         style={{
           fontSize: '0.72rem',
-          color: '#a0adb8',
+          color: colors.textMuted,
           fontWeight: 600,
           textTransform: 'uppercase',
           letterSpacing: '0.06em',
@@ -423,17 +424,17 @@ function TemplateChips({
             style={{
               padding: '6px 14px',
               borderRadius: 20,
-              border: '1.5px solid #d0d9e2',
-              background: '#ffffff',
+              border: `1.5px solid ${colors.borderStrong}`,
+              background: colors.bgCard,
               fontSize: '0.82rem',
-              color: '#0d1b2a',
+              color: colors.textPrimary,
               cursor: 'pointer',
               fontWeight: 500,
               lineHeight: 1.4,
             }}
           >
             {t.label}
-            <span style={{ color: '#a0adb8', marginLeft: 6, fontSize: '0.75rem' }}>
+            <span style={{ color: colors.textMuted, marginLeft: 6, fontSize: '0.75rem' }}>
               {t.sublabel}
             </span>
           </button>
@@ -452,7 +453,7 @@ function DayTimeline({ pendingSlots }: { pendingSlots: PendingSlot[] }) {
         style={{
           position: 'relative',
           height: 20,
-          backgroundColor: '#e8ecf0',
+          backgroundColor: colors.borderDefault,
           borderRadius: 6,
           overflow: 'hidden',
         }}
@@ -464,7 +465,7 @@ function DayTimeline({ pendingSlots }: { pendingSlots: PendingSlot[] }) {
           const left  = ((start - TIMELINE_START) / TIMELINE_TOTAL) * 100
           const width = ((end   - start)           / TIMELINE_TOTAL) * 100
           // Unsaved slots (id=null) render slightly lighter so the admin sees they're pending
-          const color = slot.id !== null ? '#1565c0' : '#64b5f6'
+          const color = slot.id !== null ? colors.primary : '#64b5f6'
           return (
             <div
               key={slot.key}
@@ -494,7 +495,7 @@ function DayTimeline({ pendingSlots }: { pendingSlots: PendingSlot[] }) {
                 left: `${pct}%`,
                 transform: 'translateX(-50%)',
                 fontSize: '0.68rem',
-                color: '#a0adb8',
+                color: colors.textMuted,
                 whiteSpace: 'nowrap',
                 userSelect: 'none',
               }}
@@ -544,9 +545,9 @@ function SlotGenerator({
     <div
       style={{
         margin: '0 16px 12px',
-        border: '1.5px solid #e8ecf0',
+        border: `1.5px solid ${colors.borderDefault}`,
         borderRadius: 10,
-        backgroundColor: '#ffffff',
+        backgroundColor: colors.bgCard,
         padding: '14px 16px',
       }}
     >
@@ -582,7 +583,7 @@ function SlotGenerator({
       </div>
 
       <div className="d-flex align-items-center justify-content-between gap-3 flex-wrap">
-        <span style={{ fontSize: '0.82rem', color: '#5a6a7a' }}>
+        <span style={{ fontSize: '0.82rem', color: colors.textSecondary }}>
           {previewLabel}
         </span>
         <button
@@ -612,7 +613,7 @@ function PendingSlotList({
     <div className="table-responsive">
       <table className="table table-hover mb-0" style={{ fontSize: '0.85rem' }}>
         <thead>
-          <tr style={{ backgroundColor: '#edf0f4' }}>
+          <tr style={{ backgroundColor: colors.bgSubtle }}>
             <th className="px-4 py-2" style={thStyle}>Tidsrum</th>
             <th className="px-4 py-2" style={{ ...thStyle, width: 1, whiteSpace: 'nowrap' }}></th>
           </tr>
@@ -644,7 +645,7 @@ function PendingSlotRow({
   return (
     <tr>
       <td className="px-4 py-2 align-middle">
-        <span style={{ fontWeight: 500, color: '#0d1b2a' }}>
+        <span style={{ fontWeight: 500, color: colors.textPrimary }}>
           {formatTime(slot.startTime)} – {formatTime(slot.endTime)}
         </span>
         {isNew && (
@@ -653,8 +654,8 @@ function PendingSlotRow({
               marginLeft: 8,
               fontSize: '0.72rem',
               fontWeight: 600,
-              color: '#1565c0',
-              backgroundColor: '#e3f0ff',
+              color: colors.primary,
+              backgroundColor: colors.primaryMuted,
               padding: '2px 7px',
               borderRadius: 10,
             }}
@@ -666,7 +667,7 @@ function PendingSlotRow({
       <td className="px-4 py-2 align-middle" style={{ textAlign: 'right' }}>
         <button
           className="btn btn-sm"
-          style={{ fontSize: '0.78rem', color: '#a0adb8', lineHeight: 1 }}
+          style={{ fontSize: '0.78rem', color: colors.textMuted, lineHeight: 1 }}
           onClick={onDelete}
           aria-label="Fjern"
           title="Fjern fra listen"
@@ -696,9 +697,9 @@ function SaveBar({
   return (
     <div
       style={{
-        borderTop: '1.5px solid #c7d9f5',
+        borderTop: `1.5px solid ${colors.primaryBorder}`,
         padding: '12px 20px',
-        backgroundColor: '#f0f5ff',
+        backgroundColor: colors.primaryLighter,
       }}
     >
       <div className="d-flex align-items-center justify-content-between gap-3 flex-wrap">
@@ -706,7 +707,7 @@ function SaveBar({
           {saveError != null ? (
             <span style={{ color: '#dc3545' }}>{saveError}</span>
           ) : (
-            <span style={{ color: '#1565c0', fontWeight: 500 }}>Ugemte ændringer</span>
+            <span style={{ color: colors.primary, fontWeight: 500 }}>Ugemte ændringer</span>
           )}
         </span>
         <div className="d-flex gap-2">
@@ -785,10 +786,10 @@ function AddSlotModal({
         </div>
 
         <div className="mb-3">
-          <span style={{ fontSize: '0.85rem', color: '#5a6a7a' }}>
+          <span style={{ fontSize: '0.85rem', color: colors.textSecondary }}>
             Slutter:{' '}
             {endTimeDisplay != null ? (
-              <strong style={{ color: '#0d1b2a' }}>{endTimeDisplay}</strong>
+              <strong style={{ color: colors.textPrimary }}>{endTimeDisplay}</strong>
             ) : (
               <span style={{ color: '#dc3545' }}>Overskrider midnat</span>
             )}
@@ -830,7 +831,7 @@ function HalfHourPicker({
     background: 'transparent',
     fontSize: '0.9rem',
     fontWeight: 500,
-    color: '#0d1b2a',
+    color: colors.textPrimary,
     padding: '0 2px',
     cursor: 'pointer',
     outline: 'none',
@@ -844,7 +845,7 @@ function HalfHourPicker({
         alignItems: 'center',
         border: '1.5px solid #ced4da',
         borderRadius: 8,
-        backgroundColor: '#ffffff',
+        backgroundColor: colors.bgCard,
         padding: '5px 8px',
         gap: 2,
       }}
@@ -859,7 +860,7 @@ function HalfHourPicker({
           <option key={i} value={i}>{String(i).padStart(2, '0')}</option>
         ))}
       </select>
-      <span style={{ fontSize: '0.9rem', fontWeight: 700, color: '#5a6a7a' }}>:</span>
+      <span style={{ fontSize: '0.9rem', fontWeight: 700, color: colors.textSecondary }}>:</span>
       <select
         value={minute}
         onChange={(e) => onChange(toHHmm(hour * 60 + Number(e.target.value)))}
@@ -879,9 +880,9 @@ function chipStyle(selected: boolean): React.CSSProperties {
   return {
     padding: '5px 12px',
     borderRadius: 20,
-    border: `1.5px solid ${selected ? '#1565c0' : '#d0d9e2'}`,
-    backgroundColor: selected ? '#f0f5ff' : '#ffffff',
-    color: selected ? '#1565c0' : '#5a6a7a',
+    border: `1.5px solid ${selected ? colors.primary : colors.borderStrong}`,
+    backgroundColor: selected ? colors.primaryLighter : colors.bgCard,
+    color: selected ? colors.primary : colors.textSecondary,
     fontSize: '0.82rem',
     fontWeight: selected ? 600 : 400,
     cursor: 'pointer',
@@ -889,7 +890,7 @@ function chipStyle(selected: boolean): React.CSSProperties {
 }
 
 const thStyle: React.CSSProperties = {
-  color: '#5a6a7a',
+  color: colors.textSecondary,
   fontSize: '0.78rem',
   fontWeight: 600,
   textTransform: 'uppercase',
@@ -899,13 +900,13 @@ const thStyle: React.CSSProperties = {
 const labelStyle: React.CSSProperties = {
   fontSize: '0.85rem',
   fontWeight: 500,
-  color: '#0d1b2a',
+  color: colors.textPrimary,
 }
 
 const sectionLabelStyle: React.CSSProperties = {
   fontSize: '0.72rem',
   fontWeight: 600,
-  color: '#5a6a7a',
+  color: colors.textSecondary,
   textTransform: 'uppercase',
   letterSpacing: '0.06em',
   marginBottom: 12,
@@ -914,6 +915,6 @@ const sectionLabelStyle: React.CSSProperties = {
 const genLabelStyle: React.CSSProperties = {
   fontSize: '0.78rem',
   fontWeight: 500,
-  color: '#5a6a7a',
+  color: colors.textSecondary,
   marginBottom: 4,
 }

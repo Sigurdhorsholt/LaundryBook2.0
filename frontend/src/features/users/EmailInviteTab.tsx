@@ -3,6 +3,7 @@ import { UserRole } from '../auth/authApi'
 import { useInviteByEmailMutation } from './usersApi'
 import { ROLE_OPTIONS } from '../../shared/constants'
 import { IconCheck } from '../../shared/icons'
+import { colors } from '../../shared/theme'
 
 interface EmailInviteTabProps {
   propertyId: string
@@ -38,8 +39,8 @@ export function EmailInviteTab({ propertyId, onClose }: EmailInviteTabProps) {
         >
           <IconCheck size={22} color="#2e7d32" strokeWidth={2.5} />
         </div>
-        <p className="fw-semibold mb-1" style={{ color: '#0d1b2a' }}>Invitation sendt!</p>
-        <p className="mb-4" style={{ color: '#5a6a7a', fontSize: '0.9rem' }}>
+        <p className="fw-semibold mb-1" style={{ color: colors.textPrimary }}>Invitation sendt!</p>
+        <p className="mb-4" style={{ color: colors.textSecondary, fontSize: '0.9rem' }}>
           {email} modtager en e-mail med link til at oprette adgangskode.
         </p>
         <button className="btn btn-primary btn-sm" onClick={onClose}>Luk</button>
@@ -50,7 +51,7 @@ export function EmailInviteTab({ propertyId, onClose }: EmailInviteTabProps) {
   return (
     <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
       <div>
-        <label className="form-label" style={{ fontSize: '0.85rem', fontWeight: 500, color: '#0d1b2a' }}>
+        <label className="form-label" style={{ fontSize: '0.85rem', fontWeight: 500, color: colors.textPrimary }}>
           E-mail
         </label>
         <input
@@ -66,7 +67,7 @@ export function EmailInviteTab({ propertyId, onClose }: EmailInviteTabProps) {
 
       <div className="d-flex gap-3">
         <div style={{ flex: 1 }}>
-          <label className="form-label" style={{ fontSize: '0.85rem', fontWeight: 500, color: '#0d1b2a' }}>
+          <label className="form-label" style={{ fontSize: '0.85rem', fontWeight: 500, color: colors.textPrimary }}>
             Rolle
           </label>
           <select
@@ -81,8 +82,8 @@ export function EmailInviteTab({ propertyId, onClose }: EmailInviteTabProps) {
         </div>
 
         <div style={{ flex: 1 }}>
-          <label className="form-label" style={{ fontSize: '0.85rem', fontWeight: 500, color: '#0d1b2a' }}>
-            Lejlighed <span style={{ color: '#a0adb8', fontWeight: 400 }}>(valgfri)</span>
+          <label className="form-label" style={{ fontSize: '0.85rem', fontWeight: 500, color: colors.textPrimary }}>
+            Lejlighed <span style={{ color: colors.textMuted, fontWeight: 400 }}>(valgfri)</span>
           </label>
           <input
             className="form-control"

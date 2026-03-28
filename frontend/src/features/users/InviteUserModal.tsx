@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { ModalShell } from '../../shared/modals/ModalShell'
 import { EmailInviteTab } from './EmailInviteTab'
 import { QrInviteTab } from './QrInviteTab'
+import { colors } from '../../shared/theme'
 
 interface InviteUserModalProps {
   propertyId: string
@@ -26,9 +27,9 @@ export function InviteUserModal({ propertyId, onClose }: InviteUserModalProps) {
               style={{
                 borderRadius: '8px',
                 fontSize: '0.85rem',
-                backgroundColor: isActive ? '#e8f0fe' : 'transparent',
-                color: isActive ? '#1565c0' : '#5a6a7a',
-                border: isActive ? '1px solid #c5d8fb' : '1px solid #e8ecf0',
+                backgroundColor: isActive ? colors.primaryLight : 'transparent',
+                color: isActive ? colors.primary : colors.textSecondary,
+                border: isActive ? `1px solid ${colors.primaryBorder}` : `1px solid ${colors.borderDefault}`,
                 fontWeight: isActive ? 600 : 400,
               }}
               onClick={() => setTab(t)}

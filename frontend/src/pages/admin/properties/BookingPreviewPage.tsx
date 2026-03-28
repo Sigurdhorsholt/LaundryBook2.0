@@ -10,6 +10,7 @@ import {
 } from '../../../features/properties/propertiesApi'
 import { type GridBooking, BookingGrid } from '../../../features/laundry/BookingGrid'
 import { IconChevronLeft, IconChevronRight } from '../../../shared/icons'
+import { colors } from '../../../shared/theme'
 
 // ── Types ──────────────────────────────────────────────────────────────────────
 
@@ -101,7 +102,7 @@ function minutesUntilSlot(date: string, startTime: string): number {
 
 // Task 2 — dot colors
 const DOT_COLOR: Record<string, string> = {
-  free: '#4caf50', few: '#f59e0b', full: '#e0e0e0', past: 'transparent',
+  free: colors.dotFree, few: colors.dotFew, full: colors.dotFull, past: 'transparent',
 }
 
 // ── Page ───────────────────────────────────────────────────────────────────────
@@ -295,10 +296,10 @@ export function BookingPreviewPage() {
       {/* ── Admin control panel ───────────────────────────────────────────────── */}
       <div
         className="rounded-3 mb-4 p-3"
-        style={{ backgroundColor: '#f0f5ff', border: '1px solid #c5d9fb', borderLeft: '4px solid #1565c0' }}
+        style={{ backgroundColor: colors.primaryLighter, border: `1px solid ${colors.primaryBorder}`, borderLeft: `4px solid ${colors.primary}` }}
       >
         <div className="d-flex align-items-center justify-content-between mb-3">
-          <span style={{ fontSize: '0.7rem', fontWeight: 700, color: '#1565c0', textTransform: 'uppercase', letterSpacing: '0.09em' }}>
+          <span style={{ fontSize: '0.7rem', fontWeight: 700, color: colors.primary, textTransform: 'uppercase', letterSpacing: '0.09em' }}>
             Admin · Simuleringsindstillinger
           </span>
           {previewBookings.length > 0 && (
@@ -316,7 +317,7 @@ export function BookingPreviewPage() {
 
         {/* User selector */}
         <div className="d-flex align-items-center gap-2 flex-wrap mb-2">
-          <span style={{ fontSize: '0.8rem', color: '#3d5a8a', fontWeight: 600, minWidth: 74 }}>Viser som:</span>
+          <span style={{ fontSize: '0.8rem', color: colors.primaryAccent, fontWeight: 600, minWidth: 74 }}>Viser som:</span>
           <div className="d-flex gap-2 flex-wrap">
             {PREVIEW_USERS.map((u) => {
               const active = u.id === activeUserId
@@ -327,8 +328,8 @@ export function BookingPreviewPage() {
                   style={{
                     borderRadius: 20, fontSize: '0.78rem', padding: '3px 14px',
                     fontWeight: active ? 600 : 400,
-                    backgroundColor: active ? '#1565c0' : '#dce8ff',
-                    color: active ? '#ffffff' : '#3d5a8a',
+                    backgroundColor: active ? colors.primary : colors.primaryMuted,
+                    color: active ? '#ffffff' : colors.primaryAccent,
                     border: 'none',
                   }}
                   onClick={() => setActiveUserId(u.id)}
@@ -344,7 +345,7 @@ export function BookingPreviewPage() {
         {/* Room selector */}
         {activeRooms.length > 1 && (
           <div className="d-flex align-items-center gap-2 flex-wrap">
-            <span style={{ fontSize: '0.8rem', color: '#3d5a8a', fontWeight: 600, minWidth: 74 }}>Vaskerum:</span>
+            <span style={{ fontSize: '0.8rem', color: colors.primaryAccent, fontWeight: 600, minWidth: 74 }}>Vaskerum:</span>
             <div className="d-flex gap-2 flex-wrap">
               {activeRooms.map((room) => {
                 const active = room.id === effectiveRoomId
@@ -355,8 +356,8 @@ export function BookingPreviewPage() {
                     style={{
                       borderRadius: 20, fontSize: '0.78rem', padding: '3px 14px',
                       fontWeight: active ? 600 : 400,
-                      backgroundColor: active ? '#1565c0' : '#dce8ff',
-                      color: active ? '#ffffff' : '#3d5a8a',
+                      backgroundColor: active ? colors.primary : colors.primaryMuted,
+                      color: active ? '#ffffff' : colors.primaryAccent,
                       border: 'none',
                     }}
                     onClick={() => setSelectedRoomId(room.id)}
@@ -375,11 +376,11 @@ export function BookingPreviewPage() {
 
         {/* Section label */}
         <div className="d-flex align-items-center gap-2 mb-2">
-          <span style={{ fontSize: '0.7rem', fontWeight: 700, color: '#a0adb8', textTransform: 'uppercase', letterSpacing: '0.09em' }}>
+          <span style={{ fontSize: '0.7rem', fontWeight: 700, color: colors.textMuted, textTransform: 'uppercase', letterSpacing: '0.09em' }}>
             Beboervisning
           </span>
           {selectedRoom && (
-            <span style={{ fontSize: '0.82rem', color: '#5a6a7a', fontWeight: 500 }}>
+            <span style={{ fontSize: '0.82rem', color: colors.textSecondary, fontWeight: 500 }}>
               — {selectedRoom.name}
             </span>
           )}
@@ -391,13 +392,13 @@ export function BookingPreviewPage() {
           return (
             <div
               className="rounded-3 mb-3 p-3 d-flex align-items-center justify-content-between gap-3"
-              style={{ backgroundColor: '#f0fdf4', border: '1px solid #c8e6c9' }}
+              style={{ backgroundColor: colors.successBg, border: `1px solid ${colors.successBorder}` }}
             >
               <div>
-                <p style={{ fontSize: '0.7rem', fontWeight: 700, color: '#2e7d32', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 2 }}>
+                <p style={{ fontSize: '0.7rem', fontWeight: 700, color: colors.successText, textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 2 }}>
                   {activeUser?.name ?? 'Beboer'}s næste booking
                 </p>
-                <p style={{ fontSize: '0.9rem', fontWeight: 600, color: '#0d1b2a', marginBottom: 0 }}>
+                <p style={{ fontSize: '0.9rem', fontWeight: 600, color: colors.textPrimary, marginBottom: 0 }}>
                   {fullLabel} · {formatTime(nextPreviewSlot.startTime)} – {formatTime(nextPreviewSlot.endTime)}
                 </p>
               </div>
@@ -415,11 +416,11 @@ export function BookingPreviewPage() {
         {/* Task 1+2 — date strip */}
         <div
           className="d-flex align-items-center gap-1 mb-3 p-2 rounded-3"
-          style={{ backgroundColor: '#f8fafb', border: '1px solid #e8ecf0' }}
+          style={{ backgroundColor: colors.bgPage, border: `1px solid ${colors.borderDefault}` }}
         >
           <button
             className="btn btn-sm p-1 flex-shrink-0"
-            style={{ color: canGoBack ? '#0d1b2a' : '#c8d4de', lineHeight: 1 }}
+            style={{ color: canGoBack ? colors.textPrimary : colors.textDisabled, lineHeight: 1 }}
             disabled={!canGoBack}
             onClick={() => shiftWeek(-7)}
             aria-label="Forrige uge"
@@ -444,8 +445,8 @@ export function BookingPreviewPage() {
                   style={{
                     borderRadius: 8, padding: '4px 6px', minWidth: 36, lineHeight: 1.25,
                     fontWeight: isSelected ? 700 : 400,
-                    backgroundColor: isSelected ? '#1565c0' : 'transparent',
-                    color: isSelected ? '#ffffff' : isDimmed ? '#c8d4de' : '#0d1b2a',
+                    backgroundColor: isSelected ? colors.primary : 'transparent',
+                    color: isSelected ? '#ffffff' : isDimmed ? colors.textDisabled : colors.textPrimary,
                     border: 'none', fontSize: '0.72rem', cursor: 'pointer',
                   }}
                   onClick={() => setSelectedDate(date)}
@@ -464,7 +465,7 @@ export function BookingPreviewPage() {
 
           <button
             className="btn btn-sm p-1 flex-shrink-0"
-            style={{ color: '#0d1b2a', lineHeight: 1 }}
+            style={{ color: colors.textPrimary, lineHeight: 1 }}
             onClick={() => shiftWeek(7)}
             aria-label="Næste uge"
           >
@@ -473,7 +474,7 @@ export function BookingPreviewPage() {
         </div>
 
         {/* Booking grid */}
-        <div className="rounded-3 overflow-hidden" style={{ border: '1px solid #e8ecf0' }}>
+        <div className="rounded-3 overflow-hidden" style={{ border: `1px solid ${colors.borderDefault}` }}>
           <BookingGrid
             slots={activeSlots}
             date={selectedDate}
@@ -489,7 +490,7 @@ export function BookingPreviewPage() {
 
         {/* Task 9 — social context line */}
         {othersBookedToday > 0 && (
-          <p style={{ fontSize: '0.76rem', color: '#a0adb8', textAlign: 'center', marginTop: 8, marginBottom: 0 }}>
+          <p style={{ fontSize: '0.76rem', color: colors.textMuted, textAlign: 'center', marginTop: 8, marginBottom: 0 }}>
             {othersBookedToday === 1
               ? '1 anden beboer har booket denne dag'
               : `${othersBookedToday} andre beboere har booket denne dag`}
@@ -555,8 +556,8 @@ function SettingsStrip({ settings }: { settings: ComplexSettingsDto }) {
           key={label}
           style={{
             padding: '2px 10px', borderRadius: 20,
-            backgroundColor: '#dce8ff', color: '#2c4f8c',
-            fontSize: '0.74rem', fontWeight: 500, border: '1px solid #b8d0f8',
+            backgroundColor: colors.primaryMuted, color: colors.primaryMutedText,
+            fontSize: '0.74rem', fontWeight: 500, border: `1px solid ${colors.primaryBorder}`,
           }}
         >
           {label}
@@ -596,16 +597,16 @@ function ConfirmModal({
         style={{
           position: 'fixed', top: '50%', left: '50%',
           transform: 'translate(-50%, -50%)',
-          backgroundColor: '#ffffff', borderRadius: 12, padding: '24px',
+          backgroundColor: colors.bgCard, borderRadius: 12, padding: '24px',
           width: 320, maxWidth: 'calc(100vw - 32px)',
           zIndex: 1051, boxShadow: '0 8px 40px rgba(0,0,0,0.15)',
         }}
       >
-        <h6 style={{ fontWeight: 700, color: '#0d1b2a', marginBottom: 6, fontSize: '1rem' }}>
+        <h6 style={{ fontWeight: 700, color: colors.textPrimary, marginBottom: 6, fontSize: '1rem' }}>
           {type === 'book' ? 'Bekræft booking' : 'Bekræft aflysning'}
         </h6>
 
-        <p style={{ fontSize: '0.88rem', color: '#5a6a7a', marginBottom: showTimeWarning ? 8 : 6, lineHeight: 1.5 }}>
+        <p style={{ fontSize: '0.88rem', color: colors.textSecondary, marginBottom: showTimeWarning ? 8 : 6, lineHeight: 1.5 }}>
           {type === 'book' ? (
             <>Book <strong>{slotTime}</strong> den {dateLabel} som <strong>{userName}</strong>?</>
           ) : (
@@ -616,8 +617,8 @@ function ConfirmModal({
         {/* Task 8 — time-signal warning */}
         {showTimeWarning && (
           <p style={{
-            fontSize: '0.8rem', color: '#b45309',
-            backgroundColor: '#fff8e1', border: '1px solid #ffe0b2',
+            fontSize: '0.8rem', color: colors.warningText,
+            backgroundColor: colors.warningBg, border: `1px solid ${colors.warningBorder}`,
             borderRadius: 6, padding: '6px 10px', marginBottom: 8,
           }}>
             {(minutesUntil ?? 0) < 60
@@ -627,7 +628,7 @@ function ConfirmModal({
           </p>
         )}
 
-        <p style={{ fontSize: '0.76rem', color: '#a0adb8', marginBottom: 20 }}>
+        <p style={{ fontSize: '0.76rem', color: colors.textMuted, marginBottom: 20 }}>
           Dette er en preview — ingen rigtige bookinger oprettes.
         </p>
 
@@ -669,13 +670,13 @@ function UserBookingSummary({
   return (
     <div
       className="mt-3 p-3 rounded-3 d-flex align-items-center gap-2"
-      style={{ backgroundColor: '#f0fdf4', border: '1px solid #c8e6c9', fontSize: '0.82rem' }}
+      style={{ backgroundColor: colors.successBg, border: `1px solid ${colors.successBorder}`, fontSize: '0.82rem' }}
     >
-      <span style={{ fontWeight: 600, color: '#2e7d32' }}>
+      <span style={{ fontWeight: 600, color: colors.successText }}>
         {user?.name ?? 'Beboer'} har {upcoming.length} aktiv{upcoming.length === 1 ? '' : 'e'} booking{upcoming.length === 1 ? '' : 'er'}
       </span>
       {maxConcurrent > 0 && (
-        <span style={{ color: '#5a6a7a' }}>(maks. {maxConcurrent})</span>
+        <span style={{ color: colors.textSecondary }}>(maks. {maxConcurrent})</span>
       )}
     </div>
   )

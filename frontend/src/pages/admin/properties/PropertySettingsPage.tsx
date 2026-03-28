@@ -8,6 +8,7 @@ import {
 } from '../../../features/properties/propertiesApi'
 import type { ComplexSettingsDto } from '../../../features/properties/propertiesApi'
 import { PageHeader, Spinner } from '../../../shared/ui'
+import { colors } from '../../../shared/theme'
 
 // Mirrors backend validation rules
 const MAX_CANCELLATION_HOURS = 168 // 7 days
@@ -180,7 +181,7 @@ export function PropertySettingsPage() {
               value={form.bookingLookaheadDays}
               onChange={(e) => patch({ bookingLookaheadDays: Number(e.target.value) })}
             />
-            <span style={{ fontSize: '0.85rem', color: '#5a6a7a' }}>dage</span>
+            <span style={{ fontSize: '0.85rem', color: colors.textSecondary }}>dage</span>
           </div>
           {lookaheadError && (
             <p className="mt-1 mb-0" style={{ fontSize: '0.8rem', color: '#dc3545' }}>
@@ -205,9 +206,9 @@ export function PropertySettingsPage() {
               value={form.cancellationWindowHours}
               onChange={(e) => patch({ cancellationWindowHours: Number(e.target.value) })}
             />
-            <span style={{ fontSize: '0.85rem', color: '#5a6a7a' }}>timer</span>
+            <span style={{ fontSize: '0.85rem', color: colors.textSecondary }}>timer</span>
             {!cancellationError && form.cancellationWindowHours === 0 && (
-              <span style={{ fontSize: '0.82rem', color: '#a0adb8' }}>Ingen frist</span>
+              <span style={{ fontSize: '0.82rem', color: colors.textMuted }}>Ingen frist</span>
             )}
           </div>
           {cancellationError && (
@@ -232,7 +233,7 @@ export function PropertySettingsPage() {
               value={form.maxConcurrentBookingsPerUser}
               onChange={(e) => patch({ maxConcurrentBookingsPerUser: Number(e.target.value) })}
             />
-            <span style={{ fontSize: '0.85rem', color: '#5a6a7a' }}>bookinger</span>
+            <span style={{ fontSize: '0.85rem', color: colors.textSecondary }}>bookinger</span>
           </div>
           {maxBookingsError && (
             <p className="mt-1 mb-0" style={{ fontSize: '0.8rem', color: '#dc3545' }}>
@@ -263,7 +264,7 @@ export function PropertySettingsPage() {
           )}
 
           {saveSuccess && (
-            <span style={{ fontSize: '0.85rem', color: '#2e7d32', fontWeight: 500 }}>Gemt ✓</span>
+            <span style={{ fontSize: '0.85rem', color: colors.successText, fontWeight: 500 }}>Gemt ✓</span>
           )}
           {saveError && (
             <span style={{ fontSize: '0.85rem', color: '#dc3545' }}>{saveError}</span>
@@ -287,8 +288,8 @@ function SettingsSection({
 }) {
   return (
     <section className="mb-5">
-      <h2 className="fw-semibold mb-1" style={{ fontSize: '1rem', color: '#0d1b2a' }}>{title}</h2>
-      <p className="mb-3" style={{ fontSize: '0.85rem', color: '#5a6a7a' }}>{description}</p>
+      <h2 className="fw-semibold mb-1" style={{ fontSize: '1rem', color: colors.textPrimary }}>{title}</h2>
+      <p className="mb-3" style={{ fontSize: '0.85rem', color: colors.textSecondary }}>{description}</p>
       {children}
     </section>
   )
@@ -305,8 +306,8 @@ function RadioCard({
   description: string
   onChange: () => void
 }) {
-  const borderColor = selected ? '#1565c0' : '#e8ecf0'
-  const bg = selected ? '#f0f5ff' : '#ffffff'
+  const borderColor = selected ? colors.primary : colors.borderDefault
+  const bg = selected ? colors.primaryLighter : colors.bgCard
 
   return (
     <label
@@ -326,11 +327,11 @@ function RadioCard({
         type="radio"
         checked={selected}
         onChange={onChange}
-        style={{ marginTop: 3, accentColor: '#1565c0', flexShrink: 0 }}
+        style={{ marginTop: 3, accentColor: colors.primary, flexShrink: 0 }}
       />
       <div>
-        <div className="fw-semibold" style={{ fontSize: '0.88rem', color: '#0d1b2a' }}>{label}</div>
-        <div style={{ fontSize: '0.82rem', color: '#5a6a7a', marginTop: 2 }}>{description}</div>
+        <div className="fw-semibold" style={{ fontSize: '0.88rem', color: colors.textPrimary }}>{label}</div>
+        <div style={{ fontSize: '0.82rem', color: colors.textSecondary, marginTop: 2 }}>{description}</div>
       </div>
     </label>
   )

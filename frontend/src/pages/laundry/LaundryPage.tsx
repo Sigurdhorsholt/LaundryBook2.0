@@ -1,4 +1,4 @@
-import { useState, useMemo, useEffect } from 'react'
+import { useState, useMemo, useEffect, useRef } from 'react'
 import { skipToken } from '@reduxjs/toolkit/query/react'
 import { useMeQuery } from '../../features/auth/authApi'
 import { useGetPropertyQuery } from '../../features/properties/propertiesApi'
@@ -13,6 +13,7 @@ import {
 import type { MyBookingDto } from '../../features/laundry/laundryApi'
 import { BookingGrid } from '../../features/laundry/BookingGrid'
 import type { GridBooking } from '../../features/laundry/BookingGrid'
+import { colors } from '../../shared/theme'
 
 // ── Date helpers ───────────────────────────────────────────────────────────────
 
@@ -97,7 +98,7 @@ function incrementBookingCount(): number {
 
 // Task 2 — dot colors
 const DOT_COLOR: Record<string, string> = {
-  free: '#4caf50', few: '#f59e0b', full: '#e0e0e0', past: 'transparent',
+  free: colors.dotFree, few: colors.dotFew, full: colors.dotFull, past: 'transparent',
 }
 
 // ── Types ──────────────────────────────────────────────────────────────────────
@@ -129,6 +130,21 @@ export function LaundryPage() {
   const [pending, setPending]           = useState<PendingAction | null>(null)
   const [confirmError, setConfirmError] = useState<string | null>(null)
   const [milestoneCount, setMilestoneCount] = useState<number | null>(null) // Task 10
+  const [bookingsExpanded, setBookingsExpanded] = useState(true)
+  const gridRef   = useRef<HTMLDivElement>(null)
+  const [gridVisible, setGridVisible] = useState(false)
+
+  useEffect(() => {
+    const el = gridRef.current
+    if (!el) return
+    // Fire at several crossing points; show button while grid is less than 30% visible
+    const obs = new IntersectionObserver(
+      ([entry]) => setGridVisible((entry?.intersectionRatio ?? 0) >= 0.7),
+      { threshold: [0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7] },
+    )
+    obs.observe(el)
+    return () => obs.disconnect()
+  }, [])
 
   const { data: me } = useMeQuery()
   const propertyId = me?.memberships[0]?.propertyId ?? null
@@ -270,8 +286,8 @@ export function LaundryPage() {
   if (!propertyId) {
     return (
       <div className="container-xl px-4 py-5">
-        <h1 className="fw-bold mb-2" style={{ fontSize: '1.75rem', color: '#0d1b2a' }}>Vaskebooking</h1>
-        <p style={{ color: '#5a6a7a' }}>Du er ikke tilknyttet nogen ejendom endnu.</p>
+        <h1 className="fw-bold mb-2" style={{ fontSize: '1.75rem', color: colors.textPrimary }}>Vaskebooking</h1>
+        <p style={{ color: colors.textSecondary }}>Du er ikke tilknyttet nogen ejendom endnu.</p>
       </div>
     )
   }
@@ -282,33 +298,53 @@ export function LaundryPage() {
     <div className="container-xl px-4 py-5">
 
       {/* ── Header ─────────────────────────────────────────────────────────────── */}
-      <h1 className="fw-bold mb-1" style={{ fontSize: '1.75rem', color: '#0d1b2a' }}>
+      <h1 className="fw-bold mb-1" style={{ fontSize: '1.75rem', color: colors.textPrimary }}>
         Vaskebooking
       </h1>
-      <p className="mb-4" style={{ color: '#5a6a7a', fontSize: '0.92rem' }}>
+      <p className="mb-4" style={{ color: colors.textSecondary, fontSize: '0.92rem' }}>
         Book et ledigt vasketid i dit vaskerum.
       </p>
 
-      {/* ── Task 3 — upcoming bookings card ────────────────────────────────────── */}
+      {/* ── Task 3 — upcoming bookings card (collapsible) ──────────────────────── */}
       {myBookings && myBookings.length > 0 && (
-        <div className="rounded-3 mb-4" style={{ border: '1px solid #e8ecf0', backgroundColor: '#ffffff', overflow: 'hidden' }}>
-          <div style={{ padding: '12px 20px', borderBottom: '1px solid #f0f4f8', backgroundColor: '#f8fafc' }}>
-            <span style={{ fontWeight: 600, fontSize: '0.88rem', color: '#0d1b2a' }}>
+        <div className="rounded-3 mb-4" style={{ border: `1px solid ${colors.borderDefault}`, backgroundColor: colors.bgCard, overflow: 'hidden' }}>
+          {/* Clickable header toggle */}
+          <button
+            onClick={() => setBookingsExpanded(x => !x)}
+            style={{
+              width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+              padding: '12px 20px', border: 'none', borderBottom: bookingsExpanded ? `1px solid ${colors.borderRow}` : 'none',
+              backgroundColor: colors.bgHeader, cursor: 'pointer', textAlign: 'left',
+            }}
+          >
+            <span style={{ fontWeight: 600, fontSize: '0.88rem', color: colors.textPrimary }}>
               Mine kommende bookinger
+              <span style={{ fontWeight: 400, color: colors.textMuted, marginLeft: 8, fontSize: '0.8rem' }}>
+                ({myBookings.length})
+              </span>
             </span>
-          </div>
-          {myBookings.map(b => {
+            {/* Chevron */}
+            <svg
+              width="14" height="14" viewBox="0 0 14 14" fill="none"
+              style={{ transition: 'transform 0.2s', transform: bookingsExpanded ? 'rotate(0deg)' : 'rotate(-90deg)', flexShrink: 0 }}
+            >
+              <path d="M2 5l5 5 5-5" stroke={colors.textMuted} strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
+          </button>
+
+          {/* Collapsible body */}
+          {bookingsExpanded && myBookings.map(b => {
             const monthIdx = parseInt(b.date.split('-')[1] ?? '1', 10) - 1
             return (
               <div
                 key={b.id}
                 style={{
                   display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-                  padding: '10px 20px', borderBottom: '1px solid #f0f4f8', flexWrap: 'wrap', gap: 8,
+                  padding: '10px 20px', borderBottom: `1px solid ${colors.borderRow}`, flexWrap: 'wrap', gap: 8,
                 }}
               >
-                <span style={{ fontSize: '0.88rem', color: '#0d1b2a' }}>
-                  <strong style={{ color: '#1565c0', marginRight: 6 }}>
+                <span style={{ fontSize: '0.88rem', color: colors.textPrimary }}>
+                  <strong style={{ color: colors.primary, marginRight: 6 }}>
                     {dayShortLabel(b.date, today)} {dayNum(b.date)}. {MONTH_SHORT[monthIdx] ?? ''}
                   </strong>
                   {b.roomName} · {formatTimeRange(b.startTime, b.endTime)}
@@ -322,7 +358,7 @@ export function LaundryPage() {
                     Aflys
                   </button>
                 ) : (
-                  <span style={{ fontSize: '0.75rem', color: '#a0adb8' }}>Aflysfrist udløbet</span>
+                  <span style={{ fontSize: '0.75rem', color: colors.textMuted }}>Aflysfrist udløbet</span>
                 )}
               </div>
             )
@@ -333,7 +369,7 @@ export function LaundryPage() {
       {/* ── Room selector ───────────────────────────────────────────────────────── */}
       {roomsLoading ? (
         <div className="mb-4">
-          <div style={{ width: 120, height: 32, borderRadius: 20, backgroundColor: '#e8ecf0', display: 'inline-block' }} />
+          <div style={{ width: 120, height: 32, borderRadius: 20, backgroundColor: colors.borderDefault, display: 'inline-block' }} />
         </div>
       ) : rooms && rooms.length > 1 && (
         <div className="mb-4 d-flex gap-2 flex-wrap">
@@ -343,8 +379,8 @@ export function LaundryPage() {
               className="btn btn-sm"
               style={{
                 borderRadius: 20, padding: '5px 16px', fontSize: '0.85rem', fontWeight: 500,
-                backgroundColor: selectedRoomId === room.id ? '#1565c0' : '#f0f4f8',
-                color: selectedRoomId === room.id ? '#ffffff' : '#0d1b2a',
+                backgroundColor: selectedRoomId === room.id ? colors.primary : colors.bgSubtle,
+                color: selectedRoomId === room.id ? '#ffffff' : colors.textPrimary,
                 border: 'none', transition: 'background-color 0.12s',
               }}
               onClick={() => setSelectedRoomId(room.id)}
@@ -356,19 +392,19 @@ export function LaundryPage() {
       )}
 
       {/* ── Booking grid card ────────────────────────────────────────────────────── */}
-      <div className="rounded-3" style={{ border: '1px solid #e8ecf0', overflow: 'hidden', backgroundColor: '#ffffff' }}>
+      <div ref={gridRef} className="rounded-3" style={{ border: `1px solid ${colors.borderDefault}`, overflow: 'hidden', backgroundColor: colors.bgCard }}>
 
         {/* Week navigation */}
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '10px 16px', borderBottom: '1px solid #f0f4f8', backgroundColor: '#f8fafc' }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '10px 16px', borderBottom: `1px solid ${colors.borderRow}`, backgroundColor: colors.bgHeader }}>
           <button
             className="btn btn-sm btn-outline-secondary"
             style={{ borderRadius: 20, padding: '2px 12px', fontSize: '0.8rem' }}
             onClick={() => shiftWeek(-1)}
             disabled={!canGoBack}
           >←</button>
-          <span style={{ fontWeight: 600, fontSize: '0.88rem', color: '#0d1b2a' }}>
+          <span style={{ fontWeight: 600, fontSize: '0.88rem', color: colors.textPrimary }}>
             {weekLabel(weekStart)}
-            <span style={{ fontWeight: 400, color: '#8a9aaa', marginLeft: 8, fontSize: '0.82rem' }}>
+            <span style={{ fontWeight: 400, color: colors.slotTakenText, marginLeft: 8, fontSize: '0.82rem' }}>
               {weekFrom.slice(8).replace(/^0/, '')}. {MONTH_SHORT[parseInt(weekFrom.split('-')[1] ?? '1', 10) - 1] ?? ''}
               {' – '}
               {weekTo.slice(8).replace(/^0/, '')}. {MONTH_SHORT[parseInt(weekTo.split('-')[1] ?? '1', 10) - 1] ?? ''}
@@ -382,7 +418,7 @@ export function LaundryPage() {
         </div>
 
         {/* Task 1+2 — date strip with smart labels and availability dots */}
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', borderBottom: '1px solid #f0f4f8' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', borderBottom: `1px solid ${colors.borderRow}` }}>
           {weekDays.map(d => {
             const shortLabel  = dayShortLabel(d, today)
             const num         = dayNum(d)
@@ -398,29 +434,29 @@ export function LaundryPage() {
                   border: 'none', background: 'none', padding: '8px 4px',
                   cursor: 'pointer', display: 'flex', flexDirection: 'column',
                   alignItems: 'center', gap: 1,
-                  borderBottom: isSelected ? '2px solid #1565c0' : '2px solid transparent',
-                  backgroundColor: isSelected ? '#f0f5ff' : 'transparent',
+                  borderBottom: isSelected ? `2px solid ${colors.primary}` : '2px solid transparent',
+                  backgroundColor: isSelected ? colors.primaryLighter : 'transparent',
                   transition: 'background-color 0.1s',
                 }}
               >
                 {/* Task 1 — smart day label */}
-                <span style={{ fontSize: '0.65rem', fontWeight: 500, color: isToday ? '#1565c0' : '#8a9aaa', textTransform: 'uppercase', whiteSpace: 'nowrap' }}>
+                <span style={{ fontSize: '0.65rem', fontWeight: 500, color: isToday ? colors.primary : colors.slotTakenText, textTransform: 'uppercase', whiteSpace: 'nowrap' }}>
                   {shortLabel}
                 </span>
                 {/* Day number */}
                 <span style={{
                   fontSize: '0.9rem', fontWeight: 600,
-                  color: isToday ? '#1565c0' : '#0d1b2a',
+                  color: isToday ? colors.primary : colors.textPrimary,
                   width: 28, height: 28, display: 'flex', alignItems: 'center', justifyContent: 'center',
                   borderRadius: '50%',
-                  backgroundColor: isToday && !isSelected ? '#e8f0fe' : 'transparent',
+                  backgroundColor: isToday && !isSelected ? colors.primaryLight : 'transparent',
                 }}>
                   {num}
                 </span>
                 {/* Task 2 — availability dot */}
                 <span style={{
                   width: 5, height: 5, borderRadius: '50%', display: 'block',
-                  backgroundColor: isSelected ? 'rgba(21,101,192,0.25)' : (DOT_COLOR[dotState] ?? 'transparent'),
+                  backgroundColor: isSelected ? `rgba(21,101,192,0.25)` : (DOT_COLOR[dotState] ?? 'transparent'),
                 }} />
               </button>
             )
@@ -428,11 +464,11 @@ export function LaundryPage() {
         </div>
 
         {/* Selected date label */}
-        <div style={{ padding: '8px 20px', borderBottom: '1px solid #f0f4f8', backgroundColor: '#fafbfc' }}>
-          <span style={{ fontSize: '0.82rem', fontWeight: 500, color: '#5a6a7a' }}>
+        <div style={{ padding: '8px 20px', borderBottom: `1px solid ${colors.borderRow}`, backgroundColor: colors.bgPage }}>
+          <span style={{ fontSize: '0.82rem', fontWeight: 500, color: colors.textSecondary }}>
             {formatDateFull(selectedDate)}
             {selectedRoomId && rooms && rooms.length === 1 && (
-              <span style={{ color: '#a0adb8', marginLeft: 8 }}>· {rooms.find(r => r.id === selectedRoomId)?.name}</span>
+              <span style={{ color: colors.textMuted, marginLeft: 8 }}>· {rooms.find(r => r.id === selectedRoomId)?.name}</span>
             )}
           </span>
         </div>
@@ -451,15 +487,15 @@ export function LaundryPage() {
             loading={gridLoading}
           />
         ) : (
-          <div style={{ padding: '40px 20px', textAlign: 'center', color: '#a0adb8', fontSize: '0.9rem' }}>
+          <div style={{ padding: '40px 20px', textAlign: 'center', color: colors.textMuted, fontSize: '0.9rem' }}>
             Vælg et vaskerum herover.
           </div>
         )}
 
         {/* Task 9 — social context line */}
         {othersBookedToday > 0 && (
-          <div style={{ padding: '8px 20px', borderTop: '1px solid #f0f4f8' }}>
-            <p style={{ fontSize: '0.76rem', color: '#a0adb8', margin: 0, textAlign: 'center' }}>
+          <div style={{ padding: '8px 20px', borderTop: `1px solid ${colors.borderRow}` }}>
+            <p style={{ fontSize: '0.76rem', color: colors.textMuted, margin: 0, textAlign: 'center' }}>
               {othersBookedToday === 1
                 ? '1 anden beboer har booket denne dag'
                 : `${othersBookedToday} andre beboere har booket denne dag`}
@@ -469,13 +505,43 @@ export function LaundryPage() {
 
         {/* Task 10 — milestone acknowledgment */}
         {milestoneCount !== null && (
-          <div style={{ padding: '8px 20px', borderTop: '1px solid #f0f4f8' }}>
-            <p style={{ fontSize: '0.76rem', color: '#5a6a7a', margin: 0, textAlign: 'center' }}>
+          <div style={{ padding: '8px 20px', borderTop: `1px solid ${colors.borderRow}` }}>
+            <p style={{ fontSize: '0.76rem', color: colors.textSecondary, margin: 0, textAlign: 'center' }}>
               Du har nu booket {milestoneCount} gange — godt gået.
             </p>
           </div>
         )}
       </div>
+
+      {/* ── Floating scroll-to-grid button ─────────────────────────────────────── */}
+      {myBookings && myBookings.length > 0 && !gridVisible && (
+        <button
+          aria-label="Gå til booking"
+          onClick={() => gridRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })}
+          style={{
+            position: 'fixed',
+            bottom: 24,
+            right: 20,
+            zIndex: 900,
+            width: 38,
+            height: 38,
+            borderRadius: '50%',
+            border: '1px solid rgba(21,101,192,0.18)',
+            backgroundColor: 'rgba(255,255,255,0.92)',
+            color: colors.primary,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            boxShadow: '0 2px 10px rgba(0,0,0,0.10)',
+            cursor: 'pointer',
+            backdropFilter: 'blur(4px)',
+          }}
+        >
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+            <path d="M2 5l5 5 5-5" stroke={colors.primary} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+          </svg>
+        </button>
+      )}
 
       {/* ── Confirm modal ───────────────────────────────────────────────────────── */}
       {pending && (
@@ -526,16 +592,16 @@ function ConfirmModal({
         style={{
           position: 'fixed', top: '50%', left: '50%',
           transform: 'translate(-50%, -50%)',
-          zIndex: 1050, backgroundColor: '#ffffff', borderRadius: 12,
+          zIndex: 1050, backgroundColor: colors.bgCard, borderRadius: 12,
           boxShadow: '0 20px 60px rgba(0,0,0,0.18)',
           width: 'min(92vw, 380px)', padding: '24px',
         }}
       >
-        <h6 style={{ fontWeight: 700, marginBottom: 4, color: '#0d1b2a' }}>
+        <h6 style={{ fontWeight: 700, marginBottom: 4, color: colors.textPrimary }}>
           {isBook ? 'Bekræft booking' : 'Aflys booking'}
         </h6>
 
-        <p style={{ color: '#5a6a7a', fontSize: '0.9rem', marginBottom: showTimeWarning ? 10 : 16 }}>
+        <p style={{ color: colors.textSecondary, fontSize: '0.9rem', marginBottom: showTimeWarning ? 10 : 16 }}>
           {isBook
             ? <>Vil du booke <strong>{pending.slotTime}</strong> den <strong>{dateText}</strong>?</>
             : <>Vil du aflyse din booking kl. <strong>{pending.slotTime}</strong> den <strong>{dateText}</strong>?</>
@@ -545,8 +611,8 @@ function ConfirmModal({
         {/* Task 8 — time-signal warning */}
         {showTimeWarning && (
           <p style={{
-            fontSize: '0.8rem', color: '#b45309',
-            backgroundColor: '#fff8e1', border: '1px solid #ffe0b2',
+            fontSize: '0.8rem', color: colors.warningText,
+            backgroundColor: colors.warningBg, border: `1px solid ${colors.warningBorder}`,
             borderRadius: 6, padding: '6px 10px', marginBottom: 16,
           }}>
             {(pending.minutesUntil ?? 0) < 60
@@ -557,7 +623,7 @@ function ConfirmModal({
         )}
 
         {error && (
-          <div style={{ padding: '8px 12px', backgroundColor: '#fdecea', borderRadius: 6, color: '#b71c1c', fontSize: '0.83rem', marginBottom: 16 }}>
+          <div style={{ padding: '8px 12px', backgroundColor: colors.dangerBg, borderRadius: 6, color: colors.dangerText, fontSize: '0.83rem', marginBottom: 16 }}>
             {error}
           </div>
         )}

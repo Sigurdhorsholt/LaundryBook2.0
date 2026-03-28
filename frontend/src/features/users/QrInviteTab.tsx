@@ -3,6 +3,7 @@ import { QRCodeSVG } from 'qrcode.react'
 import { UserRole } from '../auth/authApi'
 import { useCreateInviteTokenMutation } from './usersApi'
 import { ROLE_OPTIONS } from '../../shared/constants'
+import { colors } from '../../shared/theme'
 
 type QrMode = 'specific' | 'mass'
 
@@ -55,13 +56,13 @@ export function QrInviteTab({ propertyId }: QrInviteTabProps) {
     return (
       <div className="text-center">
         {isMass && (
-          <p className="mb-1 fw-semibold" style={{ color: '#0d1b2a', fontSize: '0.9rem' }}>Masse-invitation</p>
+          <p className="mb-1 fw-semibold" style={{ color: colors.textPrimary, fontSize: '0.9rem' }}>Masse-invitation</p>
         )}
-        <p className="mb-3" style={{ color: '#5a6a7a', fontSize: '0.88rem' }}>{description}</p>
-        <div className="d-inline-block p-3 bg-white rounded-3 mb-3" style={{ border: '1px solid #e8ecf0' }}>
+        <p className="mb-3" style={{ color: colors.textSecondary, fontSize: '0.88rem' }}>{description}</p>
+        <div className="d-inline-block p-3 bg-white rounded-3 mb-3" style={{ border: `1px solid ${colors.borderDefault}` }}>
           <QRCodeSVG value={joinUrl} size={200} />
         </div>
-        <p className="mb-3" style={{ fontSize: '0.72rem', color: '#a0adb8', wordBreak: 'break-all' }}>
+        <p className="mb-3" style={{ fontSize: '0.72rem', color: colors.textMuted, wordBreak: 'break-all' }}>
           {joinUrl}
         </p>
         <div className="d-flex justify-content-center gap-2">
@@ -97,9 +98,9 @@ export function QrInviteTab({ propertyId }: QrInviteTabProps) {
               flex: 1,
               borderRadius: '8px',
               fontSize: '0.82rem',
-              backgroundColor: mode === m ? '#0d1b2a' : 'transparent',
-              color: mode === m ? '#fff' : '#5a6a7a',
-              border: mode === m ? '1px solid #0d1b2a' : '1px solid #e8ecf0',
+              backgroundColor: mode === m ? colors.textPrimary : 'transparent',
+              color: mode === m ? '#fff' : colors.textSecondary,
+              border: mode === m ? `1px solid ${colors.textPrimary}` : `1px solid ${colors.borderDefault}`,
               fontWeight: mode === m ? 600 : 400,
             }}
             onClick={() => handleModeChange(m)}
@@ -109,11 +110,11 @@ export function QrInviteTab({ propertyId }: QrInviteTabProps) {
         ))}
       </div>
 
-      <p style={{ color: '#5a6a7a', fontSize: '0.85rem', margin: 0 }}>{modeDescription}</p>
+      <p style={{ color: colors.textSecondary, fontSize: '0.85rem', margin: 0 }}>{modeDescription}</p>
 
       <div className="d-flex gap-3">
         <div style={{ flex: 1 }}>
-          <label className="form-label" style={{ fontSize: '0.85rem', fontWeight: 500, color: '#0d1b2a' }}>
+          <label className="form-label" style={{ fontSize: '0.85rem', fontWeight: 500, color: colors.textPrimary }}>
             Rolle
           </label>
           <select
@@ -129,8 +130,8 @@ export function QrInviteTab({ propertyId }: QrInviteTabProps) {
 
         {mode === 'specific' && (
           <div style={{ flex: 1 }}>
-            <label className="form-label" style={{ fontSize: '0.85rem', fontWeight: 500, color: '#0d1b2a' }}>
-              Lejlighed <span style={{ color: '#a0adb8', fontWeight: 400 }}>(valgfri)</span>
+            <label className="form-label" style={{ fontSize: '0.85rem', fontWeight: 500, color: colors.textPrimary }}>
+              Lejlighed <span style={{ color: colors.textMuted, fontWeight: 400 }}>(valgfri)</span>
             </label>
             <input
               className="form-control"
