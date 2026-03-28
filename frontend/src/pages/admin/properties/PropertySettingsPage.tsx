@@ -6,6 +6,8 @@ import {
   useGetPropertyQuery,
   useUpdateComplexSettingsMutation,
 } from '../../../features/properties/propertiesApi'
+import type { ComplexSettingsDto } from '../../../features/properties/propertiesApi'
+import { PageHeader, Spinner } from '../../../shared/ui'
 
 // Mirrors backend validation rules
 const MAX_CANCELLATION_HOURS = 168 // 7 days
@@ -18,6 +20,16 @@ interface FormState {
   maxConcurrentBookingsPerUser: number
   bookingLookaheadDays: number
   bookingVisibility: BookingVisibility
+}
+
+function serverToForm(settings: ComplexSettingsDto): FormState {
+  return {
+    bookingMode: settings.bookingMode,
+    cancellationWindowHours: settings.cancellationWindowMinutes / 60,
+    maxConcurrentBookingsPerUser: settings.maxConcurrentBookingsPerUser,
+    bookingLookaheadDays: settings.bookingLookaheadDays,
+    bookingVisibility: settings.bookingVisibility,
+  }
 }
 
 export function PropertySettingsPage() {
@@ -38,15 +50,8 @@ export function PropertySettingsPage() {
   const [saveError, setSaveError] = useState<string | null>(null)
 
   useEffect(() => {
-    if (property?.settings) {
-      setForm({
-        bookingMode: property.settings.bookingMode,
-        cancellationWindowHours: property.settings.cancellationWindowMinutes / 60,
-        maxConcurrentBookingsPerUser: property.settings.maxConcurrentBookingsPerUser,
-        bookingLookaheadDays: property.settings.bookingLookaheadDays,
-        bookingVisibility: property.settings.bookingVisibility,
-      })
-      setIsDirty(false)
+    if (property?.settings && !isDirty) {
+      setForm(serverToForm(property.settings))
     }
   }, [property])
 
@@ -59,13 +64,7 @@ export function PropertySettingsPage() {
 
   function handleReset() {
     if (!property) return
-    setForm({
-      bookingMode: property.settings.bookingMode,
-      cancellationWindowHours: property.settings.cancellationWindowMinutes / 60,
-      maxConcurrentBookingsPerUser: property.settings.maxConcurrentBookingsPerUser,
-      bookingLookaheadDays: property.settings.bookingLookaheadDays,
-      bookingVisibility: property.settings.bookingVisibility,
-    })
+    setForm(serverToForm(property.settings))
     setIsDirty(false)
     setSaveSuccess(false)
     setSaveError(null)
@@ -96,13 +95,7 @@ export function PropertySettingsPage() {
   const maxBookingsError = form.maxConcurrentBookingsPerUser < 1 || form.maxConcurrentBookingsPerUser > MAX_CONCURRENT_BOOKINGS
   const hasValidationError = cancellationError || lookaheadError || maxBookingsError
 
-  if (isLoading) {
-    return (
-      <div className="p-4 p-lg-5 d-flex justify-content-center align-items-center" style={{ minHeight: 300 }}>
-        <div className="spinner-border text-primary spinner-border-sm" role="status" />
-      </div>
-    )
-  }
+  if (isLoading) return <Spinner fullPage />
 
   if (isError || !property) {
     return (
@@ -116,15 +109,11 @@ export function PropertySettingsPage() {
 
   return (
     <div className="p-4 p-lg-5">
-      <div className="mb-5">
-        <p className="mb-1" style={{ fontSize: '0.8rem', color: '#a0adb8', fontWeight: 500 }}>
-          {property.name}
-        </p>
-        <h1 className="fw-bold mb-0" style={{ fontSize: '1.6rem', color: '#0d1b2a' }}>Indstillinger</h1>
-        <p className="mt-1 mb-0" style={{ fontSize: '0.85rem', color: '#5a6a7a' }}>
-          Gælder for alle beboere i denne ejendom.
-        </p>
-      </div>
+      <PageHeader
+        eyebrow={property.name}
+        title="Indstillinger"
+        description="Gælder for alle beboere i denne ejendom."
+      />
 
       <form onSubmit={handleSubmit} style={{ maxWidth: 640 }}>
 

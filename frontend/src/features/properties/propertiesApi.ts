@@ -27,6 +27,14 @@ export interface PropertyDto {
   memberCount: number
 }
 
+export interface PropertyDetailDto {
+  id: string
+  name: string
+  address: string
+  settings: ComplexSettingsDto
+  members: unknown[]
+}
+
 export interface UpdateComplexSettingsRequest {
   bookingMode: BookingMode
   cancellationWindowMinutes: number
@@ -37,7 +45,7 @@ export interface UpdateComplexSettingsRequest {
 
 export const propertiesApi = baseApi.injectEndpoints({
   endpoints: (build) => ({
-    getProperty: build.query<PropertyDto, string>({
+    getProperty: build.query<PropertyDetailDto, string>({
       query: (id) => `/api/properties/${id}`,
       providesTags: (_result, _err, id) => [{ type: 'Property', id }],
     }),
@@ -50,7 +58,6 @@ export const propertiesApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: (_result, _err, { propertyId }) => [
         { type: 'Property', id: propertyId },
-        { type: 'Auth', id: 'me' },
       ],
     }),
   }),
