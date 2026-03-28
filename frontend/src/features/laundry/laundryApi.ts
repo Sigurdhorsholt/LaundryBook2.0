@@ -21,6 +21,13 @@ export interface LaundryMachineDto {
   isActive: boolean
 }
 
+export interface TimeSlotTemplateDto {
+  id: string
+  startTime: string   // "HH:mm:ss"
+  endTime: string     // "HH:mm:ss"
+  isActive: boolean
+}
+
 export const laundryApi = baseApi.injectEndpoints({
   endpoints: (build) => ({
 
@@ -95,6 +102,30 @@ export const laundryApi = baseApi.injectEndpoints({
         { type: 'LaundryRoom', id: propertyId },  // refresh machineCount
       ],
     }),
+
+    // ── Time Slot Templates ───────────────────────────────────────────────────
+
+    getTimeSlots: build.query<TimeSlotTemplateDto[], string>({
+      query: (roomId) => `/api/laundry-rooms/${roomId}/timeslots`,
+      providesTags: (_result, _err, roomId) => [{ type: 'TimeSlot', id: roomId }],
+    }),
+
+    createTimeSlot: build.mutation<{ id: string }, { roomId: string; startTime: string; endTime: string }>({
+      query: ({ roomId, startTime, endTime }) => ({
+        url: `/api/laundry-rooms/${roomId}/timeslots`,
+        method: 'POST',
+        body: { startTime, endTime },
+      }),
+      invalidatesTags: (_result, _err, { roomId }) => [{ type: 'TimeSlot', id: roomId }],
+    }),
+
+    deleteTimeSlot: build.mutation<void, { roomId: string; templateId: string }>({
+      query: ({ roomId, templateId }) => ({
+        url: `/api/laundry-rooms/${roomId}/timeslots/${templateId}`,
+        method: 'DELETE',
+      }),
+      invalidatesTags: (_result, _err, { roomId }) => [{ type: 'TimeSlot', id: roomId }],
+    }),
   }),
 })
 
@@ -107,4 +138,7 @@ export const {
   useCreateMachineMutation,
   useUpdateMachineMutation,
   useDeleteMachineMutation,
+  useGetTimeSlotsQuery,
+  useCreateTimeSlotMutation,
+  useDeleteTimeSlotMutation,
 } = laundryApi
