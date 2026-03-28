@@ -32,6 +32,14 @@ public class ExceptionHandlingMiddleware(RequestDelegate next, ILogger<Exception
                 status = 404
             });
         }
+        catch (ConflictException ex)
+        {
+            await WriteJson(context, (int)HttpStatusCode.Conflict, new
+            {
+                title = ex.Message,
+                status = 409
+            });
+        }
         catch (ForbiddenException ex)
         {
             await WriteJson(context, (int)HttpStatusCode.Forbidden, new
