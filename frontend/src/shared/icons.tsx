@@ -106,6 +106,12 @@ export function IconMenu({ size = defaults.size, color = defaults.color, strokeW
   </>)
 }
 
+export function IconShield({ size = defaults.size, color = defaults.color, strokeWidth = defaults.strokeWidth }: IconProps) {
+  return base(size, color, strokeWidth, <>
+    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+  </>)
+}
+
 export function IconBrand({ size = defaults.size, color = '#1565c0', strokeWidth = defaults.strokeWidth }: IconProps) {
   return base(size, color, strokeWidth, <>
     <circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="4"/>

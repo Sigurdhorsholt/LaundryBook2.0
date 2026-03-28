@@ -1,7 +1,7 @@
 import type { ComponentType, ReactNode } from 'react'
 import type { FeatureKey } from '../config/features'
 import { UserRole } from '../features/auth/authApi'
-import { IconGrid, IconBuilding, IconCalendar } from '../shared/icons'
+import { IconGrid, IconBuilding, IconCalendar, IconShield } from '../shared/icons'
 
 import { LandingPage } from '../pages/LandingPage'
 import { JoinPage } from '../pages/JoinPage'
@@ -16,6 +16,7 @@ import { LaundryRoomsPage } from '../pages/admin/properties/LaundryRoomsPage'
 import { PropertyTimeslotsPage } from '../pages/admin/properties/PropertyTimeslotsPage'
 import { PropertyBookingsPage } from '../pages/admin/properties/PropertyBookingsPage'
 import { BookingPreviewPage } from '../pages/admin/properties/BookingPreviewPage'
+import { SysAdminPage } from '../pages/admin/SysAdminPage'
 
 export interface AppRoute {
   path: string
@@ -66,6 +67,17 @@ export const routes: AppRoute[] = [
     minRole: UserRole.ComplexAdmin,
     label: 'Ejendomme',
     icon: <IconBuilding />,
+  },
+
+  // ── Admin shell — SysAdmin-only pages ──────────────────────────────────────
+  {
+    path: '/admin/system',
+    component: SysAdminPage,
+    layout: 'admin',
+    protected: true,
+    minRole: UserRole.SysAdmin,
+    label: 'System',
+    icon: <IconShield />,
   },
 
   // ── Admin shell — property sub-pages (no label = not in top nav) ────────────

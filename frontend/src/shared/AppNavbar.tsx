@@ -4,6 +4,8 @@ import { useDispatch } from 'react-redux'
 import { signOut } from 'firebase/auth'
 import { firebaseAuth } from '../lib/firebase'
 import { useMeQuery, useLogoutMutation } from '../features/auth/authApi'
+import { isAdmin } from './roleUtils'
+import { colors } from './theme'
 import { baseApi } from '../app/baseApi'
 import { routes } from '../app/routes'
 import { isEnabled } from '../config/features'
@@ -72,6 +74,15 @@ export function AppNavbar() {
               {user.email}
             </span>
           )}
+          {user && isAdmin(user) && (
+            <NavLink
+              to="/admin"
+              className="btn btn-sm"
+              style={{ borderRadius: '7px', fontSize: '0.85rem', backgroundColor: colors.bgSubtle, color: colors.textSecondary, border: 'none' }}
+            >
+              Admin
+            </NavLink>
+          )}
           <button
             className="btn btn-outline-secondary btn-sm"
             style={{ borderRadius: '7px', fontSize: '0.85rem' }}
@@ -122,6 +133,15 @@ export function AppNavbar() {
               <span className="px-2 py-1 text-truncate" style={{ color: '#5a6a7a', fontSize: '0.82rem' }}>
                 {user.email}
               </span>
+            )}
+            {user && isAdmin(user) && (
+              <NavLink
+                to="/admin"
+                className="d-block py-2 px-2 rounded-2 text-decoration-none fw-medium text-secondary"
+                style={{ fontSize: '0.95rem' }}
+              >
+                Admin
+              </NavLink>
             )}
             <button
               className="btn btn-outline-secondary btn-sm mb-2"

@@ -133,8 +133,6 @@ export function AdminLayout() {
   const [logout] = useLogoutMutation()
   useSidebarAutoClose()
 
-  const role = user ? getHighestRole(user) : null
-
   // Detect if we're inside a specific property's pages
   const propertyMatch = useMatch({ path: '/admin/properties/:propertyId', end: false })
   const activePropertyId = propertyMatch?.params.propertyId ?? null
@@ -142,9 +140,16 @@ export function AdminLayout() {
     ? user?.memberships.find((m) => m.propertyId === activePropertyId)
     : null
 
+  const userRole = user ? getHighestRole(user) : null
+
   // Top-level sidebar items (only shown when NOT inside a property)
+  // Filtered by feature flag and role so SysAdmin-only routes are hidden from lower roles
   const topLevelItems = routes.filter(
-    (r) => r.layout === 'admin' && r.label && (!r.feature || isEnabled(r.feature))
+    (r) =>
+      r.layout === 'admin' &&
+      r.label &&
+      (!r.feature || isEnabled(r.feature)) &&
+      (r.minRole === undefined || (userRole !== null && userRole >= r.minRole))
   )
 
   // Property sub-nav sections (shown when inside a property)
@@ -196,16 +201,23 @@ export function AdminLayout() {
             </span>
           </NavLink>
 
-          {/* User info + logout */}
+          {/* User info + actions */}
           <div className="d-flex align-items-center gap-2 gap-sm-3">
             <div className="d-none d-md-flex flex-column align-items-end" style={{ lineHeight: 1.25 }}>
               <span style={{ fontSize: '0.82rem', fontWeight: 600, color: colors.textPrimary }}>
                 {user?.firstName ? `${user.firstName} ${user.lastName}` : user?.email}
               </span>
-              {role !== null && (
-                <span style={{ fontSize: '0.72rem', color: colors.textSecondary }}>{ROLE_LABEL[role] ?? ''}</span>
+              {userRole !== null && (
+                <span style={{ fontSize: '0.72rem', color: colors.textSecondary }}>{ROLE_LABEL[userRole] ?? ''}</span>
               )}
             </div>
+            <NavLink
+              to="/laundry"
+              className="btn btn-sm d-none d-sm-inline-flex align-items-center gap-1"
+              style={{ borderRadius: '7px', fontSize: '0.82rem', whiteSpace: 'nowrap', backgroundColor: colors.primaryLight, color: colors.primary, border: 'none' }}
+            >
+              Beboervisning
+            </NavLink>
             <button
               className="btn btn-outline-secondary btn-sm"
               style={{ borderRadius: '7px', fontSize: '0.82rem', whiteSpace: 'nowrap' }}
