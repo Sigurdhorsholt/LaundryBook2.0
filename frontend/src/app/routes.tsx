@@ -15,6 +15,7 @@ import { PropertySettingsPage } from '../pages/admin/properties/PropertySettings
 import { LaundryRoomsPage } from '../pages/admin/properties/LaundryRoomsPage'
 import { PropertyTimeslotsPage } from '../pages/admin/properties/PropertyTimeslotsPage'
 import { PropertyBookingsPage } from '../pages/admin/properties/PropertyBookingsPage'
+import { BookingPreviewPage } from '../pages/admin/properties/BookingPreviewPage'
 
 export interface AppRoute {
   path: string
@@ -109,6 +110,14 @@ export const routes: AppRoute[] = [
   {
     path: '/admin/properties/:propertyId/bookings',
     component: PropertyBookingsPage,
+    layout: 'admin',
+    protected: true,
+    minRole: UserRole.ComplexAdmin,
+    feature: 'laundryBooking',
+  },
+  {
+    path: '/admin/properties/:propertyId/preview',
+    component: BookingPreviewPage,
     layout: 'admin',
     protected: true,
     minRole: UserRole.ComplexAdmin,
