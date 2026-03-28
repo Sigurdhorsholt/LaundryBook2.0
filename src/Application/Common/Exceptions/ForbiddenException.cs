@@ -5,3 +5,6 @@ public class ForbiddenException(string message = "You do not have permission to 
 
 public class NotFoundException(string entity, object key)
     : Exception($"{entity} '{key}' was not found.");
+
+public class ConflictException(string message)
+    : Exception(message);
