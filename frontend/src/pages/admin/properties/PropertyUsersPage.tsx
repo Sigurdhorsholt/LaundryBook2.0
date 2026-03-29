@@ -11,9 +11,9 @@ import {
   useResendInviteMutation,
   useDeleteInviteMutation,
   type PropertyMemberDto,
+  type PendingInviteDto,
 } from '../../../features/users/usersApi'
-import { MemberRow, MemberCard } from './MemberRow'
-import { PendingInviteRow, PendingInviteCard } from './PendingInviteRow'
+import { UserRow, UserCard } from './UserRow'
 import { IconPlus } from '../../../shared/icons'
 import { PageHeader, Spinner } from '../../../shared/ui'
 import { colors } from '../../../shared/theme'
@@ -37,9 +37,13 @@ export function PropertyUsersPage() {
   const [resendInvite] = useResendInviteMutation()
   const [deleteInvite] = useDeleteInviteMutation()
 
+  const [openMenuId, setOpenMenuId] = useState<string | null>(null)
   const [actionLoadingId, setActionLoadingId] = useState<string | null>(null)
   const [resetSuccessId, setResetSuccessId] = useState<string | null>(null)
   const [resendSuccessId, setResendSuccessId] = useState<string | null>(null)
+
+  const toggleMenu = (id: string) => setOpenMenuId((prev) => (prev === id ? null : id))
+  const closeMenu = () => setOpenMenuId(null)
 
   async function handleToggleActive(member: PropertyMemberDto) {
     setActionLoadingId(member.userId)
@@ -96,6 +100,40 @@ export function PropertyUsersPage() {
     }
   }
 
+  function memberRowProps(m: PropertyMemberDto) {
+    return {
+      kind: 'member' as const,
+      member: m,
+      isSelf: m.userId === currentUser?.id,
+      isActionLoading: actionLoadingId === m.userId,
+      showResetSuccess: resetSuccessId === m.userId,
+      isMenuOpen: openMenuId === m.userId,
+      onMenuToggle: () => toggleMenu(m.userId),
+      onMenuClose: closeMenu,
+      onEdit: () => openModal('editMember', { propertyId: propertyId!, member: m }),
+      onToggleActive: () => handleToggleActive(m),
+      onForceReset: () => handleForceReset(m.userId),
+      onDelete: () => handleDelete(m.userId),
+    }
+  }
+
+  function inviteRowProps(invite: PendingInviteDto) {
+    return {
+      kind: 'invite' as const,
+      invite,
+      isActionLoading: actionLoadingId === invite.inviteId,
+      showResendSuccess: resendSuccessId === invite.inviteId,
+      isMenuOpen: openMenuId === invite.inviteId,
+      onMenuToggle: () => toggleMenu(invite.inviteId),
+      onMenuClose: closeMenu,
+      onResend: () => handleResendInvite(invite.inviteId),
+      onDelete: () => {
+          console.log(11111)
+          handleDeleteInvite(invite.inviteId)
+      },
+    }
+  }
+
   const isEmpty = members.length === 0 && pendingInvites.length === 0
   const totalCount = members.length + pendingInvites.length
   const countLabel = `${totalCount} bruger${totalCount !== 1 ? 'e' : ''}${pendingInvites.length > 0 ? ` (${pendingInvites.length} afventer)` : ''}`
@@ -116,32 +154,12 @@ export function PropertyUsersPage() {
       </div>
     )
   } else {
-    const memberProps = (m: PropertyMemberDto) => ({
-      member: m,
-      isSelf: m.userId === currentUser?.id,
-      isActionLoading: actionLoadingId === m.userId,
-      showResetSuccess: resetSuccessId === m.userId,
-      onEdit: () => openModal('editMember', { propertyId: propertyId!, member: m }),
-      onToggleActive: () => handleToggleActive(m),
-      onForceReset: () => handleForceReset(m.userId),
-      onDelete: () => handleDelete(m.userId),
-    })
-
     tableContent = (
       <>
         {/* ── Mobile: card list (hidden md+) ── */}
         <div className="d-md-none">
-          {members.map((m) => <MemberCard key={m.userId} {...memberProps(m)} />)}
-          {pendingInvites.map((invite) => (
-            <PendingInviteCard
-              key={invite.inviteId}
-              invite={invite}
-              isActionLoading={actionLoadingId === invite.inviteId}
-              showResendSuccess={resendSuccessId === invite.inviteId}
-              onResend={() => handleResendInvite(invite.inviteId)}
-              onDelete={() => handleDeleteInvite(invite.inviteId)}
-            />
-          ))}
+          {members.map((m) => <UserCard key={m.userId} {...memberRowProps(m)} />)}
+          {pendingInvites.map((invite) => <UserCard key={invite.inviteId} {...inviteRowProps(invite)} />)}
         </div>
 
         {/* ── Desktop: table (hidden below md) ── */}
@@ -149,26 +167,17 @@ export function PropertyUsersPage() {
           <table className="table table-hover mb-0" style={{ fontSize: '0.875rem' }}>
             <thead style={{ backgroundColor: colors.bgPage }}>
               <tr>
-                <th className="border-0 px-4 py-3 fw-semibold" style={thStyle}>Navn</th>
+                <th className="border-0 px-4 py-3 fw-semibold" style={{ ...thStyle, borderTopLeftRadius: '0.5rem' }}>Navn</th>
                 <th className="border-0 px-4 py-3 fw-semibold" style={thStyle}>Email</th>
                 <th className="border-0 px-4 py-3 fw-semibold" style={thStyle}>Lejlighed</th>
                 <th className="border-0 px-4 py-3 fw-semibold" style={thStyle}>Rolle</th>
                 <th className="border-0 px-4 py-3 fw-semibold" style={thStyle}>Status</th>
-                <th className="border-0 px-4 py-3" />
+                <th className="border-0 px-4 py-3" style={{ borderTopRightRadius: '0.5rem' }} />
               </tr>
             </thead>
             <tbody>
-              {members.map((m) => <MemberRow key={m.userId} {...memberProps(m)} />)}
-              {pendingInvites.map((invite) => (
-                <PendingInviteRow
-                  key={invite.inviteId}
-                  invite={invite}
-                  isActionLoading={actionLoadingId === invite.inviteId}
-                  showResendSuccess={resendSuccessId === invite.inviteId}
-                  onResend={() => handleResendInvite(invite.inviteId)}
-                  onDelete={() => handleDeleteInvite(invite.inviteId)}
-                />
-              ))}
+              {members.map((m) => <UserRow key={m.userId} {...memberRowProps(m)} />)}
+              {pendingInvites.map((invite) => <UserRow key={invite.inviteId} {...inviteRowProps(invite)} />)}
             </tbody>
           </table>
         </div>
@@ -193,7 +202,7 @@ export function PropertyUsersPage() {
         }
       />
 
-      <div className="bg-white rounded-3" style={{ border: `1px solid ${colors.borderDefault}`, overflow: 'hidden' }}>
+      <div className="bg-white rounded-3" style={{ border: `1px solid ${colors.borderDefault}` }}>
         {tableContent}
       </div>
 
