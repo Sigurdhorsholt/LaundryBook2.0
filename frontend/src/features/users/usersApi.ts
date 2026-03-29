@@ -105,6 +105,14 @@ export const usersApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: (_result, _err, { propertyId }) => [{ type: 'Auth', id: `pending-${propertyId}` }],
     }),
+
+    deleteInvite: builder.mutation<void, { propertyId: string; inviteId: string }>({
+      query: ({ propertyId, inviteId }) => ({
+        url: `/api/properties/${propertyId}/members/pending/${inviteId}`,
+        method: 'DELETE',
+      }),
+      invalidatesTags: (_result, _err, { propertyId }) => [{ type: 'Auth', id: `pending-${propertyId}` }],
+    }),
   }),
 })
 
@@ -117,4 +125,5 @@ export const {
   useCreateInviteTokenMutation,
   useGetPendingInvitesQuery,
   useResendInviteMutation,
+  useDeleteInviteMutation,
 } = usersApi

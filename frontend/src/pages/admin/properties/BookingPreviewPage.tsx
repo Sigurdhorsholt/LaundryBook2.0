@@ -341,6 +341,8 @@ export function BookingPreviewPage() {
             })}
           </div>
         </div>
+          
+          
 
         {/* Room selector */}
         {activeRooms.length > 1 && (

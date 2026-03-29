@@ -1,158 +1,233 @@
-import { useState, useEffect } from 'react'
-import { NavLink, useNavigate, useLocation } from 'react-router-dom'
-import { useDispatch } from 'react-redux'
-import { signOut } from 'firebase/auth'
-import { firebaseAuth } from '../lib/firebase'
-import { useMeQuery, useLogoutMutation } from '../features/auth/authApi'
-import { isAdmin } from './roleUtils'
-import { colors } from './theme'
-import { baseApi } from '../app/baseApi'
-import { routes } from '../app/routes'
-import { isEnabled } from '../config/features'
+import {NavLink, useNavigate, useLocation} from 'react-router-dom'
+import {useEffect} from 'react'
+import {useDispatch} from 'react-redux'
+import {signOut} from 'firebase/auth'
+import {firebaseAuth} from '../lib/firebase'
+import {useMeQuery, useLogoutMutation} from '../features/auth/authApi'
+import {isAdmin as checkIsAdmin} from './roleUtils'
+import {colors} from './theme'
+import {baseApi} from '../app/baseApi'
+import {BrandLogo} from './BrandLogo'
+import {IconMenu} from './icons'
 
-const BrandLogo = () => (
-  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#1565c0" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <circle cx="12" cy="12" r="10" />
-    <circle cx="12" cy="12" r="4" />
-    <path d="M2 12h3M19 12h3M12 2v3M12 19v3" />
-  </svg>
-)
+const NAV_OFFCANVAS_ID = 'navMenuOffcanvas'
 
-export function AppNavbar() {
-  const navigate = useNavigate()
-  const location = useLocation()
-  const { data: user } = useMeQuery()
-  const [logout] = useLogoutMutation()
-  const dispatch = useDispatch()
-  const [open, setOpen] = useState(false)
+interface NavbarProps {
+    isAdmin?: boolean
+}
 
-  useEffect(() => { setOpen(false) }, [location.pathname])
+function useNavMenuAutoClose() {
+    const location = useLocation()
+    useEffect(() => {
+        const el = document.getElementById(NAV_OFFCANVAS_ID)
+        if (!el) return
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const instance = (window as any).bootstrap?.Offcanvas?.getInstance(el)
+        instance?.hide()
+    }, [location.pathname])
+}
 
-  const navItems = routes.filter(
-    (r) => r.layout === 'app' && r.label && (!r.feature || isEnabled(r.feature))
-  )
+export function AppNavbar({isAdmin = false}: NavbarProps) {
+    const navigate = useNavigate()
+    const {data: user} = useMeQuery()
+    const [logout] = useLogoutMutation()
+    const dispatch = useDispatch()
+    useNavMenuAutoClose()
 
-  async function handleLogout() {
-    await logout()
-    await signOut(firebaseAuth)
-    dispatch(baseApi.util.resetApiState())
-    navigate('/', { replace: true })
-  }
+    const showAdminLink = !isAdmin && user && checkIsAdmin(user)
 
-  return (
-    <nav
-      className="sticky-top border-bottom"
-      style={{ backgroundColor: 'rgba(255,255,255,0.95)', backdropFilter: 'blur(10px)', zIndex: 1030 }}
-    >
-      {/* ── Top row: brand + toggle ── */}
-      <div className="container-xl px-4 d-flex align-items-center" style={{ height: 56 }}>
-        <NavLink
-          to="/laundry"
-          className="d-flex align-items-center gap-2 fw-bold text-decoration-none me-auto"
-          style={{ color: '#0d1b2a', fontSize: '1.1rem', letterSpacing: '-0.2px' }}
-        >
-          <BrandLogo />
-          LaundryBook
-        </NavLink>
+    async function handleLogout() {
+        await logout()
+        await signOut(firebaseAuth)
+        dispatch(baseApi.util.resetApiState())
+        navigate('/', {replace: true})
+    }
 
-        {/* Desktop: links + user inline */}
-        <div className="d-none d-lg-flex align-items-center gap-4">
-          {navItems.map((route) => (
-            <NavLink
-              key={route.path}
-              to={route.path}
-              className={({ isActive }) =>
-                `text-decoration-none fw-medium ${isActive ? 'text-primary' : 'text-secondary'}`
-              }
-              style={{ fontSize: '0.9rem' }}
+    return (
+        <>
+            <nav
+                className="sticky-top border-bottom flex-shrink-0"
+                style={{backgroundColor: 'rgba(255,255,255,0.96)', backdropFilter: 'blur(10px)', zIndex: 1040}}
             >
-              {route.label}
-            </NavLink>
-          ))}
-          {user && (
-            <span style={{ color: '#5a6a7a', fontSize: '0.85rem', maxWidth: 200 }} className="text-truncate">
-              {user.email}
-            </span>
-          )}
-          {user && isAdmin(user) && (
-            <NavLink
-              to="/admin"
-              className="btn btn-sm"
-              style={{ borderRadius: '7px', fontSize: '0.85rem', backgroundColor: colors.bgSubtle, color: colors.textSecondary, border: 'none' }}
-            >
-              Admin
-            </NavLink>
-          )}
-          <button
-            className="btn btn-outline-secondary btn-sm"
-            style={{ borderRadius: '7px', fontSize: '0.85rem' }}
-            onClick={handleLogout}
-          >
-            Log ud
-          </button>
-        </div>
+                <div className="container-fluid px-3 px-lg-4 d-flex align-items-center" style={{height: 56}}>
 
-        {/* Mobile: hamburger */}
-        <button
-          className="btn border-0 d-lg-none p-1"
-          type="button"
-          aria-expanded={open}
-          aria-label={open ? 'Luk menu' : 'Åbn menu'}
-          onClick={() => setOpen((o) => !o)}
-        >
-          {open ? (
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
-              <line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" />
-            </svg>
-          ) : (
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
-              <line x1="3" y1="6" x2="21" y2="6" /><line x1="3" y1="12" x2="21" y2="12" /><line x1="3" y1="18" x2="21" y2="18" />
-            </svg>
-          )}
-        </button>
-      </div>
+                    {/* Admin: sidebar offcanvas toggle (mobile only) */}
+                    {isAdmin && (
+                        <button
+                            className="btn d-lg-none p-2 me-2"
+                            style={{color: colors.textSecondary}}
+                            type="button"
+                            data-bs-toggle="offcanvas"
+                            data-bs-target="#adminSidebar"
+                            aria-controls="adminSidebar"
+                            aria-label="Åbn sidepanel"
+                        >
+                            <IconMenu size={20}/>
+                        </button>
+                    )}
 
-      {/* ── Mobile dropdown ── */}
-      {open && (
-        <div className="border-top d-lg-none" style={{ backgroundColor: '#fff' }}>
-          <div className="container-xl px-4 py-2 d-flex flex-column gap-1">
-            {navItems.map((route) => (
-              <NavLink
-                key={route.path}
-                to={route.path}
-                className={({ isActive }) =>
-                  `d-block py-2 px-2 rounded-2 text-decoration-none fw-medium ${isActive ? 'text-primary' : 'text-secondary'}`
-                }
-                style={{ fontSize: '0.95rem' }}
-              >
-                {route.label}
-              </NavLink>
-            ))}
-            <div className="border-top my-1" />
-            {user && (
-              <span className="px-2 py-1 text-truncate" style={{ color: '#5a6a7a', fontSize: '0.82rem' }}>
-                {user.email}
-              </span>
-            )}
-            {user && isAdmin(user) && (
-              <NavLink
-                to="/admin"
-                className="d-block py-2 px-2 rounded-2 text-decoration-none fw-medium text-secondary"
-                style={{ fontSize: '0.95rem' }}
-              >
+                    {/* Brand */}
+                    <NavLink
+                        to={isAdmin ? '/admin' : '/laundry'}
+                        className="navbar-brand d-flex align-items-center gap-2 fw-bold text-decoration-none"
+                        style={{color: colors.textPrimary, fontSize: '1.05rem', letterSpacing: '-0.2px'}}
+                    >
+                        <BrandLogo size={18}/>
+                        LaundryBook
+                        {isAdmin && (
+                            <span
+                                className="badge ms-1"
+                                style={{
+                                    backgroundColor: colors.primaryLight,
+                                    color: colors.primary,
+                                    fontSize: '0.7rem',
+                                    fontWeight: 600
+                                }}
+                            >
                 Admin
-              </NavLink>
-            )}
-            <button
-              className="btn btn-outline-secondary btn-sm mb-2"
-              style={{ borderRadius: '7px', fontSize: '0.85rem', alignSelf: 'flex-start' }}
-              onClick={handleLogout}
+              </span>
+                        )}
+                    </NavLink>
+
+                    {/* Desktop: nav links */}
+                    <div className="d-none d-lg-flex align-items-center gap-1 ms-auto">
+                        {showAdminLink && (
+                            <NavLink
+                                to="/admin"
+                                className="btn btn-sm"
+                                style={({isActive}) => ({
+                                    borderRadius: '7px', fontSize: '0.85rem',
+                                    color: isActive ? colors.primary : colors.textSecondary,
+                                    backgroundColor: isActive ? colors.primaryLight : undefined,
+                                    fontWeight: isActive ? 600 : undefined,
+                                })}
+                            >
+                                Admin
+                            </NavLink>
+                        )}
+                        <NavLink
+                            to="/laundry"
+                            className="btn btn-sm"
+                            style={({isActive}) => ({
+                                borderRadius: '7px', fontSize: '0.85rem',
+                                color: isActive ? colors.primary : colors.textSecondary,
+                                backgroundColor: isActive ? colors.primaryLight : undefined,
+                                fontWeight: isActive ? 600 : undefined,
+                            })}
+                        >
+                            Vaskebooking
+                        </NavLink>
+                        <a
+                            href="/my-page"
+                            className="btn btn-sm"
+                            style={{borderRadius: '7px', fontSize: '0.85rem', color: colors.textSecondary}}
+                        >
+                            Min side
+                        </a>
+                        <a
+                            href="#"
+                            className="btn btn-sm"
+                            style={{borderRadius: '7px', fontSize: '0.85rem', color: colors.textSecondary}}
+                        >
+                            Om LaundryBook
+                        </a>
+                        <button
+                            className="btn btn-sm btn-outline-secondary ms-1"
+                            style={{borderRadius: '7px', fontSize: '0.85rem'}}
+                            onClick={handleLogout}
+                        >
+                            Log ud
+                        </button>
+                    </div>
+
+                    {/* Mobile: nav menu toggle */}
+                    <button
+                        className="btn d-lg-none ms-auto p-2"
+                        style={{color: colors.textSecondary}}
+                        type="button"
+                        data-bs-toggle="offcanvas"
+                        data-bs-target={`#${NAV_OFFCANVAS_ID}`}
+                        aria-controls={NAV_OFFCANVAS_ID}
+                        aria-label="Åbn navigation"
+                    >
+                        <IconMenu size={22}/>
+                    </button>
+
+                </div>
+            </nav>
+
+            {/* ── Full-screen slide-in nav menu (mobile) ── */}
+            <div
+                className="offcanvas offcanvas-end"
+                id={NAV_OFFCANVAS_ID}
+                tabIndex={-1}
+                aria-labelledby="navMenuOffcanvasLabel"
+                style={{width: 'min(320px, 85vw)'}}
             >
-              Log ud
-            </button>
-          </div>
-        </div>
-      )}
-    </nav>
-  )
+                <div className="offcanvas-header border-bottom px-4 py-3">
+                    <div className="d-flex align-items-center gap-2">
+                        <BrandLogo size={18}/>
+                        <span id="navMenuOffcanvasLabel" className="fw-bold"
+                              style={{color: colors.textPrimary, fontSize: '1.05rem'}}>
+              LaundryBook
+            </span>
+                    </div>
+                    <button
+                        type="button"
+                        className="btn-close"
+                        data-bs-dismiss="offcanvas"
+                        aria-label="Luk"
+                    />
+                </div>
+
+                <div className="offcanvas-body px-4 py-3 d-flex flex-column">
+                    {showAdminLink && (
+                        <NavLink
+                            to="/admin"
+                            className="text-decoration-none py-3 border-bottom fw-medium"
+                            style={({isActive}) => ({
+                                fontSize: '1.1rem',
+                                color: isActive ? colors.primary : colors.textPrimary,
+                                fontWeight: isActive ? 700 : undefined,
+                            })}
+                        >
+                            Admin
+                        </NavLink>
+                    )}
+                    <NavLink
+                        to="/laundry"
+                        className="text-decoration-none py-3 border-bottom fw-medium"
+                        style={({isActive}) => ({
+                            fontSize: '1.1rem',
+                            color: isActive ? colors.primary : colors.textPrimary,
+                            fontWeight: isActive ? 700 : undefined,
+                        })}
+                    >
+                        Vaskebooking
+                    </NavLink>
+                    <a
+                        href="/my-page"
+                        className="text-decoration-none py-3 border-bottom fw-medium"
+                        style={{fontSize: '1.1rem', color: colors.textPrimary}}
+                    >
+                        Min side
+                    </a>
+                    <a
+                        href="#"
+                        className="text-decoration-none py-3 border-bottom fw-medium"
+                        style={{fontSize: '1.1rem', color: colors.textPrimary}}
+                    >
+                        Om LaundryBook
+                    </a>
+                    <button
+                        className="btn btn-outline-secondary mt-4"
+                        style={{borderRadius: '8px', fontSize: '0.95rem', alignSelf: 'flex-start', minWidth: 120}}
+                        onClick={handleLogout}
+                    >
+                        Log ud
+                    </button>
+                </div>
+            </div>
+        </>
+    )
 }

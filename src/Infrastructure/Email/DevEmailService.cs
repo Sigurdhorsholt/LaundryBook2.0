@@ -9,9 +9,16 @@ namespace Infrastructure.Email;
 /// </summary>
 public class DevEmailService(ILogger<DevEmailService> logger) : IEmailService
 {
-    public Task SendPasswordSetupEmailAsync(string toEmail, string passwordSetupLink, CancellationToken cancellationToken = default)
+    public Task SendPasswordSetupEmailAsync(
+        string toEmail,
+        string passwordSetupLink,
+        string propertyName,
+        string propertyAddress,
+        string adminName,
+        CancellationToken cancellationToken = default)
     {
-        logger.LogInformation("[DEV] Password setup email for {Email}: {Link}", toEmail, passwordSetupLink);
+        logger.LogInformation("[DEV] Invite email for {Email} | Property: {Property} ({Address}) | Sent by: {Admin} | Link: {Link}",
+            toEmail, propertyName, propertyAddress, adminName, passwordSetupLink);
         return Task.CompletedTask;
     }
 

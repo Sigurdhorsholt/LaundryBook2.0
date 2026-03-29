@@ -52,6 +52,14 @@ public class AuthController(IMediator mediator, IWebHostEnvironment env) : Contr
         return Ok(info);
     }
 
+    [Authorize]
+    [HttpPut("me")]
+    public async Task<IActionResult> UpdateMe([FromBody] UpdateMeRequest request, CancellationToken ct)
+    {
+        await mediator.Send(new UpdateCurrentUserCommand(request.FirstName, request.LastName), ct);
+        return NoContent();
+    }
+
     [HttpPost("forgot-password")]
     public async Task<IActionResult> ForgotPassword([FromBody] ForgotPasswordRequest request, CancellationToken ct)
     {
@@ -72,5 +80,6 @@ public class AuthController(IMediator mediator, IWebHostEnvironment env) : Contr
 }
 
 public record LoginRequest(string IdToken);
+public record UpdateMeRequest(string FirstName, string LastName);
 public record ForgotPasswordRequest(string Email);
 public record RedeemInviteRequest(string IdToken, string InviteToken, string? ApartmentNumber, string FirstName, string LastName);

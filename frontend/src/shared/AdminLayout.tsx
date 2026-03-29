@@ -1,19 +1,14 @@
 import { Outlet, NavLink, useNavigate, useLocation, useMatch } from 'react-router-dom'
 import { useEffect } from 'react'
-import { useDispatch } from 'react-redux'
-import { signOut } from 'firebase/auth'
-import { firebaseAuth } from '../lib/firebase'
-import { useMeQuery, useLogoutMutation } from '../features/auth/authApi'
-import { baseApi } from '../app/baseApi'
+import { useMeQuery } from '../features/auth/authApi'
 import { routes } from '../app/routes'
 import { isEnabled } from '../config/features'
 import { getHighestRole } from './roleUtils'
-import { ROLE_LABEL } from './constants'
-import { BrandLogo } from './BrandLogo'
 import { colors } from './theme'
+import { AppNavbar } from './AppNavbar'
 import {
   IconUsers, IconSettings, IconBuilding, IconClock, IconCalendarCheck, IconCalendar,
-  IconChevronLeft, IconMenu,
+  IconChevronLeft,
 } from './icons'
 
 interface SubNavSection {
@@ -128,9 +123,7 @@ function useSidebarAutoClose() {
 
 export function AdminLayout() {
   const navigate = useNavigate()
-  const dispatch = useDispatch()
   const { data: user } = useMeQuery()
-  const [logout] = useLogoutMutation()
   useSidebarAutoClose()
 
   // Detect if we're inside a specific property's pages
@@ -155,80 +148,10 @@ export function AdminLayout() {
   // Property sub-nav sections (shown when inside a property)
   const propertySubNav = activePropertyId ? buildPropertySubNav(activePropertyId) : []
 
-  async function handleLogout() {
-    await logout()
-    await signOut(firebaseAuth)
-    dispatch(baseApi.util.resetApiState())
-    navigate('/', { replace: true })
-  }
-
   return (
     <div className="d-flex flex-column min-vh-100">
 
-      {/* ── Top bar ─────────────────────────────────────────────────────────── */}
-      <nav
-        className="navbar sticky-top border-bottom flex-shrink-0"
-        style={{ backgroundColor: 'rgba(255,255,255,0.96)', backdropFilter: 'blur(10px)', zIndex: 1040 }}
-      >
-        <div className="container-fluid px-3 px-lg-4">
-
-          {/* Mobile hamburger */}
-          <button
-            className="btn d-lg-none p-2 me-1"
-            style={{ color: colors.textSecondary }}
-            type="button"
-            data-bs-toggle="offcanvas"
-            data-bs-target="#adminSidebar"
-            aria-controls="adminSidebar"
-            aria-label="Åbn menu"
-          >
-            <IconMenu size={20} />
-          </button>
-
-          {/* Brand */}
-          <NavLink
-            to="/admin"
-            className="navbar-brand d-flex align-items-center gap-2 fw-bold text-decoration-none me-auto"
-            style={{ color: colors.textPrimary, fontSize: '1.05rem', letterSpacing: '-0.2px' }}
-          >
-            <BrandLogo size={18} />
-            LaundryBook
-            <span
-              className="d-none d-sm-inline badge ms-1"
-              style={{ backgroundColor: colors.primaryLight, color: colors.primary, fontSize: '0.7rem', fontWeight: 600 }}
-            >
-              Admin
-            </span>
-          </NavLink>
-
-          {/* User info + actions */}
-          <div className="d-flex align-items-center gap-2 gap-sm-3">
-            <div className="d-none d-md-flex flex-column align-items-end" style={{ lineHeight: 1.25 }}>
-              <span style={{ fontSize: '0.82rem', fontWeight: 600, color: colors.textPrimary }}>
-                {user?.firstName ? `${user.firstName} ${user.lastName}` : user?.email}
-              </span>
-              {userRole !== null && (
-                <span style={{ fontSize: '0.72rem', color: colors.textSecondary }}>{ROLE_LABEL[userRole] ?? ''}</span>
-              )}
-            </div>
-            <NavLink
-              to="/laundry"
-              className="btn btn-sm d-none d-sm-inline-flex align-items-center gap-1"
-              style={{ borderRadius: '7px', fontSize: '0.82rem', whiteSpace: 'nowrap', backgroundColor: colors.primaryLight, color: colors.primary, border: 'none' }}
-            >
-              Beboervisning
-            </NavLink>
-            <button
-              className="btn btn-outline-secondary btn-sm"
-              style={{ borderRadius: '7px', fontSize: '0.82rem', whiteSpace: 'nowrap' }}
-              onClick={handleLogout}
-            >
-              Log ud
-            </button>
-          </div>
-
-        </div>
-      </nav>
+      <AppNavbar isAdmin />
 
       {/* ── Sidebar + content ────────────────────────────────────────────────── */}
       <div className="d-flex flex-grow-1" style={{ minHeight: 0 }}>

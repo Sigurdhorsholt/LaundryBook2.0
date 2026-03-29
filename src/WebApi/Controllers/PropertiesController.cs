@@ -117,6 +117,13 @@ public class PropertiesController(IMediator mediator, IConfiguration configurati
         return NoContent();
     }
 
+    [HttpDelete("{id:guid}/members/pending/{inviteId:guid}")]
+    public async Task<IActionResult> DeleteInvite(Guid id, Guid inviteId, CancellationToken ct)
+    {
+        await mediator.Send(new DeleteInviteCommand(id, inviteId), ct);
+        return NoContent();
+    }
+
     [HttpPost("{id:guid}/members/invite-token")]
     public async Task<IActionResult> CreateInviteToken(Guid id, [FromBody] CreateInviteTokenRequest request, CancellationToken ct)
     {

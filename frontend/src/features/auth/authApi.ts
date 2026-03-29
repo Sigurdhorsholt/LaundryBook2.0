@@ -74,6 +74,15 @@ export const authApi = baseApi.injectEndpoints({
         body,
       }),
     }),
+
+    updateCurrentUser: builder.mutation<void, { firstName: string; lastName: string }>({
+      query: (body) => ({
+        url: '/api/auth/me',
+        method: 'PUT',
+        body,
+      }),
+      invalidatesTags: ['Auth'],
+    }),
   }),
 })
 
@@ -84,4 +93,5 @@ export const {
   useGetInviteInfoQuery,
   useRedeemInviteMutation,
   useForgotPasswordMutation,
+  useUpdateCurrentUserMutation,
 } = authApi
