@@ -15,6 +15,7 @@ import { BookingGrid } from '../../features/laundry/BookingGrid'
 import type { GridBooking } from '../../features/laundry/BookingGrid'
 import { colors } from '../../shared/theme'
 
+
 // ── Date helpers ───────────────────────────────────────────────────────────────
 
 function todayStr(): string {
