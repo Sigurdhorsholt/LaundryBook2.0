@@ -16,15 +16,37 @@ interface NavbarProps {
     isAdmin?: boolean
 }
 
+function cleanupBootstrapOverlays() {
+    document.querySelectorAll('.offcanvas-backdrop').forEach(el => el.remove())
+    if (!document.querySelector('.offcanvas.show, .modal.show')) {
+        document.body.classList.remove('modal-open')
+        document.body.style.removeProperty('overflow')
+        document.body.style.removeProperty('padding-right')
+    }
+}
+
 function useNavMenuAutoClose() {
     const location = useLocation()
     useEffect(() => {
         const el = document.getElementById(NAV_OFFCANVAS_ID)
-        if (!el) return
+        if (!el || !el.classList.contains('show')) return
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const instance = (window as any).bootstrap?.Offcanvas?.getInstance(el)
-        instance?.hide()
+        const BS = (window as any).bootstrap
+        if (!BS?.Offcanvas) return
+        const instance = BS.Offcanvas.getInstance(el) ?? new BS.Offcanvas(el)
+        instance.hide()
+        // Fallback: Bootstrap sometimes fails to clean up when hide() is
+        // triggered mid-animation — remove the backdrop element and body lock.
+        const timer = setTimeout(cleanupBootstrapOverlays, 350)
+        return () => clearTimeout(timer)
     }, [location.pathname])
+
+    // When this navbar unmounts (switching between admin/resident layouts), the
+    // location effect is skipped — run cleanup immediately so the backdrop and
+    // body scroll lock left by an open offcanvas don't persist on the new page.
+    useEffect(() => {
+        return cleanupBootstrapOverlays
+    }, [])
 }
 
 export function AppNavbar({isAdmin = false}: NavbarProps) {
