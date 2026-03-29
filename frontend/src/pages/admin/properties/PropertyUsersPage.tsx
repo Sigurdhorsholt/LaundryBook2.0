@@ -9,6 +9,7 @@ import {
   useRemoveMemberMutation,
   useForcePasswordResetMutation,
   useResendInviteMutation,
+  useDeleteInviteMutation,
   type PropertyMemberDto,
 } from '../../../features/users/usersApi'
 import { MemberRow, MemberCard } from './MemberRow'
@@ -34,9 +35,8 @@ export function PropertyUsersPage() {
   const [removeMember] = useRemoveMemberMutation()
   const [forcePasswordReset] = useForcePasswordResetMutation()
   const [resendInvite] = useResendInviteMutation()
+  const [deleteInvite] = useDeleteInviteMutation()
 
-  // Track per-row UI state
-  const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null)
   const [actionLoadingId, setActionLoadingId] = useState<string | null>(null)
   const [resetSuccessId, setResetSuccessId] = useState<string | null>(null)
   const [resendSuccessId, setResendSuccessId] = useState<string | null>(null)
@@ -61,7 +61,6 @@ export function PropertyUsersPage() {
     try {
       await removeMember({ propertyId: propertyId!, userId }).unwrap()
     } finally {
-      setConfirmDeleteId(null)
       setActionLoadingId(null)
     }
   }
@@ -83,6 +82,15 @@ export function PropertyUsersPage() {
       await resendInvite({ propertyId: propertyId!, inviteId }).unwrap()
       setResendSuccessId(inviteId)
       setTimeout(() => setResendSuccessId(null), 3000)
+    } finally {
+      setActionLoadingId(null)
+    }
+  }
+
+  async function handleDeleteInvite(inviteId: string) {
+    setActionLoadingId(inviteId)
+    try {
+      await deleteInvite({ propertyId: propertyId!, inviteId }).unwrap()
     } finally {
       setActionLoadingId(null)
     }
@@ -112,14 +120,11 @@ export function PropertyUsersPage() {
       member: m,
       isSelf: m.userId === currentUser?.id,
       isActionLoading: actionLoadingId === m.userId,
-      isConfirmingDelete: confirmDeleteId === m.userId,
       showResetSuccess: resetSuccessId === m.userId,
       onEdit: () => openModal('editMember', { propertyId: propertyId!, member: m }),
       onToggleActive: () => handleToggleActive(m),
       onForceReset: () => handleForceReset(m.userId),
-      onRequestDelete: () => setConfirmDeleteId(m.userId),
-      onConfirmDelete: () => handleDelete(m.userId),
-      onCancelDelete: () => setConfirmDeleteId(null),
+      onDelete: () => handleDelete(m.userId),
     })
 
     tableContent = (
@@ -134,6 +139,7 @@ export function PropertyUsersPage() {
               isActionLoading={actionLoadingId === invite.inviteId}
               showResendSuccess={resendSuccessId === invite.inviteId}
               onResend={() => handleResendInvite(invite.inviteId)}
+              onDelete={() => handleDeleteInvite(invite.inviteId)}
             />
           ))}
         </div>
@@ -160,6 +166,7 @@ export function PropertyUsersPage() {
                   isActionLoading={actionLoadingId === invite.inviteId}
                   showResendSuccess={resendSuccessId === invite.inviteId}
                   onResend={() => handleResendInvite(invite.inviteId)}
+                  onDelete={() => handleDeleteInvite(invite.inviteId)}
                 />
               ))}
             </tbody>

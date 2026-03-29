@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { ROLE_LABEL } from '../../../shared/constants'
 import { type PendingInviteDto } from '../../../features/users/usersApi'
 import { colors } from '../../../shared/theme'
@@ -7,21 +8,58 @@ export interface PendingInviteRowProps {
   isActionLoading: boolean
   showResendSuccess: boolean
   onResend: () => void
+  onDelete: () => void
 }
 
-function ResendAction({ isActionLoading, showResendSuccess, onResend }: PendingInviteRowProps) {
+function PendingActions({ isActionLoading, showResendSuccess, onResend, onDelete }: Omit<PendingInviteRowProps, 'invite'>) {
+  const [confirmingDelete, setConfirmingDelete] = useState(false)
+
   if (showResendSuccess) {
     return <span style={{ fontSize: '0.78rem', color: colors.successText, fontWeight: 500 }}>Sendt ✓</span>
   }
+
+  if (confirmingDelete) {
+    return (
+      <div className="d-flex align-items-center gap-2 flex-wrap">
+        <span style={{ fontSize: '0.78rem', color: colors.textSecondary }}>Slet invitation?</span>
+        <button
+          className="btn btn-danger btn-sm"
+          style={{ fontSize: '0.75rem', padding: '2px 10px' }}
+          disabled={isActionLoading}
+          onClick={onDelete}
+        >
+          {isActionLoading ? '…' : 'Ja'}
+        </button>
+        <button
+          className="btn btn-outline-secondary btn-sm"
+          style={{ fontSize: '0.75rem', padding: '2px 8px' }}
+          onClick={() => setConfirmingDelete(false)}
+        >
+          Nej
+        </button>
+      </div>
+    )
+  }
+
   return (
-    <button
-      className="btn btn-sm btn-outline-secondary"
-      style={{ fontSize: '0.8rem', borderRadius: '6px', whiteSpace: 'nowrap' }}
-      disabled={isActionLoading}
-      onClick={onResend}
-    >
-      {isActionLoading ? '…' : 'Gensend'}
-    </button>
+    <div className="d-flex align-items-center gap-2 flex-wrap">
+      <button
+        className="btn btn-sm btn-outline-secondary"
+        style={{ fontSize: '0.8rem', borderRadius: '6px', whiteSpace: 'nowrap' }}
+        disabled={isActionLoading}
+        onClick={onResend}
+      >
+        {isActionLoading ? '…' : 'Gensend'}
+      </button>
+      <button
+        className="btn btn-sm"
+        style={{ fontSize: '0.8rem', borderRadius: '6px', whiteSpace: 'nowrap', color: colors.dangerText, border: `1px solid ${colors.dangerBorder}`, backgroundColor: 'transparent' }}
+        disabled={isActionLoading}
+        onClick={() => setConfirmingDelete(true)}
+      >
+        Slet
+      </button>
+    </div>
   )
 }
 
@@ -54,10 +92,10 @@ export function PendingInviteRow(props: PendingInviteRowProps) {
         </span>
       </td>
       <td className="px-4 py-3 align-middle">
-        <span style={{ color: '#e6a817', fontSize: '0.78rem', fontWeight: 500 }}>● Afventer</span>
+        <span style={{ color: colors.warningText, fontSize: '0.78rem', fontWeight: 500 }}>● Afventer</span>
       </td>
       <td className="px-4 py-3 align-middle text-end" style={{ whiteSpace: 'nowrap' }}>
-        <ResendAction {...props} />
+        <PendingActions {...props} />
       </td>
     </tr>
   )
@@ -87,7 +125,7 @@ export function PendingInviteCard(props: PendingInviteRowProps) {
               </div>
             </div>
             <div className="flex-shrink-0">
-              <ResendAction {...props} />
+              <PendingActions {...props} />
             </div>
           </div>
           <div className="d-flex align-items-center gap-2 flex-wrap mt-2">
@@ -99,7 +137,7 @@ export function PendingInviteCard(props: PendingInviteRowProps) {
             <span className="badge" style={{ backgroundColor: colors.bgSubtle, color: colors.textSecondary, fontWeight: 500, fontSize: '0.72rem' }}>
               {ROLE_LABEL[invite.role]}
             </span>
-            <span style={{ fontSize: '0.75rem', fontWeight: 500, color: '#e6a817' }}>● Afventer</span>
+            <span style={{ fontSize: '0.75rem', fontWeight: 500, color: colors.warningText }}>● Afventer</span>
           </div>
         </div>
       </div>
