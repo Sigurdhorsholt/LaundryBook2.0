@@ -89,7 +89,8 @@ export function EmailInviteTab({ propertyId, onClose, roleOptions = ROLE_OPTIONS
           <input
             className="form-control"
             type="text"
-            placeholder="1A"
+            placeholder=""
+            required
             maxLength={20}
             value={apartment}
             onChange={(e) => setApartment(e.target.value)}

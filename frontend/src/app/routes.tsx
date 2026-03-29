@@ -1,9 +1,10 @@
 import type { ComponentType, ReactNode } from 'react'
 import type { FeatureKey } from '../config/features'
 import { UserRole } from '../features/auth/authApi'
-import { IconGrid, IconBuilding, IconCalendar, IconShield } from '../shared/icons'
+import { IconGrid, IconBuilding, IconCalendar, IconShield, IconUsers } from '../shared/icons'
 
 import { LandingPage } from '../pages/LandingPage'
+import { MyPage } from '../pages/MyPage'
 import { JoinPage } from '../pages/JoinPage'
 import { SmartRedirectPage } from '../pages/SmartRedirectPage'
 import { LaundryPage } from '../pages/laundry/LaundryPage'
@@ -47,6 +48,16 @@ export const routes: AppRoute[] = [
     feature: 'laundryBooking',
     label: 'Vaskebooking',
     icon: <IconCalendar />,
+  },
+
+  {
+    path: '/my-page',
+    component: MyPage,
+    layout: 'app',
+    protected: true,
+    minRole: UserRole.Resident,
+    label: 'Min side',
+    icon: <IconUsers />,
   },
 
   // ── Admin shell — top-level pages (appear in main sidebar nav) ──────────────

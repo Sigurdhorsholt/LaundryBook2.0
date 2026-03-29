@@ -1,9 +1,11 @@
 using Application.Common.Authorization;
+using Application.Common.Exceptions;
 using Application.Common.Interfaces;
 using Domain.Entities;
 using Domain.Enums;
 using FluentValidation;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 
 namespace Application.Features.Properties.Commands;
 
@@ -28,11 +30,20 @@ public class InviteUserByEmailCommandValidator : AbstractValidator<InviteUserByE
 public class InviteUserByEmailCommandHandler(
     IAppDbContext db,
     IEmailService emailService,
+    ICurrentUserService currentUser,
     PropertyAuthorizationService auth) : IRequestHandler<InviteUserByEmailCommand, string>
 {
     public async Task<string> Handle(InviteUserByEmailCommand request, CancellationToken cancellationToken)
     {
         await auth.RequireRoleAsync(request.PropertyId, UserRole.ComplexAdmin, cancellationToken);
+
+        var property = await db.Properties
+            .FirstOrDefaultAsync(p => p.Id == request.PropertyId, cancellationToken)
+            ?? throw new NotFoundException("Property", request.PropertyId);
+
+        var adminId = currentUser.UserId!.Value;
+        var admin = await db.Users.FirstOrDefaultAsync(u => u.Id == adminId, cancellationToken);
+        var adminName = admin is not null ? $"{admin.FirstName} {admin.LastName}".Trim() : "Administrator";
 
         var token = Guid.NewGuid().ToString("N"); // 32-char hex, URL-safe
 
@@ -51,7 +62,8 @@ public class InviteUserByEmailCommandHandler(
 
         var joinLink = $"{request.AppBaseUrl.TrimEnd('/')}/join?token={token}";
 
-        await emailService.SendPasswordSetupEmailAsync(request.Email, joinLink, cancellationToken);
+        await emailService.SendPasswordSetupEmailAsync(
+            request.Email, joinLink, property.Name, property.Address, adminName, cancellationToken);
 
         return request.Email;
     }
