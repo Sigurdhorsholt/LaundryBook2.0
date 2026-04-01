@@ -21,7 +21,7 @@ public class MailgunEmailService(
         CancellationToken cancellationToken = default)
     {
         var (apiKey, domain, senderEmail, senderName) = ReadMailgunConfig();
-        var landingPageUrl = configuration["App:BaseUrl"] ?? "https://app.laundrybook.com";
+        var landingPageUrl = configuration["App:BaseUrl"] ?? "https://laundrybook.dk";
 
         Authorize(apiKey);
 
@@ -39,7 +39,7 @@ public class MailgunEmailService(
     public async Task SendPasswordResetEmailAsync(string toEmail, string resetLink, CancellationToken cancellationToken = default)
     {
         var (apiKey, domain, senderEmail, senderName) = ReadMailgunConfig();
-        var landingPageUrl = configuration["App:BaseUrl"] ?? "https://app.laundrybook.com";
+        var landingPageUrl = configuration["App:BaseUrl"] ?? "https://laundrybook.dk";
 
         Authorize(apiKey);
 
