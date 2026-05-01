@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>Radii & Shadows</title>
+<link rel="stylesheet" href="../colors_and_type.css">
+<style>
+body{margin:0;padding:20px;background:#f8fafb;font-family:Inter,sans-serif}
+.grp{margin-bottom:16px}
+.h{font-size:11px;color:#5a6a7a;text-transform:uppercase;letter-spacing:.08em;font-weight:600;margin-bottom:8px}
+.r{display:grid;grid-template-columns:repeat(6,1fr);gap:10px}
+.box{background:#fff;border:1px solid #e8ecf0;height:52px;display:flex;align-items:flex-end;padding:4px 6px;font-size:10px;color:#5a6a7a;font-variant-numeric:tabular-nums}
+.sh{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.shbox{background:#fff;border-radius:10px;height:64px;display:flex;align-items:flex-end;padding:6px 10px;font-size:10px;color:#5a6a7a}
+</style></head><body>
+<div class="grp"><div class="h">Radii</div>
+<div class="r">
+<div class="box" style="border-radius:4px">4 xs</div>
+<div class="box" style="border-radius:6px">6 sm</div>
+<div class="box" style="border-radius:7px">7 btn</div>
+<div class="box" style="border-radius:10px">10 lg</div>
+<div class="box" style="border-radius:12px">12 xl</div>
+<div class="box" style="border-radius:999px">pill</div>
+</div></div>
+<div class="grp"><div class="h">Shadows (hover only)</div>
+<div class="sh">
+<div class="shbox" style="box-shadow:0 4px 16px rgba(13,59,122,0.09)">card hover · 4 16 .09</div>
+<div class="shbox" style="box-shadow:0 8px 32px rgba(13,59,122,0.10)">card lift · 8 32 .10</div>
+<div class="shbox" style="box-shadow:0 4px 24px rgba(0,0,0,0.22)">CTA · 4 24 .22</div>
+</div></div>
+</body></html>
