@@ -4,8 +4,13 @@ import { UserRole } from '../features/auth/authApi'
 import { IconGrid, IconBuilding, IconCalendar, IconShield, IconUsers } from '../shared/icons'
 
 import { LandingPage } from '../pages/LandingPage'
+import { FeaturesPage } from '../pages/public/FeaturesPage'
+import { DemoPage } from '../pages/public/DemoPage'
+import { FaqPage } from '../pages/public/FaqPage'
+import { GetStartedPage } from '../pages/public/GetStartedPage'
 import { MyPage } from '../pages/MyPage'
 import { JoinPage } from '../pages/JoinPage'
+import { SignupPage } from '../pages/SignupPage'
 import { SmartRedirectPage } from '../pages/SmartRedirectPage'
 import { LaundryPage } from '../pages/laundry/LaundryPage'
 import { AdminDashboardPage } from '../pages/admin/AdminDashboardPage'
@@ -34,8 +39,13 @@ export interface AppRoute {
 export const routes: AppRoute[] = [
 
   // ── Public / bare ───────────────────────────────────────────────────────────
-  { path: '/',          component: LandingPage,          layout: 'bare', protected: false },
-  { path: '/join',      component: JoinPage,             layout: 'bare', protected: false },
+  { path: '/',          component: LandingPage,   layout: 'bare', protected: false },
+  { path: '/features',  component: FeaturesPage,  layout: 'bare', protected: false },
+  { path: '/demo',      component: DemoPage,      layout: 'bare', protected: false },
+  { path: '/faq',       component: FaqPage,       layout: 'bare', protected: false },
+  { path: '/get-started', component: GetStartedPage, layout: 'bare', protected: false },
+  { path: '/signup',    component: SignupPage,    layout: 'bare', protected: false },
+  { path: '/join',      component: JoinPage,      layout: 'bare', protected: false },
   { path: '/dashboard', component: SmartRedirectPage,    layout: 'bare', protected: true },
 
   // ── Resident shell ──────────────────────────────────────────────────────────

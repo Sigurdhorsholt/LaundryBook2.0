@@ -2,6 +2,22 @@ import { ROLE_LABEL, ROLE_BADGE_STYLE } from '../../../shared/constants'
 import { type PropertyMemberDto, type PendingInviteDto } from '../../../features/users/usersApi'
 import { colors } from '../../../shared/theme'
 import { ActionMenu } from './ActionMenu'
+import { IconCheck } from '../../../shared/icons'
+
+function StatusDot({ color }: { color: string }) {
+  return (
+    <span style={{ display: 'inline-block', width: 6, height: 6, borderRadius: '50%', backgroundColor: color, marginRight: 4, verticalAlign: 'middle' }} />
+  )
+}
+
+function SentLabel({ size = '0.78rem' }: { size?: string }) {
+  return (
+    <span style={{ fontSize: size, color: colors.successText, fontWeight: 500, whiteSpace: 'nowrap', display: 'inline-flex', alignItems: 'center', gap: 3 }}>
+      <IconCheck size={12} color={colors.successText} strokeWidth={2.5} />
+      Sendt
+    </span>
+  )
+}
 
 // ── Prop types ─────────────────────────────────────────────────────────────────
 
@@ -85,15 +101,13 @@ export function UserRow(props: UserRowProps) {
         </td>
         <td className="px-4 py-3 align-middle">
           {member.isActive
-            ? <span style={{ color: colors.successText, fontSize: '0.78rem', fontWeight: 500 }}>● Aktiv</span>
-            : <span style={{ color: colors.textMuted, fontSize: '0.78rem', fontWeight: 500 }}>● Deaktiveret</span>
+            ? <span style={{ color: colors.successText, fontSize: '0.78rem', fontWeight: 500 }}><StatusDot color={colors.successText} />Aktiv</span>
+            : <span style={{ color: colors.textMuted, fontSize: '0.78rem', fontWeight: 500 }}><StatusDot color={colors.textMuted} />Deaktiveret</span>
           }
         </td>
         <td className="px-4 py-3 align-middle">
           <div className="d-flex align-items-center justify-content-end gap-2">
-            {showResetSuccess && (
-              <span style={{ fontSize: '0.78rem', color: colors.successText, fontWeight: 500, whiteSpace: 'nowrap' }}>✓ Sendt</span>
-            )}
+            {showResetSuccess && <SentLabel />}
             <ActionMenu
               kind="member"
               member={member}
@@ -131,13 +145,11 @@ export function UserRow(props: UserRowProps) {
         </span>
       </td>
       <td className="px-4 py-3 align-middle">
-        <span style={{ color: colors.warningText, fontSize: '0.78rem', fontWeight: 500 }}>● Afventer</span>
+        <span style={{ color: colors.warningText, fontSize: '0.78rem', fontWeight: 500 }}><StatusDot color={colors.warningText} />Afventer</span>
       </td>
       <td className="px-4 py-3 align-middle">
         <div className="d-flex align-items-center justify-content-end gap-2">
-          {showResendSuccess && (
-            <span style={{ fontSize: '0.78rem', color: colors.successText, fontWeight: 500, whiteSpace: 'nowrap' }}>✓ Sendt</span>
-          )}
+          {showResendSuccess && <SentLabel />}
           <ActionMenu
             kind="invite"
             isActionLoading={isActionLoading}
@@ -174,9 +186,7 @@ export function UserCard(props: UserRowProps) {
                 </div>
               </div>
               <div className="d-flex align-items-center gap-2 flex-shrink-0">
-                {showResetSuccess && (
-                  <span style={{ fontSize: '0.75rem', color: colors.successText, fontWeight: 500, whiteSpace: 'nowrap' }}>✓ Sendt</span>
-                )}
+                {showResetSuccess && <SentLabel size="0.75rem" />}
                 <ActionMenu
                   kind="member"
                   member={member}
@@ -200,7 +210,8 @@ export function UserCard(props: UserRowProps) {
                 {ROLE_LABEL[member.role]}
               </span>
               <span style={{ fontSize: '0.75rem', fontWeight: 500, color: member.isActive ? colors.successText : colors.textMuted }}>
-                {member.isActive ? '● Aktiv' : '● Deaktiveret'}
+                <StatusDot color={member.isActive ? colors.successText : colors.textMuted} />
+                {member.isActive ? 'Aktiv' : 'Deaktiveret'}
               </span>
             </div>
           </div>
@@ -224,9 +235,7 @@ export function UserCard(props: UserRowProps) {
               </div>
             </div>
             <div className="d-flex align-items-center gap-2 flex-shrink-0">
-              {showResendSuccess && (
-                <span style={{ fontSize: '0.75rem', color: colors.successText, fontWeight: 500, whiteSpace: 'nowrap' }}>✓ Sendt</span>
-              )}
+              {showResendSuccess && <SentLabel size="0.75rem" />}
               <ActionMenu
                 kind="invite"
                 isActionLoading={isActionLoading}
@@ -245,7 +254,7 @@ export function UserCard(props: UserRowProps) {
             <span className="badge" style={{ backgroundColor: colors.bgSubtle, color: colors.textSecondary, fontWeight: 500, fontSize: '0.72rem' }}>
               {ROLE_LABEL[invite.role]}
             </span>
-            <span style={{ fontSize: '0.75rem', fontWeight: 500, color: colors.warningText }}>● Afventer</span>
+            <span style={{ fontSize: '0.75rem', fontWeight: 500, color: colors.warningText }}><StatusDot color={colors.warningText} />Afventer</span>
           </div>
         </div>
       </div>

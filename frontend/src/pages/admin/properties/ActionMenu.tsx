@@ -51,6 +51,31 @@ function Divider() {
   return <div style={{ borderTop: `1px solid ${colors.borderRow}`, margin: '4px 0' }} />
 }
 
+interface ConfirmPanelProps {
+  message: string
+  isLoading: boolean
+  onConfirm: () => void
+  onCancel: () => void
+}
+
+function ConfirmPanel({ message, isLoading, onConfirm, onCancel }: ConfirmPanelProps) {
+  return (
+    <div className="px-3 py-2">
+      <div className="mb-2" style={{ fontSize: '0.78rem', color: colors.textSecondary }}>{message}</div>
+      <div className="d-flex gap-2">
+        <button type="button" className="btn btn-danger btn-sm w-100" style={{ fontSize: '0.75rem' }}
+          disabled={isLoading} onClick={onConfirm}>
+          {isLoading ? '…' : 'Ja'}
+        </button>
+        <button type="button" className="btn btn-outline-secondary btn-sm w-100" style={{ fontSize: '0.75rem' }}
+          onClick={onCancel}>
+          Nej
+        </button>
+      </div>
+    </div>
+  )
+}
+
 // ── ActionMenu ─────────────────────────────────────────────────────────────────
 
 export function ActionMenu(props: ActionMenuProps) {
@@ -113,19 +138,12 @@ export function ActionMenu(props: ActionMenuProps) {
 
     if (confirmingDelete) {
       menuContent = (
-        <div className="px-3 py-2">
-          <div className="mb-2" style={{ fontSize: '0.78rem', color: colors.textSecondary }}>Fjern bruger?</div>
-          <div className="d-flex gap-2">
-            <button type="button" className="btn btn-danger btn-sm w-100" style={{ fontSize: '0.75rem' }}
-              disabled={isActionLoading} onClick={() => { onDelete(); onMenuClose() }}>
-              {isActionLoading ? '…' : 'Ja'}
-            </button>
-            <button type="button" className="btn btn-outline-secondary btn-sm w-100" style={{ fontSize: '0.75rem' }}
-              onClick={() => setConfirmingDelete(false)}>
-              Nej
-            </button>
-          </div>
-        </div>
+        <ConfirmPanel
+          message="Fjern bruger?"
+          isLoading={isActionLoading}
+          onConfirm={() => { onDelete(); onMenuClose() }}
+          onCancel={() => setConfirmingDelete(false)}
+        />
       )
     } else {
       menuContent = (
@@ -150,19 +168,12 @@ export function ActionMenu(props: ActionMenuProps) {
 
     if (confirmingDelete) {
       menuContent = (
-        <div className="px-3 py-2">
-          <div className="mb-2" style={{ fontSize: '0.78rem', color: colors.textSecondary }}>Slet invitation?</div>
-          <div className="d-flex gap-2">
-            <button type="button" className="btn btn-danger btn-sm w-100" style={{ fontSize: '0.75rem' }}
-              disabled={isActionLoading} onClick={() => { onDelete(); onMenuClose() }}>
-              {isActionLoading ? '…' : 'Ja'}
-            </button>
-            <button type="button" className="btn btn-outline-secondary btn-sm w-100" style={{ fontSize: '0.75rem' }}
-              onClick={() => setConfirmingDelete(false)}>
-              Nej
-            </button>
-          </div>
-        </div>
+        <ConfirmPanel
+          message="Slet invitation?"
+          isLoading={isActionLoading}
+          onConfirm={() => { onDelete(); onMenuClose() }}
+          onCancel={() => setConfirmingDelete(false)}
+        />
       )
     } else {
       menuContent = (
@@ -172,10 +183,7 @@ export function ActionMenu(props: ActionMenuProps) {
           </MenuButton>
           <Divider />
           <MenuButton style={{ color: colors.dangerText }} disabled={isActionLoading}
-            onClick={() => {
-                console.log("test button")
-                setConfirmingDelete(true)
-            }}>
+            onClick={() => setConfirmingDelete(true)}>
             Slet invitation
           </MenuButton>
         </div>

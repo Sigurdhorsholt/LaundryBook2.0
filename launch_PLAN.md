@@ -50,7 +50,8 @@
 
 - [ ] Draft terms and conditions document in Danish
 - [ ] Include: who may use the service (private, small associations)
-- [ ] Define the subscription model (annual, auto-renewal)
+- [ ] Define the subscription mos
+- del (annual, auto-renewal)
 - [ ] State cancellation policy (how, when, and what happens to data)
 - [ ] Define payment terms (invoice due date, consequences of non-payment)
 - [ ] Include liability disclaimer (uptime, data loss, etc.)

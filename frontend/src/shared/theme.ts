@@ -101,6 +101,18 @@ export const colors = {
   dotFew:  '#f59e0b',
   dotFull: '#e0e0e0',
 
+  // ── Footer ────────────────────────────────────────────────────────────────────
+  footerBg: '#0a1929',
+
+  // ── Booking grid — warning overrides ──────────────────────────────────────────
+  // maxReached banner uses a slightly warmer amber than the standard warning tokens
+  slotWarningBg:     '#fff3e0',
+  slotWarningText:   '#7a3f00',
+  slotWarningBorder: '#f0e0b0',
+
+  // Pending (unsaved) slot colour in the day timeline
+  slotPendingColor: '#64b5f6',
+
   // ── Sidebar ───────────────────────────────────────────────────────────────────
   sidebarText:       '#4a5568',
   sidebarHoverBg:    '#f5f7fa',

@@ -13,4 +13,5 @@ public record UserComplexMembershipDto(
     Guid PropertyId,
     string PropertyName,
     UserRole Role,
-    string? ApartmentNumber);
+    string? ApartmentNumber,
+    bool PropertyIsActive);

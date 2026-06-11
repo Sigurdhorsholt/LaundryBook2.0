@@ -13,6 +13,7 @@ export interface UserComplexMembershipDto {
   propertyName: string
   role: UserRole
   apartmentNumber: string | null
+  propertyIsActive: boolean
 }
 
 export interface CurrentUserDto {
@@ -67,6 +68,15 @@ export const authApi = baseApi.injectEndpoints({
       invalidatesTags: ['Auth'],
     }),
 
+    register: builder.mutation<{ userId: string; propertyId: string }, { idToken: string; firstName: string; lastName: string; propertyName: string; propertyAddress: string }>({
+      query: (body) => ({
+        url: '/api/auth/register',
+        method: 'POST',
+        body,
+      }),
+      invalidatesTags: ['Auth'],
+    }),
+
     forgotPassword: builder.mutation<void, { email: string }>({
       query: (body) => ({
         url: '/api/auth/forgot-password',
@@ -92,6 +102,7 @@ export const {
   useMeQuery,
   useGetInviteInfoQuery,
   useRedeemInviteMutation,
+  useRegisterMutation,
   useForgotPasswordMutation,
   useUpdateCurrentUserMutation,
 } = authApi

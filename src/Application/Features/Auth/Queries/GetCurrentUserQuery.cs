@@ -31,6 +31,7 @@ public class GetCurrentUserQueryHandler(
                 m.PropertyId,
                 m.Property.Name,
                 m.Role,
-                m.ApartmentNumber)).ToList());
+                m.ApartmentNumber,
+                m.Property.IsActive)).ToList());
     }
 }

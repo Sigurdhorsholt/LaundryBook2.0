@@ -2,8 +2,8 @@ import { useState } from 'react'
 import { ModalShell } from '../../shared/modals/ModalShell'
 import { EmailInviteTab } from './EmailInviteTab'
 import { QrInviteTab } from './QrInviteTab'
-import { colors } from '../../shared/theme'
 import { UserRole } from '../auth/authApi'
+import { SegmentedControl } from '../../shared/ui/SegmentedControl'
 
 interface InviteUserModalProps {
   propertyId: string
@@ -18,28 +18,15 @@ export function InviteUserModal({ propertyId, onClose, roleOptions }: InviteUser
 
   return (
     <ModalShell title="Inviter bruger" onClose={onClose}>
-      <div className="d-flex gap-2 mb-4">
-        {(['email', 'qr'] as Tab[]).map((t) => {
-          const isActive = tab === t
-          return (
-            <button
-              key={t}
-              type="button"
-              className="btn btn-sm"
-              style={{
-                borderRadius: '8px',
-                fontSize: '0.85rem',
-                backgroundColor: isActive ? colors.primaryLight : 'transparent',
-                color: isActive ? colors.primary : colors.textSecondary,
-                border: isActive ? `1px solid ${colors.primaryBorder}` : `1px solid ${colors.borderDefault}`,
-                fontWeight: isActive ? 600 : 400,
-              }}
-              onClick={() => setTab(t)}
-            >
-              {t === 'email' ? 'E-mail invitation' : 'QR-kode'}
-            </button>
-          )
-        })}
+      <div className="mb-4">
+        <SegmentedControl
+          segments={[
+            { value: 'email' as Tab, label: 'E-mail invitation' },
+            { value: 'qr' as Tab, label: 'QR-kode' },
+          ]}
+          value={tab}
+          onChange={setTab}
+        />
       </div>
 
       {tab === 'email'

@@ -36,6 +36,20 @@ public class SysAdminController(IMediator mediator) : ControllerBase
         await mediator.Send(new AssignUserToPropertyCommand(userId, request.PropertyId, request.Role, request.ApartmentNumber), ct);
         return NoContent();
     }
+
+    [HttpGet("pending-properties")]
+    public async Task<IActionResult> GetPendingProperties(CancellationToken ct)
+    {
+        var result = await mediator.Send(new GetPendingPropertiesQuery(), ct);
+        return Ok(result);
+    }
+
+    [HttpPost("properties/{propertyId:guid}/activate")]
+    public async Task<IActionResult> ActivateProperty(Guid propertyId, CancellationToken ct)
+    {
+        await mediator.Send(new ActivatePropertyCommand(propertyId), ct);
+        return NoContent();
+    }
 }
 
 public record AssignToPropertyRequest(Guid PropertyId, UserRole Role, string? ApartmentNumber);

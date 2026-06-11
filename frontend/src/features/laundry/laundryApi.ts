@@ -139,7 +139,7 @@ export const laundryApi = baseApi.injectEndpoints({
       invalidatesTags: (_result, _err, { roomId }) => [{ type: 'TimeSlot', id: roomId }],
     }),
 
-    deleteTimeSlot: build.mutation<void, { roomId: string; templateId: string }>({
+    deleteTimeSlot: build.mutation<{ cancelledBookings: number }, { roomId: string; templateId: string }>({
       query: ({ roomId, templateId }) => ({
         url: `/api/laundry-rooms/${roomId}/timeslots/${templateId}`,
         method: 'DELETE',

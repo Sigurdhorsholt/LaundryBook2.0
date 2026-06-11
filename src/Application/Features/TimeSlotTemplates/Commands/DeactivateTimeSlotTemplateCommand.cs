@@ -8,13 +8,13 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Application.Features.TimeSlotTemplates.Commands;
 
-public record DeactivateTimeSlotTemplateCommand(Guid RoomId, Guid TemplateId) : IRequest;
+public record DeactivateTimeSlotTemplateCommand(Guid RoomId, Guid TemplateId) : IRequest<int>;
 
 public class DeactivateTimeSlotTemplateCommandHandler(
     IAppDbContext db,
-    PropertyAuthorizationService auth) : IRequestHandler<DeactivateTimeSlotTemplateCommand>
+    PropertyAuthorizationService auth) : IRequestHandler<DeactivateTimeSlotTemplateCommand, int>
 {
-    public async Task Handle(DeactivateTimeSlotTemplateCommand request, CancellationToken cancellationToken)
+    public async Task<int> Handle(DeactivateTimeSlotTemplateCommand request, CancellationToken cancellationToken)
     {
         var template = await db.TimeSlotTemplates
             .FirstOrDefaultAsync(t => t.Id == request.TemplateId && t.LaundryRoomId == request.RoomId, cancellationToken)
@@ -26,9 +26,27 @@ public class DeactivateTimeSlotTemplateCommandHandler(
 
         await auth.RequireRoleAsync(room.PropertyId, UserRole.ComplexAdmin, cancellationToken);
 
+        // Cancel all future active bookings that reference this template in the same transaction.
+        var today = DateOnly.FromDateTime(DateTime.UtcNow);
+        var affected = await db.Bookings
+            .Where(b =>
+                b.TimeSlotTemplateId == request.TemplateId &&
+                b.Date >= today &&
+                b.Status == BookingStatus.Active)
+            .ToListAsync(cancellationToken);
+
+        var now = DateTime.UtcNow;
+        foreach (var booking in affected)
+        {
+            booking.Status = BookingStatus.CancelledByAdmin;
+            booking.CancelledAt = now;
+        }
+
         template.IsActive = false;
-        template.UpdatedAt = DateTime.UtcNow;
+        template.UpdatedAt = now;
 
         await db.SaveChangesAsync(cancellationToken);
+
+        return affected.Count;
     }
 }

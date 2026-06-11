@@ -126,6 +126,12 @@ export function IconShield({ size = defaults.size, color = defaults.color, strok
   </>)
 }
 
+export function IconX({ size = defaults.size, color = defaults.color, strokeWidth = defaults.strokeWidth }: IconProps) {
+  return base(size, color, strokeWidth, <>
+    <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+  </>)
+}
+
 export function IconBrand({ size = defaults.size, color = '#1565c0', strokeWidth = defaults.strokeWidth }: IconProps) {
   return base(size, color, strokeWidth, <>
     <circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="4"/>

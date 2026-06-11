@@ -1,5 +1,4 @@
-import {NavLink, useNavigate, useLocation} from 'react-router-dom'
-import {useEffect} from 'react'
+import {NavLink, useNavigate} from 'react-router-dom'
 import {useDispatch} from 'react-redux'
 import {signOut} from 'firebase/auth'
 import {firebaseAuth} from '../lib/firebase'
@@ -9,6 +8,7 @@ import {colors} from './theme'
 import {baseApi} from '../app/baseApi'
 import {BrandLogo} from './BrandLogo'
 import {IconMenu} from './icons'
+import { useOffcanvasAutoClose } from './utils/bootstrapUtils'
 
 const NAV_OFFCANVAS_ID = 'navMenuOffcanvas'
 
@@ -16,45 +16,12 @@ interface NavbarProps {
     isAdmin?: boolean
 }
 
-function cleanupBootstrapOverlays() {
-    document.querySelectorAll('.offcanvas-backdrop').forEach(el => el.remove())
-    if (!document.querySelector('.offcanvas.show, .modal.show')) {
-        document.body.classList.remove('modal-open')
-        document.body.style.removeProperty('overflow')
-        document.body.style.removeProperty('padding-right')
-    }
-}
-
-function useNavMenuAutoClose() {
-    const location = useLocation()
-    useEffect(() => {
-        const el = document.getElementById(NAV_OFFCANVAS_ID)
-        if (!el || !el.classList.contains('show')) return
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const BS = (window as any).bootstrap
-        if (!BS?.Offcanvas) return
-        const instance = BS.Offcanvas.getInstance(el) ?? new BS.Offcanvas(el)
-        instance.hide()
-        // Fallback: Bootstrap sometimes fails to clean up when hide() is
-        // triggered mid-animation — remove the backdrop element and body lock.
-        const timer = setTimeout(cleanupBootstrapOverlays, 350)
-        return () => clearTimeout(timer)
-    }, [location.pathname])
-
-    // When this navbar unmounts (switching between admin/resident layouts), the
-    // location effect is skipped — run cleanup immediately so the backdrop and
-    // body scroll lock left by an open offcanvas don't persist on the new page.
-    useEffect(() => {
-        return cleanupBootstrapOverlays
-    }, [])
-}
-
 export function AppNavbar({isAdmin = false}: NavbarProps) {
     const navigate = useNavigate()
     const {data: user} = useMeQuery()
     const [logout] = useLogoutMutation()
     const dispatch = useDispatch()
-    useNavMenuAutoClose()
+    useOffcanvasAutoClose(NAV_OFFCANVAS_ID)
 
     const showAdminLink = !isAdmin && user && checkIsAdmin(user)
 
@@ -139,20 +106,18 @@ export function AppNavbar({isAdmin = false}: NavbarProps) {
                         >
                             Vaskebooking
                         </NavLink>
-                        <a
-                            href="/my-page"
+                        <NavLink
+                            to="/my-page"
                             className="btn btn-sm"
-                            style={{borderRadius: '7px', fontSize: '0.85rem', color: colors.textSecondary}}
+                            style={({isActive}) => ({
+                                borderRadius: '7px', fontSize: '0.85rem',
+                                color: isActive ? colors.primary : colors.textSecondary,
+                                backgroundColor: isActive ? colors.primaryLight : undefined,
+                                fontWeight: isActive ? 600 : undefined,
+                            })}
                         >
                             Min side
-                        </a>
-                        <a
-                            href="#"
-                            className="btn btn-sm"
-                            style={{borderRadius: '7px', fontSize: '0.85rem', color: colors.textSecondary}}
-                        >
-                            Om LaundryBook
-                        </a>
+                        </NavLink>
                         <button
                             className="btn btn-sm btn-outline-secondary ms-1"
                             style={{borderRadius: '7px', fontSize: '0.85rem'}}
@@ -227,20 +192,17 @@ export function AppNavbar({isAdmin = false}: NavbarProps) {
                     >
                         Vaskebooking
                     </NavLink>
-                    <a
-                        href="/my-page"
+                    <NavLink
+                        to="/my-page"
                         className="text-decoration-none py-3 border-bottom fw-medium"
-                        style={{fontSize: '1.1rem', color: colors.textPrimary}}
+                        style={({isActive}) => ({
+                            fontSize: '1.1rem',
+                            color: isActive ? colors.primary : colors.textPrimary,
+                            fontWeight: isActive ? 700 : undefined,
+                        })}
                     >
                         Min side
-                    </a>
-                    <a
-                        href="#"
-                        className="text-decoration-none py-3 border-bottom fw-medium"
-                        style={{fontSize: '1.1rem', color: colors.textPrimary}}
-                    >
-                        Om LaundryBook
-                    </a>
+                    </NavLink>
                     <button
                         className="btn btn-outline-secondary mt-4"
                         style={{borderRadius: '8px', fontSize: '0.95rem', alignSelf: 'flex-start', minWidth: 120}}

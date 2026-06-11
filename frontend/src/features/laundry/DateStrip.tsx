@@ -1,0 +1,58 @@
+import { dayShortLabel, dayNum } from '../../shared/utils/dateUtils'
+import { DOT_COLOR } from './constants'
+import type { AvailabilityState } from './types'
+import { colors } from '../../shared/theme'
+
+interface Props {
+  weekDays: string[]
+  today: string
+  selectedDate: string
+  availabilityByDate: Record<string, AvailabilityState>
+  onSelectDate: (date: string) => void
+}
+
+export function DateStrip({ weekDays, today, selectedDate, availabilityByDate, onSelectDate }: Props) {
+  return (
+    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', borderBottom: `1px solid ${colors.borderRow}` }}>
+      {weekDays.map(d => {
+        const shortLabel = dayShortLabel(d, today)
+        const num        = dayNum(d)
+        const isToday    = d === today
+        const isSelected = d === selectedDate
+        const dotState   = availabilityByDate[d] ?? 'free'
+
+        return (
+          <button
+            key={d}
+            onClick={() => onSelectDate(d)}
+            style={{
+              border: 'none', background: 'none', padding: '8px 4px',
+              cursor: 'pointer', display: 'flex', flexDirection: 'column',
+              alignItems: 'center', gap: 1,
+              borderBottom: isSelected ? `2px solid ${colors.primary}` : '2px solid transparent',
+              backgroundColor: isSelected ? colors.primaryLighter : 'transparent',
+              transition: 'background-color 0.1s',
+            }}
+          >
+            <span style={{ fontSize: '0.65rem', fontWeight: 500, color: isToday ? colors.primary : colors.slotTakenText, textTransform: 'uppercase', whiteSpace: 'nowrap' }}>
+              {shortLabel}
+            </span>
+            <span style={{
+              fontSize: '0.9rem', fontWeight: 600,
+              color: isToday ? colors.primary : colors.textPrimary,
+              width: 28, height: 28, display: 'flex', alignItems: 'center', justifyContent: 'center',
+              borderRadius: '50%',
+              backgroundColor: isToday && !isSelected ? colors.primaryLight : 'transparent',
+            }}>
+              {num}
+            </span>
+            <span style={{
+              width: 5, height: 5, borderRadius: '50%', display: 'block',
+              backgroundColor: isSelected ? colors.primaryBorder : (DOT_COLOR[dotState] ?? 'transparent'),
+            }} />
+          </button>
+        )
+      })}
+    </div>
+  )
+}
