@@ -1,4 +1,5 @@
 import { useState, useMemo } from 'react'
+import { useTranslation, Trans } from 'react-i18next'
 import { useParams } from 'react-router-dom'
 import { PageHeader, EmptyState, Spinner } from '../../../shared/ui'
 import { useGetLaundryRoomsQuery, useGetTimeSlotsQuery } from '../../../features/laundry/laundryApi'
@@ -108,6 +109,7 @@ const DOT_COLOR: Record<string, string> = {
 // ── Page ───────────────────────────────────────────────────────────────────────
 
 export function BookingPreviewPage() {
+  const { t } = useTranslation()
   const { propertyId } = useParams<{ propertyId: string }>()
   const pid = propertyId ?? ''
 
@@ -145,7 +147,7 @@ export function BookingPreviewPage() {
         const slot  = activeSlots.find((s) => s.id === b.slotId)
         if (isOwn) {
           return {
-            bookingId: b.slotId, slotId: b.slotId, isOwn: true, label: 'Min booking',
+            bookingId: b.slotId, slotId: b.slotId, isOwn: true, label: t('adminProperties.preview.myBooking'),
             canCancel: slot ? canCancelBooking(b.date, slot.startTime, settings.cancellationWindowMinutes) : false,
             machineId: null, machineName: null,
           }
@@ -153,9 +155,9 @@ export function BookingPreviewPage() {
         const user = PREVIEW_USERS.find((u) => u.id === b.userId)
         let label: string
         switch (settings.bookingVisibility) {
-          case BookingVisibility.FullName:      label = user?.name ?? 'Beboer'; break
-          case BookingVisibility.ApartmentOnly: label = user ? `Lejl. ${user.apartment}` : 'Beboer'; break
-          default:                              label = 'Optaget'
+          case BookingVisibility.FullName:      label = user?.name ?? t('adminProperties.preview.resident'); break
+          case BookingVisibility.ApartmentOnly: label = user ? t('adminProperties.preview.apartmentLabel', { number: user.apartment }) : t('adminProperties.preview.resident'); break
+          default:                              label = t('adminProperties.preview.occupied')
         }
         return { bookingId: b.slotId, slotId: b.slotId, isOwn: false, label, canCancel: false, machineId: null, machineName: null }
       })
@@ -274,10 +276,10 @@ export function BookingPreviewPage() {
   if (activeRooms.length === 0) {
     return (
       <div className="p-4">
-        <PageHeader title="Forhåndsvisning" description="Simulér beboernes bookingoplevelse" />
+        <PageHeader title={t('adminProperties.preview.title')} description={t('adminProperties.preview.descriptionShort')} />
         <EmptyState
-          title="Ingen aktive vaskerum"
-          description="Opret et vaskerum under Lokaler & Maskiner for at se forhåndsvisningen."
+          title={t('adminProperties.preview.noActiveRooms')}
+          description={t('adminProperties.preview.noActiveRoomsDesc')}
         />
       </div>
     )
@@ -290,8 +292,8 @@ export function BookingPreviewPage() {
     <div className="p-3 p-md-4" style={{ maxWidth: 700 }}>
 
       <PageHeader
-        title="Forhåndsvisning"
-        description="Simulér beboernes bookingoplevelse med testbrugere"
+        title={t('adminProperties.preview.title')}
+        description={t('adminProperties.preview.description')}
       />
 
       {/* ── Admin control panel ───────────────────────────────────────────────── */}
@@ -301,7 +303,7 @@ export function BookingPreviewPage() {
       >
         <div className="d-flex align-items-center justify-content-between mb-3">
           <span style={{ fontSize: '0.7rem', fontWeight: 700, color: colors.primary, textTransform: 'uppercase', letterSpacing: '0.09em' }}>
-            Admin · Simuleringsindstillinger
+            {t('adminProperties.preview.adminSimSettings')}
           </span>
           {previewBookings.length > 0 && (
             <button
@@ -309,7 +311,7 @@ export function BookingPreviewPage() {
               style={{ borderRadius: 7, fontSize: '0.78rem', padding: '2px 12px' }}
               onClick={() => setPreviewBookings([])}
             >
-              Nulstil
+              {t('adminProperties.preview.reset')}
             </button>
           )}
         </div>
@@ -318,7 +320,7 @@ export function BookingPreviewPage() {
 
         {/* User selector */}
         <div className="d-flex align-items-center gap-2 flex-wrap mb-2">
-          <span style={{ fontSize: '0.8rem', color: colors.primaryAccent, fontWeight: 600, minWidth: 74 }}>Viser som:</span>
+          <span style={{ fontSize: '0.8rem', color: colors.primaryAccent, fontWeight: 600, minWidth: 74 }}>{t('adminProperties.preview.viewingAs')}</span>
           <div className="d-flex gap-2 flex-wrap">
             {PREVIEW_USERS.map((u) => {
               const active = u.id === activeUserId
@@ -348,7 +350,7 @@ export function BookingPreviewPage() {
         {/* Room selector */}
         {activeRooms.length > 1 && (
           <div className="d-flex align-items-center gap-2 flex-wrap">
-            <span style={{ fontSize: '0.8rem', color: colors.primaryAccent, fontWeight: 600, minWidth: 74 }}>Vaskerum:</span>
+            <span style={{ fontSize: '0.8rem', color: colors.primaryAccent, fontWeight: 600, minWidth: 74 }}>{t('adminProperties.preview.room')}</span>
             <div className="d-flex gap-2 flex-wrap">
               {activeRooms.map((room) => {
                 const active = room.id === effectiveRoomId
@@ -380,7 +382,7 @@ export function BookingPreviewPage() {
         {/* Section label */}
         <div className="d-flex align-items-center gap-2 mb-2">
           <span style={{ fontSize: '0.7rem', fontWeight: 700, color: colors.textMuted, textTransform: 'uppercase', letterSpacing: '0.09em' }}>
-            Beboervisning
+            {t('adminProperties.preview.residentView')}
           </span>
           {selectedRoom && (
             <span style={{ fontSize: '0.82rem', color: colors.textSecondary, fontWeight: 500 }}>
@@ -399,7 +401,7 @@ export function BookingPreviewPage() {
             >
               <div>
                 <p style={{ fontSize: '0.7rem', fontWeight: 700, color: colors.successText, textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 2 }}>
-                  {activeUser?.name ?? 'Beboer'}s næste booking
+                  {t('adminProperties.preview.nextBookingLabel', { name: activeUser?.name ?? t('adminProperties.preview.resident') })}
                 </p>
                 <p style={{ fontSize: '0.9rem', fontWeight: 600, color: colors.textPrimary, marginBottom: 0 }}>
                   {fullLabel} · {formatTime(nextPreviewSlot.startTime)} – {formatTime(nextPreviewSlot.endTime)}
@@ -410,7 +412,7 @@ export function BookingPreviewPage() {
                 style={{ borderRadius: 7, fontSize: '0.78rem' }}
                 onClick={() => handleCancel(nextPreviewBooking.slotId)}
               >
-                Aflys
+                {t('adminProperties.preview.cancel')}
               </button>
             </div>
           )
@@ -426,7 +428,7 @@ export function BookingPreviewPage() {
             style={{ color: canGoBack ? colors.textPrimary : colors.textDisabled, lineHeight: 1 }}
             disabled={!canGoBack}
             onClick={() => shiftWeek(-7)}
-            aria-label="Forrige uge"
+            aria-label={t('adminProperties.preview.previousWeek')}
           >
             <IconChevronLeft size={15} />
           </button>
@@ -470,7 +472,7 @@ export function BookingPreviewPage() {
             className="btn btn-sm p-1 flex-shrink-0"
             style={{ color: colors.textPrimary, lineHeight: 1 }}
             onClick={() => shiftWeek(7)}
-            aria-label="Næste uge"
+            aria-label={t('adminProperties.preview.nextWeek')}
           >
             <IconChevronRight size={15} />
           </button>
@@ -496,9 +498,7 @@ export function BookingPreviewPage() {
         {/* Task 9 — social context line */}
         {othersBookedToday > 0 && (
           <p style={{ fontSize: '0.76rem', color: colors.textMuted, textAlign: 'center', marginTop: 8, marginBottom: 0 }}>
-            {othersBookedToday === 1
-              ? '1 anden beboer har booket denne dag'
-              : `${othersBookedToday} andre beboere har booket denne dag`}
+            {t('adminProperties.preview.othersBookedToday', { count: othersBookedToday })}
           </p>
         )}
 
@@ -518,7 +518,7 @@ export function BookingPreviewPage() {
           type={pendingAction.type}
           slotTime={`${formatTime(pendingSlot.startTime)} – ${formatTime(pendingSlot.endTime)}`}
           dateLabel={dateParts(selectedDate).fullLabel}
-          userName={activeUser?.name ?? 'Beboer'}
+          userName={activeUser?.name ?? t('adminProperties.preview.resident')}
           minutesUntil={pendingAction.minutesUntil}
           onConfirm={handleConfirm}
           onClose={() => setPendingAction(null)}
@@ -532,25 +532,26 @@ export function BookingPreviewPage() {
 // ── SettingsStrip ──────────────────────────────────────────────────────────────
 
 function SettingsStrip({ settings }: { settings: ComplexSettingsDto }) {
+  const { t } = useTranslation()
   const visibilityLabel = {
-    [BookingVisibility.FullName]:      'Navn synligt',
-    [BookingVisibility.ApartmentOnly]: 'Lejl. nr.',
-    [BookingVisibility.Anonymous]:     'Anonymt',
-  }[settings.bookingVisibility] ?? 'Lejl. nr.'
+    [BookingVisibility.FullName]:      t('adminProperties.preview.visibilityFullName'),
+    [BookingVisibility.ApartmentOnly]: t('adminProperties.preview.visibilityApartment'),
+    [BookingVisibility.Anonymous]:     t('adminProperties.preview.visibilityAnonymous'),
+  }[settings.bookingVisibility] ?? t('adminProperties.preview.visibilityApartment')
 
   const modeLabel = settings.bookingMode === BookingMode.BookSpecificMachine
-    ? 'Specifik maskine'
-    : 'Hel lokale'
+    ? t('adminProperties.preview.modeSpecificMachine')
+    : t('adminProperties.preview.modeEntireRoom')
 
   const cancelLabel = settings.cancellationWindowMinutes >= 60
-    ? `Aflys inden ${settings.cancellationWindowMinutes / 60}t`
-    : `Aflys inden ${settings.cancellationWindowMinutes} min`
+    ? t('adminProperties.preview.cancelWithinHours', { hours: settings.cancellationWindowMinutes / 60 })
+    : t('adminProperties.preview.cancelWithinMinutes', { minutes: settings.cancellationWindowMinutes })
 
   const chips = [
-    `Max ${settings.maxConcurrentBookingsPerUser} booking`,
+    t('adminProperties.preview.maxBookings', { count: settings.maxConcurrentBookingsPerUser }),
     cancelLabel,
     visibilityLabel,
-    `${settings.bookingLookaheadDays} dage frem`,
+    t('adminProperties.preview.daysAhead', { count: settings.bookingLookaheadDays }),
     modeLabel,
   ]
 
@@ -585,6 +586,7 @@ function ConfirmModal({
   onConfirm: () => void
   onClose: () => void
 }) {
+  const { t } = useTranslation()
   // Task 8 — time-signal warning
   const showTimeWarning =
     type === 'cancel' &&
@@ -608,14 +610,14 @@ function ConfirmModal({
         }}
       >
         <h6 style={{ fontWeight: 700, color: colors.textPrimary, marginBottom: 6, fontSize: '1rem' }}>
-          {type === 'book' ? 'Bekræft booking' : 'Bekræft aflysning'}
+          {type === 'book' ? t('adminProperties.preview.confirmBookTitle') : t('adminProperties.preview.confirmCancelTitle')}
         </h6>
 
         <p style={{ fontSize: '0.88rem', color: colors.textSecondary, marginBottom: showTimeWarning ? 8 : 6, lineHeight: 1.5 }}>
           {type === 'book' ? (
-            <>Book <strong>{slotTime}</strong> den {dateLabel} som <strong>{userName}</strong>?</>
+            <Trans i18nKey="adminProperties.preview.confirmBookQuestion" values={{ slotTime, dateLabel, userName }} components={{ s: <strong /> }} />
           ) : (
-            <>Aflys booking <strong>{slotTime}</strong> den {dateLabel}?</>
+            <Trans i18nKey="adminProperties.preview.confirmCancelQuestion" values={{ slotTime, dateLabel }} components={{ s: <strong /> }} />
           )}
         </p>
 
@@ -627,14 +629,14 @@ function ConfirmModal({
             borderRadius: 6, padding: '6px 10px', marginBottom: 8,
           }}>
             {(minutesUntil ?? 0) < 60
-              ? `Der er kun ${minutesUntil} minutter til bookingen starter.`
-              : `Der er ${Math.floor((minutesUntil ?? 0) / 60)} time${Math.floor((minutesUntil ?? 0) / 60) === 1 ? '' : 'r'} til bookingen starter.`
+              ? t('adminProperties.preview.timeWarningMinutes', { minutes: minutesUntil })
+              : t('adminProperties.preview.timeWarningHours', { count: Math.floor((minutesUntil ?? 0) / 60) })
             }
           </p>
         )}
 
         <p style={{ fontSize: '0.76rem', color: colors.textMuted, marginBottom: 20 }}>
-          Dette er en preview — ingen rigtige bookinger oprettes.
+          {t('adminProperties.preview.previewNotice')}
         </p>
 
         <div className="d-flex gap-2 justify-content-end">
@@ -643,14 +645,14 @@ function ConfirmModal({
             style={{ borderRadius: 7, fontSize: '0.82rem' }}
             onClick={onClose}
           >
-            Annuller
+            {t('common.cancel')}
           </button>
           <button
             className={`btn btn-sm ${type === 'book' ? 'btn-primary' : 'btn-danger'}`}
             style={{ borderRadius: 7, fontSize: '0.82rem' }}
             onClick={onConfirm}
           >
-            {type === 'book' ? 'Book' : 'Aflys'}
+            {type === 'book' ? t('adminProperties.preview.book') : t('adminProperties.preview.cancel')}
           </button>
         </div>
       </div>
@@ -668,6 +670,7 @@ function UserBookingSummary({
   todayStr: string
   maxConcurrent: number
 }) {
+  const { t } = useTranslation()
   const user     = PREVIEW_USERS.find((u) => u.id === userId)
   const upcoming = previewBookings.filter((b) => b.userId === userId && b.date >= todayStr)
   if (upcoming.length === 0) return null
@@ -678,10 +681,10 @@ function UserBookingSummary({
       style={{ backgroundColor: colors.successBg, border: `1px solid ${colors.successBorder}`, fontSize: '0.82rem' }}
     >
       <span style={{ fontWeight: 600, color: colors.successText }}>
-        {user?.name ?? 'Beboer'} har {upcoming.length} aktiv{upcoming.length === 1 ? '' : 'e'} booking{upcoming.length === 1 ? '' : 'er'}
+        {t('adminProperties.preview.userActiveBookings', { name: user?.name ?? t('adminProperties.preview.resident'), count: upcoming.length })}
       </span>
       {maxConcurrent > 0 && (
-        <span style={{ color: colors.textSecondary }}>(maks. {maxConcurrent})</span>
+        <span style={{ color: colors.textSecondary }}>{t('adminProperties.preview.maxLabel', { count: maxConcurrent })}</span>
       )}
     </div>
   )

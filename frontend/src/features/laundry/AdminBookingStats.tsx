@@ -1,4 +1,5 @@
 import { useMemo } from 'react'
+import { useTranslation } from 'react-i18next'
 import type { AdminBookingDto, AdminRoomSummaryDto } from './laundryApi'
 import { colors } from '../../shared/theme'
 
@@ -9,6 +10,7 @@ interface Props {
 }
 
 export function AdminBookingStats({ bookings, rooms, periodDays }: Props) {
+  const { t } = useTranslation()
   const stats = useMemo(() => {
     const activeResidents = new Set(bookings.map((b) => b.userId)).size
     const roomsInUse = new Set(bookings.map((b) => b.roomId)).size
@@ -33,9 +35,9 @@ export function AdminBookingStats({ bookings, rooms, periodDays }: Props) {
   return (
     <div className="d-flex flex-column gap-3 mb-4">
       <div className="d-flex flex-wrap gap-3">
-        <StatTile label="Bookinger i perioden" value={stats.total} />
-        <StatTile label="Aktive beboere" value={stats.activeResidents} />
-        <StatTile label="Vaskerum i brug" value={stats.roomsInUse} />
+        <StatTile label={t('laundry.stats.bookingsInPeriod')} value={stats.total} />
+        <StatTile label={t('laundry.stats.activeResidents')} value={stats.activeResidents} />
+        <StatTile label={t('laundry.stats.roomsInUse')} value={stats.roomsInUse} />
       </div>
 
       {stats.perRoom.length > 0 && (
@@ -53,7 +55,7 @@ export function AdminBookingStats({ bookings, rooms, periodDays }: Props) {
               textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: 12,
             }}
           >
-            Belægning per vaskerum · i perioden
+            {t('laundry.stats.utilizationHeader')}
           </div>
           <div className="d-flex flex-column gap-3">
             {stats.perRoom.map((r) => (
@@ -88,12 +90,13 @@ function StatTile({ label, value }: { label: string; value: number }) {
 }
 
 function RoomUtilizationRow({ name, booked, utilization }: { name: string; booked: number; utilization: number }) {
+  const { t } = useTranslation()
   return (
     <div>
       <div className="d-flex align-items-center justify-content-between mb-1">
         <span style={{ fontSize: '0.85rem', fontWeight: 500, color: colors.textPrimary }}>{name}</span>
         <span style={{ fontSize: '0.8rem', color: colors.textSecondary }}>
-          {booked} booking{booked === 1 ? '' : 'er'} · {utilization}%
+          {t('laundry.stats.roomUtilization', { count: booked, utilization })}
         </span>
       </div>
       <div style={{ height: 8, borderRadius: 6, backgroundColor: colors.bgSubtle, overflow: 'hidden' }}>

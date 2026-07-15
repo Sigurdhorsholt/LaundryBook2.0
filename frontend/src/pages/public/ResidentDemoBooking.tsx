@@ -1,4 +1,6 @@
 import { useState, useMemo } from 'react'
+import { useTranslation, Trans } from 'react-i18next'
+import type { TFunction } from 'i18next'
 import { BookingGrid, type GridBooking } from '../../features/laundry/BookingGrid'
 import type { TimeSlotTemplateDto } from '../../features/laundry/laundryApi'
 import { BookingMode } from '../../features/properties/propertiesApi'
@@ -25,8 +27,8 @@ const DOT_COLOR: Record<string, string> = {
   free: colors.dotFree, few: colors.dotFew, full: colors.dotFull, past: 'transparent',
 }
 
-const DAY_SHORT = ['sø', 'ma', 'ti', 'on', 'to', 'fr', 'lø'] as const
-const MONTH_SHORT = ['jan','feb','mar','apr','maj','jun','jul','aug','sep','okt','nov','dec'] as const
+const DAY_KEYS = ['sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat'] as const
+const MONTH_KEYS = ['jan','feb','mar','apr','may','jun','jul','aug','sep','oct','nov','dec'] as const
 
 // ── Helpers ────────────────────────────────────────────────────────────────────
 
@@ -48,20 +50,22 @@ function getWeekMonday(dateStr: string): string {
   return addDays(dateStr, dow === 0 ? -6 : 1 - dow)
 }
 
-function smartDayShort(dateStr: string, today: string): string {
-  if (dateStr === today) return 'i dag'
-  if (dateStr === addDays(today, 1)) return 'i morgen'
+function smartDayShort(dateStr: string, today: string, t: TFunction): string {
+  if (dateStr === today) return t('public.residentDemo.today')
+  if (dateStr === addDays(today, 1)) return t('public.residentDemo.tomorrow')
   const parts = dateStr.split('-').map(Number)
   const d = new Date(parts[0] ?? 2025, (parts[1] ?? 1) - 1, parts[2] ?? 1)
-  return DAY_SHORT[d.getDay()] ?? 'ma'
+  return t(`public.residentDemo.daysShort.${DAY_KEYS[d.getDay()] ?? 'mon'}`)
 }
 
-function dateParts(dateStr: string): { dayNum: number; fullLabel: string } {
+function dateParts(dateStr: string, t: TFunction): { dayNum: number; fullLabel: string } {
   const parts = dateStr.split('-').map(Number)
   const d = new Date(parts[0] ?? 2025, (parts[1] ?? 1) - 1, parts[2] ?? 1)
+  const dayLong = t(`public.residentDemo.daysLong.${DAY_KEYS[d.getDay()] ?? 'mon'}`)
+  const monthShort = t(`public.residentDemo.monthsShort.${MONTH_KEYS[d.getMonth()] ?? 'jan'}`)
   return {
     dayNum: d.getDate(),
-    fullLabel: `${['Søndag','Mandag','Tirsdag','Onsdag','Torsdag','Fredag','Lørdag'][d.getDay()] ?? ''} ${d.getDate()}. ${MONTH_SHORT[d.getMonth()] ?? ''}`,
+    fullLabel: `${dayLong} ${d.getDate()}. ${monthShort}`,
   }
 }
 
@@ -80,6 +84,7 @@ function makeSeedBookings(today: string): Set<string> {
 // ── Component ──────────────────────────────────────────────────────────────────
 
 export function ResidentDemoBooking() {
+  const { t } = useTranslation()
   const today        = useMemo(() => getTodayStr(), [])
   const thisWeekMon  = useMemo(() => getWeekMonday(today), [today])
   const lookaheadEnd = useMemo(() => addDays(today, LOOKAHEAD_DAYS), [today])
@@ -106,11 +111,11 @@ export function ResidentDemoBooking() {
   const gridBookings = useMemo((): GridBooking[] =>
     SLOTS.flatMap((slot): GridBooking[] => {
       const key = `${slot.id}_${selectedDate}`
-      if (ownBookings.has(key))   return [{ bookingId: key, slotId: slot.id, isOwn: true,  label: 'Min booking', canCancel: true,  machineId: null, machineName: null }]
-      if (otherBookings.has(key)) return [{ bookingId: key, slotId: slot.id, isOwn: false, label: 'Optaget',      canCancel: false, machineId: null, machineName: null }]
+      if (ownBookings.has(key))   return [{ bookingId: key, slotId: slot.id, isOwn: true,  label: t('public.residentDemo.myBooking'), canCancel: true,  machineId: null, machineName: null }]
+      if (otherBookings.has(key)) return [{ bookingId: key, slotId: slot.id, isOwn: false, label: t('public.residentDemo.busy'),      canCancel: false, machineId: null, machineName: null }]
       return []
     })
-  , [ownBookings, otherBookings, selectedDate])
+  , [ownBookings, otherBookings, selectedDate, t])
 
   const availabilityByDate = useMemo(() => {
     const result: Record<string, 'free' | 'few' | 'full' | 'past'> = {}
@@ -162,8 +167,8 @@ export function ResidentDemoBooking() {
   return (
     <div className="p-3 p-md-4">
       <div className="mb-4">
-        <h1 className="fw-bold mb-1" style={{ fontSize: '1.5rem', color: colors.textPrimary }}>Vaskebooking</h1>
-        <p className="mb-0" style={{ fontSize: '0.85rem', color: colors.textSecondary }}>Vaskerum 1 · Nørrebrogade 42 (demo)</p>
+        <h1 className="fw-bold mb-1" style={{ fontSize: '1.5rem', color: colors.textPrimary }}>{t('nav.laundry')}</h1>
+        <p className="mb-0" style={{ fontSize: '0.85rem', color: colors.textSecondary }}>{t('public.residentDemo.subtitle')}</p>
       </div>
 
       {/* Next booking card */}
@@ -172,10 +177,10 @@ export function ResidentDemoBooking() {
           style={{ backgroundColor: colors.successBg, border: `1px solid ${colors.successBorder}` }}>
           <div>
             <p style={{ fontSize: '0.7rem', fontWeight: 700, color: colors.successText, textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 2 }}>
-              Din næste booking
+              {t('public.residentDemo.nextBooking')}
             </p>
             <p style={{ fontSize: '0.9rem', fontWeight: 600, color: colors.textPrimary, marginBottom: 0 }}>
-              {dateParts(nextOwn.date).fullLabel} · {nextOwn.slot.startTime.slice(0, 5)} – {nextOwn.slot.endTime.slice(0, 5)}
+              {dateParts(nextOwn.date, t).fullLabel} · {nextOwn.slot.startTime.slice(0, 5)} – {nextOwn.slot.endTime.slice(0, 5)}
             </p>
           </div>
           <button
@@ -183,7 +188,7 @@ export function ResidentDemoBooking() {
             style={{ borderRadius: 7, fontSize: '0.78rem' }}
             onClick={() => setPending({ type: 'cancel', slotId: nextOwn.slot.id, date: nextOwn.date })}
           >
-            Aflys
+            {t('public.residentDemo.cancelBooking')}
           </button>
         </div>
       )}
@@ -196,14 +201,14 @@ export function ResidentDemoBooking() {
           style={{ color: canGoBack ? colors.textPrimary : colors.textDisabled, lineHeight: 1 }}
           disabled={!canGoBack}
           onClick={() => shiftWeek(-7)}
-          aria-label="Forrige uge"
+          aria-label={t('public.residentDemo.prevWeek')}
         >
           <IconChevronLeft size={15} />
         </button>
 
         <div className="d-flex flex-grow-1 justify-content-between" style={{ gap: 2, overflowX: 'auto' }}>
           {visibleDates.map(date => {
-            const { dayNum } = dateParts(date)
+            const { dayNum } = dateParts(date, t)
             const isSelected = date === selectedDate
             const isDimmed   = date < today || date > lookaheadEnd
             const dotState   = availabilityByDate[date] ?? 'free'
@@ -220,7 +225,7 @@ export function ResidentDemoBooking() {
                 }}
                 onClick={() => setSelectedDate(date)}
               >
-                <span style={{ textTransform: 'capitalize' }}>{smartDayShort(date, today)}</span>
+                <span style={{ textTransform: 'capitalize' }}>{smartDayShort(date, today, t)}</span>
                 <span style={{ fontSize: '0.88rem', fontWeight: isSelected ? 700 : 500 }}>{dayNum}</span>
                 <span style={{
                   width: 5, height: 5, borderRadius: '50%', display: 'block', marginTop: 1,
@@ -235,7 +240,7 @@ export function ResidentDemoBooking() {
           className="btn btn-sm p-1 flex-shrink-0"
           style={{ color: colors.textPrimary, lineHeight: 1 }}
           onClick={() => shiftWeek(7)}
-          aria-label="Næste uge"
+          aria-label={t('public.residentDemo.nextWeek')}
         >
           <IconChevronRight size={15} />
         </button>
@@ -262,7 +267,7 @@ export function ResidentDemoBooking() {
         <DemoConfirmModal
           type={pending.type}
           slotTime={`${pendingSlot.startTime.slice(0, 5)} – ${pendingSlot.endTime.slice(0, 5)}`}
-          dateLabel={dateParts(pending.date).fullLabel}
+          dateLabel={dateParts(pending.date, t).fullLabel}
           onConfirm={handleConfirm}
           onClose={() => setPending(null)}
         />
@@ -282,6 +287,7 @@ function DemoConfirmModal({
   onConfirm: () => void
   onClose: () => void
 }) {
+  const { t } = useTranslation()
   return (
     <>
       <div
@@ -296,16 +302,16 @@ function DemoConfirmModal({
         zIndex: 1051, boxShadow: '0 8px 40px rgba(0,0,0,0.15)',
       }}>
         <h6 style={{ fontWeight: 700, color: colors.textPrimary, marginBottom: 6, fontSize: '1rem' }}>
-          {type === 'book' ? 'Bekræft booking' : 'Bekræft aflysning'}
+          {type === 'book' ? t('public.residentDemo.modal.confirmBookTitle') : t('public.residentDemo.modal.confirmCancelTitle')}
         </h6>
         <p style={{ fontSize: '0.88rem', color: colors.textSecondary, marginBottom: 6, lineHeight: 1.5 }}>
           {type === 'book'
-            ? <><strong>{slotTime}</strong> den {dateLabel}</>
-            : <>Aflys <strong>{slotTime}</strong> den {dateLabel}?</>
+            ? <Trans i18nKey="public.residentDemo.modal.bookBody" values={{ slotTime, dateLabel }} components={{ s: <strong /> }} />
+            : <Trans i18nKey="public.residentDemo.modal.cancelBody" values={{ slotTime, dateLabel }} components={{ s: <strong /> }} />
           }
         </p>
         <p style={{ fontSize: '0.76rem', color: colors.textMuted, marginBottom: 20 }}>
-          Dette er en demo — ingen rigtige bookinger oprettes.
+          {t('public.residentDemo.modal.demoNote')}
         </p>
         <div className="d-flex gap-2 justify-content-end">
           <button
@@ -313,14 +319,14 @@ function DemoConfirmModal({
             style={{ borderRadius: 7, fontSize: '0.82rem' }}
             onClick={onClose}
           >
-            Annuller
+            {t('common.cancel')}
           </button>
           <button
             className={`btn btn-sm ${type === 'book' ? 'btn-primary' : 'btn-danger'}`}
             style={{ borderRadius: 7, fontSize: '0.82rem' }}
             onClick={onConfirm}
           >
-            {type === 'book' ? 'Book' : 'Aflys'}
+            {type === 'book' ? t('public.residentDemo.book') : t('public.residentDemo.cancelBooking')}
           </button>
         </div>
       </div>

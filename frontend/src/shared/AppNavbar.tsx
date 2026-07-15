@@ -1,4 +1,5 @@
 import {NavLink, useNavigate} from 'react-router-dom'
+import {useTranslation} from 'react-i18next'
 import {useDispatch} from 'react-redux'
 import {signOut} from 'firebase/auth'
 import {firebaseAuth} from '../lib/firebase'
@@ -18,6 +19,7 @@ interface NavbarProps {
 
 export function AppNavbar({isAdmin = false}: NavbarProps) {
     const navigate = useNavigate()
+    const {t} = useTranslation()
     const {data: user} = useMeQuery()
     const [logout] = useLogoutMutation()
     const dispatch = useDispatch()
@@ -49,7 +51,7 @@ export function AppNavbar({isAdmin = false}: NavbarProps) {
                             data-bs-toggle="offcanvas"
                             data-bs-target="#adminSidebar"
                             aria-controls="adminSidebar"
-                            aria-label="Åbn sidepanel"
+                            aria-label={t('nav.openSidebar')}
                         >
                             <IconMenu size={20}/>
                         </button>
@@ -73,7 +75,7 @@ export function AppNavbar({isAdmin = false}: NavbarProps) {
                                     fontWeight: 600
                                 }}
                             >
-                Admin
+                {t('nav.admin')}
               </span>
                         )}
                     </NavLink>
@@ -91,7 +93,7 @@ export function AppNavbar({isAdmin = false}: NavbarProps) {
                                     fontWeight: isActive ? 600 : undefined,
                                 })}
                             >
-                                Admin
+                                {t('nav.admin')}
                             </NavLink>
                         )}
                         <NavLink
@@ -104,7 +106,7 @@ export function AppNavbar({isAdmin = false}: NavbarProps) {
                                 fontWeight: isActive ? 600 : undefined,
                             })}
                         >
-                            Vaskebooking
+                            {t('nav.laundry')}
                         </NavLink>
                         <NavLink
                             to="/my-page"
@@ -116,14 +118,14 @@ export function AppNavbar({isAdmin = false}: NavbarProps) {
                                 fontWeight: isActive ? 600 : undefined,
                             })}
                         >
-                            Min side
+                            {t('nav.myPage')}
                         </NavLink>
                         <button
                             className="btn btn-sm btn-outline-secondary ms-1"
                             style={{borderRadius: '7px', fontSize: '0.85rem'}}
                             onClick={handleLogout}
                         >
-                            Log ud
+                            {t('nav.logout')}
                         </button>
                     </div>
 
@@ -135,7 +137,7 @@ export function AppNavbar({isAdmin = false}: NavbarProps) {
                         data-bs-toggle="offcanvas"
                         data-bs-target={`#${NAV_OFFCANVAS_ID}`}
                         aria-controls={NAV_OFFCANVAS_ID}
-                        aria-label="Åbn navigation"
+                        aria-label={t('nav.openNavigation')}
                     >
                         <IconMenu size={22}/>
                     </button>
@@ -163,7 +165,7 @@ export function AppNavbar({isAdmin = false}: NavbarProps) {
                         type="button"
                         className="btn-close"
                         data-bs-dismiss="offcanvas"
-                        aria-label="Luk"
+                        aria-label={t('common.close')}
                     />
                 </div>
 
@@ -178,7 +180,7 @@ export function AppNavbar({isAdmin = false}: NavbarProps) {
                                 fontWeight: isActive ? 700 : undefined,
                             })}
                         >
-                            Admin
+                            {t('nav.admin')}
                         </NavLink>
                     )}
                     <NavLink
@@ -190,7 +192,7 @@ export function AppNavbar({isAdmin = false}: NavbarProps) {
                             fontWeight: isActive ? 700 : undefined,
                         })}
                     >
-                        Vaskebooking
+                        {t('nav.laundry')}
                     </NavLink>
                     <NavLink
                         to="/my-page"
@@ -201,14 +203,14 @@ export function AppNavbar({isAdmin = false}: NavbarProps) {
                             fontWeight: isActive ? 700 : undefined,
                         })}
                     >
-                        Min side
+                        {t('nav.myPage')}
                     </NavLink>
                     <button
                         className="btn btn-outline-secondary mt-4"
                         style={{borderRadius: '8px', fontSize: '0.95rem', alignSelf: 'flex-start', minWidth: 120}}
                         onClick={handleLogout}
                     >
-                        Log ud
+                        {t('nav.logout')}
                     </button>
                 </div>
             </div>

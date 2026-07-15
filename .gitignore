@@ -9,6 +9,11 @@ riderModule.iml
 *.db-shm
 *.db-wal
 
+# Database dumps / backups (never commit real data)
+*.dump
+*.sql.gz
+*.bak
+
 # Frontend
 frontend/node_modules/
 frontend/dist/

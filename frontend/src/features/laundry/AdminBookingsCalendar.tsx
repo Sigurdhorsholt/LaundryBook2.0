@@ -1,4 +1,5 @@
 import { useState, useMemo, useEffect } from 'react'
+import { useTranslation } from 'react-i18next'
 import type { AdminBookingDto, AdminRoomSummaryDto } from './laundryApi'
 import { useGetTimeSlotsQuery } from './laundryApi'
 import { EmptyState, Spinner } from '../../shared/ui'
@@ -16,6 +17,7 @@ interface Props {
 }
 
 export function AdminBookingsCalendar({ rooms, bookings, today, weekStart, maxWeekStart, onCancel }: Props) {
+  const { t } = useTranslation()
   const [selectedRoomId, setSelectedRoomId] = useState<string>(rooms[0]?.id ?? '')
   const [viewWeekStart, setViewWeekStart] = useState<string>(weekStart)
 
@@ -50,7 +52,7 @@ export function AdminBookingsCalendar({ rooms, bookings, today, weekStart, maxWe
   }
 
   if (rooms.length === 0) {
-    return <EmptyState title="Ingen aktive vaskerum" description="Aktivér et vaskerum for at se kalenderen." />
+    return <EmptyState title={t('laundry.calendar.noRoomsTitle')} description={t('laundry.calendar.noRoomsDescription')} />
   }
 
   return (
@@ -85,7 +87,7 @@ export function AdminBookingsCalendar({ rooms, bookings, today, weekStart, maxWe
           style={{ color: canGoBack ? colors.textPrimary : colors.textDisabled, lineHeight: 1 }}
           disabled={!canGoBack}
           onClick={() => shiftWeek(-7)}
-          aria-label="Forrige uge"
+          aria-label={t('laundry.calendar.prevWeek')}
         >
           <IconChevronLeft size={16} />
         </button>
@@ -97,7 +99,7 @@ export function AdminBookingsCalendar({ rooms, bookings, today, weekStart, maxWe
           style={{ color: canGoForward ? colors.textPrimary : colors.textDisabled, lineHeight: 1 }}
           disabled={!canGoForward}
           onClick={() => shiftWeek(7)}
-          aria-label="Næste uge"
+          aria-label={t('laundry.calendar.nextWeek')}
         >
           <IconChevronRight size={16} />
         </button>
@@ -115,7 +117,7 @@ export function AdminBookingsCalendar({ rooms, bookings, today, weekStart, maxWe
           <Spinner />
         ) : activeSlots.length === 0 ? (
           <div style={{ padding: '32px 20px', textAlign: 'center', color: colors.textMuted, fontSize: '0.85rem' }}>
-            Ingen tidspladser opsat for dette lokale.
+            {t('laundry.calendar.noSlots')}
           </div>
         ) : (
           <div style={{ minWidth: 640 }}>
@@ -169,6 +171,7 @@ function CalendarHeader({ days, today }: { days: string[]; today: string }) {
 }
 
 function Cell({ booking, past, onCancel }: { booking: AdminBookingDto | null; past: boolean; onCancel: (b: AdminBookingDto) => void }) {
+  const { t } = useTranslation()
   const base: React.CSSProperties = {
     padding: '6px 4px',
     borderRight: `1px solid ${colors.borderRow}`,
@@ -179,12 +182,12 @@ function Cell({ booking, past, onCancel }: { booking: AdminBookingDto | null; pa
   }
 
   if (booking) {
-    const label = booking.apartmentNumber ? `Lejl. ${booking.apartmentNumber}` : booking.residentName
+    const label = booking.apartmentNumber ? t('laundry.apartmentShort', { number: booking.apartmentNumber }) : booking.residentName
     return (
       <div style={{ ...base, opacity: past ? 0.5 : 1 }}>
         <button
           className="btn p-0 w-100"
-          title={`${booking.residentName} — klik for at aflyse`}
+          title={t('laundry.calendar.bookingCellTitle', { name: booking.residentName })}
           onClick={() => onCancel(booking)}
           style={{
             fontSize: '0.72rem', fontWeight: 600, lineHeight: 1.2,

@@ -1,3 +1,4 @@
+import { useTranslation, Trans } from 'react-i18next'
 import type { AdminCancelTarget } from './types'
 import { colors } from '../../shared/theme'
 
@@ -10,6 +11,7 @@ interface Props {
 }
 
 export function AdminCancelBookingModal({ target, cancelling, error, onConfirm, onClose }: Props) {
+  const { t } = useTranslation()
   return (
     <>
       <div
@@ -26,15 +28,18 @@ export function AdminCancelBookingModal({ target, cancelling, error, onConfirm, 
         }}
       >
         <h6 style={{ fontWeight: 700, color: colors.textPrimary, marginBottom: 8, fontSize: '1rem' }}>
-          Aflys booking
+          {t('laundry.adminCancel.title')}
         </h6>
 
         <p style={{ fontSize: '0.9rem', color: colors.textSecondary, marginBottom: 6, lineHeight: 1.5 }}>
-          Aflys <strong>{target.slotTime}</strong> den {target.dateLabel} i{' '}
-          <strong>{target.roomName}</strong>?
+          <Trans
+            i18nKey="laundry.adminCancel.prompt"
+            values={{ slotTime: target.slotTime, dateLabel: target.dateLabel, roomName: target.roomName }}
+            components={{ s: <strong /> }}
+          />
         </p>
         <p style={{ fontSize: '0.85rem', color: colors.textMuted, marginBottom: 16 }}>
-          Booket af {target.residentName}. Beboeren får frigivet tidspladsen.
+          {t('laundry.adminCancel.bookedBy', { name: target.residentName })}
         </p>
 
         {error != null && (
@@ -50,7 +55,7 @@ export function AdminCancelBookingModal({ target, cancelling, error, onConfirm, 
             disabled={cancelling}
             onClick={onClose}
           >
-            Behold
+            {t('laundry.adminCancel.keep')}
           </button>
           <button
             className="btn btn-sm btn-danger fw-semibold"
@@ -58,7 +63,7 @@ export function AdminCancelBookingModal({ target, cancelling, error, onConfirm, 
             disabled={cancelling}
             onClick={onConfirm}
           >
-            {cancelling ? 'Aflyser…' : 'Aflys booking'}
+            {cancelling ? t('laundry.adminCancel.cancelling') : t('laundry.adminCancel.title')}
           </button>
         </div>
       </div>

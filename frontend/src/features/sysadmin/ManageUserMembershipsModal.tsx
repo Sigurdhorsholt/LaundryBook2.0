@@ -1,10 +1,11 @@
 import { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { ModalShell } from '../../shared/modals/ModalShell'
 import { useGetUserWithMembershipsQuery, useAssignUserToPropertyMutation } from './sysAdminApi'
 import type { SysAdminUserDto } from './sysAdminApi'
 import { useUpdateMemberMutation, useRemoveMemberMutation } from '../users/usersApi'
 import { useGetMyPropertiesQuery } from '../properties/propertiesApi'
-import { ALL_MEMBER_ROLE_OPTIONS } from '../../shared/constants'
+import { useAllMemberRoleOptions } from '../../shared/constants'
 import { UserRole } from '../auth/authApi'
 import { colors } from '../../shared/theme'
 
@@ -14,6 +15,8 @@ interface ManageUserMembershipsModalProps {
 }
 
 export function ManageUserMembershipsModal({ user, onClose }: ManageUserMembershipsModalProps) {
+  const { t } = useTranslation()
+  const allMemberRoleOptions = useAllMemberRoleOptions()
   const { data: detail, isLoading } = useGetUserWithMembershipsQuery(user.id)
   const { data: allProperties = [] } = useGetMyPropertiesQuery()
   const [updateMember] = useUpdateMemberMutation()
@@ -47,19 +50,19 @@ export function ManageUserMembershipsModal({ user, onClose }: ManageUserMembersh
   }
 
   return (
-    <ModalShell title="Administrer adgang" onClose={onClose} size="lg">
+    <ModalShell title={t('sysadmin.manageAccess')} onClose={onClose} size="lg">
       <p className="mb-4" style={{ color: colors.textSecondary, fontSize: '0.875rem' }}>
         <strong style={{ color: colors.textPrimary }}>{user.firstName} {user.lastName}</strong> · {user.email}
       </p>
 
       <p className="fw-semibold mb-2" style={{ fontSize: '0.8rem', color: colors.textMuted, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
-        Nuværende ejendomme
+        {t('sysadmin.currentProperties')}
       </p>
 
-      {isLoading && <p style={{ color: colors.textSecondary, fontSize: '0.9rem' }}>Henter...</p>}
+      {isLoading && <p style={{ color: colors.textSecondary, fontSize: '0.9rem' }}>{t('sysadmin.loading')}</p>}
 
       {!isLoading && detail?.memberships.length === 0 && (
-        <p style={{ color: colors.textSecondary, fontSize: '0.9rem', marginBottom: 16 }}>Ingen ejendomme.</p>
+        <p style={{ color: colors.textSecondary, fontSize: '0.9rem', marginBottom: 16 }}>{t('sysadmin.noProperties')}</p>
       )}
 
       {detail?.memberships.map((m) => (
@@ -76,7 +79,7 @@ export function ManageUserMembershipsModal({ user, onClose }: ManageUserMembersh
             value={m.role}
             onChange={(e) => handleRoleChange(m.propertyId, Number(e.target.value) as UserRole, m.apartmentNumber, m.isActive)}
           >
-            {ALL_MEMBER_ROLE_OPTIONS.map((o) => (
+            {allMemberRoleOptions.map((o) => (
               <option key={o.value} value={o.value}>{o.label}</option>
             ))}
           </select>
@@ -92,7 +95,7 @@ export function ManageUserMembershipsModal({ user, onClose }: ManageUserMembersh
             }}
             onClick={() => handleToggleActive(m.propertyId, m.role, m.apartmentNumber, m.isActive)}
           >
-            {m.isActive ? 'Aktiv' : 'Inaktiv'}
+            {m.isActive ? t('sysadmin.active') : t('sysadmin.inactive')}
           </button>
 
           <button
@@ -100,7 +103,7 @@ export function ManageUserMembershipsModal({ user, onClose }: ManageUserMembersh
             className="btn btn-sm btn-outline-danger"
             onClick={() => handleRemove(m.propertyId)}
           >
-            Fjern
+            {t('sysadmin.remove')}
           </button>
         </div>
       ))}
@@ -108,7 +111,7 @@ export function ManageUserMembershipsModal({ user, onClose }: ManageUserMembersh
       {availableProperties.length > 0 && (
         <>
           <p className="fw-semibold mt-4 mb-2" style={{ fontSize: '0.8rem', color: colors.textMuted, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
-            Tilføj til ejendom
+            {t('sysadmin.addToProperty')}
           </p>
           <form onSubmit={handleAdd} className="d-flex gap-2 align-items-end">
             <div style={{ flex: 2 }}>
@@ -118,7 +121,7 @@ export function ManageUserMembershipsModal({ user, onClose }: ManageUserMembersh
                 onChange={(e) => setAddPropertyId(e.target.value)}
                 required
               >
-                <option value="">Vælg ejendom...</option>
+                <option value="">{t('sysadmin.selectProperty')}</option>
                 {availableProperties.map((p) => (
                   <option key={p.id} value={p.id}>{p.name}</option>
                 ))}
@@ -130,12 +133,12 @@ export function ManageUserMembershipsModal({ user, onClose }: ManageUserMembersh
                 value={addRole}
                 onChange={(e) => setAddRole(Number(e.target.value) as UserRole)}
               >
-                {ALL_MEMBER_ROLE_OPTIONS.map((o) => (
+                {allMemberRoleOptions.map((o) => (
                   <option key={o.value} value={o.value}>{o.label}</option>
                 ))}
               </select>
             </div>
-            <button type="submit" className="btn btn-primary btn-sm">Tilføj</button>
+            <button type="submit" className="btn btn-primary btn-sm">{t('sysadmin.add')}</button>
           </form>
         </>
       )}

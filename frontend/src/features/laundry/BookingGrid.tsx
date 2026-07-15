@@ -9,6 +9,7 @@
  * The grid only handles rendering and the date-based past/locked states.
  */
 
+import { useTranslation } from 'react-i18next'
 import type { LaundryMachineDto, TimeSlotTemplateDto } from './laundryApi'
 import type { GridBooking } from './types'
 import { BookingMode } from '../properties/propertiesApi'
@@ -79,6 +80,7 @@ export function BookingGrid({
   onCancel,
   loading,
 }: BookingGridProps) {
+  const { t } = useTranslation()
   if (loading) {
     return (
       <div>
@@ -91,10 +93,10 @@ export function BookingGrid({
     return (
       <div style={{ padding: '32px 20px', textAlign: 'center' }}>
         <p style={{ color: colors.textPrimary, fontWeight: 600, marginBottom: 4, fontSize: '0.9rem' }}>
-          Ingen tider opsat endnu
+          {t('laundry.grid.noSlotsTitle')}
         </p>
         <p style={{ color: colors.textMuted, fontSize: '0.82rem', marginBottom: 0 }}>
-          Administratoren har ikke konfigureret tidspladser for dette lokale.
+          {t('laundry.grid.noSlotsDescription')}
         </p>
       </div>
     )
@@ -106,10 +108,10 @@ export function BookingGrid({
     return (
       <div style={{ padding: '32px 20px', textAlign: 'center' }}>
         <p style={{ color: colors.textPrimary, fontWeight: 600, marginBottom: 4, fontSize: '0.9rem' }}>
-          Ingen maskiner opsat endnu
+          {t('laundry.grid.noMachinesTitle')}
         </p>
         <p style={{ color: colors.textMuted, fontSize: '0.82rem', marginBottom: 0 }}>
-          Administratoren har ikke tilføjet maskiner til dette lokale.
+          {t('laundry.grid.noMachinesDescription')}
         </p>
       </div>
     )
@@ -143,8 +145,8 @@ export function BookingGrid({
             color: colors.slotWarningText,
           }}
         >
-          <strong>Du har nået din bookinggrænse.</strong>
-          <span>Aflys en aktiv booking for at frigøre en plads.</span>
+          <strong>{t('laundry.grid.limitReachedTitle')}</strong>
+          <span>{t('laundry.grid.limitReachedHint')}</span>
         </div>
       )}
 
@@ -158,7 +160,7 @@ export function BookingGrid({
             color: colors.slotWarningText,
           }}
         >
-          Ingen ledige tider denne dag.
+          {t('laundry.grid.noAvailableToday')}
         </div>
       )}
 

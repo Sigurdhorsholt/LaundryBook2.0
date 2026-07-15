@@ -1,6 +1,8 @@
 import { useNavigate } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 
 export function NotFoundPage() {
+  const { t } = useTranslation()
   const navigate = useNavigate()
 
   return (
@@ -18,17 +20,17 @@ export function NotFoundPage() {
         className="fw-bold mb-3"
         style={{ fontSize: '1.5rem', color: '#0d1b2a' }}
       >
-        Siden blev ikke fundet
+        {t('notFound.title')}
       </h1>
       <p className="mb-4" style={{ color: '#5a6a7a', maxWidth: 360 }}>
-        Den side du leder efter eksisterer ikke eller er blevet flyttet.
+        {t('notFound.body')}
       </p>
       <button
         className="btn btn-primary px-4"
         style={{ borderRadius: '8px' }}
         onClick={() => navigate('/')}
       >
-        Gå til forsiden
+        {t('notFound.goHome')}
       </button>
     </div>
   )

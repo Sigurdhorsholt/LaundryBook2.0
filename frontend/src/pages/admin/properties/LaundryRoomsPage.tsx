@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { useParams } from 'react-router-dom'
 import {
   MachineType,
@@ -19,17 +20,23 @@ import { useMeQuery } from '../../../features/auth/authApi'
 import { PageHeader, EmptyState, Spinner, FormError } from '../../../shared/ui'
 import { colors } from '../../../shared/theme'
 
-const MACHINE_TYPE_LABEL: Record<MachineType, string> = {
-  [MachineType.Washer]: 'Vaskemaskine',
-  [MachineType.Dryer]: 'Tørretumbler',
-  [MachineType.WasherDryer]: 'Kombi',
+function useMachineTypeLabel(): Record<MachineType, string> {
+  const { t } = useTranslation()
+  return {
+    [MachineType.Washer]: t('adminProperties.laundryRooms.machineType.washer'),
+    [MachineType.Dryer]: t('adminProperties.laundryRooms.machineType.dryer'),
+    [MachineType.WasherDryer]: t('adminProperties.laundryRooms.machineType.combi'),
+  }
 }
 
-const MACHINE_TYPE_OPTIONS: { value: MachineType; label: string }[] = [
-  { value: MachineType.Washer, label: 'Vaskemaskine' },
-  { value: MachineType.Dryer, label: 'Tørretumbler' },
-  { value: MachineType.WasherDryer, label: 'Kombi (vask+tørr)' },
-]
+function useMachineTypeOptions(): { value: MachineType; label: string }[] {
+  const { t } = useTranslation()
+  return [
+    { value: MachineType.Washer, label: t('adminProperties.laundryRooms.machineType.washer') },
+    { value: MachineType.Dryer, label: t('adminProperties.laundryRooms.machineType.dryer') },
+    { value: MachineType.WasherDryer, label: t('adminProperties.laundryRooms.machineType.combiOption') },
+  ]
+}
 
 type ModalState =
   | null
@@ -39,6 +46,7 @@ type ModalState =
   | { type: 'editMachine'; roomId: string; machine: LaundryMachineDto }
 
 export function LaundryRoomsPage() {
+  const { t } = useTranslation()
   const { propertyId } = useParams<{ propertyId: string }>()
   const { data: user } = useMeQuery()
 
@@ -59,7 +67,7 @@ export function LaundryRoomsPage() {
     return (
       <div className="p-4 p-lg-5">
         <p style={{ color: colors.dangerText, fontSize: '0.9rem' }}>
-          Kunne ikke indlæse lokaler. Prøv at genindlæse siden.
+          {t('adminProperties.laundryRooms.loadError')}
         </p>
       </div>
     )
@@ -69,8 +77,8 @@ export function LaundryRoomsPage() {
     <div className="p-4 p-lg-5">
       <PageHeader
         eyebrow={property?.propertyName}
-        title="Lokaler & Maskiner"
-        description="Administrer vaskerum og maskiner for denne ejendom."
+        title={t('adminProperties.laundryRooms.title')}
+        description={t('adminProperties.laundryRooms.description')}
         action={
           <button
             className="btn btn-primary btn-sm d-flex align-items-center gap-2 fw-semibold"
@@ -78,8 +86,8 @@ export function LaundryRoomsPage() {
             onClick={() => setModal({ type: 'addRoom' })}
           >
             <IconPlus size={15} />
-            <span className="d-none d-sm-inline">Tilføj lokale</span>
-            <span className="d-sm-none">Tilføj</span>
+            <span className="d-none d-sm-inline">{t('adminProperties.laundryRooms.addRoom')}</span>
+            <span className="d-sm-none">{t('adminProperties.laundryRooms.add')}</span>
           </button>
         }
       />
@@ -87,8 +95,8 @@ export function LaundryRoomsPage() {
       {/* Room list */}
       {rooms.length === 0 ? (
         <EmptyState
-          title="Ingen lokaler endnu"
-          description='Klik "Tilføj lokale" for at oprette dit første vaskerum.'
+          title={t('adminProperties.laundryRooms.emptyTitle')}
+          description={t('adminProperties.laundryRooms.emptyDescription')}
         />
       ) : (
         <div className="d-flex flex-column gap-3">
@@ -143,6 +151,7 @@ function RoomCard({
   onAddMachine: () => void
   onEditMachine: (machine: LaundryMachineDto) => void
 }) {
+  const { t } = useTranslation()
   const [deleteRoom] = useDeleteLaundryRoomMutation()
   const [isConfirmingDelete, setIsConfirmingDelete] = useState(false)
   const [isDeleting, setIsDeleting] = useState(false)
@@ -200,7 +209,7 @@ function RoomCard({
               fontWeight: 500,
             }}
           >
-            {room.machineCount} maskine{room.machineCount !== 1 ? 'r' : ''}
+            {t('adminProperties.laundryRooms.machineCount', { count: room.machineCount })}
           </span>
         </div>
       </button>
@@ -218,7 +227,7 @@ function RoomCard({
               onClick={handleDelete}
               style={{ fontSize: '0.82rem' }}
             >
-              {isDeleting ? 'Sletter…' : 'Bekræft slet'}
+              {isDeleting ? t('adminProperties.laundryRooms.deleting') : t('adminProperties.laundryRooms.confirmDelete')}
             </button>
             <button
               className="btn btn-outline-secondary btn-sm"
@@ -226,7 +235,7 @@ function RoomCard({
               onClick={() => setIsConfirmingDelete(false)}
               style={{ fontSize: '0.82rem' }}
             >
-              Annuller
+              {t('common.cancel')}
             </button>
           </>
         ) : (
@@ -236,14 +245,14 @@ function RoomCard({
               style={{ fontSize: '0.82rem' }}
               onClick={onEdit}
             >
-              Rediger lokale
+              {t('adminProperties.laundryRooms.editRoom')}
             </button>
             <button
               className="btn btn-outline-danger btn-sm"
               style={{ fontSize: '0.82rem' }}
               onClick={() => setIsConfirmingDelete(true)}
             >
-              Slet
+              {t('adminProperties.laundryRooms.delete')}
             </button>
           </>
         )}
@@ -260,7 +269,7 @@ function RoomCard({
               onClick={onAddMachine}
             >
               <IconPlus size={13} color={colors.primary} />
-              Tilføj maskine
+              {t('adminProperties.laundryRooms.addMachine')}
             </button>
           </div>
         </div>
@@ -280,6 +289,7 @@ function MachineList({
   propertyId: string
   onEdit: (machine: LaundryMachineDto) => void
 }) {
+  const { t } = useTranslation()
   const { data: machines = [], isLoading } = useGetMachinesQuery(roomId)
 
   if (isLoading) return <Spinner />
@@ -287,7 +297,7 @@ function MachineList({
   if (machines.length === 0) {
     return (
       <div className="px-4 py-3" style={{ fontSize: '0.85rem', color: colors.textMuted }}>
-        Ingen maskiner. Tilføj den første maskine nedenfor.
+        {t('adminProperties.laundryRooms.noMachines')}
       </div>
     )
   }
@@ -297,8 +307,8 @@ function MachineList({
       <table className="table table-hover mb-0" style={{ fontSize: '0.85rem' }}>
         <thead>
           <tr style={{ backgroundColor: colors.bgSubtle }}>
-            <th className="px-4 py-2" style={thStyle}>Navn</th>
-            <th className="px-4 py-2 d-none d-sm-table-cell" style={thStyle}>Type</th>
+            <th className="px-4 py-2" style={thStyle}>{t('adminProperties.laundryRooms.colName')}</th>
+            <th className="px-4 py-2 d-none d-sm-table-cell" style={thStyle}>{t('adminProperties.laundryRooms.colType')}</th>
             <th className="px-4 py-2" style={{ ...thStyle, width: 1, whiteSpace: 'nowrap' }}></th>
           </tr>
         </thead>
@@ -325,6 +335,8 @@ function MachineRow({
   propertyId: string
   onEdit: (machine: LaundryMachineDto) => void
 }) {
+  const { t } = useTranslation()
+  const machineTypeLabel = useMachineTypeLabel()
   const [deleteMachine] = useDeleteMachineMutation()
   const [isConfirmingDelete, setIsConfirmingDelete] = useState(false)
   const [isDeleting, setIsDeleting] = useState(false)
@@ -344,11 +356,11 @@ function MachineRow({
       <td className="px-4 py-2 align-middle">
         <div style={{ fontWeight: 500, color: colors.textPrimary }}>{machine.name}</div>
         <div className="d-sm-none" style={{ fontSize: '0.78rem', color: colors.textMuted, marginTop: 1 }}>
-          {MACHINE_TYPE_LABEL[machine.machineType]}
+          {machineTypeLabel[machine.machineType]}
         </div>
       </td>
       <td className="px-4 py-2 align-middle d-none d-sm-table-cell" style={{ color: colors.textSecondary }}>
-        {MACHINE_TYPE_LABEL[machine.machineType]}
+        {machineTypeLabel[machine.machineType]}
       </td>
       <td className="px-4 py-2 align-middle" style={{ whiteSpace: 'nowrap', textAlign: 'right' }}>
         {isConfirmingDelete ? (
@@ -359,7 +371,7 @@ function MachineRow({
               onClick={handleDelete}
               style={{ fontSize: '0.78rem' }}
             >
-              {isDeleting ? 'Sletter…' : 'Bekræft'}
+              {isDeleting ? t('adminProperties.laundryRooms.deleting') : t('adminProperties.laundryRooms.confirm')}
             </button>
             <button
               className="btn btn-outline-secondary btn-sm"
@@ -367,7 +379,7 @@ function MachineRow({
               onClick={() => setIsConfirmingDelete(false)}
               style={{ fontSize: '0.78rem' }}
             >
-              Annuller
+              {t('common.cancel')}
             </button>
           </span>
         ) : (
@@ -377,14 +389,14 @@ function MachineRow({
               style={{ fontSize: '0.78rem' }}
               onClick={() => onEdit(machine)}
             >
-              Rediger
+              {t('adminProperties.laundryRooms.edit')}
             </button>
             <button
               className="btn btn-outline-danger btn-sm"
               style={{ fontSize: '0.78rem' }}
               onClick={() => setIsConfirmingDelete(true)}
             >
-              Slet
+              {t('adminProperties.laundryRooms.delete')}
             </button>
           </span>
         )}
@@ -396,6 +408,7 @@ function MachineRow({
 // ── Modals ─────────────────────────────────────────────────────────────────────
 
 function AddRoomModal({ propertyId, onClose }: { propertyId: string; onClose: () => void }) {
+  const { t } = useTranslation()
   const [name, setName] = useState('')
   const [description, setDescription] = useState('')
   const [error, setError] = useState<string | null>(null)
@@ -408,40 +421,40 @@ function AddRoomModal({ propertyId, onClose }: { propertyId: string; onClose: ()
       await createRoom({ propertyId, name: name.trim(), description: description.trim() || null }).unwrap()
       onClose()
     } catch {
-      setError('Kunne ikke oprette lokale. Prøv igen.')
+      setError(t('adminProperties.laundryRooms.createRoomError'))
     }
   }
 
   return (
-    <ModalShell title="Tilføj lokale" onClose={onClose} size="sm">
+    <ModalShell title={t('adminProperties.laundryRooms.addRoom')} onClose={onClose} size="sm">
       <form onSubmit={handleSubmit}>
         <div className="mb-3">
-          <label className="form-label" style={labelStyle}>Navn</label>
+          <label className="form-label" style={labelStyle}>{t('adminProperties.laundryRooms.nameLabel')}</label>
           <input
             className="form-control"
             value={name}
             onChange={(e) => setName(e.target.value)}
             required
             maxLength={200}
-            placeholder="f.eks. Kældervaskerum"
+            placeholder={t('adminProperties.laundryRooms.roomNamePlaceholder')}
             autoFocus
           />
         </div>
         <div className="mb-3">
-          <label className="form-label" style={labelStyle}>Beskrivelse (valgfri)</label>
+          <label className="form-label" style={labelStyle}>{t('adminProperties.laundryRooms.descriptionLabel')}</label>
           <input
             className="form-control"
             value={description}
             onChange={(e) => setDescription(e.target.value)}
             maxLength={500}
-            placeholder="f.eks. Ved parkeringskælderen"
+            placeholder={t('adminProperties.laundryRooms.descriptionPlaceholder')}
           />
         </div>
         <FormError message={error} />
         <div className="d-flex justify-content-end gap-2 mt-4">
-          <button type="button" className="btn btn-outline-secondary" onClick={onClose}>Annuller</button>
+          <button type="button" className="btn btn-outline-secondary" onClick={onClose}>{t('common.cancel')}</button>
           <button type="submit" className="btn btn-primary fw-semibold" disabled={isLoading || !name.trim()}>
-            {isLoading ? 'Opretter…' : 'Opret lokale'}
+            {isLoading ? t('adminProperties.laundryRooms.creating') : t('adminProperties.laundryRooms.createRoom')}
           </button>
         </div>
       </form>
@@ -458,6 +471,7 @@ function EditRoomModal({
   room: LaundryRoomDto
   onClose: () => void
 }) {
+  const { t } = useTranslation()
   const [name, setName] = useState(room.name)
   const [description, setDescription] = useState(room.description ?? '')
   const [error, setError] = useState<string | null>(null)
@@ -470,15 +484,15 @@ function EditRoomModal({
       await updateRoom({ propertyId, roomId: room.id, name: name.trim(), description: description.trim() || null }).unwrap()
       onClose()
     } catch {
-      setError('Kunne ikke gemme ændringer. Prøv igen.')
+      setError(t('adminProperties.laundryRooms.saveError'))
     }
   }
 
   return (
-    <ModalShell title="Rediger lokale" onClose={onClose} size="sm">
+    <ModalShell title={t('adminProperties.laundryRooms.editRoom')} onClose={onClose} size="sm">
       <form onSubmit={handleSubmit}>
         <div className="mb-3">
-          <label className="form-label" style={labelStyle}>Navn</label>
+          <label className="form-label" style={labelStyle}>{t('adminProperties.laundryRooms.nameLabel')}</label>
           <input
             className="form-control"
             value={name}
@@ -489,7 +503,7 @@ function EditRoomModal({
           />
         </div>
         <div className="mb-3">
-          <label className="form-label" style={labelStyle}>Beskrivelse (valgfri)</label>
+          <label className="form-label" style={labelStyle}>{t('adminProperties.laundryRooms.descriptionLabel')}</label>
           <input
             className="form-control"
             value={description}
@@ -499,9 +513,9 @@ function EditRoomModal({
         </div>
         <FormError message={error} />
         <div className="d-flex justify-content-end gap-2 mt-4">
-          <button type="button" className="btn btn-outline-secondary" onClick={onClose}>Annuller</button>
+          <button type="button" className="btn btn-outline-secondary" onClick={onClose}>{t('common.cancel')}</button>
           <button type="submit" className="btn btn-primary fw-semibold" disabled={isLoading || !name.trim()}>
-            {isLoading ? 'Gemmer…' : 'Gem ændringer'}
+            {isLoading ? t('adminProperties.laundryRooms.saving') : t('adminProperties.laundryRooms.saveChanges')}
           </button>
         </div>
       </form>
@@ -518,6 +532,8 @@ function AddMachineModal({
   roomName: string
   onClose: () => void
 }) {
+  const { t } = useTranslation()
+  const machineTypeOptions = useMachineTypeOptions()
   const [name, setName] = useState('')
   const [machineType, setMachineType] = useState<MachineType>(MachineType.Washer)
   const [error, setError] = useState<string | null>(null)
@@ -530,42 +546,42 @@ function AddMachineModal({
       await createMachine({ roomId, name: name.trim(), machineType }).unwrap()
       onClose()
     } catch {
-      setError('Kunne ikke oprette maskine. Prøv igen.')
+      setError(t('adminProperties.laundryRooms.createMachineError'))
     }
   }
 
   return (
-    <ModalShell title={`Tilføj maskine — ${roomName}`} onClose={onClose} size="sm">
+    <ModalShell title={t('adminProperties.laundryRooms.addMachineTitle', { room: roomName })} onClose={onClose} size="sm">
       <form onSubmit={handleSubmit}>
         <div className="mb-3">
-          <label className="form-label" style={labelStyle}>Navn</label>
+          <label className="form-label" style={labelStyle}>{t('adminProperties.laundryRooms.nameLabel')}</label>
           <input
             className="form-control"
             value={name}
             onChange={(e) => setName(e.target.value)}
             required
             maxLength={100}
-            placeholder="f.eks. Vaskemaskine 1"
+            placeholder={t('adminProperties.laundryRooms.machineNamePlaceholder')}
             autoFocus
           />
         </div>
         <div className="mb-3">
-          <label className="form-label" style={labelStyle}>Type</label>
+          <label className="form-label" style={labelStyle}>{t('adminProperties.laundryRooms.typeLabel')}</label>
           <select
             className="form-select"
             value={machineType}
             onChange={(e) => setMachineType(Number(e.target.value) as MachineType)}
           >
-            {MACHINE_TYPE_OPTIONS.map((opt) => (
+            {machineTypeOptions.map((opt) => (
               <option key={opt.value} value={opt.value}>{opt.label}</option>
             ))}
           </select>
         </div>
         <FormError message={error} />
         <div className="d-flex justify-content-end gap-2 mt-4">
-          <button type="button" className="btn btn-outline-secondary" onClick={onClose}>Annuller</button>
+          <button type="button" className="btn btn-outline-secondary" onClick={onClose}>{t('common.cancel')}</button>
           <button type="submit" className="btn btn-primary fw-semibold" disabled={isLoading || !name.trim()}>
-            {isLoading ? 'Opretter…' : 'Opret maskine'}
+            {isLoading ? t('adminProperties.laundryRooms.creating') : t('adminProperties.laundryRooms.createMachine')}
           </button>
         </div>
       </form>
@@ -582,6 +598,8 @@ function EditMachineModal({
   machine: LaundryMachineDto
   onClose: () => void
 }) {
+  const { t } = useTranslation()
+  const machineTypeOptions = useMachineTypeOptions()
   const [name, setName] = useState(machine.name)
   const [machineType, setMachineType] = useState<MachineType>(machine.machineType)
   const [error, setError] = useState<string | null>(null)
@@ -594,15 +612,15 @@ function EditMachineModal({
       await updateMachine({ roomId, machineId: machine.id, name: name.trim(), machineType }).unwrap()
       onClose()
     } catch {
-      setError('Kunne ikke gemme ændringer. Prøv igen.')
+      setError(t('adminProperties.laundryRooms.saveError'))
     }
   }
 
   return (
-    <ModalShell title="Rediger maskine" onClose={onClose} size="sm">
+    <ModalShell title={t('adminProperties.laundryRooms.editMachine')} onClose={onClose} size="sm">
       <form onSubmit={handleSubmit}>
         <div className="mb-3">
-          <label className="form-label" style={labelStyle}>Navn</label>
+          <label className="form-label" style={labelStyle}>{t('adminProperties.laundryRooms.nameLabel')}</label>
           <input
             className="form-control"
             value={name}
@@ -613,22 +631,22 @@ function EditMachineModal({
           />
         </div>
         <div className="mb-3">
-          <label className="form-label" style={labelStyle}>Type</label>
+          <label className="form-label" style={labelStyle}>{t('adminProperties.laundryRooms.typeLabel')}</label>
           <select
             className="form-select"
             value={machineType}
             onChange={(e) => setMachineType(Number(e.target.value) as MachineType)}
           >
-            {MACHINE_TYPE_OPTIONS.map((opt) => (
+            {machineTypeOptions.map((opt) => (
               <option key={opt.value} value={opt.value}>{opt.label}</option>
             ))}
           </select>
         </div>
         <FormError message={error} />
         <div className="d-flex justify-content-end gap-2 mt-4">
-          <button type="button" className="btn btn-outline-secondary" onClick={onClose}>Annuller</button>
+          <button type="button" className="btn btn-outline-secondary" onClick={onClose}>{t('common.cancel')}</button>
           <button type="submit" className="btn btn-primary fw-semibold" disabled={isLoading || !name.trim()}>
-            {isLoading ? 'Gemmer…' : 'Gem ændringer'}
+            {isLoading ? t('adminProperties.laundryRooms.saving') : t('adminProperties.laundryRooms.saveChanges')}
           </button>
         </div>
       </form>

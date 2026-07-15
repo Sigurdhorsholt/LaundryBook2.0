@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next'
 import { colors } from '../../shared/theme'
 import { IconShield } from '../../shared/icons'
 import { PropertiesList } from '../../features/properties/PropertiesList'
@@ -5,6 +6,7 @@ import { PendingPropertiesList } from '../../features/sysadmin/PendingProperties
 import { UserTable } from '../../features/sysadmin/UserTable'
 
 export function SysAdminPage() {
+  const { t } = useTranslation()
   return (
     <div className="p-4 p-lg-5">
       <div className="mb-4 d-flex align-items-center gap-3">
@@ -15,9 +17,9 @@ export function SysAdminPage() {
           <IconShield size={20} color={colors.roleSysAdmin.text} />
         </div>
         <div>
-          <h1 className="fw-bold mb-0" style={{ fontSize: '1.5rem', color: colors.textPrimary }}>System</h1>
+          <h1 className="fw-bold mb-0" style={{ fontSize: '1.5rem', color: colors.textPrimary }}>{t('nav.system')}</h1>
           <p className="mb-0" style={{ color: colors.textSecondary, fontSize: '0.875rem' }}>
-            Kun synlig for systemadministratorer
+            {t('sysadminPage.subtitle')}
           </p>
         </div>
       </div>
