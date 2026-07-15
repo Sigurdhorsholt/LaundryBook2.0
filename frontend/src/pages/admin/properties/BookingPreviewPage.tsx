@@ -12,6 +12,7 @@ import {
 import { type GridBooking, BookingGrid } from '../../../features/laundry/BookingGrid'
 import { IconChevronLeft, IconChevronRight } from '../../../shared/icons'
 import { colors } from '../../../shared/theme'
+import { dayShortLabel, formatDateFull, dayNum } from '../../../shared/utils/dateUtils'
 
 // ── Types ──────────────────────────────────────────────────────────────────────
 
@@ -52,28 +53,6 @@ function getWeekMonday(dateStr: string): string {
   const d = new Date(parts[0] ?? 2025, (parts[1] ?? 1) - 1, parts[2] ?? 1)
   const dow = d.getDay()
   return addDays(dateStr, dow === 0 ? -6 : 1 - dow)
-}
-
-const DAY_SHORT   = ['sø', 'ma', 'ti', 'on', 'to', 'fr', 'lø'] as const
-const DAY_FULL    = ['søndag', 'mandag', 'tirsdag', 'onsdag', 'torsdag', 'fredag', 'lørdag'] as const
-const MONTH_SHORT = ['jan','feb','mar','apr','maj','jun','jul','aug','sep','okt','nov','dec'] as const
-
-// Task 1 — "I dag" / "I morgen" smart labels
-function smartDayShort(dateStr: string, todayStr: string): string {
-  if (dateStr === todayStr)              return 'i dag'
-  if (dateStr === addDays(todayStr, 1))  return 'i morgen'
-  const parts = dateStr.split('-').map(Number)
-  const d = new Date(parts[0] ?? 2025, (parts[1] ?? 1) - 1, parts[2] ?? 1)
-  return DAY_SHORT[d.getDay()] ?? 'ma'
-}
-
-function dateParts(dateStr: string): { dayNum: number; fullLabel: string } {
-  const parts = dateStr.split('-').map(Number)
-  const d = new Date(parts[0] ?? 2025, (parts[1] ?? 1) - 1, parts[2] ?? 1)
-  return {
-    dayNum:    d.getDate(),
-    fullLabel: `${DAY_FULL[d.getDay()] ?? ''} ${d.getDate()}. ${MONTH_SHORT[d.getMonth()] ?? ''}`,
-  }
 }
 
 function formatTime(t: string): string { return t.slice(0, 5) }
@@ -393,7 +372,7 @@ export function BookingPreviewPage() {
 
         {/* Task 3 — next booking card */}
         {nextPreviewBooking && nextPreviewSlot && (() => {
-          const { fullLabel } = dateParts(nextPreviewBooking.date)
+          const fullLabel = formatDateFull(nextPreviewBooking.date)
           return (
             <div
               className="rounded-3 mb-3 p-3 d-flex align-items-center justify-content-between gap-3"
@@ -435,8 +414,8 @@ export function BookingPreviewPage() {
 
           <div className="d-flex flex-grow-1 justify-content-between" style={{ gap: 2, overflowX: 'auto' }}>
             {visibleDates.map((date) => {
-              const { dayNum }  = dateParts(date)
-              const short        = smartDayShort(date, todayStr)
+              const dayNumber    = dayNum(date)
+              const short        = dayShortLabel(date, todayStr)
               const isSelected   = date === selectedDate
               const isPast       = date < todayStr
               const isLocked     = lookaheadEnd !== null && date > lookaheadEnd
@@ -457,7 +436,7 @@ export function BookingPreviewPage() {
                   onClick={() => setSelectedDate(date)}
                 >
                   <span style={{ textTransform: 'capitalize' }}>{short}</span>
-                  <span style={{ fontSize: '0.88rem', fontWeight: isSelected ? 700 : 500 }}>{dayNum}</span>
+                  <span style={{ fontSize: '0.88rem', fontWeight: isSelected ? 700 : 500 }}>{dayNumber}</span>
                   {/* Task 2 — availability dot */}
                   <span style={{
                     width: 5, height: 5, borderRadius: '50%', display: 'block', marginTop: 1,
@@ -517,7 +496,7 @@ export function BookingPreviewPage() {
         <ConfirmModal
           type={pendingAction.type}
           slotTime={`${formatTime(pendingSlot.startTime)} – ${formatTime(pendingSlot.endTime)}`}
-          dateLabel={dateParts(selectedDate).fullLabel}
+          dateLabel={formatDateFull(selectedDate)}
           userName={activeUser?.name ?? t('adminProperties.preview.resident')}
           minutesUntil={pendingAction.minutesUntil}
           onConfirm={handleConfirm}

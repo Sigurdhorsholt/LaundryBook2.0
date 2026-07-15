@@ -50,6 +50,29 @@ public class SysAdminController(IMediator mediator) : ControllerBase
         await mediator.Send(new ActivatePropertyCommand(propertyId), ct);
         return NoContent();
     }
+
+    [HttpPost("test-email")]
+    public async Task<IActionResult> SendTestEmail([FromBody] SendTestEmailCommand command, CancellationToken ct)
+    {
+        await mediator.Send(command, ct);
+        return NoContent();
+    }
+
+    [HttpGet("audit-logs")]
+    public async Task<IActionResult> GetAuditLogs(
+        [FromQuery] string? entityType,
+        [FromQuery] Guid? userId,
+        [FromQuery] string? action,
+        [FromQuery] DateTime? from,
+        [FromQuery] DateTime? to,
+        [FromQuery] int page = 1,
+        [FromQuery] int pageSize = 25,
+        CancellationToken ct = default)
+    {
+        var result = await mediator.Send(
+            new GetAuditLogsQuery(entityType, userId, action, from, to, page, pageSize), ct);
+        return Ok(result);
+    }
 }
 
 public record AssignToPropertyRequest(Guid PropertyId, UserRole Role, string? ApartmentNumber);

@@ -9,6 +9,7 @@ import {colors} from './theme'
 import {baseApi} from '../app/baseApi'
 import {BrandLogo} from './BrandLogo'
 import {IconMenu} from './icons'
+import {LanguageSelector} from './ui'
 import { useOffcanvasAutoClose } from './utils/bootstrapUtils'
 
 const NAV_OFFCANVAS_ID = 'navMenuOffcanvas'
@@ -120,6 +121,7 @@ export function AppNavbar({isAdmin = false}: NavbarProps) {
                         >
                             {t('nav.myPage')}
                         </NavLink>
+                        <LanguageSelector/>
                         <button
                             className="btn btn-sm btn-outline-secondary ms-1"
                             style={{borderRadius: '7px', fontSize: '0.85rem'}}
@@ -205,6 +207,9 @@ export function AppNavbar({isAdmin = false}: NavbarProps) {
                     >
                         {t('nav.myPage')}
                     </NavLink>
+                    <div className="pt-3 mt-1">
+                        <LanguageSelector/>
+                    </div>
                     <button
                         className="btn btn-outline-secondary mt-4"
                         style={{borderRadius: '8px', fontSize: '0.95rem', alignSelf: 'flex-start', minWidth: 120}}

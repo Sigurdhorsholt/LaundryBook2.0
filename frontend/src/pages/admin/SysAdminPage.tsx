@@ -4,6 +4,8 @@ import { IconShield } from '../../shared/icons'
 import { PropertiesList } from '../../features/properties/PropertiesList'
 import { PendingPropertiesList } from '../../features/sysadmin/PendingPropertiesList'
 import { UserTable } from '../../features/sysadmin/UserTable'
+import { AuditLogTable } from '../../features/sysadmin/AuditLogTable'
+import { TestEmailPanel } from '../../features/sysadmin/TestEmailPanel'
 
 export function SysAdminPage() {
   const { t } = useTranslation()
@@ -39,10 +41,24 @@ export function SysAdminPage() {
       </div>
 
       <div
-        className="rounded-3 p-4"
+        className="rounded-3 p-4 mb-4"
         style={{ border: `1px solid ${colors.borderDefault}`, backgroundColor: colors.bgCard }}
       >
         <UserTable />
+      </div>
+
+      <div
+        className="rounded-3 p-4 mb-4"
+        style={{ border: `1px solid ${colors.borderDefault}`, backgroundColor: colors.bgCard }}
+      >
+        <TestEmailPanel />
+      </div>
+
+      <div
+        className="rounded-3 p-4"
+        style={{ border: `1px solid ${colors.borderDefault}`, backgroundColor: colors.bgCard }}
+      >
+        <AuditLogTable />
       </div>
     </div>
   )

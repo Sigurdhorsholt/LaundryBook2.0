@@ -6,6 +6,8 @@ import { BrandLogo } from '../../shared/BrandLogo'
 import { useOffcanvasAutoClose } from '../../shared/utils/bootstrapUtils'
 import { IconMenu, IconBrand } from '../../shared/icons'
 import { useModal } from '../../shared/modals/useModal'
+import { LanguageSelector } from '../../shared/ui'
+import { useMeQuery } from '../../features/auth/authApi'
 
 const NAV_LINKS = [
   { to: '/features', labelKey: 'public.layout.nav.features' },
@@ -21,6 +23,7 @@ const OFFCANVAS_ID = 'publicNavOffcanvas'
 function PublicNavbar() {
   const { openModal } = useModal()
   const { t } = useTranslation()
+  const { data: user } = useMeQuery()
   useOffcanvasAutoClose(OFFCANVAS_ID)
 
   return (
@@ -60,27 +63,47 @@ function PublicNavbar() {
           </div>
 
           <div className="ms-auto d-flex align-items-center gap-2">
-            <button
-              className="btn btn-sm d-none d-sm-inline-block"
-              style={{ color: colors.textSecondary, borderRadius: 7, fontSize: '0.88rem' }}
-              onClick={() => openModal('login')}
-            >
-              {t('public.layout.login')}
-            </button>
-            <Link
-              to="/get-started"
-              className="btn btn-sm fw-semibold text-decoration-none"
-              style={{
-                backgroundColor: colors.primary,
-                color: '#fff',
-                borderRadius: 8,
-                fontSize: '0.88rem',
-                padding: '7px 16px',
-                border: 'none',
-              }}
-            >
-              {t('public.layout.getStarted')}
-            </Link>
+            <LanguageSelector />
+            {user ? (
+              <Link
+                to="/dashboard"
+                className="btn btn-sm fw-semibold text-decoration-none"
+                style={{
+                  backgroundColor: colors.primary,
+                  color: '#fff',
+                  borderRadius: 8,
+                  fontSize: '0.88rem',
+                  padding: '7px 16px',
+                  border: 'none',
+                }}
+              >
+                {t('public.layout.backToApp')}
+              </Link>
+            ) : (
+              <>
+                <button
+                  className="btn btn-sm d-none d-sm-inline-block"
+                  style={{ color: colors.textSecondary, borderRadius: 7, fontSize: '0.88rem' }}
+                  onClick={() => openModal('login')}
+                >
+                  {t('public.layout.login')}
+                </button>
+                <Link
+                  to="/get-started"
+                  className="btn btn-sm fw-semibold text-decoration-none"
+                  style={{
+                    backgroundColor: colors.primary,
+                    color: '#fff',
+                    borderRadius: 8,
+                    fontSize: '0.88rem',
+                    padding: '7px 16px',
+                    border: 'none',
+                  }}
+                >
+                  {t('public.layout.getStarted')}
+                </Link>
+              </>
+            )}
             <button
               className="btn d-lg-none p-2 ms-1"
               style={{ color: colors.textSecondary }}
@@ -129,27 +152,46 @@ function PublicNavbar() {
             </NavLink>
           ))}
           <div className="d-flex gap-2 mt-4">
-            <Link
-              to="/get-started"
-              className="btn fw-semibold text-decoration-none"
-              style={{
-                backgroundColor: colors.primary,
-                color: '#fff',
-                borderRadius: 8,
-                fontSize: '0.95rem',
-                minWidth: 140,
-                border: 'none',
-              }}
-            >
-              {t('public.layout.getStarted')}
-            </Link>
-            <button
-              className="btn fw-medium"
-              style={{ color: colors.textSecondary, borderRadius: 8, fontSize: '0.95rem', border: `1px solid ${colors.borderStrong}` }}
-              onClick={() => openModal('login')}
-            >
-              {t('public.layout.login')}
-            </button>
+            {user ? (
+              <Link
+                to="/dashboard"
+                className="btn fw-semibold text-decoration-none"
+                style={{
+                  backgroundColor: colors.primary,
+                  color: '#fff',
+                  borderRadius: 8,
+                  fontSize: '0.95rem',
+                  minWidth: 140,
+                  border: 'none',
+                }}
+              >
+                {t('public.layout.backToApp')}
+              </Link>
+            ) : (
+              <>
+                <Link
+                  to="/get-started"
+                  className="btn fw-semibold text-decoration-none"
+                  style={{
+                    backgroundColor: colors.primary,
+                    color: '#fff',
+                    borderRadius: 8,
+                    fontSize: '0.95rem',
+                    minWidth: 140,
+                    border: 'none',
+                  }}
+                >
+                  {t('public.layout.getStarted')}
+                </Link>
+                <button
+                  className="btn fw-medium"
+                  style={{ color: colors.textSecondary, borderRadius: 8, fontSize: '0.95rem', border: `1px solid ${colors.borderStrong}` }}
+                  onClick={() => openModal('login')}
+                >
+                  {t('public.layout.login')}
+                </button>
+              </>
+            )}
           </div>
         </div>
       </div>

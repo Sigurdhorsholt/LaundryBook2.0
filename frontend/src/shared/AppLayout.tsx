@@ -1,5 +1,6 @@
 import { Outlet } from 'react-router-dom'
 import { AppNavbar } from './AppNavbar'
+import { AppFooter } from './AppFooter'
 import { PendingApprovalBanner } from './PendingApprovalBanner'
 
 export function AppLayout() {
@@ -10,6 +11,7 @@ export function AppLayout() {
       <main className="flex-grow-1">
         <Outlet />
       </main>
+      <AppFooter />
     </div>
   )
 }

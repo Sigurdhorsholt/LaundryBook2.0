@@ -6,6 +6,7 @@ import { isEnabled } from '../config/features'
 import { getHighestRole } from './roleUtils'
 import { colors } from './theme'
 import { AppNavbar } from './AppNavbar'
+import { AppFooter } from './AppFooter'
 import { PendingApprovalBanner } from './PendingApprovalBanner'
 import { useOffcanvasAutoClose } from './utils/bootstrapUtils'
 import {
@@ -242,6 +243,8 @@ export function AdminLayout() {
         </main>
 
       </div>
+
+      <AppFooter />
     </div>
   )
 }
