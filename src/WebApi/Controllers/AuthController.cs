@@ -3,6 +3,7 @@ using Application.Features.Auth.Queries;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 
 namespace WebApi.Controllers;
 
@@ -20,6 +21,7 @@ public class AuthController(IMediator mediator, IWebHostEnvironment env) : Contr
         Expires = DateTimeOffset.UtcNow.AddHours(8),
     };
 
+    [EnableRateLimiting("auth")]
     [HttpPost("login")]
     public async Task<IActionResult> Login([FromBody] LoginRequest request, CancellationToken ct)
     {
@@ -30,6 +32,7 @@ public class AuthController(IMediator mediator, IWebHostEnvironment env) : Contr
         return Ok(new { result.UserId });
     }
 
+    [EnableRateLimiting("auth")]
     [HttpPost("register")]
     public async Task<IActionResult> Register([FromBody] RegisterRequest request, CancellationToken ct)
     {
@@ -56,6 +59,7 @@ public class AuthController(IMediator mediator, IWebHostEnvironment env) : Contr
         return Ok(user);
     }
 
+    [EnableRateLimiting("auth")]
     [HttpGet("invite-info")]
     public async Task<IActionResult> GetInviteInfo([FromQuery] string token, CancellationToken ct)
     {
@@ -71,6 +75,7 @@ public class AuthController(IMediator mediator, IWebHostEnvironment env) : Contr
         return NoContent();
     }
 
+    [EnableRateLimiting("email")]
     [HttpPost("forgot-password")]
     public async Task<IActionResult> ForgotPassword([FromBody] ForgotPasswordRequest request, CancellationToken ct)
     {
@@ -78,6 +83,7 @@ public class AuthController(IMediator mediator, IWebHostEnvironment env) : Contr
         return NoContent();
     }
 
+    [EnableRateLimiting("auth")]
     [HttpPost("redeem-invite")]
     public async Task<IActionResult> RedeemInvite([FromBody] RedeemInviteRequest request, CancellationToken ct)
     {

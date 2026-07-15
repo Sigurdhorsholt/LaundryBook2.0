@@ -3,10 +3,12 @@ using Infrastructure;
 using Infrastructure.Persistence;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.IdentityModel.Tokens;
 using Serilog;
 using Serilog.Events;
 using System.Text;
+using System.Threading.RateLimiting;
 using WebApi.Middleware;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -82,7 +84,42 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 
 builder.Services.AddAuthorization();
 
+// Behind Render's TLS proxy the app sees the proxy IP; read X-Forwarded-For so per-IP
+// rate limiting keys on the real client. (Best-effort: X-Forwarded-For can be spoofed.)
+builder.Services.Configure<ForwardedHeadersOptions>(options =>
+{
+    options.ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
+    options.KnownNetworks.Clear();
+    options.KnownProxies.Clear();
+});
+
+// Rate limiting on abuse-prone endpoints, partitioned per client IP.
+builder.Services.AddRateLimiter(options =>
+{
+    options.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
+
+    // login / register / redeem-invite / invite-info — brute-force + spam signup.
+    options.AddPolicy("auth", httpContext =>
+        RateLimitPartition.GetFixedWindowLimiter(
+            httpContext.Connection.RemoteIpAddress?.ToString() ?? "unknown",
+            _ => new FixedWindowRateLimiterOptions { PermitLimit = 10, Window = TimeSpan.FromMinutes(1) }));
+
+    // endpoints that send email — stricter, to blunt email bombing.
+    options.AddPolicy("email", httpContext =>
+        RateLimitPartition.GetFixedWindowLimiter(
+            httpContext.Connection.RemoteIpAddress?.ToString() ?? "unknown",
+            _ => new FixedWindowRateLimiterOptions { PermitLimit = 5, Window = TimeSpan.FromMinutes(1) }));
+
+    options.OnRejected = (context, _) =>
+    {
+        context.HttpContext.Response.Headers.RetryAfter = "60";
+        return ValueTask.CompletedTask;
+    };
+});
+
 var app = builder.Build();
+
+app.UseForwardedHeaders();
 
 // Auto-run migrations on startup (safe for single-instance)
 using (var scope = app.Services.CreateScope())
@@ -106,6 +143,8 @@ app.MapGet("/health", () => Results.Ok(new { status = "healthy" }));
 
 app.UseAuthentication();
 app.UseAuthorization();
+
+app.UseRateLimiter();
 
 app.MapControllers();
 

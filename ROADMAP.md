@@ -64,7 +64,7 @@ ships them. We build them so we don't look behind, and differentiate elsewhere (
 - [ ] 🔒 ⭐ **Roter og fjern committede secrets** i `src/WebApi/appsettings.Development.json` (live DB-password, JWT-nøgle, Mailgun-nøgle ligger i git-historikken) + flyt til env/user-secrets
 - [~] ⭐ Ryd backend-NuGet-sårbarheder - `SQLitePCLRaw` fjernet (SQLite udfaset); `Microsoft.OpenApi` 2.0.0 (high, NU1903, transitiv) mangler stadig
 - [ ] ⭐ Gennemgå server-side autorisation (en beboer må aldrig kunne nå en anden forenings data)
-- [ ] ⭐ Rate-limiting på login/invitation/nulstilling/QR + brute-force-lockout
+- [x] ⭐ Rate-limiting (per klient-IP via ForwardedHeaders): `auth` 10/min (login, register, redeem-invite, invite-info), `email` 5/min (forgot-password, invitér, gensend, force-reset, test-mail). Adgangskode-brute-force ligger hos Firebase; QR-generering (auth'd admin) ikke begrænset.
 - [x] ⭐ Security headers / HSTS - `SecurityHeadersMiddleware` (nosniff, X-Frame-Options DENY, Referrer-Policy, streng CSP `default-src 'none'`, Permissions-Policy; HSTS 1 år uden for dev) + `Server`-header fjernet
 - [ ] ⭐ Øvrig sikkerhed: CORS-gennemgang, secrets-hygiejne, token-udløb
 

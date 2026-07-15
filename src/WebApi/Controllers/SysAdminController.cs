@@ -4,6 +4,7 @@ using Domain.Enums;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 
 namespace WebApi.Controllers;
 
@@ -51,6 +52,7 @@ public class SysAdminController(IMediator mediator) : ControllerBase
         return NoContent();
     }
 
+    [EnableRateLimiting("email")]
     [HttpPost("test-email")]
     public async Task<IActionResult> SendTestEmail([FromBody] SendTestEmailCommand command, CancellationToken ct)
     {
