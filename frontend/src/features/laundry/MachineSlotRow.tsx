@@ -1,10 +1,11 @@
 import { useState } from 'react'
-import type { LaundryMachineDto, TimeSlotTemplateDto } from './laundryApi'
+import { MachineType, type LaundryMachineDto, type TimeSlotTemplateDto } from './laundryApi'
 import type { GridBooking } from './types'
 import { formatTime } from '../../shared/utils/dateUtils'
 import { colors } from '../../shared/theme'
 import { badge } from './slotBadge'
 import { MACHINE_TYPE_LABEL } from './constants'
+import { IconClock, IconChevronDown, IconWasher, IconDryer } from '../../shared/icons'
 
 interface Props {
   slot: TimeSlotTemplateDto
@@ -15,6 +16,12 @@ interface Props {
   maxReached: boolean
   onBook: (machineId: string) => void
   onCancel: (machineId: string) => void
+}
+
+function MachineIcon({ type, color }: { type: MachineType; color: string }) {
+  return type === MachineType.Dryer
+    ? <IconDryer size={18} color={color} strokeWidth={1.8} />
+    : <IconWasher size={18} color={color} strokeWidth={1.8} />
 }
 
 export function MachineSlotRow({ slot, machines, bookings, past, locked, maxReached, onBook, onCancel }: Props) {
@@ -28,99 +35,88 @@ export function MachineSlotRow({ slot, machines, bookings, past, locked, maxReac
   const ownCount = bookings.filter((b) => b.isOwn).length
   const canExpand = !past && !locked
 
-  let summary: React.ReactNode
-  if (past || locked) {
-    summary = (
-      <span style={badge(colors.bgSubtle, colors.textMuted)}>
-        {past ? 'Passeret' : 'Ikke tilgængeligt'}
-      </span>
-    )
-  } else {
-    summary = (
-      <span className="d-flex align-items-center gap-2">
-        {ownCount > 0 && <span style={badge(colors.successBg, colors.successText)}>Min booking</span>}
-        <span style={{ fontSize: '0.8rem', color: freeCount === 0 ? colors.textMuted : colors.textSecondary }}>
-          {freeCount === 0 ? 'Fuldt booket' : `${freeCount} af ${machines.length} ledige`}
-        </span>
-        <svg
-          width="12" height="12" viewBox="0 0 14 14" fill="none"
-          style={{ transform: expanded ? 'rotate(180deg)' : 'none', transition: 'transform 0.15s' }}
-        >
-          <path d="M2 5l5 5 5-5" stroke={colors.textMuted} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
-        </svg>
-      </span>
-    )
-  }
-
   return (
     <div style={{ borderBottom: `1px solid ${colors.borderRow}` }}>
       <div
         onClick={canExpand ? () => setExpanded((x) => !x) : undefined}
         style={{
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          padding: '11px 20px',
-          backgroundColor: colors.bgCard,
-          opacity: dimmed ? 0.45 : 1,
-          cursor: canExpand ? 'pointer' : 'default',
-          userSelect: 'none',
+          display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+          gap: 12, padding: '11px 20px', backgroundColor: colors.bgCard,
+          opacity: dimmed ? 0.45 : 1, cursor: canExpand ? 'pointer' : 'default', userSelect: 'none',
         }}
       >
-        <span style={{ fontSize: '0.9rem', fontWeight: 500, color: colors.textPrimary }}>{timeLabel}</span>
-        {summary}
+        <span className="d-flex align-items-center" style={{ gap: 8 }}>
+          <IconClock size={15} color={colors.textMuted} strokeWidth={1.8} />
+          <span style={{ fontSize: '0.9rem', fontWeight: 600, color: colors.textPrimary }}>{timeLabel}</span>
+        </span>
+
+        <span className="d-flex align-items-center" style={{ gap: 8 }}>
+          {past || locked ? (
+            <span style={badge(colors.bgSubtle, colors.textMuted)}>{past ? 'Passeret' : 'Ikke tilgængeligt'}</span>
+          ) : (
+            <>
+              {ownCount > 0 && <span style={badge(colors.successBg, colors.successText)}>Min booking</span>}
+              <span style={badge(freeCount === 0 ? colors.slotTakenBg : colors.slotFreeBg, freeCount === 0 ? colors.slotTakenText : colors.slotFreeText)}>
+                {freeCount === 0 ? 'Fuldt booket' : `${freeCount} af ${machines.length} ledige`}
+              </span>
+              <span style={{ display: 'inline-flex', transform: expanded ? 'rotate(180deg)' : 'none', transition: 'transform 0.15s' }}>
+                <IconChevronDown size={14} color={colors.textMuted} strokeWidth={1.8} />
+              </span>
+            </>
+          )}
+        </span>
       </div>
 
       {expanded && canExpand && (
-        <div style={{ backgroundColor: colors.bgPage }}>
+        <div style={{ backgroundColor: colors.bgPage, padding: '8px 12px 10px' }}>
           {machines.map((machine) => {
             const booking = bookingFor(machine.id)
             const blocked = maxReached && booking === null
+            const chipBg = booking?.isOwn ? colors.successBg : booking ? colors.slotTakenBg : colors.primaryLight
+            const chipColor = booking?.isOwn ? colors.successText : booking ? colors.slotTakenText : colors.primary
 
             let action: React.ReactNode
             if (booking?.isOwn) {
-              action = booking.canCancel ? (
-                <button
-                  className="btn btn-sm btn-outline-secondary"
-                  style={{ fontSize: '0.75rem', padding: '2px 10px', borderRadius: 20 }}
-                  onClick={() => onCancel(machine.id)}
-                >
-                  Aflys
-                </button>
-              ) : (
-                <span style={{ fontSize: '0.72rem', color: colors.textMuted }}>Aflysfrist udløbet</span>
+              action = (
+                <span className="d-flex align-items-center" style={{ gap: 8 }}>
+                  <span style={badge(colors.successBg, colors.successText)}>Min booking</span>
+                  {booking.canCancel ? (
+                    <button className="btn btn-sm btn-outline-secondary" style={{ fontSize: '0.75rem', padding: '2px 12px', borderRadius: 20 }} onClick={() => onCancel(machine.id)}>Aflys</button>
+                  ) : (
+                    <span style={{ fontSize: '0.72rem', color: colors.textMuted }}>Frist udløbet</span>
+                  )}
+                </span>
               )
             } else if (booking) {
-              action = <span style={badge(colors.bgSubtle, colors.textSecondary)}>{booking.label}</span>
+              action = <span style={badge(colors.slotTakenBg, colors.slotTakenText)}>{booking.label}</span>
             } else if (blocked) {
-              action = <span style={{ fontSize: '0.72rem', color: colors.textMuted }}>Grænse nået</span>
+              action = <span style={badge(colors.slotWarningBg, colors.slotWarningText)}>Grænse nået</span>
             } else {
               action = (
-                <button
-                  className="btn btn-sm btn-outline-primary fw-semibold"
-                  style={{ fontSize: '0.78rem', borderRadius: 20, padding: '3px 16px' }}
-                  onClick={() => onBook(machine.id)}
-                >
-                  Book
-                </button>
+                <button className="btn btn-sm btn-primary fw-semibold" style={{ fontSize: '0.78rem', borderRadius: 20, padding: '4px 18px' }} onClick={() => onBook(machine.id)}>Book</button>
               )
             }
 
             return (
               <div
                 key={machine.id}
+                className="d-flex align-items-center justify-content-between"
                 style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'space-between',
-                  padding: '9px 20px 9px 32px',
-                  borderTop: `1px solid ${colors.borderRow}`,
-                  backgroundColor: booking?.isOwn ? colors.slotOwnBg : booking ? colors.slotTakenBg : 'transparent',
+                  gap: 12, padding: '9px 12px', marginTop: 6, borderRadius: 10,
+                  backgroundColor: colors.bgCard, border: `1px solid ${colors.borderDefault}`,
                 }}
               >
-                <span style={{ display: 'flex', flexDirection: 'column' }}>
-                  <span style={{ fontSize: '0.86rem', fontWeight: 500, color: colors.textPrimary }}>{machine.name}</span>
-                  <span style={{ fontSize: '0.72rem', color: colors.textMuted }}>{MACHINE_TYPE_LABEL[machine.machineType]}</span>
+                <span className="d-flex align-items-center" style={{ gap: 10, minWidth: 0 }}>
+                  <span style={{
+                    display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
+                    width: 34, height: 34, borderRadius: 9, backgroundColor: chipBg, flexShrink: 0,
+                  }}>
+                    <MachineIcon type={machine.machineType} color={chipColor} />
+                  </span>
+                  <span style={{ display: 'flex', flexDirection: 'column', minWidth: 0 }}>
+                    <span style={{ fontSize: '0.88rem', fontWeight: 600, color: colors.textPrimary, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{machine.name}</span>
+                    <span style={{ fontSize: '0.72rem', color: colors.textMuted }}>{MACHINE_TYPE_LABEL[machine.machineType]}</span>
+                  </span>
                 </span>
                 {action}
               </div>

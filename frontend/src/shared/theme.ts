@@ -95,6 +95,8 @@ export const colors = {
   slotOwnText:      '#2e7d32',
   slotTakenBg:      '#f2f4f7',
   slotTakenText:    '#8a9aaa',
+  slotFreeBg:       '#eafaf0',   // soft green for "ledig" availability badges
+  slotFreeText:     '#2e7d32',
 
   // ── Availability dots ─────────────────────────────────────────────────────────
   dotFree: '#4caf50',
