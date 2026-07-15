@@ -66,7 +66,7 @@ ships them. We build them so we don't look behind, and differentiate elsewhere (
 - [x] ⭐ Gennemgå server-side autorisation - fuld handler-audit. To huller lukket: (1) `RequireRoleAsync`/`IsSysAdminAsync` ignorerede `membership.IsActive` (deaktiverede medlemmer beholdt adgang) → kræver nu `IsActive`; (2) `ForcePasswordReset` bandt ikke `UserId` til `PropertyId` (confused deputy) → verificerer nu medlemskab. Øvrige property-scoped handlers binder korrekt ressource→forening.
 - [x] ⭐ Rate-limiting (per klient-IP via ForwardedHeaders): `auth` 10/min (login, register, redeem-invite, invite-info), `email` 5/min (forgot-password, invitér, gensend, force-reset, test-mail). Adgangskode-brute-force ligger hos Firebase; QR-generering (auth'd admin) ikke begrænset.
 - [x] ⭐ Security headers / HSTS - `SecurityHeadersMiddleware` (nosniff, X-Frame-Options DENY, Referrer-Policy, streng CSP `default-src 'none'`, Permissions-Policy; HSTS 1 år uden for dev) + `Server`-header fjernet
-- [ ] ⭐ Øvrig sikkerhed: CORS-gennemgang, secrets-hygiejne, token-udløb
+- [~] ⭐ Øvrig sikkerhed: **CORS** ✓ (beskåret til live origins www/apex laundrybook.dk + render-frontend; localhost kun i dev; mønster sikkert - eksplicitte origins + credentials), **token-udløb** ✓ (JWT `exp` = cookie 8t, aligned - ingen fejl). Mangler stadig: **secrets-hygiejne** (din rotation-todo)
 
 ### Betaling / abonnement
 - [ ] Beslut prismodel (se afsnit nedenfor)

@@ -41,9 +41,10 @@ builder.Services.AddInfrastructure(builder.Configuration, builder.Environment);
 builder.Services.AddControllers();
 builder.Services.AddOpenApi();
 
-// CORS — dev: Vite server, prod: configured origins (e.g. Cloudflare Pages domain)
-var allowedOrigins = builder.Configuration.GetSection("AllowedOrigins").Get<string[]>()
-    ?? ["http://localhost:5173"];
+// CORS — prod origins from config; the Vite dev server is only trusted in Development.
+var allowedOrigins = builder.Configuration.GetSection("AllowedOrigins").Get<string[]>() ?? [];
+if (builder.Environment.IsDevelopment())
+    allowedOrigins = [.. allowedOrigins, "http://localhost:5173"];
 
 builder.Services.AddCors(options =>
 {
