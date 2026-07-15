@@ -1,4 +1,4 @@
-import { weekLabel, MONTH_SHORT } from '../../shared/utils/dateUtils'
+import { weekLabel, monthShort } from '../../shared/utils/dateUtils'
 import { colors } from '../../shared/theme'
 
 interface Props {
@@ -10,8 +10,8 @@ interface Props {
 }
 
 export function WeekNavigator({ weekStart, weekFrom, weekTo, canGoBack, onShift }: Props) {
-  const fromMonth  = MONTH_SHORT[parseInt(weekFrom.split('-')[1] ?? '1', 10) - 1] ?? ''
-  const toMonth    = MONTH_SHORT[parseInt(weekTo.split('-')[1]   ?? '1', 10) - 1] ?? ''
+  const fromMonth  = monthShort(parseInt(weekFrom.split('-')[1] ?? '1', 10) - 1)
+  const toMonth    = monthShort(parseInt(weekTo.split('-')[1]   ?? '1', 10) - 1)
   const fromDay    = weekFrom.slice(8).replace(/^0/, '')
   const toDay      = weekTo.slice(8).replace(/^0/, '')
 

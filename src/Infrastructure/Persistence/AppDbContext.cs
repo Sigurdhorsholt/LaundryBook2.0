@@ -15,6 +15,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
     public DbSet<TimeSlotTemplate> TimeSlotTemplates => Set<TimeSlotTemplate>();
     public DbSet<Booking> Bookings => Set<Booking>();
     public DbSet<UserInvite> UserInvites => Set<UserInvite>();
+    public DbSet<AuditLog> AuditLogs => Set<AuditLog>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

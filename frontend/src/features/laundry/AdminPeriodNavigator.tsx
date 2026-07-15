@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next'
 import { IconChevronLeft, IconChevronRight } from '../../shared/icons'
-import { dayNum, MONTH_SHORT } from '../../shared/utils/dateUtils'
+import { dayNum, monthShort } from '../../shared/utils/dateUtils'
 import { colors } from '../../shared/theme'
 
 interface Props {
@@ -14,7 +14,7 @@ interface Props {
 }
 
 function monthOf(dateStr: string): string {
-  return MONTH_SHORT[parseInt(dateStr.slice(5, 7), 10) - 1] ?? ''
+  return monthShort(parseInt(dateStr.slice(5, 7), 10) - 1)
 }
 
 export function AdminPeriodNavigator({ from, to, isCurrent, loading, onPrev, onNext, onJumpToToday }: Props) {

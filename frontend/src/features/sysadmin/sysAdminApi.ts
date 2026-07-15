@@ -39,6 +39,22 @@ export interface PendingPropertyDto {
   adminEmail: string | null
 }
 
+export interface AuditLogDto {
+  id: string
+  timestampUtc: string
+  userId: string | null
+  userEmail: string | null
+  action: string
+  entityType: string
+  entityId: string
+  changes: string | null
+}
+
+export interface PagedAuditLogsResult {
+  items: AuditLogDto[]
+  totalCount: number
+}
+
 export const sysAdminApi = baseApi.injectEndpoints({
   endpoints: (build) => ({
     getAllUsers: build.query<PagedUsersResult, { search?: string; page: number; pageSize?: number }>({
@@ -85,6 +101,23 @@ export const sysAdminApi = baseApi.injectEndpoints({
         { type: 'Property', id: 'LIST' },
       ],
     }),
+
+    getAuditLogs: build.query<PagedAuditLogsResult, { entityType?: string; action?: string; page: number; pageSize?: number }>({
+      query: ({ entityType, action, page, pageSize = 25 }) => {
+        const params = new URLSearchParams({ page: String(page), pageSize: String(pageSize) })
+        if (entityType) params.set('entityType', entityType)
+        if (action) params.set('action', action)
+        return `/api/sysadmin/audit-logs?${params}`
+      },
+    }),
+
+    sendTestEmail: build.mutation<void, { toEmail: string; template: number }>({
+      query: (body) => ({
+        url: '/api/sysadmin/test-email',
+        method: 'POST',
+        body,
+      }),
+    }),
   }),
 })
 
@@ -94,4 +127,6 @@ export const {
   useAssignUserToPropertyMutation,
   useGetPendingPropertiesQuery,
   useActivatePropertyMutation,
+  useGetAuditLogsQuery,
+  useSendTestEmailMutation,
 } = sysAdminApi

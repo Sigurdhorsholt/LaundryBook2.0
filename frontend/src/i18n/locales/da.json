@@ -352,7 +352,39 @@
     "noUsersFound": "Ingen brugere fundet.",
     "showingUsers": "Viser {{from}}-{{to}} af {{total}} brugere",
     "previous": "← Forrige",
-    "next": "Næste →"
+    "next": "Næste →",
+    "audit": {
+      "title": "Aktivitetslog",
+      "description": "Alle ændringer i systemet - hvem gjorde hvad og hvornår.",
+      "colTime": "Tidspunkt",
+      "colUser": "Bruger",
+      "colAction": "Handling",
+      "colEntity": "Objekt",
+      "colChanges": "Ændringer",
+      "system": "System",
+      "filterEntityPlaceholder": "Filtrér på objekttype (fx Booking)",
+      "filterActionAll": "Alle handlinger",
+      "actionCreated": "Oprettet",
+      "actionUpdated": "Ændret",
+      "actionDeleted": "Slettet",
+      "showing": "Viser {{from}}-{{to}} af {{total}}",
+      "prev": "← Forrige",
+      "next": "Næste →",
+      "empty": "Ingen aktivitet fundet.",
+      "loadError": "Kunne ikke indlæse aktivitetsloggen.",
+      "viewChanges": "Vis ændringer"
+    },
+    "testEmail": {
+      "title": "Test e-mails",
+      "description": "Send en test af hver e-mailskabelon for at tjekke formatering og levering.",
+      "recipientLabel": "Modtager",
+      "invite": "Send invitations-mail",
+      "passwordReset": "Send nulstillings-mail",
+      "adminReset": "Send admin-nulstillings-mail",
+      "sending": "Sender…",
+      "sent": "Test-mail sendt til {{email}}.",
+      "error": "Kunne ikke sende test-mailen. Prøv igen."
+    }
   },
   "users": {
     "editMember": "Rediger - {{name}}",
@@ -568,6 +600,11 @@
   "sysadminPage": {
     "subtitle": "Kun synlig for systemadministratorer"
   },
+  "dates": {
+    "today": "I dag",
+    "tomorrow": "I morgen",
+    "week": "Uge {{n}}"
+  },
   "public": {
     "layout": {
       "nav": {
@@ -580,6 +617,7 @@
       },
       "login": "Log ind",
       "getStarted": "Kom i gang",
+      "backToApp": "Tilbage til appen",
       "footer": {
         "product": "Produkt",
         "company": "Selskab",

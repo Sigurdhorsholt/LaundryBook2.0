@@ -33,7 +33,7 @@ public class ForcePasswordResetCommandHandler(
         var adminName = admin is not null ? $"{admin.FirstName} {admin.LastName}".Trim() : "Administrator";
 
         var resetLink = await identityProvider.GeneratePasswordResetLinkAsync(user.Email, cancellationToken);
-        await emailService.SendPasswordSetupEmailAsync(
-            user.Email, resetLink, property.Name, property.Address, adminName, cancellationToken);
+        await emailService.SendAdminPasswordResetEmailAsync(
+            user.Email, resetLink, property.Name, adminName, cancellationToken);
     }
 }

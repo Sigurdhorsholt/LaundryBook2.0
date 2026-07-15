@@ -33,7 +33,7 @@ public class MailgunEmailService(
             new KeyValuePair<string, string>("html", InviteEmailTemplate.Html(propertyName, propertyAddress, adminName, passwordSetupLink, landingPageUrl)),
         ]);
 
-        await SendAsync(domain, form, "invite email", cancellationToken);
+        await SendAsync(domain, form, "invite email", toEmail, cancellationToken);
     }
 
     public async Task SendPasswordResetEmailAsync(string toEmail, string resetLink, CancellationToken cancellationToken = default)
@@ -51,7 +51,30 @@ public class MailgunEmailService(
             new KeyValuePair<string, string>("html", PasswordResetEmailTemplate.Html(resetLink, landingPageUrl)),
         ]);
 
-        await SendAsync(domain, form, "password reset email", cancellationToken);
+        await SendAsync(domain, form, "password reset email", toEmail, cancellationToken);
+    }
+
+    public async Task SendAdminPasswordResetEmailAsync(
+        string toEmail,
+        string resetLink,
+        string propertyName,
+        string adminName,
+        CancellationToken cancellationToken = default)
+    {
+        var (apiKey, domain, senderEmail, senderName) = ReadMailgunConfig();
+        var landingPageUrl = configuration["App:BaseUrl"] ?? "https://laundrybook.dk";
+
+        Authorize(apiKey);
+
+        var form = new FormUrlEncodedContent([
+            new KeyValuePair<string, string>("from", $"{senderName} <{senderEmail}>"),
+            new KeyValuePair<string, string>("to", toEmail),
+            new KeyValuePair<string, string>("subject", "Vælg en ny adgangskode til LaundryBook"),
+            new KeyValuePair<string, string>("text", AdminPasswordResetEmailTemplate.Text(resetLink, propertyName, adminName, landingPageUrl)),
+            new KeyValuePair<string, string>("html", AdminPasswordResetEmailTemplate.Html(resetLink, propertyName, adminName, landingPageUrl)),
+        ]);
+
+        await SendAsync(domain, form, "admin password reset email", toEmail, cancellationToken);
     }
 
     private (string apiKey, string domain, string senderEmail, string senderName) ReadMailgunConfig()
@@ -69,7 +92,7 @@ public class MailgunEmailService(
         httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", credentials);
     }
 
-    private async Task SendAsync(string domain, FormUrlEncodedContent form, string emailType, CancellationToken cancellationToken)
+    private async Task SendAsync(string domain, FormUrlEncodedContent form, string emailType, string toEmail, CancellationToken cancellationToken)
     {
         var baseUrl = configuration["Mailgun:BaseUrl"] ?? "https://api.eu.mailgun.net";
         var response = await httpClient.PostAsync($"{baseUrl}/v3/{domain}/messages", form, cancellationToken);
@@ -77,8 +100,10 @@ public class MailgunEmailService(
         if (!response.IsSuccessStatusCode)
         {
             var body = await response.Content.ReadAsStringAsync(cancellationToken);
-            logger.LogError("Mailgun returned {StatusCode} for {EmailType}: {Body}", response.StatusCode, emailType, body);
+            logger.LogError("Mailgun returned {StatusCode} for {EmailType} to {Recipient}: {Body}", response.StatusCode, emailType, toEmail, body);
             throw new InvalidOperationException($"Failed to send {emailType} (HTTP {(int)response.StatusCode}).");
         }
+
+        logger.LogInformation("Sent {EmailType} to {Recipient}", emailType, toEmail);
     }
 }

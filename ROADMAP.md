@@ -35,16 +35,19 @@ ships them. We build them so we don't look behind, and differentiate elsewhere (
 - [ ] Dedikeret domæne-mailadresse i stedet for privat hotmail
 - [ ] ⭐ Flyt til transaktions-mailudbyder (Postmark / Brevo / Mailgun)
 - [ ] ⭐ **SPF + DKIM + DMARC** på afsenderdomæne - dette er den egentlige fix for spam
-- [ ] Ret template-routing (forkert skabelon sendes i visse scenarier)
+- [x] Ret template-routing - `ForcePasswordReset` sendte invitations-skabelonen; har nu sin egen `AdminPasswordResetEmailTemplate`. Alle 4 scenarier (invitation / gensend / bruger-glemt / admin-nulstil) sender nu korrekt skabelon
 - [ ] ⭐ Testmatrix over alle transaktionsmails (invitation, nulstilling, aktivering, booking)
+- [x] ⭐ SysAdmin test-mail-værktøj - send hver skabelon (invitation / nulstilling / admin-nulstilling) til valgfri modtager (autofyldt med egen mail) fra SysAdmin-siden
 - [ ] ⭐ Log hver afsendelse + håndter bounces
 
 ### Observability & drift
-- [ ] Struktureret backend-logging (Serilog), korrelations-id'er
-- [ ] Log alle fejl (fil/store), log succesfulde mailafsendelser
-- [ ] ⭐ Udvid Sentry til .NET-backend (frontend har allerede Sentry)
-- [ ] ⭐ Audit-log (hvem bookede/aflyste/ændrede hvad)
-- [ ] ⭐ DB-monitorering (langsomme queries, forbindelser) + health-check endpoint
+- [x] Struktureret backend-logging (Serilog) - konsol + rullende dagsfil (`logs/`), request-logging, `LoggingBehaviour` (kommando + bruger + tid + udfald)
+- [x] Log alle fejl (fil/store), log succesfulde mailafsendelser - fil-sink + succes/fejl-log i MailgunEmailService
+- [x] ⭐ Udvid Sentry til .NET-backend - `Sentry.AspNetCore`, fanger 500'ere i ExceptionHandlingMiddleware (DSN via `Sentry:Dsn`, tom = slået fra)
+- [x] ⭐ Audit-log (hvem bookede/aflyste/ændrede hvad) - `AuditLog`-tabel + EF SaveChanges-interceptor fanger ALLE create/update/delete (bookinger, signups, invitationer, roller, indstillinger, aktivering, lokaler/maskiner/tidspladser) med bruger + tid + felt-diff (jsonb). Migration `AddAuditLog` genereret; kører automatisk ved næste deploy.
+- [x] ⭐ Audit-log opbevaring/prune - daglig `AuditLogPruneService` sletter rækker ældre end `Audit:RetentionDays` (default 365)
+- [x] ⭐ Audit-log fremviser på SysAdmin-siden - `GET /api/sysadmin/audit-logs` (SysAdmin-only, håndhævet i handler via `IsSysAdminAsync`), pagineret + filtre (objekttype/handling); UI: `AuditLogTable` på SysAdmin-siden
+- [ ] ⭐ DB-monitorering (langsomme queries, forbindelser) - `/health` findes allerede
 - [ ] ⭐ Uptime-overvågning + alarmering (BetterStack / UptimeRobot)
 
 ### Miljøer, test & data
@@ -57,10 +60,13 @@ ships them. We build them so we don't look behind, and differentiate elsewhere (
 
 ### Security 🔒
 - [x] ⭐ Ryd `npm audit` (13 sårbarheder, heraf 1 kritisk) - 0 tilbage; versioner pinnet eksakt + `save-exact` i `.npmrc`
-- [ ] ⭐ Fjern `laundrybook.dump` fra repo-mappen + tilføj til `.gitignore` (DB-dump må ikke committes)
+- [x] ⭐ Fjern `laundrybook.dump` + tilføj til `.gitignore` (`*.dump/*.sql.gz/*.bak` + `logs/`)
+- [ ] 🔒 ⭐ **Roter og fjern committede secrets** i `src/WebApi/appsettings.Development.json` (live DB-password, JWT-nøgle, Mailgun-nøgle ligger i git-historikken) + flyt til env/user-secrets
+- [~] ⭐ Ryd backend-NuGet-sårbarheder - `SQLitePCLRaw` fjernet (SQLite udfaset); `Microsoft.OpenApi` 2.0.0 (high, NU1903, transitiv) mangler stadig
 - [ ] ⭐ Gennemgå server-side autorisation (en beboer må aldrig kunne nå en anden forenings data)
 - [ ] ⭐ Rate-limiting på login/invitation/nulstilling/QR + brute-force-lockout
-- [ ] ⭐ Security headers / HSTS, CORS, secrets-hygiejne, token-udløb
+- [x] ⭐ Security headers / HSTS - `SecurityHeadersMiddleware` (nosniff, X-Frame-Options DENY, Referrer-Policy, streng CSP `default-src 'none'`, Permissions-Policy; HSTS 1 år uden for dev) + `Server`-header fjernet
+- [ ] ⭐ Øvrig sikkerhed: CORS-gennemgang, secrets-hygiejne, token-udløb
 
 ### Betaling / abonnement
 - [ ] Beslut prismodel (se afsnit nedenfor)

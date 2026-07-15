@@ -27,4 +27,16 @@ public class DevEmailService(ILogger<DevEmailService> logger) : IEmailService
         logger.LogInformation("[DEV] Password reset email for {Email}: {Link}", toEmail, resetLink);
         return Task.CompletedTask;
     }
+
+    public Task SendAdminPasswordResetEmailAsync(
+        string toEmail,
+        string resetLink,
+        string propertyName,
+        string adminName,
+        CancellationToken cancellationToken = default)
+    {
+        logger.LogInformation("[DEV] Admin password reset email for {Email} | Property: {Property} | By: {Admin} | Link: {Link}",
+            toEmail, propertyName, adminName, resetLink);
+        return Task.CompletedTask;
+    }
 }

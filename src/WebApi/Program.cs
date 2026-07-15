@@ -4,10 +4,32 @@ using Infrastructure.Persistence;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using Serilog;
+using Serilog.Events;
 using System.Text;
 using WebApi.Middleware;
 
 var builder = WebApplication.CreateBuilder(args);
+
+// Don't advertise the server implementation.
+builder.WebHost.ConfigureKestrel(options => options.AddServerHeader = false);
+
+// Structured logging: console + rolling daily file (logs/), errors captured to file for debugging
+builder.Host.UseSerilog((context, loggerConfig) => loggerConfig
+    .MinimumLevel.Information()
+    .MinimumLevel.Override("Microsoft.AspNetCore", LogEventLevel.Warning)
+    .MinimumLevel.Override("Microsoft.EntityFrameworkCore", LogEventLevel.Warning)
+    .Enrich.FromLogContext()
+    .WriteTo.Console()
+    .WriteTo.File("logs/laundrybook-.log", rollingInterval: RollingInterval.Day, retainedFileCountLimit: 14, shared: true));
+
+// Error tracking. DSN comes from config/env (Sentry:Dsn); empty DSN disables the SDK (e.g. local dev).
+builder.WebHost.UseSentry(options =>
+{
+    options.Dsn = builder.Configuration["Sentry:Dsn"] ?? string.Empty;
+    options.Environment = builder.Environment.EnvironmentName;
+    options.SendDefaultPii = false;
+});
 
 // Application & Infrastructure layers
 builder.Services.AddApplication();
@@ -62,12 +84,16 @@ builder.Services.AddAuthorization();
 
 var app = builder.Build();
 
-// Auto-run migrations on startup (safe for single-instance; works for both SQLite and PostgreSQL)
+// Auto-run migrations on startup (safe for single-instance)
 using (var scope = app.Services.CreateScope())
 {
     var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
     db.Database.Migrate();
 }
+
+app.UseMiddleware<SecurityHeadersMiddleware>();
+
+app.UseSerilogRequestLogging();
 
 app.UseMiddleware<ExceptionHandlingMiddleware>();
 

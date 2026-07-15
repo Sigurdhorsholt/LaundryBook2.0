@@ -1,7 +1,7 @@
 import { useTranslation } from 'react-i18next'
 import type { MyBookingDto } from './laundryApi'
 import type { PendingAction } from './types'
-import { dayShortLabel, dayNum, formatTimeRange, MONTH_SHORT } from '../../shared/utils/dateUtils'
+import { dayShortLabel, dayNum, formatTimeRange, monthShort } from '../../shared/utils/dateUtils'
 import { colors } from '../../shared/theme'
 
 interface Props {
@@ -52,7 +52,7 @@ export function UpcomingBookingsCard({ myBookings, today, expanded, onToggle, on
           >
             <span style={{ fontSize: '0.88rem', color: colors.textPrimary }}>
               <strong style={{ color: colors.primary, marginRight: 6 }}>
-                {dayShortLabel(b.date, today)} {dayNum(b.date)}. {MONTH_SHORT[monthIdx] ?? ''}
+                {dayShortLabel(b.date, today)} {dayNum(b.date)}. {monthShort(monthIdx)}
               </strong>
               {b.roomName} · {formatTimeRange(b.startTime, b.endTime)}
               {b.machineName ? ` · ${b.machineName}` : ''}
