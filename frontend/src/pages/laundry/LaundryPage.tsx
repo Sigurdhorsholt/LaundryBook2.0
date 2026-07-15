@@ -1,9 +1,10 @@
 import { useState, useMemo, useEffect, useRef } from 'react'
 import { skipToken } from '@reduxjs/toolkit/query/react'
 import { useMeQuery } from '../../features/auth/authApi'
-import { useGetPropertyQuery } from '../../features/properties/propertiesApi'
+import { useGetPropertyQuery, BookingMode } from '../../features/properties/propertiesApi'
 import {
   useGetLaundryRoomsQuery,
+  useGetMachinesQuery,
   useGetTimeSlotsQuery,
   useGetBookingsQuery,
   useGetMyBookingsQuery,
@@ -11,83 +12,22 @@ import {
   useCancelBookingMutation,
 } from '../../features/laundry/laundryApi'
 import type { MyBookingDto } from '../../features/laundry/laundryApi'
+import type { PendingAction, GridBooking, AvailabilityState } from '../../features/laundry/types'
 import { BookingGrid } from '../../features/laundry/BookingGrid'
-import type { GridBooking } from '../../features/laundry/BookingGrid'
+import { UpcomingBookingsCard } from '../../features/laundry/UpcomingBookingsCard'
+import { RoomSelector } from '../../features/laundry/RoomSelector'
+import { WeekNavigator } from '../../features/laundry/WeekNavigator'
+import { DateStrip } from '../../features/laundry/DateStrip'
+import { ConfirmBookingModal } from '../../features/laundry/ConfirmBookingModal'
+import { PageHeader } from '../../shared/ui'
+import {
+  todayStr, addDays, getWeekMonday, formatTimeRange, formatDateFull,
+  minutesUntilSlot,
+} from '../../shared/utils/dateUtils'
 import { colors } from '../../shared/theme'
 
+// ── localStorage helpers for booking count milestone ──────────────────────────
 
-// ── Date helpers ───────────────────────────────────────────────────────────────
-
-function todayStr(): string {
-  const d = new Date()
-  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`
-}
-
-function addDays(dateStr: string, n: number): string {
-  const parts = dateStr.split('-').map(Number)
-  const d = new Date(parts[0] ?? 2025, (parts[1] ?? 1) - 1, (parts[2] ?? 1) + n)
-  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`
-}
-
-function getWeekMonday(dateStr: string): string {
-  const parts = dateStr.split('-').map(Number)
-  const d = new Date(parts[0] ?? 2025, (parts[1] ?? 1) - 1, parts[2] ?? 1)
-  const day = d.getDay()
-  const diff = day === 0 ? -6 : 1 - day
-  d.setDate(d.getDate() + diff)
-  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`
-}
-
-const DAY_SHORT   = ['Man', 'Tir', 'Ons', 'Tor', 'Fre', 'Lør', 'Søn']
-const MONTH_SHORT = ['jan', 'feb', 'mar', 'apr', 'maj', 'jun', 'jul', 'aug', 'sep', 'okt', 'nov', 'dec']
-
-// Task 1 — "I dag" / "I morgen" language
-function dayShortLabel(dateStr: string, today: string): string {
-  if (dateStr === today)             return 'I dag'
-  if (dateStr === addDays(today, 1)) return 'I morgen'
-  const parts = dateStr.split('-').map(Number)
-  const d = new Date(parts[0] ?? 2025, (parts[1] ?? 1) - 1, parts[2] ?? 1)
-  const dow = d.getDay()
-  return DAY_SHORT[dow === 0 ? 6 : dow - 1] ?? ''
-}
-
-function dayNum(dateStr: string): number {
-  return parseInt(dateStr.slice(8), 10)
-}
-
-function formatDateFull(dateStr: string): string {
-  const parts = dateStr.split('-').map(Number)
-  const d = new Date(parts[0] ?? 2025, (parts[1] ?? 1) - 1, parts[2] ?? 1)
-  const dow = d.getDay()
-  const dayNames = ['Mandag', 'Tirsdag', 'Onsdag', 'Torsdag', 'Fredag', 'Lørdag', 'Søndag']
-  return `${dayNames[dow === 0 ? 6 : dow - 1] ?? ''} ${d.getDate()}. ${MONTH_SHORT[d.getMonth()] ?? ''}`
-}
-
-function formatTimeRange(start: string, end: string): string {
-  return `${start.slice(0, 5)}–${end.slice(0, 5)}`
-}
-
-function weekLabel(weekStart: string): string {
-  const parts = weekStart.split('-').map(Number)
-  const d = new Date(parts[0] ?? 2025, (parts[1] ?? 1) - 1, parts[2] ?? 1)
-  const jan4 = new Date(d.getFullYear(), 0, 4)
-  const diff = (d.getTime() - jan4.getTime()) / 86400000
-  return `Uge ${Math.ceil((diff + jan4.getDay() + 1) / 7)}`
-}
-
-// Task 8 — minutes until a slot starts
-function minutesUntilSlot(date: string, startTime: string): number {
-  const parts = startTime.split(':').map(Number)
-  const d = new Date(
-    parseInt(date.slice(0, 4)),
-    parseInt(date.slice(5, 7)) - 1,
-    parseInt(date.slice(8, 10)),
-    parts[0] ?? 0, parts[1] ?? 0, 0, 0,
-  )
-  return Math.floor((d.getTime() - Date.now()) / 60_000)
-}
-
-// Task 10 — booking count for routine acknowledgment
 function getBookingCount(): number {
   return parseInt(localStorage.getItem('laundryBookingCount') ?? '0', 10)
 }
@@ -95,22 +35,6 @@ function incrementBookingCount(): number {
   const next = getBookingCount() + 1
   localStorage.setItem('laundryBookingCount', String(next))
   return next
-}
-
-// Task 2 — dot colors
-const DOT_COLOR: Record<string, string> = {
-  free: colors.dotFree, few: colors.dotFew, full: colors.dotFull, past: 'transparent',
-}
-
-// ── Types ──────────────────────────────────────────────────────────────────────
-
-type PendingAction = {
-  type: 'book' | 'cancel'
-  slotId: string
-  date: string
-  slotTime: string
-  bookingId?: string
-  minutesUntil?: number  // Task 8
 }
 
 function extractErrorMessage(err: unknown): string {
@@ -125,20 +49,19 @@ function extractErrorMessage(err: unknown): string {
 
 export function LaundryPage() {
   const today = todayStr()
-  const [weekStart, setWeekStart]       = useState(() => getWeekMonday(today))
-  const [selectedDate, setSelectedDate] = useState(today)
+  const [weekStart, setWeekStart]           = useState(() => getWeekMonday(today))
+  const [selectedDate, setSelectedDate]     = useState(today)
   const [selectedRoomId, setSelectedRoomId] = useState<string | null>(null)
-  const [pending, setPending]           = useState<PendingAction | null>(null)
-  const [confirmError, setConfirmError] = useState<string | null>(null)
-  const [milestoneCount, setMilestoneCount] = useState<number | null>(null) // Task 10
+  const [pending, setPending]               = useState<PendingAction | null>(null)
+  const [confirmError, setConfirmError]     = useState<string | null>(null)
+  const [milestoneCount, setMilestoneCount] = useState<number | null>(null)
   const [bookingsExpanded, setBookingsExpanded] = useState(true)
-  const gridRef   = useRef<HTMLDivElement>(null)
+  const gridRef    = useRef<HTMLDivElement>(null)
   const [gridVisible, setGridVisible] = useState(false)
 
   useEffect(() => {
     const el = gridRef.current
     if (!el) return
-    // Fire at several crossing points; show button while grid is less than 30% visible
     const obs = new IntersectionObserver(
       ([entry]) => setGridVisible((entry?.intersectionRatio ?? 0) >= 0.7),
       { threshold: [0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7] },
@@ -148,10 +71,12 @@ export function LaundryPage() {
   }, [])
 
   const { data: me } = useMeQuery()
-  const propertyId = me?.memberships[0]?.propertyId ?? null
+  const propertyId   = me?.memberships[0]?.propertyId ?? null
 
   const { data: property } = useGetPropertyQuery(propertyId ?? skipToken)
   const settings = property?.settings
+  const bookingMode = settings?.bookingMode
+  const machineMode = bookingMode === BookingMode.BookSpecificMachine
 
   const { data: rooms, isLoading: roomsLoading } = useGetLaundryRoomsQuery(propertyId ?? skipToken)
 
@@ -164,15 +89,14 @@ export function LaundryPage() {
   const weekFrom = weekStart
   const weekTo   = addDays(weekStart, 6)
 
-  const { data: slots, isLoading: slotsLoading } = useGetTimeSlotsQuery(selectedRoomId ?? skipToken)
-
+  const { data: slots, isLoading: slotsLoading }     = useGetTimeSlotsQuery(selectedRoomId ?? skipToken)
+  const { data: machines } = useGetMachinesQuery(machineMode && selectedRoomId ? selectedRoomId : skipToken)
   const { data: bookings, isLoading: bookingsLoading } = useGetBookingsQuery(
     selectedRoomId ? { roomId: selectedRoomId, from: weekFrom, to: weekTo } : skipToken
   )
-
   const { data: myBookings } = useGetMyBookingsQuery(propertyId ?? skipToken)
 
-  const [createBooking, { isLoading: creating }] = useCreateBookingMutation()
+  const [createBooking, { isLoading: creating }]  = useCreateBookingMutation()
   const [cancelBooking, { isLoading: cancelling }] = useCancelBookingMutation()
 
   const weekDays = useMemo(
@@ -183,37 +107,45 @@ export function LaundryPage() {
   const gridBookings = useMemo((): GridBooking[] =>
     (bookings ?? [])
       .filter(b => b.date === selectedDate)
-      .map(b => ({ slotId: b.timeSlotTemplateId, isOwn: b.isOwn, label: b.label, canCancel: b.canCancel }))
+      .map(b => ({
+        bookingId: b.id,
+        slotId: b.timeSlotTemplateId,
+        isOwn: b.isOwn,
+        label: b.label,
+        canCancel: b.canCancel,
+        machineId: b.machineId,
+        machineName: b.machineName,
+      }))
   , [bookings, selectedDate])
 
   const maxReached =
     (myBookings?.filter(b => b.date >= today).length ?? 0) >=
     (settings?.maxConcurrentBookingsPerUser ?? 2)
 
-  // Task 2 — availability per date for dots
-  const availabilityByDate = useMemo((): Record<string, 'free' | 'few' | 'full' | 'past'> => {
-    const result: Record<string, 'free' | 'few' | 'full' | 'past'> = {}
+  const availabilityByDate = useMemo((): Record<string, AvailabilityState> => {
+    const result: Record<string, AvailabilityState> = {}
     const lookaheadEnd = settings ? addDays(today, settings.bookingLookaheadDays) : null
-    const totalSlots = (slots ?? []).length
+    const totalSlots   = (slots ?? []).length
+    const capacityPerSlot = machineMode ? (machines?.length ?? 0) : 1
+    const totalCapacity   = totalSlots * capacityPerSlot
     for (const d of weekDays) {
       if (d < today || (lookaheadEnd !== null && d > lookaheadEnd)) {
         result[d] = 'past'
         continue
       }
       const bookedCount = (bookings ?? []).filter(b => b.date === d).length
-      const free = totalSlots - bookedCount
-      result[d] = free === 0 ? 'full' : free <= 2 ? 'few' : 'free'
+      const free        = totalCapacity - bookedCount
+      result[d] = free <= 0 ? 'full' : free <= 2 ? 'few' : 'free'
     }
     return result
-  }, [weekDays, bookings, slots, today, settings])
+  }, [weekDays, bookings, slots, today, settings, machineMode, machines])
 
-  // Task 9 — social context count
   const othersBookedToday = useMemo(
     () => (bookings ?? []).filter(b => b.date === selectedDate && !b.isOwn).length
   , [bookings, selectedDate])
 
   const todayWeekMonday = getWeekMonday(today)
-  const canGoBack = weekStart > todayWeekMonday
+  const canGoBack       = weekStart > todayWeekMonday
 
   function shiftWeek(delta: number) {
     const newStart = addDays(weekStart, delta * 7)
@@ -224,23 +156,34 @@ export function LaundryPage() {
     }
   }
 
-  // ── Booking handlers ─────────────────────────────────────────────────────────
+  // ── Booking handlers ───────────────────────────────────────────────────────
 
-  function handleBook(slotId: string) {
+  function handleBook(slotId: string, machineId?: string) {
     const slot = slots?.find(s => s.id === slotId)
     if (!slot) return
-    setPending({ type: 'book', slotId, date: selectedDate, slotTime: formatTimeRange(slot.startTime, slot.endTime) })
+    const machineName = machineId ? machines?.find(m => m.id === machineId)?.name : undefined
+    setPending({
+      type: 'book', slotId, date: selectedDate,
+      slotTime: formatTimeRange(slot.startTime, slot.endTime),
+      machineId, machineName,
+    })
     setConfirmError(null)
   }
 
-  function handleCancel(slotId: string) {
-    const b = myBookings?.find(m => m.timeSlotTemplateId === slotId && m.date === selectedDate)
-    if (!b) return
+  function handleCancel(slotId: string, machineId?: string) {
+    const slot = slots?.find(s => s.id === slotId)
+    const b = (bookings ?? []).find(x =>
+      x.timeSlotTemplateId === slotId &&
+      x.date === selectedDate &&
+      x.isOwn &&
+      (machineId ? x.machineId === machineId : true))
+    if (!slot || !b) return
     setPending({
       type: 'cancel', slotId, date: selectedDate,
-      slotTime: formatTimeRange(b.startTime, b.endTime),
+      slotTime: formatTimeRange(slot.startTime, slot.endTime),
       bookingId: b.id,
-      minutesUntil: minutesUntilSlot(selectedDate, b.startTime), // Task 8
+      minutesUntil: minutesUntilSlot(selectedDate, slot.startTime),
+      machineName: b.machineName ?? undefined,
     })
     setConfirmError(null)
   }
@@ -250,7 +193,7 @@ export function LaundryPage() {
       type: 'cancel', slotId: b.timeSlotTemplateId, date: b.date,
       slotTime: formatTimeRange(b.startTime, b.endTime),
       bookingId: b.id,
-      minutesUntil: minutesUntilSlot(b.date, b.startTime), // Task 8
+      minutesUntil: minutesUntilSlot(b.date, b.startTime),
     })
     setConfirmError(null)
   }
@@ -263,8 +206,8 @@ export function LaundryPage() {
         await createBooking({
           roomId: selectedRoomId, propertyId,
           timeSlotTemplateId: pending.slotId, date: pending.date,
+          machineId: pending.machineId ?? null,
         }).unwrap()
-        // Task 10 — routine acknowledgment
         const newCount = incrementBookingCount()
         if (newCount % 5 === 0) {
           setMilestoneCount(newCount)
@@ -282,189 +225,61 @@ export function LaundryPage() {
     }
   }
 
-  // ── No property ───────────────────────────────────────────────────────────────
+  // ── No property guard ──────────────────────────────────────────────────────
 
   if (!propertyId) {
     return (
       <div className="container-xl px-4 py-5">
-        <h1 className="fw-bold mb-2" style={{ fontSize: '1.75rem', color: colors.textPrimary }}>Vaskebooking</h1>
-        <p style={{ color: colors.textSecondary }}>Du er ikke tilknyttet nogen ejendom endnu.</p>
+        <PageHeader title="Vaskebooking" description="Du er ikke tilknyttet nogen ejendom endnu." />
       </div>
     )
   }
 
-  const gridLoading = slotsLoading || bookingsLoading
+  const gridLoading = slotsLoading || bookingsLoading || !settings
 
   return (
     <div className="container-xl px-4 py-5">
 
-      {/* ── Header ─────────────────────────────────────────────────────────────── */}
-      <h1 className="fw-bold mb-1" style={{ fontSize: '1.75rem', color: colors.textPrimary }}>
-        Vaskebooking
-      </h1>
-      <p className="mb-4" style={{ color: colors.textSecondary, fontSize: '0.92rem' }}>
-        Book et ledigt vasketid i dit vaskerum.
-      </p>
+      <PageHeader title="Vaskebooking" description="Book et ledigt vasketid i dit vaskerum." />
 
-      {/* ── Task 3 — upcoming bookings card (collapsible) ──────────────────────── */}
-      {myBookings && myBookings.length > 0 && (
-        <div className="rounded-3 mb-4" style={{ border: `1px solid ${colors.borderDefault}`, backgroundColor: colors.bgCard, overflow: 'hidden' }}>
-          {/* Clickable header toggle */}
-          <button
-            onClick={() => setBookingsExpanded(x => !x)}
-            style={{
-              width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-              padding: '12px 20px', border: 'none', borderBottom: bookingsExpanded ? `1px solid ${colors.borderRow}` : 'none',
-              backgroundColor: colors.bgHeader, cursor: 'pointer', textAlign: 'left',
-            }}
-          >
-            <span style={{ fontWeight: 600, fontSize: '0.88rem', color: colors.textPrimary }}>
-              Mine kommende bookinger
-              <span style={{ fontWeight: 400, color: colors.textMuted, marginLeft: 8, fontSize: '0.8rem' }}>
-                ({myBookings.length})
-              </span>
-            </span>
-            {/* Chevron */}
-            <svg
-              width="14" height="14" viewBox="0 0 14 14" fill="none"
-              style={{ transition: 'transform 0.2s', transform: bookingsExpanded ? 'rotate(0deg)' : 'rotate(-90deg)', flexShrink: 0 }}
-            >
-              <path d="M2 5l5 5 5-5" stroke={colors.textMuted} strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
-            </svg>
-          </button>
+      <UpcomingBookingsCard
+        myBookings={myBookings ?? []}
+        today={today}
+        expanded={bookingsExpanded}
+        onToggle={() => setBookingsExpanded(x => !x)}
+        onCancelUpcoming={handleCancelUpcoming}
+      />
 
-          {/* Collapsible body */}
-          {bookingsExpanded && myBookings.map(b => {
-            const monthIdx = parseInt(b.date.split('-')[1] ?? '1', 10) - 1
-            return (
-              <div
-                key={b.id}
-                style={{
-                  display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-                  padding: '10px 20px', borderBottom: `1px solid ${colors.borderRow}`, flexWrap: 'wrap', gap: 8,
-                }}
-              >
-                <span style={{ fontSize: '0.88rem', color: colors.textPrimary }}>
-                  <strong style={{ color: colors.primary, marginRight: 6 }}>
-                    {dayShortLabel(b.date, today)} {dayNum(b.date)}. {MONTH_SHORT[monthIdx] ?? ''}
-                  </strong>
-                  {b.roomName} · {formatTimeRange(b.startTime, b.endTime)}
-                </span>
-                {b.canCancel ? (
-                  <button
-                    className="btn btn-sm btn-outline-secondary"
-                    style={{ fontSize: '0.75rem', padding: '2px 10px', borderRadius: 20 }}
-                    onClick={() => handleCancelUpcoming(b)}
-                  >
-                    Aflys
-                  </button>
-                ) : (
-                  <span style={{ fontSize: '0.75rem', color: colors.textMuted }}>Aflysfrist udløbet</span>
-                )}
-              </div>
-            )
-          })}
-        </div>
-      )}
-
-      {/* ── Room selector ───────────────────────────────────────────────────────── */}
       {roomsLoading ? (
         <div className="mb-4">
           <div style={{ width: 120, height: 32, borderRadius: 20, backgroundColor: colors.borderDefault, display: 'inline-block' }} />
         </div>
-      ) : rooms && rooms.length > 1 && (
-        <div className="mb-4 d-flex gap-2 flex-wrap">
-          {rooms.map(room => (
-            <button
-              key={room.id}
-              className="btn btn-sm"
-              style={{
-                borderRadius: 20, padding: '5px 16px', fontSize: '0.85rem', fontWeight: 500,
-                backgroundColor: selectedRoomId === room.id ? colors.primary : colors.bgSubtle,
-                color: selectedRoomId === room.id ? '#ffffff' : colors.textPrimary,
-                border: 'none', transition: 'background-color 0.12s',
-              }}
-              onClick={() => setSelectedRoomId(room.id)}
-            >
-              {room.name}
-            </button>
-          ))}
-        </div>
+      ) : (
+        <RoomSelector
+          rooms={rooms ?? []}
+          selectedRoomId={selectedRoomId}
+          onSelect={setSelectedRoomId}
+        />
       )}
 
-      {/* ── Booking grid card ────────────────────────────────────────────────────── */}
       <div ref={gridRef} className="rounded-3" style={{ border: `1px solid ${colors.borderDefault}`, overflow: 'hidden', backgroundColor: colors.bgCard }}>
 
-        {/* Week navigation */}
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '10px 16px', borderBottom: `1px solid ${colors.borderRow}`, backgroundColor: colors.bgHeader }}>
-          <button
-            className="btn btn-sm btn-outline-secondary"
-            style={{ borderRadius: 20, padding: '2px 12px', fontSize: '0.8rem' }}
-            onClick={() => shiftWeek(-1)}
-            disabled={!canGoBack}
-          >←</button>
-          <span style={{ fontWeight: 600, fontSize: '0.88rem', color: colors.textPrimary }}>
-            {weekLabel(weekStart)}
-            <span style={{ fontWeight: 400, color: colors.slotTakenText, marginLeft: 8, fontSize: '0.82rem' }}>
-              {weekFrom.slice(8).replace(/^0/, '')}. {MONTH_SHORT[parseInt(weekFrom.split('-')[1] ?? '1', 10) - 1] ?? ''}
-              {' – '}
-              {weekTo.slice(8).replace(/^0/, '')}. {MONTH_SHORT[parseInt(weekTo.split('-')[1] ?? '1', 10) - 1] ?? ''}
-            </span>
-          </span>
-          <button
-            className="btn btn-sm btn-outline-secondary"
-            style={{ borderRadius: 20, padding: '2px 12px', fontSize: '0.8rem' }}
-            onClick={() => shiftWeek(1)}
-          >→</button>
-        </div>
+        <WeekNavigator
+          weekStart={weekStart}
+          weekFrom={weekFrom}
+          weekTo={weekTo}
+          canGoBack={canGoBack}
+          onShift={shiftWeek}
+        />
 
-        {/* Task 1+2 — date strip with smart labels and availability dots */}
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', borderBottom: `1px solid ${colors.borderRow}` }}>
-          {weekDays.map(d => {
-            const shortLabel  = dayShortLabel(d, today)
-            const num         = dayNum(d)
-            const isToday     = d === today
-            const isSelected  = d === selectedDate
-            const dotState    = availabilityByDate[d] ?? 'free'
+        <DateStrip
+          weekDays={weekDays}
+          today={today}
+          selectedDate={selectedDate}
+          availabilityByDate={availabilityByDate}
+          onSelectDate={setSelectedDate}
+        />
 
-            return (
-              <button
-                key={d}
-                onClick={() => setSelectedDate(d)}
-                style={{
-                  border: 'none', background: 'none', padding: '8px 4px',
-                  cursor: 'pointer', display: 'flex', flexDirection: 'column',
-                  alignItems: 'center', gap: 1,
-                  borderBottom: isSelected ? `2px solid ${colors.primary}` : '2px solid transparent',
-                  backgroundColor: isSelected ? colors.primaryLighter : 'transparent',
-                  transition: 'background-color 0.1s',
-                }}
-              >
-                {/* Task 1 — smart day label */}
-                <span style={{ fontSize: '0.65rem', fontWeight: 500, color: isToday ? colors.primary : colors.slotTakenText, textTransform: 'uppercase', whiteSpace: 'nowrap' }}>
-                  {shortLabel}
-                </span>
-                {/* Day number */}
-                <span style={{
-                  fontSize: '0.9rem', fontWeight: 600,
-                  color: isToday ? colors.primary : colors.textPrimary,
-                  width: 28, height: 28, display: 'flex', alignItems: 'center', justifyContent: 'center',
-                  borderRadius: '50%',
-                  backgroundColor: isToday && !isSelected ? colors.primaryLight : 'transparent',
-                }}>
-                  {num}
-                </span>
-                {/* Task 2 — availability dot */}
-                <span style={{
-                  width: 5, height: 5, borderRadius: '50%', display: 'block',
-                  backgroundColor: isSelected ? `rgba(21,101,192,0.25)` : (DOT_COLOR[dotState] ?? 'transparent'),
-                }} />
-              </button>
-            )
-          })}
-        </div>
-
-        {/* Selected date label */}
         <div style={{ padding: '8px 20px', borderBottom: `1px solid ${colors.borderRow}`, backgroundColor: colors.bgPage }}>
           <span style={{ fontSize: '0.82rem', fontWeight: 500, color: colors.textSecondary }}>
             {formatDateFull(selectedDate)}
@@ -474,7 +289,6 @@ export function LaundryPage() {
           </span>
         </div>
 
-        {/* Grid */}
         {selectedRoomId ? (
           <BookingGrid
             slots={slots ?? []}
@@ -483,6 +297,8 @@ export function LaundryPage() {
             bookingLookaheadDays={settings?.bookingLookaheadDays ?? 14}
             gridBookings={gridBookings}
             maxReached={maxReached}
+            bookingMode={bookingMode ?? BookingMode.BookEntireRoom}
+            machines={machines ?? []}
             onBook={handleBook}
             onCancel={handleCancel}
             loading={gridLoading}
@@ -493,7 +309,6 @@ export function LaundryPage() {
           </div>
         )}
 
-        {/* Task 9 — social context line */}
         {othersBookedToday > 0 && (
           <div style={{ padding: '8px 20px', borderTop: `1px solid ${colors.borderRow}` }}>
             <p style={{ fontSize: '0.76rem', color: colors.textMuted, margin: 0, textAlign: 'center' }}>
@@ -504,7 +319,6 @@ export function LaundryPage() {
           </div>
         )}
 
-        {/* Task 10 — milestone acknowledgment */}
         {milestoneCount !== null && (
           <div style={{ padding: '8px 20px', borderTop: `1px solid ${colors.borderRow}` }}>
             <p style={{ fontSize: '0.76rem', color: colors.textSecondary, margin: 0, textAlign: 'center' }}>
@@ -514,28 +328,17 @@ export function LaundryPage() {
         )}
       </div>
 
-      {/* ── Floating scroll-to-grid button ─────────────────────────────────────── */}
       {myBookings && myBookings.length > 0 && !gridVisible && (
         <button
           aria-label="Gå til booking"
           onClick={() => gridRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })}
           style={{
-            position: 'fixed',
-            bottom: 24,
-            right: 20,
-            zIndex: 900,
-            width: 38,
-            height: 38,
-            borderRadius: '50%',
-            border: '1px solid rgba(21,101,192,0.18)',
-            backgroundColor: 'rgba(255,255,255,0.92)',
-            color: colors.primary,
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            boxShadow: '0 2px 10px rgba(0,0,0,0.10)',
-            cursor: 'pointer',
-            backdropFilter: 'blur(4px)',
+            position: 'fixed', bottom: 24, right: 20, zIndex: 900,
+            width: 38, height: 38, borderRadius: '50%',
+            border: `1px solid ${colors.primaryBorder}`,
+            backgroundColor: 'rgba(255,255,255,0.92)', color: colors.primary,
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            boxShadow: '0 2px 10px rgba(0,0,0,0.10)', cursor: 'pointer', backdropFilter: 'blur(4px)',
           }}
         >
           <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
@@ -544,9 +347,8 @@ export function LaundryPage() {
         </button>
       )}
 
-      {/* ── Confirm modal ───────────────────────────────────────────────────────── */}
       {pending && (
-        <ConfirmModal
+        <ConfirmBookingModal
           pending={pending}
           error={confirmError}
           loading={creating || cancelling}
@@ -555,99 +357,5 @@ export function LaundryPage() {
         />
       )}
     </div>
-  )
-}
-
-// ── ConfirmModal ───────────────────────────────────────────────────────────────
-
-function ConfirmModal({
-  pending,
-  error,
-  loading,
-  onConfirm,
-  onClose,
-}: {
-  pending: PendingAction
-  error: string | null
-  loading: boolean
-  onConfirm: () => void
-  onClose: () => void
-}) {
-  const isBook   = pending.type === 'book'
-  const dateText = formatDateFull(pending.date)
-
-  // Task 8 — time-signal warning
-  const showTimeWarning =
-    !isBook &&
-    pending.minutesUntil !== undefined &&
-    pending.minutesUntil >= 0 &&
-    pending.minutesUntil < 240
-
-  return (
-    <>
-      <div
-        onClick={onClose}
-        style={{ position: 'fixed', inset: 0, backgroundColor: 'rgba(0,0,0,0.35)', zIndex: 1040, backdropFilter: 'blur(2px)' }}
-      />
-      <div
-        style={{
-          position: 'fixed', top: '50%', left: '50%',
-          transform: 'translate(-50%, -50%)',
-          zIndex: 1050, backgroundColor: colors.bgCard, borderRadius: 12,
-          boxShadow: '0 20px 60px rgba(0,0,0,0.18)',
-          width: 'min(92vw, 380px)', padding: '24px',
-        }}
-      >
-        <h6 style={{ fontWeight: 700, marginBottom: 4, color: colors.textPrimary }}>
-          {isBook ? 'Bekræft booking' : 'Aflys booking'}
-        </h6>
-
-        <p style={{ color: colors.textSecondary, fontSize: '0.9rem', marginBottom: showTimeWarning ? 10 : 16 }}>
-          {isBook
-            ? <>Vil du booke <strong>{pending.slotTime}</strong> den <strong>{dateText}</strong>?</>
-            : <>Vil du aflyse din booking kl. <strong>{pending.slotTime}</strong> den <strong>{dateText}</strong>?</>
-          }
-        </p>
-
-        {/* Task 8 — time-signal warning */}
-        {showTimeWarning && (
-          <p style={{
-            fontSize: '0.8rem', color: colors.warningText,
-            backgroundColor: colors.warningBg, border: `1px solid ${colors.warningBorder}`,
-            borderRadius: 6, padding: '6px 10px', marginBottom: 16,
-          }}>
-            {(pending.minutesUntil ?? 0) < 60
-              ? `Der er kun ${pending.minutesUntil} minutter til din booking starter.`
-              : `Der er ${Math.floor((pending.minutesUntil ?? 0) / 60)} time${Math.floor((pending.minutesUntil ?? 0) / 60) === 1 ? '' : 'r'} til din booking starter.`
-            }
-          </p>
-        )}
-
-        {error && (
-          <div style={{ padding: '8px 12px', backgroundColor: colors.dangerBg, borderRadius: 6, color: colors.dangerText, fontSize: '0.83rem', marginBottom: 16 }}>
-            {error}
-          </div>
-        )}
-
-        <div style={{ display: 'flex', gap: 8, justifyContent: 'flex-end' }}>
-          <button
-            className="btn btn-sm btn-outline-secondary"
-            style={{ borderRadius: 20, padding: '5px 16px' }}
-            onClick={onClose}
-            disabled={loading}
-          >
-            Luk
-          </button>
-          <button
-            className={`btn btn-sm ${isBook ? 'btn-primary' : 'btn-danger'}`}
-            style={{ borderRadius: 20, padding: '5px 20px', minWidth: 80 }}
-            onClick={onConfirm}
-            disabled={loading}
-          >
-            {loading ? <span className="spinner-border spinner-border-sm" /> : isBook ? 'Book' : 'Aflys'}
-          </button>
-        </div>
-      </div>
-    </>
   )
 }

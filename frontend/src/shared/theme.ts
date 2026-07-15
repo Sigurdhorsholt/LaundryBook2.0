@@ -95,11 +95,25 @@ export const colors = {
   slotOwnText:      '#2e7d32',
   slotTakenBg:      '#f2f4f7',
   slotTakenText:    '#8a9aaa',
+  slotFreeBg:       '#eafaf0',   // soft green for "ledig" availability badges
+  slotFreeText:     '#2e7d32',
 
   // ── Availability dots ─────────────────────────────────────────────────────────
   dotFree: '#4caf50',
   dotFew:  '#f59e0b',
   dotFull: '#e0e0e0',
+
+  // ── Footer ────────────────────────────────────────────────────────────────────
+  footerBg: '#0a1929',
+
+  // ── Booking grid — warning overrides ──────────────────────────────────────────
+  // maxReached banner uses a slightly warmer amber than the standard warning tokens
+  slotWarningBg:     '#fff3e0',
+  slotWarningText:   '#7a3f00',
+  slotWarningBorder: '#f0e0b0',
+
+  // Pending (unsaved) slot colour in the day timeline
+  slotPendingColor: '#64b5f6',
 
   // ── Sidebar ───────────────────────────────────────────────────────────────────
   sidebarText:       '#4a5568',

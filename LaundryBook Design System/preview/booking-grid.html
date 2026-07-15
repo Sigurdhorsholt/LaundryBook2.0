@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>Booking Grid</title>
+<link rel="stylesheet" href="../colors_and_type.css">
+<style>
+body{margin:0;padding:16px;background:#f8fafb;font-family:Inter,sans-serif;color:#1a2e24}
+.card{background:#fff;border:1px solid #e8ecf0;border-radius:10px;overflow:hidden}
+.row{display:flex;align-items:center;padding:10px 14px;border-bottom:1px solid #f0f4f8;font-size:.9rem}
+.row:last-child{border-bottom:none}
+.time{font-weight:600;width:120px}
+.mid{flex:1;color:#5a6a7a;font-size:.82rem}
+.btn{padding:5px 14px;border-radius:6px;font-size:.78rem;font-weight:600;border:1px solid #b8ddc9;background:#fff;color:#3d7a5c;cursor:pointer}
+.own{background:#f0fdf4}
+.own .tag{color:#2e7d32;font-weight:600;font-size:.78rem}
+.taken{background:#f2f4f7;color:#8a9aaa}
+.taken .time{color:#8a9aaa;font-weight:500}
+.hover{background:#f2faf5}
+</style></head><body>
+<div class="card">
+<div class="row"><span class="time">07:00 – 08:30</span><span class="mid">Ledigt</span><button class="btn">Book</button></div>
+<div class="row hover"><span class="time">08:30 – 10:00</span><span class="mid">Ledigt · hover</span><button class="btn">Book</button></div>
+<div class="row own"><span class="time">10:00 – 11:30</span><span class="mid tag">Din booking</span><button class="btn" style="border-color:#f8bbd0;color:#c62828">Aflys</button></div>
+<div class="row taken"><span class="time">11:30 – 13:00</span><span class="mid">Optaget</span></div>
+<div class="row"><span class="time">13:00 – 14:30</span><span class="mid">Ledigt</span><button class="btn">Book</button></div>
+</div>
+</body></html>

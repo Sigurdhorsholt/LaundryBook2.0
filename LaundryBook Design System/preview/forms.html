@@ -1,0 +1,17 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>Forms</title>
+<link rel="stylesheet" href="../colors_and_type.css">
+<style>
+body{margin:0;padding:20px;background:#fff;font-family:Inter,sans-serif;color:#1a2e24}
+.field{display:flex;flex-direction:column;gap:6px;margin-bottom:10px;max-width:340px}
+.field label{font-size:.78rem;font-weight:500;color:#5a6a7a}
+.input{font-family:inherit;font-size:.95rem;padding:8px 12px;border:1px solid #d0d8e0;border-radius:6px;background:#fff;color:#1a2e24;outline:none}
+.input.focus{border-color:#3d7a5c;box-shadow:0 0 0 3px rgba(61,122,92,.15)}
+.input.err{border-color:#c62828}
+.err-msg{color:#c62828;font-size:.78rem;margin-top:-2px}
+.help{font-size:.78rem;color:#a0adb8}
+</style></head><body>
+<div class="field"><label>Email</label><input class="input" value="sigurd@example.dk"></div>
+<div class="field"><label>Adgangskode</label><input class="input focus" type="password" value="••••••••"></div>
+<div class="field"><label>Lejl.nr.</label><input class="input err" value=""><span class="err-msg">Udfyld lejlighedsnummer.</span></div>
+</body></html>

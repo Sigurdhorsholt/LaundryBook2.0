@@ -30,6 +30,17 @@ public class AuthController(IMediator mediator, IWebHostEnvironment env) : Contr
         return Ok(new { result.UserId });
     }
 
+    [HttpPost("register")]
+    public async Task<IActionResult> Register([FromBody] RegisterRequest request, CancellationToken ct)
+    {
+        var result = await mediator.Send(
+            new RegisterCommand(request.IdToken, request.FirstName, request.LastName, request.PropertyName, request.PropertyAddress), ct);
+
+        Response.Cookies.Append("access_token", result.JwtToken, AuthCookieOptions());
+
+        return Ok(new { result.UserId, result.PropertyId });
+    }
+
     [HttpPost("logout")]
     public IActionResult Logout()
     {
@@ -80,6 +91,7 @@ public class AuthController(IMediator mediator, IWebHostEnvironment env) : Contr
 }
 
 public record LoginRequest(string IdToken);
+public record RegisterRequest(string IdToken, string FirstName, string LastName, string PropertyName, string PropertyAddress);
 public record UpdateMeRequest(string FirstName, string LastName);
 public record ForgotPasswordRequest(string Email);
 public record RedeemInviteRequest(string IdToken, string InviteToken, string? ApartmentNumber, string FirstName, string LastName);

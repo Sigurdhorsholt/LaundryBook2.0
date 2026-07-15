@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>Colors — Semantic</title>
+<link rel="stylesheet" href="../colors_and_type.css">
+<style>
+body{margin:0;padding:16px;background:#fff;font-family:Inter,sans-serif}
+.grp{margin-bottom:10px;border:1px solid #e8ecf0;border-radius:10px;overflow:hidden}
+.grp .row{display:grid;grid-template-columns:120px 1fr 1fr 1fr;align-items:stretch}
+.grp .row > div{padding:10px 12px;display:flex;flex-direction:column;justify-content:center;font-size:11px;gap:2px;border-right:1px solid #e8ecf0}
+.grp .row > div:last-child{border-right:none}
+.label{font-weight:600;color:#1a2e24;text-transform:uppercase;font-size:10.5px;letter-spacing:.08em}
+.hex{color:#8a9aaa;font-size:10px;font-variant-numeric:tabular-nums}
+</style></head><body>
+<div class="grp"><div class="row">
+  <div class="label" style="background:#f0fdf4;color:#2e7d32">Success</div>
+  <div style="background:#f0fdf4;color:#2e7d32">Text<div class="hex">#2e7d32</div></div>
+  <div style="background:#f0fdf4">Bg<div class="hex">#f0fdf4</div></div>
+  <div style="background:#c8e6c9">Border<div class="hex">#c8e6c9</div></div>
+</div></div>
+<div class="grp"><div class="row">
+  <div class="label" style="background:#fff8e1;color:#b45309">Warning</div>
+  <div style="background:#fff8e1;color:#b45309">Text<div class="hex">#b45309</div></div>
+  <div style="background:#fff8e1">Bg<div class="hex">#fff8e1</div></div>
+  <div style="background:#ffe0b2">Border<div class="hex">#ffe0b2</div></div>
+</div></div>
+<div class="grp"><div class="row">
+  <div class="label" style="background:#fce4ec;color:#c62828">Danger</div>
+  <div style="background:#fce4ec;color:#c62828">Text<div class="hex">#c62828</div></div>
+  <div style="background:#fce4ec">Bg<div class="hex">#fce4ec</div></div>
+  <div style="background:#f8bbd0">Border<div class="hex">#f8bbd0</div></div>
+</div></div>
+<div class="grp"><div class="row">
+  <div class="label" style="background:#e8f5ee;color:#3d7a5c">Info</div>
+  <div style="background:#e8f5ee;color:#3d7a5c">Text<div class="hex">primary</div></div>
+  <div style="background:#e8f5ee">Bg<div class="hex">primaryLight</div></div>
+  <div style="background:#b8ddc9">Border<div class="hex">primaryBorder</div></div>
+</div></div>
+</body></html>

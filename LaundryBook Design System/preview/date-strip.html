@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>Date Strip</title>
+<link rel="stylesheet" href="../colors_and_type.css">
+<style>
+body{margin:0;padding:18px;background:#fff;font-family:Inter,sans-serif;color:#1a2e24}
+.strip{display:flex;gap:6px}
+.day{flex:1;border:1px solid #e8ecf0;border-radius:8px;padding:8px 4px;display:flex;flex-direction:column;align-items:center;gap:2px;background:#fff;cursor:pointer;min-width:48px}
+.day.sel{background:#3d7a5c;color:#fff;border-color:#3d7a5c}
+.lbl{font-size:.72rem;color:#5a6a7a}
+.day.sel .lbl{color:rgba(255,255,255,.75)}
+.num{font-size:1rem;font-weight:700}
+.dot{width:5px;height:5px;border-radius:50%;margin-top:2px}
+</style></head><body>
+<div class="strip">
+  <div class="day sel"><span class="lbl">I dag</span><span class="num">15</span><span class="dot" style="background:rgba(255,255,255,.6)"></span></div>
+  <div class="day"><span class="lbl">I morgen</span><span class="num">16</span><span class="dot" style="background:#4caf50"></span></div>
+  <div class="day"><span class="lbl">on</span><span class="num">17</span><span class="dot" style="background:#4caf50"></span></div>
+  <div class="day"><span class="lbl">to</span><span class="num">18</span><span class="dot" style="background:#f59e0b"></span></div>
+  <div class="day"><span class="lbl">fr</span><span class="num">19</span><span class="dot" style="background:#e0e0e0"></span></div>
+  <div class="day"><span class="lbl">lø</span><span class="num">20</span><span class="dot" style="background:#4caf50"></span></div>
+  <div class="day"><span class="lbl">sø</span><span class="num">21</span><span class="dot" style="background:#4caf50"></span></div>
+</div>
+<p style="font-size:.76rem;color:#a0adb8;margin-top:14px">Green = free · Amber = 1–2 left · Grey = full / past</p>
+</body></html>

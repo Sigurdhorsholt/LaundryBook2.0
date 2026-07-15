@@ -94,8 +94,8 @@ public class LaundryRoomsController(IMediator mediator) : ControllerBase
     [HttpDelete("api/laundry-rooms/{roomId:guid}/timeslots/{templateId:guid}")]
     public async Task<IActionResult> DeactivateTimeSlot(Guid roomId, Guid templateId, CancellationToken ct)
     {
-        await mediator.Send(new DeactivateTimeSlotTemplateCommand(roomId, templateId), ct);
-        return NoContent();
+        var cancelledBookings = await mediator.Send(new DeactivateTimeSlotTemplateCommand(roomId, templateId), ct);
+        return Ok(new { cancelledBookings });
     }
 }
 

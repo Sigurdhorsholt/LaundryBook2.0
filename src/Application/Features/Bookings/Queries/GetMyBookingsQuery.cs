@@ -16,7 +16,8 @@ public record MyBookingDto(
     TimeOnly StartTime,
     TimeOnly EndTime,
     DateOnly Date,
-    bool CanCancel);
+    bool CanCancel,
+    string? MachineName);
 
 public class GetMyBookingsQueryHandler(
     IAppDbContext db,
@@ -44,6 +45,7 @@ public class GetMyBookingsQueryHandler(
                 b.Status == BookingStatus.Active)
             .Include(b => b.LaundryRoom)
             .Include(b => b.TimeSlotTemplate)
+            .Include(b => b.Machine)
             .OrderBy(b => b.Date)
             .ThenBy(b => b.TimeSlotTemplate.StartTime)
             .Select(b => new MyBookingDto(
@@ -54,7 +56,8 @@ public class GetMyBookingsQueryHandler(
                 b.TimeSlotTemplate.StartTime,
                 b.TimeSlotTemplate.EndTime,
                 b.Date,
-                (b.Date.ToDateTime(b.TimeSlotTemplate.StartTime, DateTimeKind.Unspecified) - now).TotalMinutes > cancellationWindowMinutes))
+                (b.Date.ToDateTime(b.TimeSlotTemplate.StartTime, DateTimeKind.Unspecified) - now).TotalMinutes > cancellationWindowMinutes,
+                b.Machine != null ? b.Machine.Name : null))
             .ToListAsync(cancellationToken);
     }
 }

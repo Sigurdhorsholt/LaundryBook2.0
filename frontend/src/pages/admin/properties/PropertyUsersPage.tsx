@@ -22,6 +22,7 @@ export function PropertyUsersPage() {
   const { propertyId } = useParams<{ propertyId: string }>()
   const { data: currentUser } = useMeQuery()
   const property = currentUser?.memberships.find((m) => m.propertyId === propertyId)
+  const isPendingApproval = property ? !property.propertyIsActive : false
   const { openModal } = useModal()
 
   const { data: members = [], isLoading, isError } = useGetPropertyMembersQuery(propertyId!, {
@@ -127,10 +128,7 @@ export function PropertyUsersPage() {
       onMenuToggle: () => toggleMenu(invite.inviteId),
       onMenuClose: closeMenu,
       onResend: () => handleResendInvite(invite.inviteId),
-      onDelete: () => {
-          console.log(11111)
-          handleDeleteInvite(invite.inviteId)
-      },
+      onDelete: () => handleDeleteInvite(invite.inviteId),
     }
   }
 
@@ -143,7 +141,7 @@ export function PropertyUsersPage() {
     tableContent = <Spinner />
   } else if (isError) {
     tableContent = (
-      <div className="text-center py-5" style={{ color: '#dc3545', fontSize: '0.9rem' }}>
+      <div className="text-center py-5" style={{ color: colors.dangerText, fontSize: '0.9rem' }}>
         Kunne ikke indlæse brugere.
       </div>
     )
@@ -195,6 +193,8 @@ export function PropertyUsersPage() {
             className="btn btn-primary btn-sm d-flex align-items-center gap-2"
             style={{ borderRadius: '8px', fontSize: '0.85rem' }}
             onClick={() => openModal('inviteUser', { propertyId: propertyId! })}
+            disabled={isPendingApproval}
+            title={isPendingApproval ? 'Foreningen skal godkendes, før I kan invitere beboere' : undefined}
           >
             <IconPlus size={14} strokeWidth={2.5} />
             Inviter beboer

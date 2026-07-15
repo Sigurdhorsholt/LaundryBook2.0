@@ -1,11 +1,12 @@
-import { Outlet, NavLink, useNavigate, useLocation, useMatch } from 'react-router-dom'
-import { useEffect } from 'react'
+import { Outlet, NavLink, useNavigate, useMatch } from 'react-router-dom'
 import { useMeQuery } from '../features/auth/authApi'
 import { routes } from '../app/routes'
 import { isEnabled } from '../config/features'
 import { getHighestRole } from './roleUtils'
 import { colors } from './theme'
 import { AppNavbar } from './AppNavbar'
+import { PendingApprovalBanner } from './PendingApprovalBanner'
+import { useOffcanvasAutoClose } from './utils/bootstrapUtils'
 import {
   IconUsers, IconSettings, IconBuilding, IconClock, IconCalendarCheck, IconCalendar,
   IconChevronLeft,
@@ -106,47 +107,13 @@ function SidebarSectionLabel({ children }: { children: React.ReactNode }) {
   )
 }
 
-// ── Auto-close offcanvas on route change (mobile) ─────────────────────────────
-
-function cleanupBootstrapOverlays() {
-  document.querySelectorAll('.offcanvas-backdrop').forEach(el => el.remove())
-  if (!document.querySelector('.offcanvas.show, .modal.show')) {
-    document.body.classList.remove('modal-open')
-    document.body.style.removeProperty('overflow')
-    document.body.style.removeProperty('padding-right')
-  }
-}
-
-function useSidebarAutoClose() {
-  const location = useLocation()
-  useEffect(() => {
-    const el = document.getElementById('adminSidebar')
-    if (!el || !el.classList.contains('show')) return
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const BS = (window as any).bootstrap
-    if (!BS?.Offcanvas) return
-    const instance = BS.Offcanvas.getInstance(el) ?? new BS.Offcanvas(el)
-    instance.hide()
-    // Fallback: Bootstrap sometimes fails to clean up when hide() is
-    // triggered mid-animation — remove the backdrop element and body lock.
-    const timer = setTimeout(cleanupBootstrapOverlays, 350)
-    return () => clearTimeout(timer)
-  }, [location.pathname])
-
-  // When AdminLayout unmounts (switching to resident layout), the location
-  // effect is skipped — run cleanup immediately so the sidebar backdrop and
-  // body scroll lock don't persist on the new page.
-  useEffect(() => {
-    return cleanupBootstrapOverlays
-  }, [])
-}
 
 // ── Main component ────────────────────────────────────────────────────────────
 
 export function AdminLayout() {
   const navigate = useNavigate()
   const { data: user } = useMeQuery()
-  useSidebarAutoClose()
+  useOffcanvasAutoClose('adminSidebar')
 
   // Detect if we're inside a specific property's pages
   const propertyMatch = useMatch({ path: '/admin/properties/:propertyId', end: false })
@@ -266,6 +233,7 @@ export function AdminLayout() {
           className="flex-grow-1"
           style={{ minWidth: 0, overflowX: 'hidden', backgroundColor: colors.bgPage }}
         >
+          <PendingApprovalBanner />
           <Outlet />
         </main>
 

@@ -68,6 +68,16 @@ body {
   background-color: var(--color-bg-subtle) !important;
 }
 
+/* ── Property card hover ────────────────────────────────────────────────────── */
+
+.property-card {
+  transition: box-shadow 0.15s;
+  cursor: pointer;
+}
+.property-card:hover {
+  box-shadow: 0 4px 20px rgba(13, 59, 122, 0.09);
+}
+
 /* ── BookingGrid animations ─────────────────────────────────────────────────── */
 
 @keyframes slot-booked {

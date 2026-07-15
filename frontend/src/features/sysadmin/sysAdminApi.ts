@@ -30,6 +30,15 @@ export interface SysAdminUserDetailDto {
   memberships: UserPropertyMembershipDto[]
 }
 
+export interface PendingPropertyDto {
+  id: string
+  name: string
+  address: string
+  createdAt: string
+  adminName: string | null
+  adminEmail: string | null
+}
+
 export const sysAdminApi = baseApi.injectEndpoints({
   endpoints: (build) => ({
     getAllUsers: build.query<PagedUsersResult, { search?: string; page: number; pageSize?: number }>({
@@ -60,6 +69,22 @@ export const sysAdminApi = baseApi.injectEndpoints({
         { type: 'User', id: 'LIST' },
       ],
     }),
+
+    getPendingProperties: build.query<PendingPropertyDto[], void>({
+      query: () => '/api/sysadmin/pending-properties',
+      providesTags: [{ type: 'Property', id: 'PENDING' }],
+    }),
+
+    activateProperty: build.mutation<void, string>({
+      query: (propertyId) => ({
+        url: `/api/sysadmin/properties/${propertyId}/activate`,
+        method: 'POST',
+      }),
+      invalidatesTags: [
+        { type: 'Property', id: 'PENDING' },
+        { type: 'Property', id: 'LIST' },
+      ],
+    }),
   }),
 })
 
@@ -67,4 +92,6 @@ export const {
   useGetAllUsersQuery,
   useGetUserWithMembershipsQuery,
   useAssignUserToPropertyMutation,
+  useGetPendingPropertiesQuery,
+  useActivatePropertyMutation,
 } = sysAdminApi

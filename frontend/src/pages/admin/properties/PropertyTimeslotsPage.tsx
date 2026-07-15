@@ -8,49 +8,24 @@ import {
   useCreateTimeSlotMutation,
   useDeleteTimeSlotMutation,
 } from '../../../features/laundry/laundryApi'
+import type { PendingSlot } from '../../../features/laundry/types'
+import {
+  DURATION_OPTIONS, TEMPLATES,
+  TIMELINE_START, TIMELINE_END, TIMELINE_TOTAL, TIMELINE_TICKS,
+} from '../../../features/laundry/constants'
+import { toMinutes, toHHmmss, toHHmm, formatTime } from '../../../shared/utils/dateUtils'
 import { ModalShell } from '../../../shared/modals/ModalShell'
-import { IconPlus } from '../../../shared/icons'
+import { IconPlus, IconChevronDown, IconX } from '../../../shared/icons'
 import { useMeQuery } from '../../../features/auth/authApi'
 import { PageHeader, EmptyState, Spinner } from '../../../shared/ui'
 import { colors } from '../../../shared/theme'
 
-// ── Sandbox type ───────────────────────────────────────────────────────────────
-
-interface PendingSlot {
-  id: string | null  // null = new, not yet persisted
-  startTime: string  // "HH:mm:ss"
-  endTime: string    // "HH:mm:ss"
-  key: string        // stable React key (id for saved slots, UUID for new ones)
-}
-
-// ── Time helpers ───────────────────────────────────────────────────────────────
-
-function toMinutes(time: string): number {
-  const [h, m] = time.split(':').map(Number)
-  return h * 60 + m
-}
-
-function toHHmmss(totalMinutes: number): string {
-  const h = Math.floor(totalMinutes / 60)
-  const m = totalMinutes % 60
-  return `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}:00`
-}
-
-function toHHmm(totalMinutes: number): string {
-  const h = Math.floor(totalMinutes / 60)
-  const m = totalMinutes % 60
-  return `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}`
-}
-
-function formatTime(time: string): string {
-  return time.slice(0, 5)
-}
+// ── Helpers ────────────────────────────────────────────────────────────────────
 
 function slotToLocal(s: TimeSlotTemplateDto): PendingSlot {
   return { id: s.id, startTime: s.startTime, endTime: s.endTime, key: s.id }
 }
 
-// startTime: "HH:mm", durationMinutes, maxEndTime: "HH:mm"
 function generateSlots(
   startTime: string,
   durationMinutes: number,
@@ -58,38 +33,16 @@ function generateSlots(
 ): Array<{ startTime: string; endTime: string }> {
   const slots: Array<{ startTime: string; endTime: string }> = []
   let current = toMinutes(startTime)
-  const max = toMinutes(maxEndTime)
+  const max   = toMinutes(maxEndTime)
   while (current + durationMinutes <= max) {
     slots.push({
       startTime: toHHmmss(current),
-      endTime: toHHmmss(current + durationMinutes),
+      endTime:   toHHmmss(current + durationMinutes),
     })
     current += durationMinutes
   }
   return slots
 }
-
-// ── Constants ──────────────────────────────────────────────────────────────────
-
-const DURATION_OPTIONS = [
-  { label: '30m',  minutes: 30  },
-  { label: '1t',   minutes: 60  },
-  { label: '1t30', minutes: 90  },
-  { label: '2t',   minutes: 120 },
-  { label: '2t30', minutes: 150 },
-  { label: '3t',   minutes: 180 },
-]
-
-const TEMPLATES = [
-  { label: 'Standard', sublabel: '07–22 · 1t30', from: '07:00', to: '22:00', durationMinutes: 90  },
-  { label: 'Kompakt',  sublabel: '07–22 · 1t',   from: '07:00', to: '22:00', durationMinutes: 60  },
-  { label: 'Halvdag',  sublabel: '07–13 · 2t',   from: '07:00', to: '13:00', durationMinutes: 120 },
-]
-
-const TIMELINE_START = 6 * 60
-const TIMELINE_END   = 23 * 60
-const TIMELINE_TOTAL = TIMELINE_END - TIMELINE_START
-const TIMELINE_TICKS = ['06:00', '12:00', '18:00', '23:00']
 
 // ── Page ───────────────────────────────────────────────────────────────────────
 
@@ -113,7 +66,7 @@ export function PropertyTimeslotsPage() {
   if (isError) {
     return (
       <div className="p-4 p-lg-5">
-        <p style={{ color: '#dc3545', fontSize: '0.9rem' }}>
+        <p style={{ color: colors.dangerText, fontSize: '0.9rem' }}>
           Kunne ikke indlæse lokaler. Prøv at genindlæse siden.
         </p>
       </div>
@@ -184,6 +137,7 @@ function RoomCard({
     if (!isExpanded) {
       setSynced(false)
       setAfterSave(false)
+      setCancelledCount(null)
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isExpanded, isLoading, synced])
@@ -202,14 +156,16 @@ function RoomCard({
   const [genTo, setGenTo] = useState('22:00')
   const [genDuration, setGenDuration] = useState(90)
 
-  // ── Modal ──────────────────────────────────────────────────────────────────
+  // ── Modals ─────────────────────────────────────────────────────────────────
   const [showAddModal, setShowAddModal] = useState(false)
+  const [confirmDelete, setConfirmDelete] = useState<TimeSlotTemplateDto[] | null>(null)
 
   // ── Save ───────────────────────────────────────────────────────────────────
   const [createTimeSlot] = useCreateTimeSlotMutation()
   const [deleteTimeSlot] = useDeleteTimeSlotMutation()
   const [saving, setSaving] = useState(false)
   const [saveError, setSaveError] = useState<string | null>(null)
+  const [cancelledCount, setCancelledCount] = useState<number | null>(null)
 
   // ── Derived ────────────────────────────────────────────────────────────────
   const isDirty = useMemo(() => {
@@ -251,21 +207,31 @@ function RoomCard({
   function handleDiscard() {
     setPendingSlots(apiSlots.map(slotToLocal))
     setSaveError(null)
+    setCancelledCount(null)
   }
 
-  async function handleSave() {
+  function handleSave() {
     const toDelete = apiSlots.filter((a) => !pendingSlots.some((p) => p.id === a.id))
+    if (toDelete.length > 0) {
+      setConfirmDelete(toDelete)
+    } else {
+      void runSave([])
+    }
+  }
+
+  async function runSave(toDelete: TimeSlotTemplateDto[]) {
     const toCreate = pendingSlots.filter((p) => p.id === null)
 
     setSaving(true)
     setSaveError(null)
+    setCancelledCount(null)
+    setConfirmDelete(null)
 
     try {
-      // TODO: When the Bookings API is implemented, check here whether any toDelete slots
-      // have active future bookings. If so, show a conflict warning modal before proceeding.
-
+      let totalCancelled = 0
       for (const slot of toDelete) {
-        await deleteTimeSlot({ roomId: room.id, templateId: slot.id }).unwrap()
+        const result = await deleteTimeSlot({ roomId: room.id, templateId: slot.id }).unwrap()
+        totalCancelled += result.cancelledBookings
       }
       for (const slot of toCreate) {
         await createTimeSlot({
@@ -274,7 +240,7 @@ function RoomCard({
           endTime: slot.endTime,
         }).unwrap()
       }
-      // Signal that we need to re-sync once RTK Query finishes its background refetch
+      if (totalCancelled > 0) setCancelledCount(totalCancelled)
       setAfterSave(true)
     } catch {
       setSaveError('Ikke alle ændringer kunne gemmes. Prøv igen.')
@@ -318,8 +284,8 @@ function RoomCard({
               </div>
             )}
           </div>
-          <span style={{ fontSize: '0.75rem', color: colors.textMuted, flexShrink: 0, paddingTop: 3 }}>
-            {isExpanded ? '▲' : '▼'}
+          <span style={{ flexShrink: 0, display: 'flex', transition: 'transform 0.2s', transform: isExpanded ? 'rotate(180deg)' : 'rotate(0deg)' }}>
+            <IconChevronDown size={16} color={colors.textMuted} />
           </span>
         </div>
       </button>
@@ -369,12 +335,13 @@ function RoomCard({
                 </button>
               </div>
 
-              {/* Save bar — shown when there are pending changes or a save error */}
-              {(isDirty || saveError != null) && (
+              {/* Save bar — shown when there are pending changes, a save error, or a post-save notice */}
+              {(isDirty || saveError != null || cancelledCount != null) && (
                 <SaveBar
                   isDirty={isDirty}
                   saving={saving}
                   saveError={saveError}
+                  cancelledCount={cancelledCount}
                   onSave={handleSave}
                   onDiscard={handleDiscard}
                 />
@@ -389,6 +356,14 @@ function RoomCard({
           roomName={room.name}
           onAdd={handleAddSlot}
           onClose={() => setShowAddModal(false)}
+        />
+      )}
+
+      {confirmDelete != null && (
+        <ConfirmSlotDeleteModal
+          slots={confirmDelete}
+          onConfirm={() => runSave(confirmDelete)}
+          onCancel={() => setConfirmDelete(null)}
         />
       )}
     </div>
@@ -465,7 +440,7 @@ function DayTimeline({ pendingSlots }: { pendingSlots: PendingSlot[] }) {
           const left  = ((start - TIMELINE_START) / TIMELINE_TOTAL) * 100
           const width = ((end   - start)           / TIMELINE_TOTAL) * 100
           // Unsaved slots (id=null) render slightly lighter so the admin sees they're pending
-          const color = slot.id !== null ? colors.primary : '#64b5f6'
+          const color = slot.id !== null ? colors.primary : colors.slotPendingColor
           return (
             <div
               key={slot.key}
@@ -666,13 +641,13 @@ function PendingSlotRow({
       </td>
       <td className="px-4 py-2 align-middle" style={{ textAlign: 'right' }}>
         <button
-          className="btn btn-sm"
-          style={{ fontSize: '0.78rem', color: colors.textMuted, lineHeight: 1 }}
+          className="btn btn-sm d-flex align-items-center"
+          style={{ color: colors.textMuted }}
           onClick={onDelete}
           aria-label="Fjern"
           title="Fjern fra listen"
         >
-          ✕
+          <IconX size={14} strokeWidth={2.5} />
         </button>
       </td>
     </tr>
@@ -685,12 +660,14 @@ function SaveBar({
   isDirty,
   saving,
   saveError,
+  cancelledCount,
   onSave,
   onDiscard,
 }: {
   isDirty: boolean
   saving: boolean
   saveError: string | null
+  cancelledCount: number | null
   onSave: () => void
   onDiscard: () => void
 }) {
@@ -705,7 +682,11 @@ function SaveBar({
       <div className="d-flex align-items-center justify-content-between gap-3 flex-wrap">
         <span style={{ fontSize: '0.82rem' }}>
           {saveError != null ? (
-            <span style={{ color: '#dc3545' }}>{saveError}</span>
+            <span style={{ color: colors.dangerText }}>{saveError}</span>
+          ) : cancelledCount != null ? (
+            <span style={{ color: colors.primary, fontWeight: 500 }}>
+              Gemt · {cancelledCount} aktiv{cancelledCount !== 1 ? 'e' : ''} booking{cancelledCount !== 1 ? 'er' : ''} annulleret automatisk
+            </span>
           ) : (
             <span style={{ color: colors.primary, fontWeight: 500 }}>Ugemte ændringer</span>
           )}
@@ -791,7 +772,7 @@ function AddSlotModal({
             {endTimeDisplay != null ? (
               <strong style={{ color: colors.textPrimary }}>{endTimeDisplay}</strong>
             ) : (
-              <span style={{ color: '#dc3545' }}>Overskrider midnat</span>
+              <span style={{ color: colors.dangerText }}>Overskrider midnat</span>
             )}
           </span>
         </div>
@@ -809,6 +790,42 @@ function AddSlotModal({
           </button>
         </div>
       </form>
+    </ModalShell>
+  )
+}
+
+// ── ConfirmSlotDeleteModal ─────────────────────────────────────────────────────
+
+function ConfirmSlotDeleteModal({
+  slots,
+  onConfirm,
+  onCancel,
+}: {
+  slots: TimeSlotTemplateDto[]
+  onConfirm: () => void
+  onCancel: () => void
+}) {
+  return (
+    <ModalShell title="Fjern tidspladser?" onClose={onCancel} size="sm">
+      <p style={{ fontSize: '0.92rem', color: colors.textSecondary, lineHeight: 1.6 }}>
+        Du er ved at fjerne {slots.length} tidsplads{slots.length !== 1 ? 'er' : ''}:
+      </p>
+      <ul style={{ fontSize: '0.88rem', color: colors.textPrimary, marginBottom: 16 }}>
+        {slots.map((s) => (
+          <li key={s.id}>{formatTime(s.startTime)} – {formatTime(s.endTime)}</li>
+        ))}
+      </ul>
+      <p style={{ fontSize: '0.88rem', color: colors.dangerText, fontWeight: 500, marginBottom: 20 }}>
+        Alle fremtidige aktive bookinger på disse tidspladser annulleres automatisk.
+      </p>
+      <div className="d-flex justify-content-end gap-2">
+        <button className="btn btn-outline-secondary" onClick={onCancel}>
+          Annuller
+        </button>
+        <button className="btn btn-danger fw-semibold" onClick={onConfirm}>
+          Fjern og annullér bookinger
+        </button>
+      </div>
     </ModalShell>
   )
 }
@@ -843,7 +860,7 @@ function HalfHourPicker({
       style={{
         display: 'inline-flex',
         alignItems: 'center',
-        border: '1.5px solid #ced4da',
+        border: `1.5px solid ${colors.borderStrong}`,
         borderRadius: 8,
         backgroundColor: colors.bgCard,
         padding: '5px 8px',

@@ -2,7 +2,8 @@ import { useNavigate } from 'react-router-dom'
 import { useMeQuery, UserRole } from '../../features/auth/authApi'
 import { getHighestRole } from '../../shared/roleUtils'
 import { ROLE_LABEL } from '../../shared/constants'
-import { IconBuilding, IconChevronRight } from '../../shared/icons'
+import { PropertyCard } from '../../features/properties/PropertyCard'
+import { PageHeader } from '../../shared/ui'
 import { colors } from '../../shared/theme'
 
 export function AdminDashboardPage() {
@@ -14,23 +15,13 @@ export function AdminDashboardPage() {
   return (
     <div className="p-4 p-lg-5">
 
-      {/* Header */}
-      <div className="mb-5">
-        <h1 className="fw-bold mb-1" style={{ fontSize: '1.75rem', color: colors.textPrimary }}>Oversigt</h1>
-        {user && (
-          <p className="mb-0" style={{ color: colors.textSecondary }}>
-            Velkommen tilbage, <strong>{user.firstName || user.email}</strong>
-            {role !== null && (
-              <span
-                className="ms-2 badge"
-                style={{ backgroundColor: colors.primaryLight, color: colors.primary, fontWeight: 500, fontSize: '0.78rem' }}
-              >
-                {ROLE_LABEL[role]}
-              </span>
-            )}
-          </p>
-        )}
-      </div>
+      <PageHeader
+        title="Oversigt"
+        description={user
+          ? `Velkommen tilbage, ${user.firstName || user.email}${role !== null ? ` · ${ROLE_LABEL[role]}` : ''}`
+          : undefined
+        }
+      />
 
       {/* Stats */}
       <div className="row g-4 mb-5">
@@ -67,29 +58,7 @@ export function AdminDashboardPage() {
           <div className="row g-3">
             {adminMemberships.slice(0, 6).map((m) => (
               <div key={m.propertyId} className="col-12 col-md-6 col-xl-4">
-                <div
-                  className="bg-white rounded-3 p-3 d-flex align-items-center gap-3"
-                  style={{ border: `1px solid ${colors.borderDefault}`, cursor: 'pointer', transition: 'box-shadow 0.15s' }}
-                  onClick={() => navigate(`/admin/properties/${m.propertyId}/users`)}
-                  onMouseEnter={(e) => (e.currentTarget.style.boxShadow = '0 4px 16px rgba(13,59,122,0.09)')}
-                  onMouseLeave={(e) => (e.currentTarget.style.boxShadow = 'none')}
-                >
-                  <div
-                    className="rounded-2 d-flex align-items-center justify-content-center flex-shrink-0"
-                    style={{ width: 40, height: 40, backgroundColor: colors.primaryLight }}
-                  >
-                    <IconBuilding size={18} color={colors.primary} />
-                  </div>
-                  <div style={{ minWidth: 0, flex: 1 }}>
-                    <p className="fw-semibold mb-0 text-truncate" style={{ fontSize: '0.9rem', color: colors.textPrimary }}>
-                      {m.propertyName}
-                    </p>
-                    <p className="mb-0" style={{ fontSize: '0.78rem', color: colors.textSecondary }}>
-                      {ROLE_LABEL[m.role]}{m.apartmentNumber ? ` · Lejl. ${m.apartmentNumber}` : ''}
-                    </p>
-                  </div>
-                  <span className="flex-shrink-0"><IconChevronRight size={16} color={colors.textMuted} /></span>
-                </div>
+                <PropertyCard membership={m} variant="compact" />
               </div>
             ))}
           </div>

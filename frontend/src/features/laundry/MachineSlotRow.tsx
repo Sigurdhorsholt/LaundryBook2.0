@@ -1,0 +1,129 @@
+import { useState } from 'react'
+import { MachineType, type LaundryMachineDto, type TimeSlotTemplateDto } from './laundryApi'
+import type { GridBooking } from './types'
+import { formatTime } from '../../shared/utils/dateUtils'
+import { colors } from '../../shared/theme'
+import { badge } from './slotBadge'
+import { MACHINE_TYPE_LABEL } from './constants'
+import { IconClock, IconChevronDown, IconWasher, IconDryer } from '../../shared/icons'
+
+interface Props {
+  slot: TimeSlotTemplateDto
+  machines: LaundryMachineDto[]
+  bookings: GridBooking[]       // bookings for this slot (one per booked machine)
+  past: boolean
+  locked: boolean
+  maxReached: boolean
+  onBook: (machineId: string) => void
+  onCancel: (machineId: string) => void
+}
+
+function MachineIcon({ type, color }: { type: MachineType; color: string }) {
+  return type === MachineType.Dryer
+    ? <IconDryer size={18} color={color} strokeWidth={1.8} />
+    : <IconWasher size={18} color={color} strokeWidth={1.8} />
+}
+
+export function MachineSlotRow({ slot, machines, bookings, past, locked, maxReached, onBook, onCancel }: Props) {
+  const [expanded, setExpanded] = useState(false)
+
+  const timeLabel = `${formatTime(slot.startTime)} – ${formatTime(slot.endTime)}`
+  const dimmed = past || locked
+
+  const bookingFor = (machineId: string) => bookings.find((b) => b.machineId === machineId) ?? null
+  const freeCount = machines.filter((m) => bookingFor(m.id) === null).length
+  const ownCount = bookings.filter((b) => b.isOwn).length
+  const canExpand = !past && !locked
+
+  return (
+    <div style={{ borderBottom: `1px solid ${colors.borderRow}` }}>
+      <div
+        onClick={canExpand ? () => setExpanded((x) => !x) : undefined}
+        style={{
+          display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+          gap: 12, padding: '11px 20px', backgroundColor: colors.bgCard,
+          opacity: dimmed ? 0.45 : 1, cursor: canExpand ? 'pointer' : 'default', userSelect: 'none',
+        }}
+      >
+        <span className="d-flex align-items-center" style={{ gap: 8 }}>
+          <IconClock size={15} color={colors.textMuted} strokeWidth={1.8} />
+          <span style={{ fontSize: '0.9rem', fontWeight: 600, color: colors.textPrimary }}>{timeLabel}</span>
+        </span>
+
+        <span className="d-flex align-items-center" style={{ gap: 8 }}>
+          {past || locked ? (
+            <span style={badge(colors.bgSubtle, colors.textMuted)}>{past ? 'Passeret' : 'Ikke tilgængeligt'}</span>
+          ) : (
+            <>
+              {ownCount > 0 && <span style={badge(colors.successBg, colors.successText)}>Min booking</span>}
+              <span style={badge(freeCount === 0 ? colors.slotTakenBg : colors.slotFreeBg, freeCount === 0 ? colors.slotTakenText : colors.slotFreeText)}>
+                {freeCount === 0 ? 'Fuldt booket' : `${freeCount} af ${machines.length} ledige`}
+              </span>
+              <span style={{ display: 'inline-flex', transform: expanded ? 'rotate(180deg)' : 'none', transition: 'transform 0.15s' }}>
+                <IconChevronDown size={14} color={colors.textMuted} strokeWidth={1.8} />
+              </span>
+            </>
+          )}
+        </span>
+      </div>
+
+      {expanded && canExpand && (
+        <div style={{ backgroundColor: colors.bgPage, padding: '8px 12px 10px' }}>
+          {machines.map((machine) => {
+            const booking = bookingFor(machine.id)
+            const blocked = maxReached && booking === null
+            const chipBg = booking?.isOwn ? colors.successBg : booking ? colors.slotTakenBg : colors.primaryLight
+            const chipColor = booking?.isOwn ? colors.successText : booking ? colors.slotTakenText : colors.primary
+
+            let action: React.ReactNode
+            if (booking?.isOwn) {
+              action = (
+                <span className="d-flex align-items-center" style={{ gap: 8 }}>
+                  <span style={badge(colors.successBg, colors.successText)}>Min booking</span>
+                  {booking.canCancel ? (
+                    <button className="btn btn-sm btn-outline-secondary" style={{ fontSize: '0.75rem', padding: '2px 12px', borderRadius: 20 }} onClick={() => onCancel(machine.id)}>Aflys</button>
+                  ) : (
+                    <span style={{ fontSize: '0.72rem', color: colors.textMuted }}>Frist udløbet</span>
+                  )}
+                </span>
+              )
+            } else if (booking) {
+              action = <span style={badge(colors.slotTakenBg, colors.slotTakenText)}>{booking.label}</span>
+            } else if (blocked) {
+              action = <span style={badge(colors.slotWarningBg, colors.slotWarningText)}>Grænse nået</span>
+            } else {
+              action = (
+                <button className="btn btn-sm btn-primary fw-semibold" style={{ fontSize: '0.78rem', borderRadius: 20, padding: '4px 18px' }} onClick={() => onBook(machine.id)}>Book</button>
+              )
+            }
+
+            return (
+              <div
+                key={machine.id}
+                className="d-flex align-items-center justify-content-between"
+                style={{
+                  gap: 12, padding: '9px 12px', marginTop: 6, borderRadius: 10,
+                  backgroundColor: colors.bgCard, border: `1px solid ${colors.borderDefault}`,
+                }}
+              >
+                <span className="d-flex align-items-center" style={{ gap: 10, minWidth: 0 }}>
+                  <span style={{
+                    display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
+                    width: 34, height: 34, borderRadius: 9, backgroundColor: chipBg, flexShrink: 0,
+                  }}>
+                    <MachineIcon type={machine.machineType} color={chipColor} />
+                  </span>
+                  <span style={{ display: 'flex', flexDirection: 'column', minWidth: 0 }}>
+                    <span style={{ fontSize: '0.88rem', fontWeight: 600, color: colors.textPrimary, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{machine.name}</span>
+                    <span style={{ fontSize: '0.72rem', color: colors.textMuted }}>{MACHINE_TYPE_LABEL[machine.machineType]}</span>
+                  </span>
+                </span>
+                {action}
+              </div>
+            )
+          })}
+        </div>
+      )}
+    </div>
+  )
+}

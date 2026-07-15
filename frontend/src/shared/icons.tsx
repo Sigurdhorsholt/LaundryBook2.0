@@ -126,9 +126,34 @@ export function IconShield({ size = defaults.size, color = defaults.color, strok
   </>)
 }
 
+export function IconX({ size = defaults.size, color = defaults.color, strokeWidth = defaults.strokeWidth }: IconProps) {
+  return base(size, color, strokeWidth, <>
+    <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+  </>)
+}
+
 export function IconBrand({ size = defaults.size, color = '#1565c0', strokeWidth = defaults.strokeWidth }: IconProps) {
   return base(size, color, strokeWidth, <>
     <circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="4"/>
     <path d="M2 12h3M19 12h3M12 2v3M12 19v3"/>
+  </>)
+}
+
+export function IconWasher({ size = defaults.size, color = defaults.color, strokeWidth = defaults.strokeWidth }: IconProps) {
+  return base(size, color, strokeWidth, <>
+    <rect x="4" y="2" width="16" height="20" rx="2"/>
+    <line x1="4" y1="6" x2="20" y2="6"/>
+    <circle cx="12" cy="14" r="4"/>
+    <circle cx="16" cy="4" r="0.6" fill={color}/>
+  </>)
+}
+
+export function IconDryer({ size = defaults.size, color = defaults.color, strokeWidth = defaults.strokeWidth }: IconProps) {
+  return base(size, color, strokeWidth, <>
+    <rect x="4" y="2" width="16" height="20" rx="2"/>
+    <line x1="4" y1="6" x2="20" y2="6"/>
+    <circle cx="12" cy="14" r="4"/>
+    <path d="M10.5 14a1.5 1.5 0 0 1 3 0 1.5 1.5 0 0 0 3 0" transform="translate(-3 0)"/>
+    <circle cx="16" cy="4" r="0.6" fill={color}/>
   </>)
 }

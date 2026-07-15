@@ -4,6 +4,9 @@ import { UserRole } from '../auth/authApi'
 import { useCreateInviteTokenMutation } from './usersApi'
 import { ROLE_OPTIONS } from '../../shared/constants'
 import { colors } from '../../shared/theme'
+import { extractErrorMessage } from '../../shared/utils/errorUtils'
+import { FormLabel } from '../../shared/ui/FormLabel'
+import { SegmentedControl } from '../../shared/ui/SegmentedControl'
 
 type QrMode = 'specific' | 'mass'
 
@@ -44,7 +47,7 @@ export function QrInviteTab({ propertyId, roleOptions = ROLE_OPTIONS }: QrInvite
       }).unwrap()
       setToken(result.token)
     } catch (err: unknown) {
-      setError(err instanceof Error ? err.message : 'Noget gik galt. Prøv igen.')
+      setError(extractErrorMessage(err))
     }
   }
 
@@ -89,35 +92,21 @@ export function QrInviteTab({ propertyId, roleOptions = ROLE_OPTIONS }: QrInvite
 
   return (
     <form onSubmit={handleGenerate} style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
-      <div className="d-flex gap-2">
-        {(['specific', 'mass'] as QrMode[]).map((m) => (
-          <button
-            key={m}
-            type="button"
-            className="btn btn-sm"
-            style={{
-              flex: 1,
-              borderRadius: '8px',
-              fontSize: '0.82rem',
-              backgroundColor: mode === m ? colors.textPrimary : 'transparent',
-              color: mode === m ? '#fff' : colors.textSecondary,
-              border: mode === m ? `1px solid ${colors.textPrimary}` : `1px solid ${colors.borderDefault}`,
-              fontWeight: mode === m ? 600 : 400,
-            }}
-            onClick={() => handleModeChange(m)}
-          >
-            {m === 'specific' ? 'Specifik beboer' : 'Masse-invitation'}
-          </button>
-        ))}
-      </div>
+      <SegmentedControl
+        segments={[
+          { value: 'specific' as QrMode, label: 'Specifik beboer' },
+          { value: 'mass' as QrMode, label: 'Masse-invitation' },
+        ]}
+        value={mode}
+        onChange={handleModeChange}
+        variant="dark"
+      />
 
       <p style={{ color: colors.textSecondary, fontSize: '0.85rem', margin: 0 }}>{modeDescription}</p>
 
       <div className="d-flex gap-3">
         <div style={{ flex: 1 }}>
-          <label className="form-label" style={{ fontSize: '0.85rem', fontWeight: 500, color: colors.textPrimary }}>
-            Rolle
-          </label>
+          <FormLabel>Rolle</FormLabel>
           <select
             className="form-select"
             value={role}
@@ -131,9 +120,7 @@ export function QrInviteTab({ propertyId, roleOptions = ROLE_OPTIONS }: QrInvite
 
         {mode === 'specific' && (
           <div style={{ flex: 1 }}>
-            <label className="form-label" style={{ fontSize: '0.85rem', fontWeight: 500, color: colors.textPrimary }}>
-              Lejlighed <span style={{ color: colors.textMuted, fontWeight: 400 }}>(valgfri)</span>
-            </label>
+            <FormLabel hint="(valgfri)">Lejlighed</FormLabel>
             <input
               className="form-control"
               type="text"
@@ -146,7 +133,7 @@ export function QrInviteTab({ propertyId, roleOptions = ROLE_OPTIONS }: QrInvite
         )}
       </div>
 
-      {error && <p style={{ color: '#dc3545', margin: 0, fontSize: 14 }}>{error}</p>}
+      {error && <p style={{ color: colors.dangerText, margin: 0, fontSize: '0.85rem' }}>{error}</p>}
 
       <button className="btn btn-primary fw-semibold" type="submit" disabled={isLoading}>
         {submitLabel}

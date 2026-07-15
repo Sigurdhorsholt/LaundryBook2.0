@@ -4,6 +4,7 @@ import { useUpdateMemberMutation, type PropertyMemberDto } from './usersApi'
 import { ROLE_OPTIONS } from '../../shared/constants'
 import type {UserRole} from "../auth/authApi.ts";
 import { colors } from '../../shared/theme'
+import { FormLabel } from '../../shared/ui/FormLabel'
 
 interface EditMemberModalProps {
   propertyId: string
@@ -41,9 +42,7 @@ export function EditMemberModal({ propertyId, member, onClose }: EditMemberModal
     <ModalShell title={`Rediger — ${displayName}`} onClose={onClose} size="sm">
       <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
         <div>
-          <label className="form-label" style={{ fontSize: '0.85rem', fontWeight: 500, color: colors.textPrimary }}>
-            Rolle
-          </label>
+          <FormLabel>Rolle</FormLabel>
           <select
             className="form-select"
             value={role}
@@ -56,9 +55,7 @@ export function EditMemberModal({ propertyId, member, onClose }: EditMemberModal
         </div>
 
         <div>
-          <label className="form-label" style={{ fontSize: '0.85rem', fontWeight: 500, color: colors.textPrimary }}>
-            Lejlighed <span style={{ color: colors.textMuted, fontWeight: 400 }}>(valgfri)</span>
-          </label>
+          <FormLabel hint="(valgfri)">Lejlighed</FormLabel>
           <input
             className="form-control"
             type="text"
@@ -69,7 +66,7 @@ export function EditMemberModal({ propertyId, member, onClose }: EditMemberModal
           />
         </div>
 
-        {error && <p style={{ color: '#dc3545', margin: 0, fontSize: 14 }}>{error}</p>}
+        {error && <p style={{ color: colors.dangerText, margin: 0, fontSize: '0.85rem' }}>{error}</p>}
 
         <div className="d-flex gap-2 justify-content-end">
           <button type="button" className="btn btn-sm btn-outline-secondary" onClick={onClose}>

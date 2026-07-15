@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>Navbar</title>
+<link rel="stylesheet" href="../colors_and_type.css">
+<style>
+body{margin:0;padding:20px;background:#f8fafb;font-family:Inter,sans-serif;color:#1a2e24}
+.nav{background:rgba(255,255,255,.96);backdrop-filter:blur(10px);border-bottom:1px solid #e8ecf0;height:56px;display:flex;align-items:center;padding:0 16px;border-radius:10px 10px 0 0}
+.brand{display:flex;align-items:center;gap:8px;font-weight:700;font-size:1.05rem;letter-spacing:-.2px}
+.adm{margin-left:6px;background:#e8f5ee;color:#3d7a5c;font-size:.7rem;font-weight:600;padding:2px 8px;border-radius:4px}
+.spacer{flex:1}
+.link{padding:6px 12px;border-radius:7px;font-size:.85rem;color:#5a6a7a;text-decoration:none}
+.link.active{background:#e8f5ee;color:#3d7a5c;font-weight:600}
+.out{padding:6px 14px;border:1px solid #d0d8e0;border-radius:7px;font-size:.85rem;color:#5a6a7a;margin-left:6px;background:#fff;cursor:pointer}
+.body{height:40px}
+</style></head><body>
+<div class="nav">
+  <div class="brand">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#3d7a5c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="4"/><path d="M2 12h3M19 12h3M12 2v3M12 19v3"/></svg>
+    LaundryBook<span class="adm">Admin</span>
+  </div>
+  <div class="spacer"></div>
+  <a class="link active">Admin</a>
+  <a class="link">Vaskebooking</a>
+  <a class="link">Min side</a>
+  <button class="out">Log ud</button>
+</div>
+</body></html>

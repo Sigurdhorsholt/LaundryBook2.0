@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>Buttons</title>
+<link rel="stylesheet" href="../colors_and_type.css">
+<style>
+body{margin:0;padding:20px;background:#fff;font-family:Inter,sans-serif}
+.row{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:12px}
+button{font-family:inherit;cursor:pointer;border:none;font-weight:600}
+.primary{background:#3d7a5c;color:#fff;border-radius:7px;padding:8px 18px;font-size:.9rem}
+.secondary{background:#fff;color:#5a6a7a;border:1px solid #d0d8e0;border-radius:7px;padding:8px 18px;font-size:.9rem;font-weight:500}
+.link{background:none;color:#3d7a5c;padding:0;font-size:.85rem;font-weight:500;text-decoration:underline;text-underline-offset:3px}
+.cta{background:#fff;color:#0d3b7a;border-radius:10px;padding:12px 32px;font-size:1.05rem;font-weight:700;box-shadow:0 4px 24px rgba(0,0,0,.22)}
+.ghost{background:transparent;color:rgba(255,255,255,.85);border:1px solid rgba(255,255,255,.35);border-radius:10px;padding:12px 32px;font-size:1.05rem;font-weight:600}
+.danger{background:#fff;color:#c62828;border:1px solid #c62828;border-radius:7px;padding:6px 14px;font-size:.78rem;font-weight:500}
+.hero{background:linear-gradient(150deg,#0a1929 0%,#0d3b7a 55%,#1565c0 100%);padding:18px;border-radius:12px;margin-top:4px}
+.small-label{font-size:10.5px;color:#a0adb8;text-transform:uppercase;letter-spacing:.08em;font-weight:600;margin-bottom:6px;width:100%}
+</style></head><body>
+<div class="row"><div class="small-label">In-app primary / secondary</div>
+<button class="primary">Log ind</button>
+<button class="secondary">Annuller</button>
+<button class="danger">Aflys</button>
+<button class="link">Glemt adgangskode?</button>
+</div>
+<div class="hero"><div class="row" style="margin-bottom:0">
+<button class="cta">Log ind</button>
+<button class="ghost">Læs mere</button>
+</div></div>
+</body></html>

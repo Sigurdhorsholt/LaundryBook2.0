@@ -101,7 +101,7 @@ export function PropertySettingsPage() {
   if (isError || !property) {
     return (
       <div className="p-4 p-lg-5">
-        <p style={{ color: '#dc3545', fontSize: '0.9rem' }}>
+        <p style={{ color: colors.dangerText, fontSize: '0.9rem' }}>
           Kunne ikke indlæse indstillinger. Prøv at genindlæse siden.
         </p>
       </div>
@@ -184,7 +184,7 @@ export function PropertySettingsPage() {
             <span style={{ fontSize: '0.85rem', color: colors.textSecondary }}>dage</span>
           </div>
           {lookaheadError && (
-            <p className="mt-1 mb-0" style={{ fontSize: '0.8rem', color: '#dc3545' }}>
+            <p className="mt-1 mb-0" style={{ fontSize: '0.8rem', color: colors.dangerText }}>
               Skal være mellem 1 og {MAX_LOOKAHEAD_DAYS} dage.
             </p>
           )}
@@ -212,7 +212,7 @@ export function PropertySettingsPage() {
             )}
           </div>
           {cancellationError && (
-            <p className="mt-1 mb-0" style={{ fontSize: '0.8rem', color: '#dc3545' }}>
+            <p className="mt-1 mb-0" style={{ fontSize: '0.8rem', color: colors.dangerText }}>
               Skal være mellem 0 og {MAX_CANCELLATION_HOURS} timer.
             </p>
           )}
@@ -236,7 +236,7 @@ export function PropertySettingsPage() {
             <span style={{ fontSize: '0.85rem', color: colors.textSecondary }}>bookinger</span>
           </div>
           {maxBookingsError && (
-            <p className="mt-1 mb-0" style={{ fontSize: '0.8rem', color: '#dc3545' }}>
+            <p className="mt-1 mb-0" style={{ fontSize: '0.8rem', color: colors.dangerText }}>
               Skal være mellem 1 og {MAX_CONCURRENT_BOOKINGS}.
             </p>
           )}
@@ -267,7 +267,7 @@ export function PropertySettingsPage() {
             <span style={{ fontSize: '0.85rem', color: colors.successText, fontWeight: 500 }}>Gemt ✓</span>
           )}
           {saveError && (
-            <span style={{ fontSize: '0.85rem', color: '#dc3545' }}>{saveError}</span>
+            <span style={{ fontSize: '0.85rem', color: colors.dangerText }}>{saveError}</span>
           )}
         </div>
       </form>

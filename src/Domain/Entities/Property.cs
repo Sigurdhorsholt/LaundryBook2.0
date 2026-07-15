@@ -7,6 +7,10 @@ public class Property : BaseEntity
     public string Name { get; set; } = string.Empty;
     public string Address { get; set; } = string.Empty;
 
+    // Self-service signups create the property inactive; a SysAdmin activates it.
+    // SysAdmin-created properties default to active.
+    public bool IsActive { get; set; } = true;
+
     public ComplexSettings? Settings { get; set; }
     public ICollection<UserComplexMembership> Memberships { get; set; } = [];
     public ICollection<LaundryRoom> LaundryRooms { get; set; } = [];

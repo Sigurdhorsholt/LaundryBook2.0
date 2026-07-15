@@ -1,6 +1,7 @@
 import { colors } from '../../shared/theme'
 import { IconShield } from '../../shared/icons'
 import { PropertiesList } from '../../features/properties/PropertiesList'
+import { PendingPropertiesList } from '../../features/sysadmin/PendingPropertiesList'
 import { UserTable } from '../../features/sysadmin/UserTable'
 
 export function SysAdminPage() {
@@ -19,6 +20,13 @@ export function SysAdminPage() {
             Kun synlig for systemadministratorer
           </p>
         </div>
+      </div>
+
+      <div
+        className="rounded-3 p-4 mb-4"
+        style={{ border: `1px solid ${colors.borderDefault}`, backgroundColor: colors.bgCard }}
+      >
+        <PendingPropertiesList />
       </div>
 
       <div

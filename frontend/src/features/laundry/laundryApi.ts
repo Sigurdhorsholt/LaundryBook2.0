@@ -35,6 +35,8 @@ export interface BookingDto {
   isOwn: boolean
   label: string         // "Min booking" | "Anna Hansen" | "Lejl. 2B" | "Optaget"
   canCancel: boolean
+  machineId: string | null
+  machineName: string | null
 }
 
 export interface MyBookingDto {
@@ -46,6 +48,32 @@ export interface MyBookingDto {
   endTime: string       // "HH:mm:ss"
   date: string          // "YYYY-MM-DD"
   canCancel: boolean
+  machineName: string | null
+}
+
+export interface AdminBookingDto {
+  id: string
+  roomId: string
+  roomName: string
+  timeSlotTemplateId: string
+  date: string          // "YYYY-MM-DD"
+  startTime: string     // "HH:mm:ss"
+  endTime: string       // "HH:mm:ss"
+  userId: string
+  residentName: string
+  apartmentNumber: string | null
+}
+
+export interface AdminRoomSummaryDto {
+  id: string
+  name: string
+  isActive: boolean
+  activeSlotCount: number
+}
+
+export interface PropertyBookingsDto {
+  bookings: AdminBookingDto[]
+  rooms: AdminRoomSummaryDto[]
 }
 
 export const laundryApi = baseApi.injectEndpoints({
@@ -139,7 +167,7 @@ export const laundryApi = baseApi.injectEndpoints({
       invalidatesTags: (_result, _err, { roomId }) => [{ type: 'TimeSlot', id: roomId }],
     }),
 
-    deleteTimeSlot: build.mutation<void, { roomId: string; templateId: string }>({
+    deleteTimeSlot: build.mutation<{ cancelledBookings: number }, { roomId: string; templateId: string }>({
       query: ({ roomId, templateId }) => ({
         url: `/api/laundry-rooms/${roomId}/timeslots/${templateId}`,
         method: 'DELETE',
@@ -160,15 +188,22 @@ export const laundryApi = baseApi.injectEndpoints({
       providesTags: (_result, _err, propertyId) => [{ type: 'Booking', id: `mine-${propertyId}` }],
     }),
 
-    createBooking: build.mutation<{ id: string }, { roomId: string; propertyId: string; timeSlotTemplateId: string; date: string }>({
-      query: ({ roomId, timeSlotTemplateId, date }) => ({
+    getPropertyBookings: build.query<PropertyBookingsDto, { propertyId: string; from: string; to: string }>({
+      query: ({ propertyId, from, to }) =>
+        `/api/properties/${propertyId}/bookings?from=${from}&to=${to}`,
+      providesTags: (_result, _err, { propertyId }) => [{ type: 'Booking', id: `admin-${propertyId}` }],
+    }),
+
+    createBooking: build.mutation<{ id: string }, { roomId: string; propertyId: string; timeSlotTemplateId: string; date: string; machineId?: string | null }>({
+      query: ({ roomId, timeSlotTemplateId, date, machineId }) => ({
         url: `/api/laundry-rooms/${roomId}/bookings`,
         method: 'POST',
-        body: { timeSlotTemplateId, date },
+        body: { timeSlotTemplateId, date, machineId: machineId ?? null },
       }),
       invalidatesTags: (_result, _err, { roomId, propertyId }) => [
         { type: 'Booking', id: roomId },
         { type: 'Booking', id: `mine-${propertyId}` },
+        { type: 'Booking', id: `admin-${propertyId}` },
       ],
     }),
 
@@ -180,6 +215,7 @@ export const laundryApi = baseApi.injectEndpoints({
       invalidatesTags: (_result, _err, { roomId, propertyId }) => [
         { type: 'Booking', id: roomId },
         { type: 'Booking', id: `mine-${propertyId}` },
+        { type: 'Booking', id: `admin-${propertyId}` },
       ],
     }),
   }),
@@ -199,6 +235,7 @@ export const {
   useDeleteTimeSlotMutation,
   useGetBookingsQuery,
   useGetMyBookingsQuery,
+  useGetPropertyBookingsQuery,
   useCreateBookingMutation,
   useCancelBookingMutation,
 } = laundryApi

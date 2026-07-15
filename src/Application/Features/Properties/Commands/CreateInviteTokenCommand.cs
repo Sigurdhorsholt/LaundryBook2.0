@@ -1,9 +1,11 @@
 using Application.Common.Authorization;
+using Application.Common.Exceptions;
 using Application.Common.Interfaces;
 using Domain.Entities;
 using Domain.Enums;
 using FluentValidation;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 
 namespace Application.Features.Properties.Commands;
 
@@ -30,6 +32,14 @@ public class CreateInviteTokenCommandHandler(
     public async Task<string> Handle(CreateInviteTokenCommand request, CancellationToken cancellationToken)
     {
         await auth.RequireRoleAsync(request.PropertyId, UserRole.ComplexAdmin, cancellationToken);
+
+        var isActive = await db.Properties
+            .Where(p => p.Id == request.PropertyId)
+            .Select(p => p.IsActive)
+            .FirstOrDefaultAsync(cancellationToken);
+
+        if (!isActive)
+            throw new ConflictException("Foreningen afventer godkendelse og kan endnu ikke invitere beboere.");
 
         var token = Guid.NewGuid().ToString("N"); // 32-char hex, URL-safe
 

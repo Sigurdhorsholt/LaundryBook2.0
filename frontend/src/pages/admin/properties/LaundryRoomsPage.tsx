@@ -58,7 +58,7 @@ export function LaundryRoomsPage() {
   if (isError) {
     return (
       <div className="p-4 p-lg-5">
-        <p style={{ color: '#dc3545', fontSize: '0.9rem' }}>
+        <p style={{ color: colors.dangerText, fontSize: '0.9rem' }}>
           Kunne ikke indlæse lokaler. Prøv at genindlæse siden.
         </p>
       </div>

@@ -30,6 +30,18 @@ public class BookingsController(IMediator mediator) : ControllerBase
         return Ok(result);
     }
 
+    // GET /api/properties/{propertyId}/bookings?from=YYYY-MM-DD&to=YYYY-MM-DD
+    [HttpGet("api/properties/{propertyId:guid}/bookings")]
+    public async Task<IActionResult> GetPropertyBookings(
+        Guid propertyId,
+        [FromQuery] DateOnly from,
+        [FromQuery] DateOnly to,
+        CancellationToken ct)
+    {
+        var result = await mediator.Send(new GetPropertyBookingsQuery(propertyId, from, to), ct);
+        return Ok(result);
+    }
+
     // POST /api/laundry-rooms/{roomId}/bookings
     [HttpPost("api/laundry-rooms/{roomId:guid}/bookings")]
     public async Task<IActionResult> CreateBooking(
@@ -37,7 +49,7 @@ public class BookingsController(IMediator mediator) : ControllerBase
         [FromBody] CreateBookingRequest request,
         CancellationToken ct)
     {
-        var id = await mediator.Send(new CreateBookingCommand(roomId, request.TimeSlotTemplateId, request.Date), ct);
+        var id = await mediator.Send(new CreateBookingCommand(roomId, request.TimeSlotTemplateId, request.Date, request.MachineId), ct);
         return Ok(new { id });
     }
 
@@ -50,4 +62,4 @@ public class BookingsController(IMediator mediator) : ControllerBase
     }
 }
 
-public record CreateBookingRequest(Guid TimeSlotTemplateId, DateOnly Date);
+public record CreateBookingRequest(Guid TimeSlotTemplateId, DateOnly Date, Guid? MachineId);

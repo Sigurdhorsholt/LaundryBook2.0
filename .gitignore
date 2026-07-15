@@ -13,6 +13,9 @@ riderModule.iml
 frontend/node_modules/
 frontend/dist/
 
+# Firebase service account key
+firebase-service-account.json
+
 # User secrets / env
 appsettings.*.json
 !appsettings.json

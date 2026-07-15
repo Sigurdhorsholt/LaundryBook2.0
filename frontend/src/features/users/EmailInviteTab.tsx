@@ -4,6 +4,8 @@ import { useInviteByEmailMutation } from './usersApi'
 import { ROLE_OPTIONS } from '../../shared/constants'
 import { IconCheck } from '../../shared/icons'
 import { colors } from '../../shared/theme'
+import { extractErrorMessage } from '../../shared/utils/errorUtils'
+import { FormLabel } from '../../shared/ui/FormLabel'
 
 interface EmailInviteTabProps {
   propertyId: string
@@ -27,7 +29,7 @@ export function EmailInviteTab({ propertyId, onClose, roleOptions = ROLE_OPTIONS
       await inviteByEmail({ propertyId, email, role, apartmentNumber: apartment || null }).unwrap()
       setDone(true)
     } catch (err: unknown) {
-      setError(err instanceof Error ? err.message : 'Noget gik galt. Prøv igen.')
+      setError(extractErrorMessage(err))
     }
   }
 
@@ -36,9 +38,9 @@ export function EmailInviteTab({ propertyId, onClose, roleOptions = ROLE_OPTIONS
       <div className="text-center py-3">
         <div
           className="rounded-circle d-inline-flex align-items-center justify-content-center mb-3"
-          style={{ width: 48, height: 48, backgroundColor: '#e8f5e9' }}
+          style={{ width: 48, height: 48, backgroundColor: colors.successBg }}
         >
-          <IconCheck size={22} color="#2e7d32" strokeWidth={2.5} />
+          <IconCheck size={22} color={colors.successText} strokeWidth={2.5} />
         </div>
         <p className="fw-semibold mb-1" style={{ color: colors.textPrimary }}>Invitation sendt!</p>
         <p className="mb-4" style={{ color: colors.textSecondary, fontSize: '0.9rem' }}>
@@ -52,9 +54,7 @@ export function EmailInviteTab({ propertyId, onClose, roleOptions = ROLE_OPTIONS
   return (
     <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
       <div>
-        <label className="form-label" style={{ fontSize: '0.85rem', fontWeight: 500, color: colors.textPrimary }}>
-          E-mail
-        </label>
+        <FormLabel>E-mail</FormLabel>
         <input
           className="form-control"
           type="email"
@@ -68,9 +68,7 @@ export function EmailInviteTab({ propertyId, onClose, roleOptions = ROLE_OPTIONS
 
       <div className="d-flex gap-3">
         <div style={{ flex: 1 }}>
-          <label className="form-label" style={{ fontSize: '0.85rem', fontWeight: 500, color: colors.textPrimary }}>
-            Rolle
-          </label>
+          <FormLabel>Rolle</FormLabel>
           <select
             className="form-select"
             value={role}
@@ -83,14 +81,11 @@ export function EmailInviteTab({ propertyId, onClose, roleOptions = ROLE_OPTIONS
         </div>
 
         <div style={{ flex: 1 }}>
-          <label className="form-label" style={{ fontSize: '0.85rem', fontWeight: 500, color: colors.textPrimary }}>
-            Lejlighed <span style={{ color: colors.textMuted, fontWeight: 400 }}>(valgfri)</span>
-          </label>
+          <FormLabel hint="(valgfri)">Lejlighed</FormLabel>
           <input
             className="form-control"
             type="text"
-            placeholder=""
-            required
+            placeholder="fx 1A"
             maxLength={20}
             value={apartment}
             onChange={(e) => setApartment(e.target.value)}
@@ -98,7 +93,7 @@ export function EmailInviteTab({ propertyId, onClose, roleOptions = ROLE_OPTIONS
         </div>
       </div>
 
-      {error && <p style={{ color: '#dc3545', margin: 0, fontSize: 14 }}>{error}</p>}
+      {error && <p style={{ color: colors.dangerText, margin: 0, fontSize: '0.85rem' }}>{error}</p>}
 
       <button className="btn btn-primary fw-semibold" type="submit" disabled={isLoading}>
         {isLoading ? 'Sender…' : 'Send invitation'}
