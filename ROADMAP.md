@@ -23,7 +23,7 @@ ships them. We build them so we don't look behind, and differentiate elsewhere (
 - [~] Privatlivspolitik (offentlig side) - scaffoldet som `/privatliv` (udkast, mangler juridisk gennemgang + udfyldte TODO'er)
 - [~] Handelsbetingelser / vilkår (offentlig side) - scaffoldet som `/vilkaar` (udkast, mangler juridisk gennemgang)
 - [x] Vis vilkår + privatliv før signup, med samtykke-checkbox (Signup + Join, klient-side)
-- [ ] ⭐ Registrér samtykke server-side ved oprettelse (tidsstempel + politik-version) - i dag kun klient-side
+- [x] ⭐ Registrér samtykke server-side ved oprettelse - `User.TermsAcceptedAt` + `TermsVersion`; register + redeem-invite kræver `AcceptedTerms=true` (valideret) og stempler tidspunkt + `TermsPolicy.CurrentVersion`. Migration `AddUserTermsConsent`.
 - [ ] ⭐ **Databehandleraftale (DPA)** pr. forening - foreningen er dataansvarlig, LaundryBook er
       databehandler (GDPR art. 28). Juridisk påkrævet.
 - [ ] ⭐ Underdatabehandler-liste (Render, mailudbyder, m.fl.)

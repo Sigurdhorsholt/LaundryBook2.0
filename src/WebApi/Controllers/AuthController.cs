@@ -37,7 +37,7 @@ public class AuthController(IMediator mediator, IWebHostEnvironment env) : Contr
     public async Task<IActionResult> Register([FromBody] RegisterRequest request, CancellationToken ct)
     {
         var result = await mediator.Send(
-            new RegisterCommand(request.IdToken, request.FirstName, request.LastName, request.PropertyName, request.PropertyAddress), ct);
+            new RegisterCommand(request.IdToken, request.FirstName, request.LastName, request.PropertyName, request.PropertyAddress, request.AcceptedTerms), ct);
 
         Response.Cookies.Append("access_token", result.JwtToken, AuthCookieOptions());
 
@@ -88,7 +88,7 @@ public class AuthController(IMediator mediator, IWebHostEnvironment env) : Contr
     public async Task<IActionResult> RedeemInvite([FromBody] RedeemInviteRequest request, CancellationToken ct)
     {
         var result = await mediator.Send(
-            new RedeemInviteCommand(request.IdToken, request.InviteToken, request.ApartmentNumber, request.FirstName, request.LastName), ct);
+            new RedeemInviteCommand(request.IdToken, request.InviteToken, request.ApartmentNumber, request.FirstName, request.LastName, request.AcceptedTerms), ct);
 
         Response.Cookies.Append("access_token", result.JwtToken, AuthCookieOptions());
 
@@ -97,7 +97,7 @@ public class AuthController(IMediator mediator, IWebHostEnvironment env) : Contr
 }
 
 public record LoginRequest(string IdToken);
-public record RegisterRequest(string IdToken, string FirstName, string LastName, string PropertyName, string PropertyAddress);
+public record RegisterRequest(string IdToken, string FirstName, string LastName, string PropertyName, string PropertyAddress, bool AcceptedTerms);
 public record UpdateMeRequest(string FirstName, string LastName);
 public record ForgotPasswordRequest(string Email);
-public record RedeemInviteRequest(string IdToken, string InviteToken, string? ApartmentNumber, string FirstName, string LastName);
+public record RedeemInviteRequest(string IdToken, string InviteToken, string? ApartmentNumber, string FirstName, string LastName, bool AcceptedTerms);

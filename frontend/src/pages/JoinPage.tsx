@@ -55,6 +55,7 @@ export function JoinPage() {
         apartmentNumber: apartment || undefined,
         firstName,
         lastName,
+        acceptedTerms: consent,
       }).unwrap()
       navigate('/dashboard', { replace: true })
     } catch (err: unknown) {
