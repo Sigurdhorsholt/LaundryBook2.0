@@ -23,5 +23,10 @@ export function ProtectedRoute() {
     return <Navigate to="/" replace />
   }
 
-  return <Outlet />
+  return (
+    <>
+      <meta name="robots" content="noindex, nofollow" />
+      <Outlet />
+    </>
+  )
 }

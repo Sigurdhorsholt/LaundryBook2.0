@@ -38,8 +38,25 @@ function FaqItem({ q, a, last }: { q: string; a: string; last: boolean }) {
 
 export function FaqPage() {
   const { t } = useTranslation()
+
+  const faqJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: FAQ_GROUPS.flatMap(g =>
+      g.items.map(item => ({
+        '@type': 'Question',
+        name: t(`public.faq.groups.${g.key}.items.${item}.q`),
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: t(`public.faq.groups.${g.key}.items.${item}.a`, { email: CONTACT_EMAIL }),
+        },
+      })),
+    ),
+  }
+
   return (
     <PublicLayout>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }} />
 
       <section style={{ backgroundColor: '#f7f3ea' }}>
         <div className="container-xl px-4" style={{ paddingTop: '4rem', paddingBottom: '3rem' }}>
