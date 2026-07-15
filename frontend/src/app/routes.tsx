@@ -7,6 +7,9 @@ import { LandingPage } from '../pages/LandingPage'
 import { FeaturesPage } from '../pages/public/FeaturesPage'
 import { DemoPage } from '../pages/public/DemoPage'
 import { FaqPage } from '../pages/public/FaqPage'
+import { AboutPage } from '../pages/public/AboutPage'
+import { PrivacyPage } from '../pages/public/PrivacyPage'
+import { TermsPage } from '../pages/public/TermsPage'
 import { GetStartedPage } from '../pages/public/GetStartedPage'
 import { MyPage } from '../pages/MyPage'
 import { JoinPage } from '../pages/JoinPage'
@@ -31,7 +34,7 @@ export interface AppRoute {
   protected: boolean
   minRole?: UserRole
   feature?: FeatureKey
-  /** Shown in top-level sidebar nav when set */
+  /** i18n key for the label shown in top-level sidebar nav when set */
   label?: string
   icon?: ReactNode
 }
@@ -43,6 +46,9 @@ export const routes: AppRoute[] = [
   { path: '/features',  component: FeaturesPage,  layout: 'bare', protected: false },
   { path: '/demo',      component: DemoPage,      layout: 'bare', protected: false },
   { path: '/faq',       component: FaqPage,       layout: 'bare', protected: false },
+  { path: '/om',        component: AboutPage,     layout: 'bare', protected: false },
+  { path: '/privatliv', component: PrivacyPage,   layout: 'bare', protected: false },
+  { path: '/vilkaar',   component: TermsPage,     layout: 'bare', protected: false },
   { path: '/get-started', component: GetStartedPage, layout: 'bare', protected: false },
   { path: '/signup',    component: SignupPage,    layout: 'bare', protected: false },
   { path: '/join',      component: JoinPage,      layout: 'bare', protected: false },
@@ -56,7 +62,7 @@ export const routes: AppRoute[] = [
     protected: true,
     minRole: UserRole.Resident,
     feature: 'laundryBooking',
-    label: 'Vaskebooking',
+    label: 'nav.laundry',
     icon: <IconCalendar />,
   },
 
@@ -66,7 +72,7 @@ export const routes: AppRoute[] = [
     layout: 'app',
     protected: true,
     minRole: UserRole.Resident,
-    label: 'Min side',
+    label: 'nav.myPage',
     icon: <IconUsers />,
   },
 
@@ -77,7 +83,7 @@ export const routes: AppRoute[] = [
     layout: 'admin',
     protected: true,
     minRole: UserRole.ComplexAdmin,
-    label: 'Oversigt',
+    label: 'nav.overview',
     icon: <IconGrid />,
   },
   {
@@ -86,7 +92,7 @@ export const routes: AppRoute[] = [
     layout: 'admin',
     protected: true,
     minRole: UserRole.ComplexAdmin,
-    label: 'Ejendomme',
+    label: 'nav.properties',
     icon: <IconBuilding />,
   },
 
@@ -97,7 +103,7 @@ export const routes: AppRoute[] = [
     layout: 'admin',
     protected: true,
     minRole: UserRole.SysAdmin,
-    label: 'System',
+    label: 'nav.system',
     icon: <IconShield />,
   },
 

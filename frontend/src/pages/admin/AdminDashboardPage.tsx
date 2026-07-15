@@ -1,13 +1,16 @@
 import { useNavigate } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 import { useMeQuery, UserRole } from '../../features/auth/authApi'
 import { getHighestRole } from '../../shared/roleUtils'
-import { ROLE_LABEL } from '../../shared/constants'
+import { useRoleLabel } from '../../shared/constants'
 import { PropertyCard } from '../../features/properties/PropertyCard'
 import { PageHeader } from '../../shared/ui'
 import { colors } from '../../shared/theme'
 
 export function AdminDashboardPage() {
   const navigate = useNavigate()
+  const { t } = useTranslation()
+  const roleLabel = useRoleLabel()
   const { data: user } = useMeQuery()
   const role = user ? getHighestRole(user) : null
   const adminMemberships = user?.memberships.filter((m) => m.role >= UserRole.ComplexAdmin) ?? [];
@@ -16,9 +19,12 @@ export function AdminDashboardPage() {
     <div className="p-4 p-lg-5">
 
       <PageHeader
-        title="Oversigt"
+        title={t('nav.overview')}
         description={user
-          ? `Velkommen tilbage, ${user.firstName || user.email}${role !== null ? ` · ${ROLE_LABEL[role]}` : ''}`
+          ? t('adminDashboard.greeting', {
+              name: user.firstName || user.email,
+              roleSuffix: role !== null ? ` · ${roleLabel(role)}` : '',
+            })
           : undefined
         }
       />
@@ -26,9 +32,9 @@ export function AdminDashboardPage() {
       {/* Stats */}
       <div className="row g-4 mb-5">
         {[
-          { label: 'Aktive bookinger', value: '—', sub: 'i dag' },
-          { label: 'Beboere', value: '—', sub: 'registrerede' },
-          { label: 'Vaskerum', value: '—', sub: 'aktive' },
+          { label: t('adminDashboard.statActiveBookingsLabel'), value: '—', sub: t('adminDashboard.statActiveBookingsSub') },
+          { label: t('adminDashboard.statResidentsLabel'), value: '—', sub: t('adminDashboard.statResidentsSub') },
+          { label: t('adminDashboard.statRoomsLabel'), value: '—', sub: t('adminDashboard.statRoomsSub') },
         ].map((card) => (
           <div key={card.label} className="col-12 col-sm-6 col-xl-4">
             <div className="p-4 bg-white rounded-3 h-100" style={{ border: `1px solid ${colors.borderDefault}` }}>
@@ -44,14 +50,14 @@ export function AdminDashboardPage() {
       {adminMemberships.length > 0 && (
         <div>
           <div className="d-flex align-items-center justify-content-between mb-3">
-            <h2 className="fw-semibold mb-0" style={{ fontSize: '1rem', color: colors.textPrimary }}>Dine ejendomme</h2>
+            <h2 className="fw-semibold mb-0" style={{ fontSize: '1rem', color: colors.textPrimary }}>{t('adminDashboard.propertiesHeading')}</h2>
             {adminMemberships.length > 3 && (
               <button
                 className="btn btn-sm"
                 style={{ fontSize: '0.82rem', color: colors.primary, border: 'none', background: 'none' }}
                 onClick={() => navigate('/admin/properties')}
               >
-                Se alle →
+                {t('adminDashboard.seeAll')}
               </button>
             )}
           </div>

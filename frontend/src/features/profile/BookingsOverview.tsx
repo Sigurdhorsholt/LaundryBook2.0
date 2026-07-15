@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { useGetMyBookingsQuery, useCancelBookingMutation, type MyBookingDto } from '../laundry/laundryApi'
 import { EmptyState, Spinner } from '../../shared/ui'
 import { colors } from '../../shared/theme'
@@ -22,6 +23,7 @@ function fmtTime(t: string) { return t.slice(0, 5) }
 function BookingRow({
   booking, onCancel, cancelling,
 }: { booking: MyBookingDto; onCancel?: () => void; cancelling: boolean }) {
+  const { t } = useTranslation()
   return (
     <div
       className="d-flex align-items-center justify-content-between py-2 px-3"
@@ -48,7 +50,7 @@ function BookingRow({
           onClick={onCancel}
           disabled={cancelling}
         >
-          Aflys
+          {t('profile.cancelBooking')}
         </button>
       )}
     </div>
@@ -56,6 +58,7 @@ function BookingRow({
 }
 
 export function BookingsOverview({ propertyId }: Props) {
+  const { t } = useTranslation()
   const { data: bookings, isLoading } = useGetMyBookingsQuery(propertyId)
   const [cancelBooking] = useCancelBookingMutation()
   const [cancelling, setCancelling] = useState<string | null>(null)
@@ -85,9 +88,9 @@ export function BookingsOverview({ propertyId }: Props) {
     <div>
       <div className="card border-0 shadow-sm mb-4" style={{ borderRadius: 12 }}>
         <div className="card-body p-4">
-          <h5 className="mb-3" style={{ fontWeight: 600, color: colors.textPrimary }}>Kommende bookinger</h5>
+          <h5 className="mb-3" style={{ fontWeight: 600, color: colors.textPrimary }}>{t('profile.upcomingBookings')}</h5>
           {upcoming.length === 0
-            ? <EmptyState title="Ingen kommende bookinger" />
+            ? <EmptyState title={t('profile.noUpcomingBookings')} />
             : upcoming.map(b => (
                 <BookingRow
                   key={b.id}
@@ -101,9 +104,9 @@ export function BookingsOverview({ propertyId }: Props) {
       </div>
       <div className="card border-0 shadow-sm" style={{ borderRadius: 12 }}>
         <div className="card-body p-4">
-          <h5 className="mb-3" style={{ fontWeight: 600, color: colors.textPrimary }}>Tidligere bookinger</h5>
+          <h5 className="mb-3" style={{ fontWeight: 600, color: colors.textPrimary }}>{t('profile.pastBookings')}</h5>
           {past.length === 0
-            ? <EmptyState title="Ingen tidligere bookinger" />
+            ? <EmptyState title={t('profile.noPastBookings')} />
             : past.map(b => (
                 <BookingRow key={b.id} booking={b} cancelling={false} />
               ))

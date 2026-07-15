@@ -1,4 +1,5 @@
-import { ROLE_LABEL, ROLE_BADGE_STYLE } from '../../../shared/constants'
+import { useTranslation } from 'react-i18next'
+import { useRoleLabel, ROLE_BADGE_STYLE } from '../../../shared/constants'
 import { type PropertyMemberDto, type PendingInviteDto } from '../../../features/users/usersApi'
 import { colors } from '../../../shared/theme'
 import { ActionMenu } from './ActionMenu'
@@ -11,10 +12,11 @@ function StatusDot({ color }: { color: string }) {
 }
 
 function SentLabel({ size = '0.78rem' }: { size?: string }) {
+  const { t } = useTranslation()
   return (
     <span style={{ fontSize: size, color: colors.successText, fontWeight: 500, whiteSpace: 'nowrap', display: 'inline-flex', alignItems: 'center', gap: 3 }}>
       <IconCheck size={12} color={colors.successText} strokeWidth={2.5} />
-      Sendt
+      {t('adminProperties.userRow.sent')}
     </span>
   )
 }
@@ -79,6 +81,8 @@ function displayName(m: PropertyMemberDto) {
 // ── Desktop table row ──────────────────────────────────────────────────────────
 
 export function UserRow(props: UserRowProps) {
+  const { t } = useTranslation()
+  const roleLabel = useRoleLabel()
   if (props.kind === 'member') {
     const { member, isSelf, isActionLoading, showResetSuccess, isMenuOpen, onMenuToggle, onMenuClose, onEdit, onToggleActive, onForceReset, onDelete } = props
     const badge = ROLE_BADGE_STYLE[member.role]
@@ -96,13 +100,13 @@ export function UserRow(props: UserRowProps) {
         </td>
         <td className="px-4 py-3 align-middle">
           <span className="badge" style={{ backgroundColor: badge.bg, color: badge.color, fontWeight: 500, fontSize: '0.75rem' }}>
-            {ROLE_LABEL[member.role]}
+            {roleLabel(member.role)}
           </span>
         </td>
         <td className="px-4 py-3 align-middle">
           {member.isActive
-            ? <span style={{ color: colors.successText, fontSize: '0.78rem', fontWeight: 500 }}><StatusDot color={colors.successText} />Aktiv</span>
-            : <span style={{ color: colors.textMuted, fontSize: '0.78rem', fontWeight: 500 }}><StatusDot color={colors.textMuted} />Deaktiveret</span>
+            ? <span style={{ color: colors.successText, fontSize: '0.78rem', fontWeight: 500 }}><StatusDot color={colors.successText} />{t('adminProperties.userRow.active')}</span>
+            : <span style={{ color: colors.textMuted, fontSize: '0.78rem', fontWeight: 500 }}><StatusDot color={colors.textMuted} />{t('adminProperties.userRow.deactivated')}</span>
           }
         </td>
         <td className="px-4 py-3 align-middle">
@@ -134,18 +138,18 @@ export function UserRow(props: UserRowProps) {
       <td className="px-4 py-3 align-middle">
         <div className="d-flex align-items-center gap-3">
           <Avatar initials="?" pending />
-          <span style={{ color: colors.textMuted, fontSize: '0.85rem', fontStyle: 'italic' }}>Ikke oprettet endnu</span>
+          <span style={{ color: colors.textMuted, fontSize: '0.85rem', fontStyle: 'italic' }}>{t('adminProperties.userRow.notCreatedYet')}</span>
         </div>
       </td>
       <td className="px-4 py-3 align-middle" style={{ color: colors.textSecondary }}>{invite.email}</td>
       <td className="px-4 py-3 align-middle" style={{ color: colors.textMuted }}>{invite.apartmentNumber ?? '—'}</td>
       <td className="px-4 py-3 align-middle">
         <span className="badge" style={{ backgroundColor: colors.bgSubtle, color: colors.textSecondary, fontWeight: 500, fontSize: '0.75rem' }}>
-          {ROLE_LABEL[invite.role]}
+          {roleLabel(invite.role)}
         </span>
       </td>
       <td className="px-4 py-3 align-middle">
-        <span style={{ color: colors.warningText, fontSize: '0.78rem', fontWeight: 500 }}><StatusDot color={colors.warningText} />Afventer</span>
+        <span style={{ color: colors.warningText, fontSize: '0.78rem', fontWeight: 500 }}><StatusDot color={colors.warningText} />{t('adminProperties.userRow.pending')}</span>
       </td>
       <td className="px-4 py-3 align-middle">
         <div className="d-flex align-items-center justify-content-end gap-2">
@@ -168,6 +172,8 @@ export function UserRow(props: UserRowProps) {
 // ── Mobile card ────────────────────────────────────────────────────────────────
 
 export function UserCard(props: UserRowProps) {
+  const { t } = useTranslation()
+  const roleLabel = useRoleLabel()
   if (props.kind === 'member') {
     const { member, isSelf, isActionLoading, showResetSuccess, isMenuOpen, onMenuToggle, onMenuClose, onEdit, onToggleActive, onForceReset, onDelete } = props
     const badge = ROLE_BADGE_STYLE[member.role]
@@ -204,14 +210,14 @@ export function UserCard(props: UserRowProps) {
             </div>
             <div className="d-flex align-items-center gap-2 flex-wrap mt-2">
               {member.apartmentNumber && (
-                <span style={{ fontSize: '0.75rem', color: colors.textMuted }}>Lejl. {member.apartmentNumber}</span>
+                <span style={{ fontSize: '0.75rem', color: colors.textMuted }}>{t('adminProperties.userRow.apartment', { number: member.apartmentNumber })}</span>
               )}
               <span className="badge" style={{ backgroundColor: badge.bg, color: badge.color, fontWeight: 500, fontSize: '0.72rem' }}>
-                {ROLE_LABEL[member.role]}
+                {roleLabel(member.role)}
               </span>
               <span style={{ fontSize: '0.75rem', fontWeight: 500, color: member.isActive ? colors.successText : colors.textMuted }}>
                 <StatusDot color={member.isActive ? colors.successText : colors.textMuted} />
-                {member.isActive ? 'Aktiv' : 'Deaktiveret'}
+                {member.isActive ? t('adminProperties.userRow.active') : t('adminProperties.userRow.deactivated')}
               </span>
             </div>
           </div>
@@ -229,7 +235,7 @@ export function UserCard(props: UserRowProps) {
         <div style={{ flex: 1, minWidth: 0 }}>
           <div className="d-flex align-items-start justify-content-between gap-2">
             <div style={{ minWidth: 0 }}>
-              <div style={{ color: colors.textMuted, fontSize: '0.85rem', fontStyle: 'italic' }}>Ikke oprettet endnu</div>
+              <div style={{ color: colors.textMuted, fontSize: '0.85rem', fontStyle: 'italic' }}>{t('adminProperties.userRow.notCreatedYet')}</div>
               <div className="text-truncate" style={{ fontSize: '0.78rem', color: colors.textSecondary, marginTop: 1 }}>
                 {invite.email}
               </div>
@@ -249,12 +255,12 @@ export function UserCard(props: UserRowProps) {
           </div>
           <div className="d-flex align-items-center gap-2 flex-wrap mt-2">
             {invite.apartmentNumber && (
-              <span style={{ fontSize: '0.75rem', color: colors.textMuted }}>Lejl. {invite.apartmentNumber}</span>
+              <span style={{ fontSize: '0.75rem', color: colors.textMuted }}>{t('adminProperties.userRow.apartment', { number: invite.apartmentNumber })}</span>
             )}
             <span className="badge" style={{ backgroundColor: colors.bgSubtle, color: colors.textSecondary, fontWeight: 500, fontSize: '0.72rem' }}>
-              {ROLE_LABEL[invite.role]}
+              {roleLabel(invite.role)}
             </span>
-            <span style={{ fontSize: '0.75rem', fontWeight: 500, color: colors.warningText }}><StatusDot color={colors.warningText} />Afventer</span>
+            <span style={{ fontSize: '0.75rem', fontWeight: 500, color: colors.warningText }}><StatusDot color={colors.warningText} />{t('adminProperties.userRow.pending')}</span>
           </div>
         </div>
       </div>

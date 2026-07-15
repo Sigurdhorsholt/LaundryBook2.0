@@ -1,7 +1,8 @@
 import { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { UserRole } from '../auth/authApi'
 import { useInviteByEmailMutation } from './usersApi'
-import { ROLE_OPTIONS } from '../../shared/constants'
+import { useRoleOptions } from '../../shared/constants'
 import { IconCheck } from '../../shared/icons'
 import { colors } from '../../shared/theme'
 import { extractErrorMessage } from '../../shared/utils/errorUtils'
@@ -13,9 +14,12 @@ interface EmailInviteTabProps {
   roleOptions?: { value: UserRole; label: string }[]
 }
 
-export function EmailInviteTab({ propertyId, onClose, roleOptions = ROLE_OPTIONS }: EmailInviteTabProps) {
+export function EmailInviteTab({ propertyId, onClose, roleOptions }: EmailInviteTabProps) {
+  const { t } = useTranslation()
+  const defaultRoleOptions = useRoleOptions()
+  const options = roleOptions ?? defaultRoleOptions
   const [email, setEmail] = useState('')
-  const [role, setRole] = useState<UserRole>(roleOptions[0].value)
+  const [role, setRole] = useState<UserRole>(options[0].value)
   const [apartment, setApartment] = useState('')
   const [done, setDone] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -29,7 +33,7 @@ export function EmailInviteTab({ propertyId, onClose, roleOptions = ROLE_OPTIONS
       await inviteByEmail({ propertyId, email, role, apartmentNumber: apartment || null }).unwrap()
       setDone(true)
     } catch (err: unknown) {
-      setError(extractErrorMessage(err))
+      setError(extractErrorMessage(err, t('common.genericError')))
     }
   }
 
@@ -42,11 +46,11 @@ export function EmailInviteTab({ propertyId, onClose, roleOptions = ROLE_OPTIONS
         >
           <IconCheck size={22} color={colors.successText} strokeWidth={2.5} />
         </div>
-        <p className="fw-semibold mb-1" style={{ color: colors.textPrimary }}>Invitation sendt!</p>
+        <p className="fw-semibold mb-1" style={{ color: colors.textPrimary }}>{t('users.inviteSent')}</p>
         <p className="mb-4" style={{ color: colors.textSecondary, fontSize: '0.9rem' }}>
-          {email} modtager en e-mail med link til at oprette adgangskode.
+          {t('users.inviteEmailSentMessage', { email })}
         </p>
-        <button className="btn btn-primary btn-sm" onClick={onClose}>Luk</button>
+        <button className="btn btn-primary btn-sm" onClick={onClose}>{t('common.close')}</button>
       </div>
     )
   }
@@ -54,11 +58,11 @@ export function EmailInviteTab({ propertyId, onClose, roleOptions = ROLE_OPTIONS
   return (
     <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
       <div>
-        <FormLabel>E-mail</FormLabel>
+        <FormLabel>{t('users.email')}</FormLabel>
         <input
           className="form-control"
           type="email"
-          placeholder="beboer@example.com"
+          placeholder={t('users.emailPlaceholder')}
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           required
@@ -68,24 +72,24 @@ export function EmailInviteTab({ propertyId, onClose, roleOptions = ROLE_OPTIONS
 
       <div className="d-flex gap-3">
         <div style={{ flex: 1 }}>
-          <FormLabel>Rolle</FormLabel>
+          <FormLabel>{t('users.role')}</FormLabel>
           <select
             className="form-select"
             value={role}
             onChange={(e) => setRole(Number(e.target.value) as UserRole)}
           >
-            {roleOptions.map((o) => (
+            {options.map((o) => (
               <option key={o.value} value={o.value}>{o.label}</option>
             ))}
           </select>
         </div>
 
         <div style={{ flex: 1 }}>
-          <FormLabel hint="(valgfri)">Lejlighed</FormLabel>
+          <FormLabel hint={t('users.optional')}>{t('users.apartment')}</FormLabel>
           <input
             className="form-control"
             type="text"
-            placeholder="fx 1A"
+            placeholder={t('users.apartmentPlaceholder')}
             maxLength={20}
             value={apartment}
             onChange={(e) => setApartment(e.target.value)}
@@ -96,7 +100,7 @@ export function EmailInviteTab({ propertyId, onClose, roleOptions = ROLE_OPTIONS
       {error && <p style={{ color: colors.dangerText, margin: 0, fontSize: '0.85rem' }}>{error}</p>}
 
       <button className="btn btn-primary fw-semibold" type="submit" disabled={isLoading}>
-        {isLoading ? 'Sender…' : 'Send invitation'}
+        {isLoading ? t('users.sending') : t('users.sendInvitation')}
       </button>
     </form>
   )

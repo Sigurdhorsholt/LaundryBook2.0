@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react'
+import { useTranslation } from 'react-i18next'
 import type { TimeSlotTemplateDto } from './laundryApi'
 import type { GridBooking } from './types'
 import { formatTime } from '../../shared/utils/dateUtils'
@@ -16,6 +17,7 @@ interface Props {
 }
 
 export function SlotRow({ slot, booking, past, locked, blocked, onBook, onCancel }: Props) {
+  const { t } = useTranslation()
   const [hovered, setHovered] = useState(false)
 
   const [justBooked, setJustBooked] = useState(false)
@@ -60,23 +62,23 @@ export function SlotRow({ slot, booking, past, locked, blocked, onBook, onCancel
   if (past || locked) {
     status = (
       <span style={badge(colors.bgSubtle, colors.textMuted)}>
-        {past ? 'Passeret' : 'Ikke tilgængeligt'}
+        {past ? t('laundry.slot.past') : t('laundry.slot.unavailable')}
       </span>
     )
   } else if (booking?.isOwn) {
     status = (
       <span className="d-flex align-items-center gap-2 flex-wrap justify-content-end">
-        <span style={badge(colors.successBg, colors.successText)}>Min booking</span>
+        <span style={badge(colors.successBg, colors.successText)}>{t('laundry.slot.myBooking')}</span>
         {booking.canCancel ? (
           <button
             className="btn btn-sm btn-outline-secondary"
             style={{ fontSize: '0.75rem', padding: '2px 10px', borderRadius: 20 }}
             onClick={(e) => { e.stopPropagation(); onCancel() }}
           >
-            Aflys
+            {t('laundry.actions.cancelBooking')}
           </button>
         ) : (
-          <span style={{ fontSize: '0.72rem', color: colors.textMuted }}>Aflysfrist udløbet</span>
+          <span style={{ fontSize: '0.72rem', color: colors.textMuted }}>{t('laundry.slot.cancelDeadlinePassed')}</span>
         )}
       </span>
     )
@@ -92,7 +94,7 @@ export function SlotRow({ slot, booking, past, locked, blocked, onBook, onCancel
         tabIndex={-1}
         aria-hidden
       >
-        Book
+        {t('laundry.actions.book')}
       </button>
     )
   }

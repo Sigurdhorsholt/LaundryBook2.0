@@ -1,4 +1,5 @@
 import { Navigate, Link } from 'react-router-dom'
+import { useTranslation, Trans } from 'react-i18next'
 import { useMeQuery } from '../features/auth/authApi'
 import { useModal } from '../shared/modals/useModal'
 import { PublicLayout } from './public/PublicLayout'
@@ -7,6 +8,7 @@ import { colors } from '../shared/theme'
 import { IconCheck } from '../shared/icons'
 
 export function LandingPage() {
+  const { t } = useTranslation()
   const { openModal } = useModal()
   const { data: user, isLoading } = useMeQuery()
 
@@ -26,28 +28,28 @@ export function LandingPage() {
               <span className="d-inline-flex align-items-center gap-2 mb-3 px-3 py-1 rounded-pill"
                 style={{ backgroundColor: '#fff', border: `1px solid ${colors.borderDefault}`, fontSize: '0.78rem', fontWeight: 600, color: colors.textSecondary }}>
                 <span className="rounded-circle" style={{ width: 7, height: 7, backgroundColor: colors.primary }} />
-                Til danske ejerforeninger
+                {t('landing.heroBadge')}
               </span>
               <h1 className="fw-bold mb-4"
                 style={{ fontSize: 'clamp(2.2rem, 5.5vw, 3.75rem)', lineHeight: 1.1, letterSpacing: '-0.8px', color: colors.textPrimary }}>
-                Et vaskerum uden <span style={{ color: colors.primary }}>drama</span>.
+                <Trans i18nKey="landing.heroTitle" components={{ s: <span style={{ color: colors.primary }} /> }} />
               </h1>
               <p className="mb-4" style={{ color: colors.textSecondary, fontSize: 'clamp(1rem, 1.8vw, 1.15rem)', lineHeight: 1.7, maxWidth: 460 }}>
-                LaundryBook er det rolige sted hvor jeres beboere booker vasketider og bestyrelsen holder styr på det hele. Ingen overklistrede sedler. Ingen nøgler der forsvinder.
+                {t('landing.heroSubtitle')}
               </p>
               <div className="d-flex flex-column flex-sm-row gap-3 mb-4">
                 <Link to="/demo" className="btn btn-lg fw-bold text-decoration-none d-inline-flex align-items-center justify-content-center"
                   style={{ backgroundColor: colors.primary, color: '#fff', borderRadius: 10, padding: '12px 28px', fontSize: '1rem', border: 'none', boxShadow: '0 6px 20px rgba(61,122,92,0.28)' }}>
-                  Prøv demo
+                  {t('landing.tryDemo')}
                 </Link>
                 <button className="btn btn-lg fw-semibold"
                   style={{ backgroundColor: '#fff', color: colors.textPrimary, borderRadius: 10, padding: '12px 28px', fontSize: '1rem', border: `1px solid ${colors.borderStrong}` }}
                   onClick={() => openModal('login')}>
-                  Log ind
+                  {t('landing.login')}
                 </button>
               </div>
               <p className="mb-0" style={{ color: colors.textMuted, fontSize: '0.85rem' }}>
-                Prøv demoen — ingen oprettelse nødvendig.
+                {t('landing.heroNote')}
               </p>
             </div>
             <div className="col-12 col-lg-6">
@@ -59,17 +61,17 @@ export function LandingPage() {
                 <div className="position-absolute bg-white rounded-3 p-3 d-none d-md-block"
                   style={{ bottom: -22, left: -22, boxShadow: '0 14px 40px rgba(10,25,41,0.16)', border: `1px solid ${colors.borderDefault}`, width: 220 }}>
                   <p className="mb-1" style={{ fontSize: '0.7rem', fontWeight: 700, color: colors.successText, textTransform: 'uppercase', letterSpacing: '0.06em' }}>
-                    Din booking
+                    {t('landing.cardLabel')}
                   </p>
                   <p className="mb-0 fw-semibold" style={{ fontSize: '0.88rem', color: colors.textPrimary, lineHeight: 1.4 }}>
-                    Onsdag 10:00 – 11:30<br />
-                    <span className="fw-normal" style={{ color: colors.textSecondary, fontSize: '0.82rem' }}>Vaskerum 1</span>
+                    {t('landing.cardTime')}<br />
+                    <span className="fw-normal" style={{ color: colors.textSecondary, fontSize: '0.82rem' }}>{t('landing.cardRoom')}</span>
                   </p>
                 </div>
                 <div className="position-absolute bg-white rounded-3 px-3 py-2 d-none d-md-flex align-items-center gap-2"
                   style={{ top: -18, right: -18, boxShadow: '0 14px 40px rgba(10,25,41,0.16)', border: `1px solid ${colors.borderDefault}` }}>
                   <span style={{ width: 8, height: 8, borderRadius: '50%', backgroundColor: colors.dotFree, flexShrink: 0 }} />
-                  <span style={{ fontSize: '0.82rem', fontWeight: 600, color: colors.textPrimary }}>6 ledige tider i dag</span>
+                  <span style={{ fontSize: '0.82rem', fontWeight: 600, color: colors.textPrimary }}>{t('landing.cardFreeToday')}</span>
                 </div>
               </div>
             </div>
@@ -84,14 +86,14 @@ export function LandingPage() {
             <div className="col-12 col-lg-8 text-center">
               <span className="d-inline-block mb-3 px-3 py-1 rounded-pill"
                 style={{ backgroundColor: colors.primaryLight, color: colors.primary, fontSize: '0.78rem', fontWeight: 600 }}>
-                Lavet til jeres forening
+                {t('landing.valueBadge')}
               </span>
               <h2 className="fw-bold mb-3"
                 style={{ fontSize: 'clamp(1.7rem, 3.5vw, 2.4rem)', letterSpacing: '-0.5px', color: colors.textPrimary, lineHeight: 1.2 }}>
-                Mindre besvær.<br />Bedre naboskab.
+                {t('landing.valueTitleLine1')}<br />{t('landing.valueTitleLine2')}
               </h2>
               <p className="mx-auto mb-0" style={{ color: colors.textSecondary, fontSize: '1.05rem', lineHeight: 1.6, maxWidth: 560 }}>
-                Bookingsedlen på væggen i kælderen er historie. LaundryBook giver jeres beboere et roligt sted at finde en ledig tid — og jer i bestyrelsen et klart overblik.
+                {t('landing.valueSubtitle')}
               </p>
             </div>
           </div>
@@ -103,18 +105,18 @@ export function LandingPage() {
               </div>
             </div>
             <div className="col-12 col-lg-6">
-              <p className="fw-semibold mb-2" style={{ color: colors.primary, fontSize: '0.85rem', letterSpacing: '0.04em', textTransform: 'uppercase' }}>For beboeren</p>
+              <p className="fw-semibold mb-2" style={{ color: colors.primary, fontSize: '0.85rem', letterSpacing: '0.04em', textTransform: 'uppercase' }}>{t('landing.residentEyebrow')}</p>
               <h3 className="fw-bold mb-3" style={{ fontSize: '1.8rem', color: colors.textPrimary, letterSpacing: '-0.3px' }}>
-                Book en vask på vej hjem fra arbejde
+                {t('landing.residentTitle')}
               </h3>
               <p style={{ color: colors.textSecondary, fontSize: '1rem', lineHeight: 1.7, maxWidth: 520 }}>
-                Se hvilke tider der er ledige i dag, i morgen, eller senere på ugen. Book med ét tryk.
+                {t('landing.residentBody')}
               </p>
               <ul className="list-unstyled mt-3">
-                {['Ledige tider vist med farvekoder', 'Aflys direkte i appen hvis planer ændrer sig', 'Virker på mobil, tablet og computer'].map(t => (
-                  <li key={t} className="d-flex align-items-start gap-2 mb-2" style={{ color: colors.textPrimary, fontSize: '0.95rem' }}>
+                {[t('landing.residentFeature1'), t('landing.residentFeature2'), t('landing.residentFeature3')].map(item => (
+                  <li key={item} className="d-flex align-items-start gap-2 mb-2" style={{ color: colors.textPrimary, fontSize: '0.95rem' }}>
                     <span className="flex-shrink-0" style={{ marginTop: 2 }}><IconCheck size={16} color={colors.primary} strokeWidth={2.5} /></span>
-                    {t}
+                    {item}
                   </li>
                 ))}
               </ul>
@@ -128,18 +130,18 @@ export function LandingPage() {
               </div>
             </div>
             <div className="col-12 col-lg-6">
-              <p className="fw-semibold mb-2" style={{ color: colors.primary, fontSize: '0.85rem', letterSpacing: '0.04em', textTransform: 'uppercase' }}>For bestyrelsen</p>
+              <p className="fw-semibold mb-2" style={{ color: colors.primary, fontSize: '0.85rem', letterSpacing: '0.04em', textTransform: 'uppercase' }}>{t('landing.boardEyebrow')}</p>
               <h3 className="fw-bold mb-3" style={{ fontSize: '1.8rem', color: colors.textPrimary, letterSpacing: '-0.3px' }}>
-                Ro i administrationen
+                {t('landing.boardTitle')}
               </h3>
               <p style={{ color: colors.textSecondary, fontSize: '1rem', lineHeight: 1.7, maxWidth: 520 }}>
-                Opret vaskerum, definér tidspladser og tilføj beboere. Én gang. Derefter passer systemet sig selv — og I kan fokusere på det, der faktisk kræver jeres tid.
+                {t('landing.boardBody')}
               </p>
               <ul className="list-unstyled mt-3">
-                {['Tilføj eller fjern beboere ved indflytning', 'Se hvem der har booket hvornår', 'Sæt bookingregler og synlighed for foreningen'].map(t => (
-                  <li key={t} className="d-flex align-items-start gap-2 mb-2" style={{ color: colors.textPrimary, fontSize: '0.95rem' }}>
+                {[t('landing.boardFeature1'), t('landing.boardFeature2'), t('landing.boardFeature3')].map(item => (
+                  <li key={item} className="d-flex align-items-start gap-2 mb-2" style={{ color: colors.textPrimary, fontSize: '0.95rem' }}>
                     <span className="flex-shrink-0" style={{ marginTop: 2 }}><IconCheck size={16} color={colors.primary} strokeWidth={2.5} /></span>
-                    {t}
+                    {item}
                   </li>
                 ))}
               </ul>
@@ -154,20 +156,20 @@ export function LandingPage() {
           <div className="row justify-content-center">
             <div className="col-12 col-lg-7 text-center text-white">
               <h2 className="fw-bold mb-3" style={{ fontSize: 'clamp(1.5rem, 3vw, 2rem)', letterSpacing: '-0.3px' }}>
-                Klar til at gøre vaskerummet nemmere?
+                {t('landing.ctaTitle')}
               </h2>
               <p className="mb-4" style={{ color: 'rgba(255,255,255,0.85)', fontSize: '1rem' }}>
-                Prøv en demo eller log ind for at komme i gang med jeres forening.
+                {t('landing.ctaBody')}
               </p>
               <div className="d-flex flex-column flex-sm-row justify-content-center gap-3">
                 <Link to="/demo" className="btn btn-lg fw-bold px-4 text-decoration-none d-inline-flex align-items-center justify-content-center"
                   style={{ backgroundColor: '#fff', color: colors.primary, borderRadius: 10, fontSize: '1rem', border: 'none' }}>
-                  Prøv demo
+                  {t('landing.tryDemo')}
                 </Link>
                 <button className="btn btn-lg fw-semibold px-4"
                   style={{ backgroundColor: 'transparent', color: '#fff', borderRadius: 10, fontSize: '1rem', border: '1px solid rgba(255,255,255,0.4)' }}
                   onClick={() => openModal('login')}>
-                  Log ind
+                  {t('landing.login')}
                 </button>
               </div>
             </div>

@@ -1,0 +1,992 @@
+{
+  "common": {
+    "close": "Luk",
+    "back": "Tilbage",
+    "save": "Gem",
+    "cancel": "Annuller",
+    "loading": "Indlæser…",
+    "genericError": "Noget gik galt. Prøv igen.",
+    "acceptTerms": "Jeg accepterer <terms>vilkårene</terms> og <privacy>privatlivspolitikken</privacy>"
+  },
+  "roles": {
+    "resident": "Beboer",
+    "complexAdmin": "Ejendomsadmin",
+    "orgAdmin": "Organisationsadmin",
+    "sysAdmin": "Systemadmin"
+  },
+  "nav": {
+    "laundry": "Vaskebooking",
+    "myPage": "Min side",
+    "overview": "Oversigt",
+    "properties": "Ejendomme",
+    "system": "System",
+    "admin": "Admin",
+    "logout": "Log ud",
+    "openSidebar": "Åbn sidepanel",
+    "openNavigation": "Åbn navigation",
+    "menu": "Menu",
+    "allProperties": "Alle ejendomme",
+    "property": "Ejendom",
+    "sectionAdministration": "Administration",
+    "users": "Brugere",
+    "settings": "Indstillinger",
+    "sectionLaundry": "Vaskerum",
+    "roomsAndMachines": "Lokaler & Maskiner",
+    "timeslots": "Tidspladser",
+    "bookings": "Bookinger",
+    "preview": "Forhåndsvisning"
+  },
+  "layout": {
+    "pendingApproval": "Jeres forening afventer godkendelse. I kan opsætte vaskerum og indstillinger, men kan først invitere beboere, når foreningen er aktiveret."
+  },
+  "adminProperties": {
+    "list": {
+      "title": "Ejendomme",
+      "countDescription_one": "1 ejendom under din administration",
+      "countDescription_other": "{{count}} ejendomme under din administration",
+      "emptyTitle": "Ingen ejendomme",
+      "emptyDescription": "Du har ikke adgang til nogen ejendomme endnu."
+    },
+    "settings": {
+      "title": "Indstillinger",
+      "description": "Gælder for alle beboere i denne ejendom.",
+      "loadError": "Kunne ikke indlæse indstillinger. Prøv at genindlæse siden.",
+      "saveError": "Kunne ikke gemme indstillinger. Prøv igen.",
+      "saving": "Gemmer…",
+      "save": "Gem indstillinger",
+      "undo": "Fortryd",
+      "saved": "Gemt ✓",
+      "bookingType": {
+        "title": "Bookingtype",
+        "description": "Bestemmer om beboerne booker et helt lokale eller en specifik maskine.",
+        "specificMachine": "Specifik maskine",
+        "specificMachineDesc": "Beboeren vælger præcis hvilken maskine eller tørretumbler de vil bruge.",
+        "entireRoom": "Helt lokale",
+        "entireRoomDesc": "Beboeren booker adgang til hele vaskerummet i det valgte tidsrum."
+      },
+      "visibility": {
+        "title": "Synlighed i bookingkalenderen",
+        "description": "Hvad ser andre beboere, når de kigger i bookingkalenderen?",
+        "apartmentOnly": "Lejlighedsnummer",
+        "apartmentOnlyDesc": "Andre beboere ser \"Lejl. 1A\" - navne vises ikke.",
+        "fullName": "Fuldt navn",
+        "fullNameDesc": "Andre beboere ser beboerens fulde navn, fx \"Anna Larsen\".",
+        "anonymous": "Anonymt",
+        "anonymousDesc": "Andre beboere ser kun \"Optaget\" - maksimal privatliv."
+      },
+      "lookahead": {
+        "title": "Fremtidshorisont",
+        "description": "Hvor mange dage frem kan beboere oprette bookinger? (1-30)",
+        "unit": "dage",
+        "rangeError": "Skal være mellem 1 og {{max}} dage."
+      },
+      "cancellation": {
+        "title": "Aflysningsfrist",
+        "description": "Beboere kan aflyse op til dette antal timer inden tidspladsen starter. Sæt til 0 for ingen frist.",
+        "unit": "timer",
+        "noLimit": "Ingen frist",
+        "rangeError": "Skal være mellem 0 og {{max}} timer."
+      },
+      "maxConcurrent": {
+        "title": "Maks. aktive bookinger pr. beboer",
+        "description": "Hvor mange kommende bookinger en beboer må have på samme tid. (1-10)",
+        "unit": "bookinger",
+        "rangeError": "Skal være mellem 1 og {{max}}."
+      }
+    },
+    "bookings": {
+      "title": "Bookinger",
+      "description": "Oversigt over alle bookinger i ejendommen.",
+      "loadError": "Kunne ikke indlæse bookinger. Prøv at genindlæse siden.",
+      "cancelError": "Bookingen kunne ikke aflyses. Prøv igen.",
+      "viewList": "Liste",
+      "viewCalendar": "Kalender"
+    },
+    "users": {
+      "title": "Brugere",
+      "invite": "Inviter beboer",
+      "pendingApprovalTooltip": "Foreningen skal godkendes, før I kan invitere beboere",
+      "loadError": "Kunne ikke indlæse brugere.",
+      "empty": "Ingen brugere endnu. Inviter den første beboer.",
+      "count_one": "{{count}} bruger",
+      "count_other": "{{count}} brugere",
+      "pending": "{{count}} afventer",
+      "colName": "Navn",
+      "colEmail": "Email",
+      "colApartment": "Lejlighed",
+      "colRole": "Rolle",
+      "colStatus": "Status"
+    },
+    "userRow": {
+      "sent": "Sendt",
+      "active": "Aktiv",
+      "deactivated": "Deaktiveret",
+      "notCreatedYet": "Ikke oprettet endnu",
+      "pending": "Afventer",
+      "apartment": "Lejl. {{number}}"
+    },
+    "actionMenu": {
+      "yes": "Ja",
+      "no": "Nej",
+      "actions": "Handlinger",
+      "removeUserConfirm": "Fjern bruger?",
+      "editRole": "Rediger rolle/lejl.",
+      "deactivateAccess": "Deaktiver adgang",
+      "activateAccess": "Aktiver adgang",
+      "forcePasswordReset": "Tving skift af adgangskode",
+      "removeFromProperty": "Fjern fra ejendom",
+      "deleteInviteConfirm": "Slet invitation?",
+      "resendInvite": "Gensend invitation",
+      "deleteInvite": "Slet invitation"
+    },
+    "laundryRooms": {
+      "title": "Lokaler & Maskiner",
+      "description": "Administrer vaskerum og maskiner for denne ejendom.",
+      "loadError": "Kunne ikke indlæse lokaler. Prøv at genindlæse siden.",
+      "addRoom": "Tilføj lokale",
+      "add": "Tilføj",
+      "emptyTitle": "Ingen lokaler endnu",
+      "emptyDescription": "Klik på \"Tilføj lokale\" for at oprette dit første vaskerum.",
+      "machineCount_one": "{{count}} maskine",
+      "machineCount_other": "{{count}} maskiner",
+      "deleting": "Sletter…",
+      "confirmDelete": "Bekræft slet",
+      "confirm": "Bekræft",
+      "editRoom": "Rediger lokale",
+      "delete": "Slet",
+      "edit": "Rediger",
+      "addMachine": "Tilføj maskine",
+      "noMachines": "Ingen maskiner. Tilføj den første maskine nedenfor.",
+      "colName": "Navn",
+      "colType": "Type",
+      "nameLabel": "Navn",
+      "descriptionLabel": "Beskrivelse (valgfri)",
+      "typeLabel": "Type",
+      "roomNamePlaceholder": "f.eks. Kældervaskerum",
+      "descriptionPlaceholder": "f.eks. Ved parkeringskælderen",
+      "machineNamePlaceholder": "f.eks. Vaskemaskine 1",
+      "creating": "Opretter…",
+      "createRoom": "Opret lokale",
+      "createRoomError": "Kunne ikke oprette lokale. Prøv igen.",
+      "createMachine": "Opret maskine",
+      "createMachineError": "Kunne ikke oprette maskine. Prøv igen.",
+      "saving": "Gemmer…",
+      "saveChanges": "Gem ændringer",
+      "saveError": "Kunne ikke gemme ændringer. Prøv igen.",
+      "addMachineTitle": "Tilføj maskine - {{room}}",
+      "editMachine": "Rediger maskine",
+      "machineType": {
+        "washer": "Vaskemaskine",
+        "dryer": "Tørretumbler",
+        "combi": "Kombi",
+        "combiOption": "Kombi (vask+tørr)"
+      }
+    },
+    "timeslots": {
+      "title": "Tidspladser",
+      "description": "Tidspladsskabeloner gentages dagligt og gælder på ubestemt tid.",
+      "loadError": "Kunne ikke indlæse lokaler. Prøv at genindlæse siden.",
+      "emptyTitle": "Ingen lokaler endnu",
+      "emptyDescription": "Opret vaskerum under \"Lokaler & Maskiner\" først, inden du tilføjer tidspladser.",
+      "saveError": "Ikke alle ændringer kunne gemmes. Prøv igen.",
+      "noSlots": "Ingen tidspladser - brug generatoren ovenfor eller tilføj manuelt.",
+      "addSingleSlot": "Tilføj enkelt tidsplads",
+      "quickTemplates": "Hurtigskabeloner",
+      "previewLabel_one": "{{count}} tidsplads · erstatter nuværende",
+      "previewLabel_other": "{{count}} tidspladser · erstatter nuværende",
+      "invalidWindow": "Ugyldig tidsramme",
+      "generateSchedule": "Generer tidsplan",
+      "from": "Fra",
+      "to": "Til",
+      "durationPerSlot": "Varighed pr. plads",
+      "generate": "Generer",
+      "colTimeRange": "Tidsrum",
+      "new": "Ny",
+      "remove": "Fjern",
+      "removeFromList": "Fjern fra listen",
+      "savedCancelled_one": "Gemt · {{count}} aktiv booking annulleret automatisk",
+      "savedCancelled_other": "Gemt · {{count}} aktive bookinger annulleret automatisk",
+      "unsavedChanges": "Ugemte ændringer",
+      "discard": "Kassér",
+      "saving": "Gemmer…",
+      "saveChanges": "Gem ændringer",
+      "addSlotTitle": "Tilføj tidsplads - {{room}}",
+      "startTime": "Starttidspunkt",
+      "duration": "Varighed",
+      "endsAt": "Slutter:",
+      "exceedsMidnight": "Overskrider midnat",
+      "add": "Tilføj",
+      "removeSlotsTitle": "Fjern tidspladser?",
+      "aboutToRemove_one": "Du er ved at fjerne {{count}} tidsplads:",
+      "aboutToRemove_other": "Du er ved at fjerne {{count}} tidspladser:",
+      "futureBookingsWarning": "Alle fremtidige aktive bookinger på disse tidspladser annulleres automatisk.",
+      "removeAndCancel": "Fjern og annullér bookinger",
+      "hour": "Time",
+      "minute": "Minut"
+    },
+    "preview": {
+      "title": "Forhåndsvisning",
+      "description": "Simulér beboernes bookingoplevelse med testbrugere",
+      "descriptionShort": "Simulér beboernes bookingoplevelse",
+      "noActiveRooms": "Ingen aktive vaskerum",
+      "noActiveRoomsDesc": "Opret et vaskerum under Lokaler & Maskiner for at se forhåndsvisningen.",
+      "adminSimSettings": "Admin · Simuleringsindstillinger",
+      "reset": "Nulstil",
+      "viewingAs": "Viser som:",
+      "room": "Vaskerum:",
+      "residentView": "Beboervisning",
+      "nextBookingLabel": "{{name}}s næste booking",
+      "cancel": "Aflys",
+      "book": "Book",
+      "previousWeek": "Forrige uge",
+      "nextWeek": "Næste uge",
+      "myBooking": "Min booking",
+      "resident": "Beboer",
+      "occupied": "Optaget",
+      "apartmentLabel": "Lejl. {{number}}",
+      "othersBookedToday_one": "1 anden beboer har booket denne dag",
+      "othersBookedToday_other": "{{count}} andre beboere har booket denne dag",
+      "visibilityFullName": "Navn synligt",
+      "visibilityApartment": "Lejl. nr.",
+      "visibilityAnonymous": "Anonymt",
+      "modeSpecificMachine": "Specifik maskine",
+      "modeEntireRoom": "Helt lokale",
+      "cancelWithinHours": "Aflys inden {{hours}}t",
+      "cancelWithinMinutes": "Aflys inden {{minutes}} min",
+      "maxBookings": "Max {{count}} booking",
+      "daysAhead": "{{count}} dage frem",
+      "confirmBookTitle": "Bekræft booking",
+      "confirmCancelTitle": "Bekræft aflysning",
+      "confirmBookQuestion": "Book <s>{{slotTime}}</s> den {{dateLabel}} som <s>{{userName}}</s>?",
+      "confirmCancelQuestion": "Aflys booking <s>{{slotTime}}</s> den {{dateLabel}}?",
+      "timeWarningMinutes": "Der er kun {{minutes}} minutter til bookingen starter.",
+      "timeWarningHours_one": "Der er {{count}} time til bookingen starter.",
+      "timeWarningHours_other": "Der er {{count}} timer til bookingen starter.",
+      "previewNotice": "Dette er en forhåndsvisning - ingen rigtige bookinger oprettes.",
+      "userActiveBookings_one": "{{name}} har {{count}} aktiv booking",
+      "userActiveBookings_other": "{{name}} har {{count}} aktive bookinger",
+      "maxLabel": "(maks. {{count}})"
+    }
+  },
+  "auth": {
+    "login": "Log ind",
+    "loginSubtitle": "Velkommen tilbage til LaundryBook.",
+    "loginFailed": "Login mislykkedes. Prøv igen.",
+    "loggingIn": "Logger ind…",
+    "emailPlaceholder": "Email",
+    "passwordPlaceholder": "Adgangskode",
+    "forgotPasswordLink": "Glemt adgangskode?",
+    "getStartedPrompt": "Skal jeres forening med på LaundryBook?",
+    "createAssociation": "Opret forening",
+    "forgotPasswordTitle": "Glemt adgangskode",
+    "forgotSentMessage": "Hvis din e-mail er registreret, modtager du snart et link til at nulstille din adgangskode.",
+    "backToLogin": "← Tilbage til login",
+    "forgotInstructions": "Indtast din email, så sender vi dig et nulstillingslink.",
+    "sending": "Sender…",
+    "sendResetLink": "Send nulstillingslink"
+  },
+  "profile": {
+    "cancelBooking": "Aflys",
+    "upcomingBookings": "Kommende bookinger",
+    "noUpcomingBookings": "Ingen kommende bookinger",
+    "pastBookings": "Tidligere bookinger",
+    "noPastBookings": "Ingen tidligere bookinger",
+    "yourInfo": "Dine oplysninger",
+    "firstName": "Fornavn",
+    "lastName": "Efternavn",
+    "emailAddress": "E-mailadresse",
+    "emailCannotChange": "E-mail kan ikke ændres.",
+    "apartmentNumber": "Lejlighedsnummer",
+    "infoSaved": "Dine oplysninger er gemt.",
+    "saving": "Gemmer…",
+    "sending": "Sender…",
+    "saveChanges": "Gem ændringer",
+    "saveFailed": "Kunne ikke gemme. Prøv igen.",
+    "password": "Adgangskode",
+    "passwordResetInfo": "Vi sender dig et link til at nulstille din adgangskode.",
+    "resetSent": "Tjek din indbakke - linket er på vej.",
+    "resetPassword": "Nulstil adgangskode"
+  },
+  "properties": {
+    "createProperty": "Opret ejendom",
+    "creating": "Opretter…",
+    "createFailed": "Noget gik galt. Prøv igen.",
+    "name": "Navn",
+    "namePlaceholder": "Ejendomsnavn",
+    "address": "Adresse",
+    "addressPlaceholder": "Gade 1, 8000 Aarhus C",
+    "properties": "Ejendomme",
+    "loading": "Indlæser…",
+    "noPropertiesYet": "Ingen ejendomme endnu.",
+    "memberCount_one": "{{count}} bruger",
+    "memberCount_other": "{{count}} brugere",
+    "inviteAdmin": "Inviter admin",
+    "apartmentShort": "Lejl. {{number}}",
+    "quickLinkUsers": "Brugere",
+    "quickLinkSettings": "Indstillinger",
+    "quickLinkLaundry": "Vaskerum",
+    "quickLinkBookings": "Bookinger"
+  },
+  "sysadmin": {
+    "manageAccess": "Administrer adgang",
+    "currentProperties": "Nuværende ejendomme",
+    "loading": "Indlæser…",
+    "noProperties": "Ingen ejendomme.",
+    "active": "Aktiv",
+    "inactive": "Inaktiv",
+    "remove": "Fjern",
+    "addToProperty": "Tilføj til ejendom",
+    "selectProperty": "Vælg ejendom...",
+    "add": "Tilføj",
+    "pendingApproval": "Afventer godkendelse",
+    "noPendingApproval": "Ingen foreninger afventer godkendelse.",
+    "unknown": "Ukendt",
+    "createdOn": "oprettet {{date}}",
+    "activating": "Aktiverer…",
+    "activate": "Aktivér",
+    "users": "Brugere",
+    "searchPlaceholder": "Søg på navn eller e-mail...",
+    "name": "Navn",
+    "email": "E-mail",
+    "properties": "Ejendomme",
+    "noUsersFound": "Ingen brugere fundet.",
+    "showingUsers": "Viser {{from}}-{{to}} af {{total}} brugere",
+    "previous": "← Forrige",
+    "next": "Næste →"
+  },
+  "users": {
+    "editMember": "Rediger - {{name}}",
+    "role": "Rolle",
+    "apartment": "Lejlighed",
+    "optional": "(valgfri)",
+    "apartmentPlaceholder": "fx 1A",
+    "apartmentPlaceholderShort": "1A",
+    "saveFailed": "Kunne ikke gemme ændringer. Prøv igen.",
+    "saving": "Gemmer…",
+    "inviteSent": "Invitation sendt!",
+    "inviteEmailSentMessage": "{{email}} modtager en e-mail med link til at oprette adgangskode.",
+    "email": "E-mail",
+    "emailPlaceholder": "beboer@example.com",
+    "sending": "Sender…",
+    "sendInvitation": "Send invitation",
+    "inviteUser": "Inviter bruger",
+    "emailInviteTab": "E-mail invitation",
+    "qrTab": "QR-kode",
+    "qrMassDescription": "Udskriv og hæng op i opgangen. Alle der scanner kan oprette sig. Udløber om 1 år.",
+    "qrSpecificDescription": "Send eller vis QR-koden til beboeren. Udløber om 7 dage.",
+    "massInvite": "Masse-invitation",
+    "print": "Udskriv",
+    "generateNew": "Generer nyt",
+    "qrModeSpecific": "Til én bestemt beboer. Kan kun bruges én gang og udløber om 7 dage.",
+    "qrModeMass": "Kan bruges af alle. Udskriv og hæng op i opgangen. Beboeren angiver selv lejlighedsnummer.",
+    "generating": "Genererer…",
+    "generateMassQr": "Generer masse-QR",
+    "generateQr": "Generer QR-kode",
+    "specificResident": "Specifik beboer"
+  },
+  "laundry": {
+    "actions": {
+      "book": "Book",
+      "cancelBooking": "Aflys"
+    },
+    "machineType": {
+      "washer": "Vaskemaskine",
+      "dryer": "Tørretumbler",
+      "washerDryer": "Vaske/tørre"
+    },
+    "apartmentShort": "Lejl. {{number}}",
+    "confirmBooking": {
+      "titleBook": "Bekræft booking",
+      "titleCancel": "Aflys booking",
+      "promptBook": "Vil du booke <s>{{slotTime}}</s> den <s>{{dateText}}</s>?",
+      "promptBookWithMachine": "Vil du booke <s>{{slotTime}}</s> på <s>{{machineName}}</s> den <s>{{dateText}}</s>?",
+      "promptCancel": "Vil du aflyse din booking kl. <s>{{slotTime}}</s> den <s>{{dateText}}</s>?",
+      "promptCancelWithMachine": "Vil du aflyse din booking kl. <s>{{slotTime}}</s> på <s>{{machineName}}</s> den <s>{{dateText}}</s>?",
+      "warningMinutes": "Der er kun {{count}} minutter til din booking starter.",
+      "warningHours_one": "Der er {{count}} time til din booking starter.",
+      "warningHours_other": "Der er {{count}} timer til din booking starter."
+    },
+    "stats": {
+      "bookingsInPeriod": "Bookinger i perioden",
+      "activeResidents": "Aktive beboere",
+      "roomsInUse": "Vaskerum i brug",
+      "utilizationHeader": "Belægning pr. vaskerum · i perioden",
+      "roomUtilization_one": "{{count}} booking · {{utilization}}%",
+      "roomUtilization_other": "{{count}} bookinger · {{utilization}}%"
+    },
+    "calendar": {
+      "noRoomsTitle": "Ingen aktive vaskerum",
+      "noRoomsDescription": "Aktivér et vaskerum for at se kalenderen.",
+      "prevWeek": "Forrige uge",
+      "nextWeek": "Næste uge",
+      "noSlots": "Ingen tidspladser opsat for dette lokale.",
+      "bookingCellTitle": "{{name}} - klik for at aflyse"
+    },
+    "list": {
+      "emptyTitle": "Ingen bookinger i perioden",
+      "emptyDescription": "Der blev ikke booket tider i det valgte tidsrum.",
+      "bookingCount_one": "{{count}} booking",
+      "bookingCount_other": "{{count}} bookinger"
+    },
+    "adminCancel": {
+      "title": "Aflys booking",
+      "prompt": "Aflys <s>{{slotTime}}</s> den {{dateLabel}} i <s>{{roomName}}</s>?",
+      "bookedBy": "Booket af {{name}}. Beboeren får frigivet tidspladsen.",
+      "keep": "Behold",
+      "cancelling": "Aflyser…"
+    },
+    "periodNav": {
+      "prev": "Tidligere periode",
+      "next": "Senere periode",
+      "jumpToToday": "Spring til i dag"
+    },
+    "grid": {
+      "noSlotsTitle": "Ingen tider opsat endnu",
+      "noSlotsDescription": "Administratoren har ikke konfigureret tidspladser for dette lokale.",
+      "noMachinesTitle": "Ingen maskiner opsat endnu",
+      "noMachinesDescription": "Administratoren har ikke tilføjet maskiner til dette lokale.",
+      "limitReachedTitle": "Du har nået din bookinggrænse.",
+      "limitReachedHint": "Aflys en aktiv booking for at frigøre en plads.",
+      "noAvailableToday": "Ingen ledige tider denne dag."
+    },
+    "slot": {
+      "past": "Passeret",
+      "unavailable": "Ikke tilgængeligt",
+      "myBooking": "Min booking",
+      "fullyBooked": "Fuldt booket",
+      "freeCount": "{{free}} af {{total}} ledige",
+      "deadlinePassed": "Frist udløbet",
+      "limitReached": "Grænse nået",
+      "cancelDeadlinePassed": "Aflysfrist udløbet"
+    },
+    "upcoming": {
+      "title": "Mine kommende bookinger"
+    },
+    "template": {
+      "standard": "Standard",
+      "compact": "Kompakt",
+      "halfDay": "Halvdag"
+    }
+  },
+  "dashboard": {
+    "loggedInAs": "Logget ind som <s>{{email}}</s>"
+  },
+  "join": {
+    "invalidLinkTitle": "Ugyldigt eller udløbet invitationslink",
+    "invalidLinkBody": "Bed din administrator om at sende et nyt link.",
+    "genericError": "Noget gik galt. Prøv igen.",
+    "title": "Opret din konto",
+    "subtitle": "Du er inviteret til LaundryBook",
+    "firstName": "Fornavn",
+    "lastName": "Efternavn",
+    "email": "E-mail",
+    "emailPlaceholder": "din@email.dk",
+    "password": "Adgangskode",
+    "passwordPlaceholder": "Mindst 6 tegn",
+    "apartment": "Lejlighedsnummer",
+    "optional": "(valgfri)",
+    "apartmentPlaceholder": "fx 1A",
+    "creatingAccount": "Opretter konto…",
+    "submit": "Opret konto og log ind"
+  },
+  "landing": {
+    "heroBadge": "Til danske ejer- og andelsboligforeninger",
+    "heroTitle": "Et vaskerum uden <s>drama</s>.",
+    "heroSubtitle": "Slut med at gå i kælderen for at se, om der er en ledig vasketid. Med LaundryBook booker beboerne hjemmefra, og bestyrelsen har styr på resten. Ingen sedler, ingen nøgler, ingen tur ned ad trappen forgæves.",
+    "tryDemo": "Prøv demo",
+    "login": "Log ind",
+    "heroNote": "Prøv demoen - ingen oprettelse nødvendig.",
+    "cardLabel": "Din booking",
+    "cardTime": "Onsdag 10:00 - 11:30",
+    "cardRoom": "Vaskerum 1",
+    "cardFreeToday": "6 ledige tider i dag",
+    "valueBadge": "Lavet til jeres forening",
+    "valueTitleLine1": "Mindre besvær.",
+    "valueTitleLine2": "Bedre naboskab.",
+    "valueSubtitle": "Bookingsedlen i kælderen har haft sin tid. LaundryBook giver beboerne et sted at finde en ledig tid - og bestyrelsen overblikket, uden en masse besvær.",
+    "residentEyebrow": "For beboeren",
+    "residentTitle": "Book en vask på vej hjem fra arbejde",
+    "residentBody": "Se hvilke tider der er ledige i dag, i morgen, eller senere på ugen. Book med ét tryk.",
+    "residentFeature1": "Ledige tider vist med farvekoder",
+    "residentFeature2": "Aflys direkte i appen hvis planer ændrer sig",
+    "residentFeature3": "Virker på mobil, tablet og computer",
+    "boardEyebrow": "For bestyrelsen",
+    "boardTitle": "Mindre bøvl for bestyrelsen",
+    "boardBody": "Opret vaskerum, definér tidspladser og tilføj beboere. Én gang. Derefter passer systemet sig selv - og I kan fokusere på det, der faktisk kræver jeres tid.",
+    "boardFeature1": "Tilføj eller fjern beboere ved indflytning",
+    "boardFeature2": "Se hvem der har booket hvornår",
+    "boardFeature3": "Sæt bookingregler og synlighed for foreningen",
+    "ctaTitle": "Klar til at gøre vaskerummet nemmere?",
+    "ctaBody": "Prøv en demo eller log ind for at komme i gang med jeres forening."
+  },
+  "notFound": {
+    "title": "Siden blev ikke fundet",
+    "body": "Den side du leder efter eksisterer ikke eller er blevet flyttet.",
+    "goHome": "Gå til forsiden"
+  },
+  "signup": {
+    "genericError": "Noget gik galt. Prøv igen.",
+    "title": "Opret jeres forening",
+    "subtitle": "Vi aktiverer foreningen, så snart vi har set den.",
+    "firstName": "Fornavn",
+    "lastName": "Efternavn",
+    "email": "E-mail",
+    "emailPlaceholder": "din@email.dk",
+    "password": "Adgangskode",
+    "passwordPlaceholder": "Mindst 6 tegn",
+    "propertyName": "Foreningens navn",
+    "propertyNamePlaceholder": "fx A/B Solbakken",
+    "address": "Adresse",
+    "addressPlaceholder": "fx Solbakkevej 1, 8000 Aarhus C",
+    "creating": "Opretter…",
+    "submit": "Opret forening",
+    "alreadyHaveAccount": "Har du allerede en konto?",
+    "login": "Log ind",
+    "backToHome": "← Tilbage til forsiden"
+  },
+  "laundryPage": {
+    "genericError": "Der opstod en fejl. Prøv igen.",
+    "notLinkedDescription": "Du er ikke tilknyttet nogen ejendom endnu.",
+    "description": "Book en ledig vasketid i dit vaskerum.",
+    "selectRoom": "Vælg et vaskerum herover.",
+    "othersBooked_one": "{{count}} anden beboer har booket denne dag",
+    "othersBooked_other": "{{count}} andre beboere har booket denne dag",
+    "milestone": "Du har nu booket {{count}} gange - vaskerummet kender dig efterhånden.",
+    "goToBooking": "Gå til booking"
+  },
+  "adminDashboard": {
+    "greeting": "Velkommen tilbage, {{name}}{{roleSuffix}}",
+    "statActiveBookingsLabel": "Aktive bookinger",
+    "statActiveBookingsSub": "i dag",
+    "statResidentsLabel": "Beboere",
+    "statResidentsSub": "registrerede",
+    "statRoomsLabel": "Vaskerum",
+    "statRoomsSub": "aktive",
+    "propertiesHeading": "Dine ejendomme",
+    "seeAll": "Se alle →"
+  },
+  "sysadminPage": {
+    "subtitle": "Kun synlig for systemadministratorer"
+  },
+  "public": {
+    "layout": {
+      "nav": {
+        "features": "Hvorfor LaundryBook",
+        "demo": "Demo",
+        "faq": "FAQ",
+        "about": "Om os",
+        "privacy": "Privatlivspolitik",
+        "terms": "Vilkår"
+      },
+      "login": "Log ind",
+      "getStarted": "Kom i gang",
+      "footer": {
+        "product": "Produkt",
+        "company": "Selskab",
+        "contact": "Kontakt",
+        "tagline": "Digital vaskebooking til danske ejer- og andelsboligforeninger. Lavet i Aarhus, om aftenen, af én der var træt af trapper.",
+        "legal": "Juridisk"
+      }
+    },
+    "getStarted": {
+      "eyebrow": "Til danske ejer- og andelsboligforeninger",
+      "title": "Få jeres forening i gang",
+      "subtitle": "Opret jeres forening med det samme. Vi aktiverer den, så snart vi har set den, og I kan sætte vaskerum og beboere op.",
+      "createAssociation": "Opret forening",
+      "tryDemoFirst": "Prøv demo først",
+      "alreadyHaveAccount": "Har du allerede en konto?",
+      "loginHere": "Log ind her",
+      "trust": {
+        "support": "Dansk support via mail",
+        "browser": "Virker i browseren - ingen app at installere",
+        "invite": "Beboere inviteres med et link"
+      },
+      "ctaTitle": "Klar til at komme af med bookingbøvlet?",
+      "ctaSubtitle": "Opret jeres forening - det tager et øjeblik."
+    },
+    "getStartedSteps": {
+      "eyebrow": "Sådan fungerer det",
+      "items": {
+        "account": {
+          "title": "Opret konto",
+          "body": "Email og kodeord - tager under et minut."
+        },
+        "property": {
+          "title": "Opret din ejendom",
+          "body": "Navn, adresse og antal lejligheder. Vi sætter resten op for dig."
+        },
+        "rooms": {
+          "title": "Opsæt vaskerum",
+          "body": "Tilføj rum og definer tidspladser én gang. Systemet kører derefter selv."
+        },
+        "invite": {
+          "title": "Inviter beboere",
+          "body": "Send et link - beboerne opretter sig selv på få sekunder."
+        }
+      }
+    },
+    "faq": {
+      "eyebrow": "Ofte stillede spørgsmål",
+      "title": "Svarene på det, vi oftest bliver spurgt om",
+      "subtitle": "Finder I ikke det I leder efter? Skriv til {{email}}.",
+      "moreDoubtsTitle": "Andet I er i tvivl om?",
+      "moreDoubtsSubtitle": "Skriv til os, så vender vi tilbage.",
+      "groups": {
+        "washingBookingStart": {
+          "title": "Vask, booking og opstart",
+          "items": {
+            "booking": {
+              "q": "Hvordan booker beboerne en vask?",
+              "a": "De logger ind og vælger en ledig tid i kalenderen for jeres vaskerum. Ledige tider er grønne, optagede er grå. Book med ét klik - og aflys igen, hvis planerne ændrer sig."
+            },
+            "join": {
+              "q": "Hvordan kommer en beboer med?",
+              "a": "En administrator i foreningen inviterer beboeren med et link. Beboeren opretter selv sin konto via invitationen."
+            },
+            "mobile": {
+              "q": "Virker det på mobil?",
+              "a": "Ja. LaundryBook kører direkte i browseren på mobil, tablet og computer - ingen app at installere. I kan lægge en genvej på hjemmeskærmen, hvis I vil have det som en app."
+            },
+            "pricing": {
+              "q": "Hvordan får vi vores forening på LaundryBook, og hvad koster det?",
+              "a": "Skriv til os på {{email}}, så sætter vi jeres forening op og fortæller jer prisen."
+            }
+          }
+        }
+      }
+    },
+    "features": {
+      "eyebrow": "Hvorfor LaundryBook",
+      "title": "Vaskerummet skal ikke fylde mere end det behøver",
+      "subtitle": "LaundryBook løser én lille, men bøvlet del af det at bo sammen: vasketiderne. Sådan gør det i praksis:",
+      "big": {
+        "booking": {
+          "tag": "Booking",
+          "title": "Som at se vejrudsigten for vaskerummet",
+          "body": "Ledige tider er grønne, travle er gule, optagede er grå. Vælg en dag i ugen, find et tidsrum der passer, book med ét klik. Færdig. Alle i foreningen ser den samme kalender i samme sekund."
+        },
+        "administration": {
+          "tag": "Administration",
+          "title": "Sæt det op én gang. Glem det så.",
+          "body": "Bestyrelsen opretter vaskerum, tidspladser og lister over lejligheder. Nye beboere tilføjes med email. Gamle beboere fjernes igen. Hverken mere eller mindre."
+        },
+        "overview": {
+          "tag": "Overblik",
+          "title": "Tal til generalforsamlingen",
+          "body": "Hvor mange vaske om ugen? Hvornår er der run på? Er der brug for et vaskerum mere? Tallene er der, når I skal bruge dem."
+        }
+      },
+      "smallSectionTitle": "Flere små ting der gør det nemmere",
+      "small": {
+        "slots": {
+          "title": "Fleksible tidspladser",
+          "body": "Definér selv længden på vaskeslots - 90 min, 2 timer, aftenslot indtil 22."
+        },
+        "roles": {
+          "title": "Flere roller",
+          "body": "Beboer, ejendomsadmin og systemadmin. Alle ser det de skal."
+        },
+        "rooms": {
+          "title": "Flere vaskerum pr. ejendom",
+          "body": "Har I to kældre? Intet problem. Hver får sin egen kalender."
+        }
+      },
+      "beforeAfterTitle": "Før og efter LaundryBook",
+      "beforeLabel": "Før",
+      "afterLabel": "Efter",
+      "before": {
+        "note": "Seddel i kælderen der forsvinder",
+        "sms": "Nabo-SMS: \"Har du taget lørdag 14-16?\"",
+        "doubleBooking": "Dobbeltbookinger og sur-tøj",
+        "noInsight": "Ingen ved hvad vaskerummet faktisk bruges til"
+      },
+      "after": {
+        "calendar": "En digital kalender alle beboere kender",
+        "bookFromSofa": "Book fra sofaen, aflys når planerne skifter",
+        "noDoubleBooking": "Ingen dobbeltbookinger - systemet tillader det ikke",
+        "boardInsight": "Bestyrelsen ser mønstre og kan planlægge vedligehold"
+      },
+      "ctaTitle": "Den bedste måde at se det på er at prøve det",
+      "ctaButton": "Prøv demoen"
+    },
+    "demo": {
+      "eyebrow": "Prøv uden login",
+      "title": "Book en vask. Nu. Her.",
+      "subtitle": "Det her er den rigtige booking - bare med en opdigtet forening. Prøv at booke en tid, aflys igen, skift dag. Sådan ser det ud for jeres beboere.",
+      "browserBar": "laundrybook.dk/laundry · Mejlgade 42 (demo)",
+      "noDataStored": "Ingen data gemmes. Opdater siden for at nulstille demoen.",
+      "tipsTitle": "Prøv disse ting i demoen",
+      "tips": {
+        "book": "Klik på en ledig tid i listen for at booke",
+        "switchDay": "Skift dag med pileknapperne i datorækken",
+        "cancel": "Aflys din booking med den røde knap",
+        "dots": "Læg mærke til prikkerne - grøn = ledig, gul = næsten fuld, grå = optaget"
+      }
+    },
+    "adminDemo": {
+      "eyebrow": "Admin-panelet",
+      "title": "Fuld kontrol til bestyrelsen",
+      "subtitle": "Opsæt bookingregler, inviter beboere og se alt fra ét sted - ingen teknisk viden krævet.",
+      "browserBar": "laundrybook.dk/admin · Mejlgade 42 (demo)",
+      "ctaButton": "Opret jeres forening →",
+      "ctaNote": "Vi aktiverer foreningen, så snart vi har set den.",
+      "roleAdmin": "Admin",
+      "tabs": {
+        "users": "Beboere",
+        "rooms": "Lokaler"
+      },
+      "dashboard": {
+        "welcome": "Velkommen tilbage, Sigurd",
+        "yourProperties": "Dine ejendomme",
+        "stats": {
+          "bookings": {
+            "label": "Aktive bookinger",
+            "sub": "i dag"
+          },
+          "residents": {
+            "label": "Beboere",
+            "sub": "registrerede"
+          },
+          "rooms": {
+            "label": "Vaskerum",
+            "sub": "aktive"
+          }
+        }
+      },
+      "users": {
+        "subtitle": "Mejlgade 42 · {{count}} beboere",
+        "invite": "Inviter beboer",
+        "apt": "Lejl. {{apt}}",
+        "pendingInvite_one": "+ {{count}} invitation afventer svar",
+        "pendingInvite_other": "+ {{count}} invitationer afventer svar"
+      },
+      "rooms": {
+        "roomName1": "Vaskerum 1",
+        "roomName2": "Vaskerum 2",
+        "washerA": "Vaskemaskine A",
+        "dryerB": "Tørretumbler B",
+        "washerC": "Vaskemaskine C",
+        "washerD": "Vaskemaskine D",
+        "addRoom": "Tilføj lokale",
+        "active": "Aktiv"
+      },
+      "settings": {
+        "subtitle": "Mejlgade 42 · Gælder for alle beboere.",
+        "bookingType": {
+          "label": "Bookingtype",
+          "description": "Hvad booker beboerne?",
+          "specificMachine": {
+            "label": "Specifik maskine",
+            "desc": "Beboeren vælger præcis hvilken maskine"
+          },
+          "entireRoom": {
+            "label": "Helt lokale",
+            "desc": "Beboeren booker adgang til hele vaskerummet"
+          }
+        },
+        "visibility": {
+          "label": "Synlighed i kalenderen",
+          "description": "Hvad ser andre beboere?",
+          "apartment": {
+            "label": "Lejlighedsnummer",
+            "desc": "Andre ser \"Lejl. 1A\" - navne vises ikke"
+          },
+          "fullName": {
+            "label": "Fuldt navn",
+            "desc": "Andre ser beboerens fulde navn"
+          },
+          "anonymous": {
+            "label": "Anonymt",
+            "desc": "Andre ser kun \"Optaget\""
+          }
+        },
+        "horizon": {
+          "label": "Fremtidshorisont",
+          "value": "14 dage"
+        },
+        "cancelDeadline": {
+          "label": "Aflysningsfrist",
+          "value": "2 timer"
+        },
+        "maxBookings": {
+          "label": "Maks. bookinger",
+          "value": "2 pr. beboer"
+        }
+      }
+    },
+    "residentDemo": {
+      "subtitle": "Vaskerum 1 · Mejlgade 42 (demo)",
+      "myBooking": "Min booking",
+      "busy": "Optaget",
+      "nextBooking": "Din næste booking",
+      "cancelBooking": "Aflys",
+      "book": "Book",
+      "prevWeek": "Forrige uge",
+      "nextWeek": "Næste uge",
+      "today": "i dag",
+      "tomorrow": "i morgen",
+      "daysShort": {
+        "sun": "sø",
+        "mon": "ma",
+        "tue": "ti",
+        "wed": "on",
+        "thu": "to",
+        "fri": "fr",
+        "sat": "lø"
+      },
+      "daysLong": {
+        "sun": "Søndag",
+        "mon": "Mandag",
+        "tue": "Tirsdag",
+        "wed": "Onsdag",
+        "thu": "Torsdag",
+        "fri": "Fredag",
+        "sat": "Lørdag"
+      },
+      "monthsShort": {
+        "jan": "jan",
+        "feb": "feb",
+        "mar": "mar",
+        "apr": "apr",
+        "may": "maj",
+        "jun": "jun",
+        "jul": "jul",
+        "aug": "aug",
+        "sep": "sep",
+        "oct": "okt",
+        "nov": "nov",
+        "dec": "dec"
+      },
+      "modal": {
+        "confirmBookTitle": "Bekræft booking",
+        "confirmCancelTitle": "Bekræft aflysning",
+        "bookBody": "<s>{{slotTime}}</s> den {{dateLabel}}",
+        "cancelBody": "Aflys <s>{{slotTime}}</s> den {{dateLabel}}?",
+        "demoNote": "Dette er en demo - ingen rigtige bookinger oprettes."
+      }
+    },
+    "about": {
+      "eyebrow": "Om LaundryBook",
+      "title": "Det startede fire sale oppe",
+      "lead": "Vasketider burde være nemme. Her er problemet, vi satte os for at løse.",
+      "storyTitle": "Historien",
+      "story1": "Kender du det? Du skal vaske, men først må du hele vejen ned i kælderen for at se, om der overhovedet er en ledig tid. Som regel er der ikke - dagen er booket.",
+      "story2": "Du kan ikke booke hjemmefra. Du skal stå i kælderen for at se skemaet og skrive dig på. Og en travl hverdag bliver lagt om efter vaskeskemaet, fordi man opdager for sent, at hele dagen er taget.",
+      "story3": "Det problem oplevede vi selv - så derfor byggede vi LaundryBook. En vaskebooking, du kan tjekke og bruge hjemmefra, så turen i kælderen kun handler om at vaske.",
+      "honestTitle": "Sådan gør vi",
+      "honest1": "LaundryBook gør én ting og gør den ordentligt: vasketider. Ingen overflødige funktioner og ingen app at installere - bare en kalender, som alle i foreningen kan finde ud af.",
+      "honest2": "Hver ny forening bliver godkendt, før den går live. Det holder systemet trygt og rent, så I kan stole på, at kalenderen passer.",
+      "honest3": "Vi bygger videre på LaundryBook hele tiden. Har I ønsker eller idéer, så sig til - vi lytter gerne.",
+      "factsTitle": "Kort fortalt",
+      "factLocation": "Lavet i Aarhus",
+      "factBrowser": "Kører i browseren - ingen app at installere",
+      "factAudience": "Til danske ejer- og andelsboligforeninger",
+      "factPrice": "Pris aftales - skriv og spørg",
+      "ctaTitle": "Vil du prøve det?",
+      "ctaBody": "Prøv demoen uden at oprette noget, eller sæt jeres forening op. Har I spørgsmål, så skriv - vi svarer gerne.",
+      "tryDemo": "Prøv demo",
+      "getStarted": "Opret forening",
+      "contact": "Skriv til os"
+    },
+    "privacy": {
+      "eyebrow": "Juridisk",
+      "title": "Privatlivspolitik",
+      "draftNotice": "Udkast - skal gennemgås juridisk, før LaundryBook går i luften.",
+      "intro": "Sådan behandler LaundryBook personoplysninger. Politikken forklarer, hvilke oplysninger vi behandler, hvorfor, og hvilke rettigheder du har.",
+      "sections": {
+        "controller": {
+          "heading": "Dataansvar",
+          "body": "Din boligforening er dataansvarlig for de personoplysninger, der behandles i LaundryBook. LaundryBook er databehandler og behandler kun oplysninger efter foreningens instruks og en databehandleraftale."
+        },
+        "data": {
+          "heading": "Hvilke oplysninger vi behandler",
+          "body": "Vi behandler navn, e-mailadresse, eventuelt lejlighedsnummer samt dine bookinger og din rolle i foreningen. Adgangskoder håndteres af vores login-udbyder og opbevares ikke af os i klartekst."
+        },
+        "purpose": {
+          "heading": "Formål",
+          "body": "Oplysningerne bruges til at give adgang til systemet, administrere vaskebookinger og sende driftsmails som invitationer og booking-relateret information."
+        },
+        "legalBasis": {
+          "heading": "Retsgrundlag",
+          "body": "Behandlingen sker for at kunne levere tjenesten til foreningen og dens beboere. [Indsæt endeligt retsgrundlag efter juridisk gennemgang.]"
+        },
+        "subprocessors": {
+          "heading": "Underdatabehandlere",
+          "body": "Vi bruger udvalgte underleverandører til hosting, database, login og e-mailudsendelse. Data hostes i EU. En opdateret liste over underdatabehandlere udleveres til foreningen. [Indsæt liste.]"
+        },
+        "retention": {
+          "heading": "Opbevaring",
+          "body": "Oplysninger opbevares, så længe foreningen bruger LaundryBook, og din konto er aktiv. Ved sletning af konto eller ophør af aftalen slettes oplysningerne inden for [indsæt frist]."
+        },
+        "rights": {
+          "heading": "Dine rettigheder",
+          "body": "Du har ret til indsigt, berigtigelse, sletning, begrænsning, indsigelse og dataportabilitet. Henvendelser om dine rettigheder rettes til din forening som dataansvarlig. Du kan klage til Datatilsynet."
+        },
+        "security": {
+          "heading": "Sikkerhed",
+          "body": "Data overføres krypteret (HTTPS), og adgang styres via roller, så beboere kun ser deres egen forenings oplysninger."
+        },
+        "cookies": {
+          "heading": "Cookies",
+          "body": "Vi bruger kun de cookies, der er nødvendige for at holde dig logget ind. [Opdateres, hvis der tilføjes statistik- eller analyseværktøjer.]"
+        },
+        "changes": {
+          "heading": "Ændringer",
+          "body": "Vi kan opdatere denne privatlivspolitik. Væsentlige ændringer varsles til foreningen."
+        },
+        "contact": {
+          "heading": "Kontakt",
+          "body": "Spørgsmål om privatliv? Skriv til {{email}}."
+        }
+      }
+    },
+    "terms": {
+      "eyebrow": "Juridisk",
+      "title": "Vilkår",
+      "draftNotice": "Udkast - skal gennemgås juridisk, før LaundryBook går i luften.",
+      "intro": "Disse vilkår gælder for brugen af LaundryBook.",
+      "sections": {
+        "acceptance": {
+          "heading": "Accept af vilkår",
+          "body": "Ved at oprette en konto eller bruge LaundryBook accepterer du disse vilkår. Læs dem igennem, inden du opretter dig."
+        },
+        "service": {
+          "heading": "Tjenesten",
+          "body": "LaundryBook er et digitalt bookingsystem til vaskerum i danske ejer- og andelsboligforeninger. Tjenesten leveres via browseren, uden app."
+        },
+        "signupApproval": {
+          "heading": "Oprettelse og godkendelse",
+          "body": "Enhver kan teste systemet, men en forening bliver først aktiveret, når vi har godkendt den. Det sikrer, at kun rigtige foreninger oprettes med beboere."
+        },
+        "userResponsibility": {
+          "heading": "Dit ansvar",
+          "body": "Du er ansvarlig for at give korrekte oplysninger, for aktivitet på din konto og for ikke at misbruge systemet eller genere andre beboere."
+        },
+        "payment": {
+          "heading": "Betaling",
+          "body": "Pris og betaling for en aktiv forening aftales særskilt med foreningen. [Indsæt endelige betalingsvilkår, når prismodellen er fastlagt.]"
+        },
+        "availability": {
+          "heading": "Tilgængelighed og ansvar",
+          "body": "Vi bestræber os på høj oppetid, men tjenesten leveres, som den er, uden garanti for uafbrudt drift. Vi er ikke ansvarlige for indirekte tab. [Præciseres juridisk.]"
+        },
+        "termination": {
+          "heading": "Opsigelse",
+          "body": "Foreningen kan til enhver tid ophøre med at bruge LaundryBook. Ved ophør lukkes adgangen, og data behandles som beskrevet i privatlivspolitikken."
+        },
+        "changes": {
+          "heading": "Ændringer af vilkår",
+          "body": "Vi kan opdatere disse vilkår. Væsentlige ændringer varsles til foreningen."
+        },
+        "law": {
+          "heading": "Lovvalg",
+          "body": "Vilkårene er underlagt dansk ret med de danske domstole som værneting."
+        },
+        "contact": {
+          "heading": "Kontakt",
+          "body": "Spørgsmål til vilkårene? Skriv til {{email}}."
+        }
+      }
+    }
+  }
+}

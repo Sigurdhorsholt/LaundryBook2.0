@@ -1,7 +1,9 @@
+import { useTranslation } from 'react-i18next'
 import { useGetPendingPropertiesQuery, useActivatePropertyMutation } from './sysAdminApi'
 import { colors } from '../../shared/theme'
 
 export function PendingPropertiesList() {
+  const { t } = useTranslation()
   const { data: pending = [], isLoading } = useGetPendingPropertiesQuery()
   const [activate, { isLoading: isActivating }] = useActivatePropertyMutation()
 
@@ -9,7 +11,7 @@ export function PendingPropertiesList() {
     <>
       <div className="d-flex justify-content-between align-items-center mb-3">
         <h2 style={{ fontSize: '1rem', fontWeight: 600, color: colors.textPrimary, margin: 0 }}>
-          Afventer godkendelse
+          {t('sysadmin.pendingApproval')}
         </h2>
         {pending.length > 0 && (
           <span className="badge" style={{ backgroundColor: colors.primaryLight, color: colors.primary, fontWeight: 600 }}>
@@ -18,11 +20,11 @@ export function PendingPropertiesList() {
         )}
       </div>
 
-      {isLoading && <p style={{ color: colors.textSecondary, fontSize: '0.9rem' }}>Henter...</p>}
+      {isLoading && <p style={{ color: colors.textSecondary, fontSize: '0.9rem' }}>{t('sysadmin.loading')}</p>}
 
       {!isLoading && pending.length === 0 && (
         <p style={{ color: colors.textSecondary, fontSize: '0.9rem', margin: 0 }}>
-          Ingen foreninger afventer godkendelse.
+          {t('sysadmin.noPendingApproval')}
         </p>
       )}
 
@@ -38,7 +40,7 @@ export function PendingPropertiesList() {
                 <p className="fw-semibold mb-0" style={{ color: colors.textPrimary, fontSize: '0.9rem' }}>{p.name}</p>
                 <p className="mb-0" style={{ color: colors.textSecondary, fontSize: '0.8rem' }}>{p.address}</p>
                 <p className="mb-0 mt-1" style={{ color: colors.textMuted, fontSize: '0.78rem' }}>
-                  {p.adminName ?? 'Ukendt'}{p.adminEmail ? ` · ${p.adminEmail}` : ''} · oprettet {new Date(p.createdAt).toLocaleDateString('da-DK')}
+                  {p.adminName ?? t('sysadmin.unknown')}{p.adminEmail ? ` · ${p.adminEmail}` : ''} · {t('sysadmin.createdOn', { date: new Date(p.createdAt).toLocaleDateString('da-DK') })}
                 </p>
               </div>
               <button
@@ -46,7 +48,7 @@ export function PendingPropertiesList() {
                 disabled={isActivating}
                 onClick={() => activate(p.id)}
               >
-                {isActivating ? 'Aktiverer…' : 'Aktivér'}
+                {isActivating ? t('sysadmin.activating') : t('sysadmin.activate')}
               </button>
             </div>
           ))}

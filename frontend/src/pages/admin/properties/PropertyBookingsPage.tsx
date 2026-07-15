@@ -1,4 +1,5 @@
 import { useState, useMemo } from 'react'
+import { useTranslation } from 'react-i18next'
 import { useParams } from 'react-router-dom'
 import { useMeQuery } from '../../../features/auth/authApi'
 import {
@@ -21,12 +22,12 @@ import { colors } from '../../../shared/theme'
 const WINDOW_WEEKS = 4
 const WINDOW_DAYS = WINDOW_WEEKS * 7
 
-const VIEW_SEGMENTS: { value: AdminBookingsView; label: string }[] = [
-  { value: 'list', label: 'Liste' },
-  { value: 'calendar', label: 'Kalender' },
-]
-
 export function PropertyBookingsPage() {
+  const { t } = useTranslation()
+  const VIEW_SEGMENTS: { value: AdminBookingsView; label: string }[] = [
+    { value: 'list', label: t('adminProperties.bookings.viewList') },
+    { value: 'calendar', label: t('adminProperties.bookings.viewCalendar') },
+  ]
   const { propertyId } = useParams<{ propertyId: string }>()
   const { data: user } = useMeQuery()
   const property = user?.memberships.find((m) => m.propertyId === propertyId)
@@ -77,7 +78,7 @@ export function PropertyBookingsPage() {
       }).unwrap()
       setCancelTarget(null)
     } catch {
-      setCancelError('Bookingen kunne ikke aflyses. Prøv igen.')
+      setCancelError(t('adminProperties.bookings.cancelError'))
     }
   }
 
@@ -87,13 +88,13 @@ export function PropertyBookingsPage() {
     <div className="p-4 p-lg-5">
       <PageHeader
         eyebrow={property?.propertyName}
-        title="Bookinger"
-        description="Oversigt over alle bookinger i ejendommen."
+        title={t('adminProperties.bookings.title')}
+        description={t('adminProperties.bookings.description')}
       />
 
       {isError ? (
         <p style={{ color: colors.dangerText, fontSize: '0.9rem' }}>
-          Kunne ikke indlæse bookinger. Prøv at genindlæse siden.
+          {t('adminProperties.bookings.loadError')}
         </p>
       ) : (
         <>

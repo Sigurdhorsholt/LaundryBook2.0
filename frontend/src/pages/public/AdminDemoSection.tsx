@@ -1,21 +1,23 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 import { colors } from '../../shared/theme'
 import { IconBuilding, IconChevronRight, IconPlus } from '../../shared/icons'
 
 type TabId = 'dashboard' | 'users' | 'rooms' | 'settings'
 
-const TABS: { id: TabId; label: string }[] = [
-  { id: 'dashboard', label: 'Oversigt' },
-  { id: 'users',     label: 'Beboere' },
-  { id: 'rooms',     label: 'Lokaler' },
-  { id: 'settings',  label: 'Indstillinger' },
+const TABS: { id: TabId; labelKey: string }[] = [
+  { id: 'dashboard', labelKey: 'nav.overview' },
+  { id: 'users',     labelKey: 'public.adminDemo.tabs.users' },
+  { id: 'rooms',     labelKey: 'public.adminDemo.tabs.rooms' },
+  { id: 'settings',  labelKey: 'nav.settings' },
 ]
 
 // ── Main export ────────────────────────────────────────────────────────────────
 
 export function AdminDemoSection() {
   const [active, setActive] = useState<TabId>('dashboard')
+  const { t } = useTranslation()
 
   return (
     <section style={{ backgroundColor: colors.bgSubtle }}>
@@ -24,13 +26,13 @@ export function AdminDemoSection() {
         <div className="row justify-content-center mb-4">
           <div className="col-12 col-lg-9 text-center">
             <p className="mb-2" style={{ color: colors.primary, fontSize: '0.85rem', fontWeight: 600, letterSpacing: '0.12em', textTransform: 'uppercase' }}>
-              Admin-panelet
+              {t('public.adminDemo.eyebrow')}
             </p>
             <h2 className="fw-bold mb-3" style={{ fontSize: 'clamp(1.5rem, 3.5vw, 2.2rem)', letterSpacing: '-0.3px', color: colors.textPrimary }}>
-              Fuld kontrol til bestyrelsen
+              {t('public.adminDemo.title')}
             </h2>
             <p className="mx-auto mb-0" style={{ color: colors.textSecondary, fontSize: '1rem', lineHeight: 1.65, maxWidth: 560 }}>
-              Opsæt bookingsregler, inviter beboere og se alt fra ét sted — ingen teknisk viden krævet.
+              {t('public.adminDemo.subtitle')}
             </p>
           </div>
         </div>
@@ -47,7 +49,7 @@ export function AdminDemoSection() {
                 <span style={{ width: 10, height: 10, borderRadius: '50%', backgroundColor: '#febc2e' }} />
                 <span style={{ width: 10, height: 10, borderRadius: '50%', backgroundColor: '#28c840' }} />
                 <span className="ms-3" style={{ fontSize: '0.78rem', color: colors.textMuted }}>
-                  laundrybook.dk/admin · Nørrebrogade 42 (demo)
+                  {t('public.adminDemo.browserBar')}
                 </span>
               </div>
 
@@ -72,7 +74,7 @@ export function AdminDemoSection() {
                         borderBottom: isActive ? `2px solid ${colors.primary}` : '2px solid transparent',
                       }}
                     >
-                      {tab.label}
+                      {(t as (k: string) => string)(tab.labelKey)}
                     </button>
                   )
                 })}
@@ -97,9 +99,9 @@ export function AdminDemoSection() {
                   borderRadius: 10, padding: '12px 32px', fontSize: '0.95rem', border: 'none',
                 }}
               >
-                Opret jeres forening →
+                {t('public.adminDemo.ctaButton')}
               </Link>
-              <p className="mt-2 mb-0" style={{ fontSize: '0.8rem', color: colors.textMuted }}>Vi aktiverer foreningen, så snart vi har set den.</p>
+              <p className="mt-2 mb-0" style={{ fontSize: '0.8rem', color: colors.textMuted }}>{t('public.adminDemo.ctaNote')}</p>
             </div>
           </div>
         </div>
@@ -112,22 +114,23 @@ export function AdminDemoSection() {
 // ── Dashboard tab ─────────────────────────────────────────────────────────────
 
 function DashboardTab() {
+  const { t } = useTranslation()
   return (
     <div className="p-3 p-md-4">
       <div className="mb-4">
-        <h5 className="fw-bold mb-1" style={{ fontSize: '1.4rem', color: colors.textPrimary }}>Oversigt</h5>
+        <h5 className="fw-bold mb-1" style={{ fontSize: '1.4rem', color: colors.textPrimary }}>{t('nav.overview')}</h5>
         <p className="mb-0" style={{ fontSize: '0.85rem', color: colors.textSecondary }}>
-          Velkommen tilbage, Sigurd
+          {t('public.adminDemo.dashboard.welcome')}
           <span className="ms-2 badge" style={{ backgroundColor: colors.primaryLight, color: colors.primary, fontWeight: 500, fontSize: '0.75rem' }}>
-            Ejendomsadmin
+            {t('roles.complexAdmin')}
           </span>
         </p>
       </div>
       <div className="row g-3 mb-4">
         {[
-          { label: 'Aktive bookinger', value: '12', sub: 'i dag' },
-          { label: 'Beboere', value: '48', sub: 'registrerede' },
-          { label: 'Vaskerum', value: '2', sub: 'aktive' },
+          { label: t('public.adminDemo.dashboard.stats.bookings.label'), value: '12', sub: t('public.adminDemo.dashboard.stats.bookings.sub') },
+          { label: t('public.adminDemo.dashboard.stats.residents.label'), value: '48', sub: t('public.adminDemo.dashboard.stats.residents.sub') },
+          { label: t('public.adminDemo.dashboard.stats.rooms.label'), value: '2', sub: t('public.adminDemo.dashboard.stats.rooms.sub') },
         ].map(s => (
           <div key={s.label} className="col-12 col-sm-4">
             <div className="p-3 rounded-3" style={{ border: `1px solid ${colors.borderDefault}`, backgroundColor: '#fff' }}>
@@ -138,10 +141,10 @@ function DashboardTab() {
           </div>
         ))}
       </div>
-      <h6 className="fw-semibold mb-3" style={{ fontSize: '0.9rem', color: colors.textPrimary }}>Dine ejendomme</h6>
+      <h6 className="fw-semibold mb-3" style={{ fontSize: '0.9rem', color: colors.textPrimary }}>{t('public.adminDemo.dashboard.yourProperties')}</h6>
       {[
-        { name: 'Nørrebrogade 42', role: 'Ejendomsadmin' },
-        { name: 'Griffenfeldsgade 18', role: 'Ejendomsadmin' },
+        { name: 'Nørrebrogade 42', role: t('roles.complexAdmin') },
+        { name: 'Griffenfeldsgade 18', role: t('roles.complexAdmin') },
       ].map(p => (
         <div key={p.name} className="d-flex align-items-center gap-3 p-3 rounded-3 mb-2"
           style={{ border: `1px solid ${colors.borderDefault}`, backgroundColor: '#fff' }}>
@@ -171,16 +174,17 @@ const MOCK_MEMBERS = [
 ]
 
 function UsersTab() {
+  const { t } = useTranslation()
   return (
     <div className="p-3 p-md-4">
       <div className="d-flex align-items-start justify-content-between gap-3 mb-4 flex-wrap">
         <div>
-          <h5 className="fw-bold mb-1" style={{ fontSize: '1.4rem', color: colors.textPrimary }}>Beboere</h5>
-          <p className="mb-0" style={{ fontSize: '0.85rem', color: colors.textSecondary }}>Nørrebrogade 42 · 5 beboere</p>
+          <h5 className="fw-bold mb-1" style={{ fontSize: '1.4rem', color: colors.textPrimary }}>{t('public.adminDemo.tabs.users')}</h5>
+          <p className="mb-0" style={{ fontSize: '0.85rem', color: colors.textSecondary }}>{t('public.adminDemo.users.subtitle', { count: 5 })}</p>
         </div>
         <button className="btn btn-sm d-flex align-items-center gap-1 fw-semibold"
           style={{ backgroundColor: colors.primary, color: '#fff', border: 'none', borderRadius: 8, fontSize: '0.82rem', padding: '7px 14px' }}>
-          <IconPlus size={14} /> Inviter beboer
+          <IconPlus size={14} /> {t('public.adminDemo.users.invite')}
         </button>
       </div>
       <div className="rounded-3 overflow-hidden" style={{ border: `1px solid ${colors.borderDefault}` }}>
@@ -193,14 +197,14 @@ function UsersTab() {
             </div>
             <div style={{ flex: 1, minWidth: 0 }}>
               <p className="fw-semibold mb-0 text-truncate" style={{ fontSize: '0.85rem', color: colors.textPrimary }}>{m.name}</p>
-              <p className="mb-0" style={{ fontSize: '0.75rem', color: colors.textSecondary }}>{m.apt ? `Lejl. ${m.apt}` : '—'}</p>
+              <p className="mb-0" style={{ fontSize: '0.75rem', color: colors.textSecondary }}>{m.apt ? t('public.adminDemo.users.apt', { apt: m.apt }) : '—'}</p>
             </div>
             <span className="badge flex-shrink-0" style={{
               backgroundColor: m.admin ? colors.primaryLight : colors.bgSubtle,
               color: m.admin ? colors.primary : colors.textSecondary,
               fontWeight: 500, fontSize: '0.72rem',
             }}>
-              {m.admin ? 'Admin' : 'Beboer'}
+              {m.admin ? t('public.adminDemo.roleAdmin') : t('roles.resident')}
             </span>
             <span style={{ width: 8, height: 8, borderRadius: '50%', flexShrink: 0,
               backgroundColor: m.active ? colors.dotFree : colors.dotFull }} />
@@ -208,7 +212,7 @@ function UsersTab() {
         ))}
       </div>
       <p className="mt-2 mb-0" style={{ fontSize: '0.76rem', color: colors.textMuted }}>
-        + 1 invitation afventer svar
+        {t('public.adminDemo.users.pendingInvite', { count: 1 })}
       </p>
     </div>
   )
@@ -217,20 +221,21 @@ function UsersTab() {
 // ── Rooms tab ─────────────────────────────────────────────────────────────────
 
 function RoomsTab() {
+  const { t } = useTranslation()
   const rooms = [
-    { name: 'Vaskerum 1', machines: ['Vaskemaskine A', 'Tørretumbler B', 'Vaskemaskine C'] },
-    { name: 'Vaskerum 2', machines: ['Vaskemaskine D'] },
+    { name: t('public.adminDemo.rooms.roomName1'), machines: [t('public.adminDemo.rooms.washerA'), t('public.adminDemo.rooms.dryerB'), t('public.adminDemo.rooms.washerC')] },
+    { name: t('public.adminDemo.rooms.roomName2'), machines: [t('public.adminDemo.rooms.washerD')] },
   ]
   return (
     <div className="p-3 p-md-4">
       <div className="d-flex align-items-start justify-content-between gap-3 mb-4 flex-wrap">
         <div>
-          <h5 className="fw-bold mb-1" style={{ fontSize: '1.4rem', color: colors.textPrimary }}>Lokaler & Maskiner</h5>
+          <h5 className="fw-bold mb-1" style={{ fontSize: '1.4rem', color: colors.textPrimary }}>{t('nav.roomsAndMachines')}</h5>
           <p className="mb-0" style={{ fontSize: '0.85rem', color: colors.textSecondary }}>Nørrebrogade 42</p>
         </div>
         <button className="btn btn-sm d-flex align-items-center gap-1 fw-semibold"
           style={{ backgroundColor: colors.primary, color: '#fff', border: 'none', borderRadius: 8, fontSize: '0.82rem', padding: '7px 14px' }}>
-          <IconPlus size={14} /> Tilføj lokale
+          <IconPlus size={14} /> {t('public.adminDemo.rooms.addRoom')}
         </button>
       </div>
       <div className="d-flex flex-column gap-3">
@@ -240,7 +245,7 @@ function RoomsTab() {
               style={{ backgroundColor: colors.bgPage, borderBottom: `1px solid ${colors.borderDefault}` }}>
               <span className="fw-semibold" style={{ fontSize: '0.9rem', color: colors.textPrimary }}>{room.name}</span>
               <span className="badge" style={{ backgroundColor: colors.primaryLight, color: colors.primary, fontWeight: 500, fontSize: '0.72rem' }}>
-                Aktiv
+                {t('public.adminDemo.rooms.active')}
               </span>
             </div>
             {room.machines.map((m, i) => (
@@ -259,27 +264,28 @@ function RoomsTab() {
 // ── Settings tab ──────────────────────────────────────────────────────────────
 
 function SettingsTab() {
+  const { t } = useTranslation()
   return (
     <div className="p-3 p-md-4">
       <div className="mb-4">
-        <h5 className="fw-bold mb-1" style={{ fontSize: '1.4rem', color: colors.textPrimary }}>Indstillinger</h5>
-        <p className="mb-0" style={{ fontSize: '0.85rem', color: colors.textSecondary }}>Nørrebrogade 42 · Gælder for alle beboere.</p>
+        <h5 className="fw-bold mb-1" style={{ fontSize: '1.4rem', color: colors.textPrimary }}>{t('nav.settings')}</h5>
+        <p className="mb-0" style={{ fontSize: '0.85rem', color: colors.textSecondary }}>{t('public.adminDemo.settings.subtitle')}</p>
       </div>
       <div style={{ maxWidth: 520 }}>
-        <SettingGroup label="Bookingtype" description="Hvad booker beboerne?">
-          <MockRadio label="Specifik maskine" desc="Beboeren vælger præcis hvilken maskine" checked />
-          <MockRadio label="Helt lokale" desc="Beboeren booker adgang til hele vaskerummet" />
+        <SettingGroup label={t('public.adminDemo.settings.bookingType.label')} description={t('public.adminDemo.settings.bookingType.description')}>
+          <MockRadio label={t('public.adminDemo.settings.bookingType.specificMachine.label')} desc={t('public.adminDemo.settings.bookingType.specificMachine.desc')} checked />
+          <MockRadio label={t('public.adminDemo.settings.bookingType.entireRoom.label')} desc={t('public.adminDemo.settings.bookingType.entireRoom.desc')} />
         </SettingGroup>
-        <SettingGroup label="Synlighed i kalenderen" description="Hvad ser andre beboere?">
-          <MockRadio label="Lejlighedsnummer" desc='Andre ser "Lejl. 1A" — navne vises ikke' checked />
-          <MockRadio label="Fuldt navn" desc='Andre ser beboerens fulde navn' />
-          <MockRadio label="Anonymt" desc='Andre ser kun "Optaget"' />
+        <SettingGroup label={t('public.adminDemo.settings.visibility.label')} description={t('public.adminDemo.settings.visibility.description')}>
+          <MockRadio label={t('public.adminDemo.settings.visibility.apartment.label')} desc={t('public.adminDemo.settings.visibility.apartment.desc')} checked />
+          <MockRadio label={t('public.adminDemo.settings.visibility.fullName.label')} desc={t('public.adminDemo.settings.visibility.fullName.desc')} />
+          <MockRadio label={t('public.adminDemo.settings.visibility.anonymous.label')} desc={t('public.adminDemo.settings.visibility.anonymous.desc')} />
         </SettingGroup>
         <div className="d-flex flex-wrap gap-3">
           {[
-            { label: 'Fremtidshorisont', value: '14 dage' },
-            { label: 'Afbestillingsfrist', value: '2 timer' },
-            { label: 'Maks. bookinger', value: '2 pr. beboer' },
+            { label: t('public.adminDemo.settings.horizon.label'), value: t('public.adminDemo.settings.horizon.value') },
+            { label: t('public.adminDemo.settings.cancelDeadline.label'), value: t('public.adminDemo.settings.cancelDeadline.value') },
+            { label: t('public.adminDemo.settings.maxBookings.label'), value: t('public.adminDemo.settings.maxBookings.value') },
           ].map(s => (
             <div key={s.label} className="rounded-3 px-3 py-2" style={{ border: `1px solid ${colors.borderDefault}`, backgroundColor: colors.bgPage }}>
               <p className="mb-0" style={{ fontSize: '0.75rem', color: colors.textSecondary }}>{s.label}</p>

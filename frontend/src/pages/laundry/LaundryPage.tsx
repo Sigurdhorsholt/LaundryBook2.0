@@ -1,4 +1,5 @@
 import { useState, useMemo, useEffect, useRef } from 'react'
+import { useTranslation } from 'react-i18next'
 import { skipToken } from '@reduxjs/toolkit/query/react'
 import { useMeQuery } from '../../features/auth/authApi'
 import { useGetPropertyQuery, BookingMode } from '../../features/properties/propertiesApi'
@@ -37,17 +38,18 @@ function incrementBookingCount(): number {
   return next
 }
 
-function extractErrorMessage(err: unknown): string {
+function extractErrorMessage(err: unknown, fallback: string): string {
   if (err && typeof err === 'object' && 'data' in err) {
     const data = (err as { data?: { title?: string } }).data
     if (data?.title) return data.title
   }
-  return 'Der opstod en fejl. Prøv igen.'
+  return fallback
 }
 
 // ── Component ──────────────────────────────────────────────────────────────────
 
 export function LaundryPage() {
+  const { t } = useTranslation()
   const today = todayStr()
   const [weekStart, setWeekStart]           = useState(() => getWeekMonday(today))
   const [selectedDate, setSelectedDate]     = useState(today)
@@ -221,7 +223,7 @@ export function LaundryPage() {
       }
       setPending(null)
     } catch (err) {
-      setConfirmError(extractErrorMessage(err))
+      setConfirmError(extractErrorMessage(err, t('laundryPage.genericError')))
     }
   }
 
@@ -230,7 +232,7 @@ export function LaundryPage() {
   if (!propertyId) {
     return (
       <div className="container-xl px-4 py-5">
-        <PageHeader title="Vaskebooking" description="Du er ikke tilknyttet nogen ejendom endnu." />
+        <PageHeader title={t('nav.laundry')} description={t('laundryPage.notLinkedDescription')} />
       </div>
     )
   }
@@ -240,7 +242,7 @@ export function LaundryPage() {
   return (
     <div className="container-xl px-4 py-5">
 
-      <PageHeader title="Vaskebooking" description="Book et ledigt vasketid i dit vaskerum." />
+      <PageHeader title={t('nav.laundry')} description={t('laundryPage.description')} />
 
       <UpcomingBookingsCard
         myBookings={myBookings ?? []}
@@ -305,16 +307,14 @@ export function LaundryPage() {
           />
         ) : (
           <div style={{ padding: '40px 20px', textAlign: 'center', color: colors.textMuted, fontSize: '0.9rem' }}>
-            Vælg et vaskerum herover.
+            {t('laundryPage.selectRoom')}
           </div>
         )}
 
         {othersBookedToday > 0 && (
           <div style={{ padding: '8px 20px', borderTop: `1px solid ${colors.borderRow}` }}>
             <p style={{ fontSize: '0.76rem', color: colors.textMuted, margin: 0, textAlign: 'center' }}>
-              {othersBookedToday === 1
-                ? '1 anden beboer har booket denne dag'
-                : `${othersBookedToday} andre beboere har booket denne dag`}
+              {t('laundryPage.othersBooked', { count: othersBookedToday })}
             </p>
           </div>
         )}
@@ -322,7 +322,7 @@ export function LaundryPage() {
         {milestoneCount !== null && (
           <div style={{ padding: '8px 20px', borderTop: `1px solid ${colors.borderRow}` }}>
             <p style={{ fontSize: '0.76rem', color: colors.textSecondary, margin: 0, textAlign: 'center' }}>
-              Du har nu booket {milestoneCount} gange — godt gået.
+              {t('laundryPage.milestone', { count: milestoneCount })}
             </p>
           </div>
         )}
@@ -330,7 +330,7 @@ export function LaundryPage() {
 
       {myBookings && myBookings.length > 0 && !gridVisible && (
         <button
-          aria-label="Gå til booking"
+          aria-label={t('laundryPage.goToBooking')}
           onClick={() => gridRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })}
           style={{
             position: 'fixed', bottom: 24, right: 20, zIndex: 900,

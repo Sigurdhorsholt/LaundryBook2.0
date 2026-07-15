@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { createPortal } from 'react-dom'
+import { useTranslation } from 'react-i18next'
 import { Link, useNavigate } from 'react-router-dom'
 import { signInWithEmailAndPassword } from 'firebase/auth'
 import { firebaseAuth } from '../../lib/firebase'
@@ -12,6 +13,7 @@ interface LoginModalProps {
 }
 
 export function LoginModal({ onClose }: LoginModalProps) {
+  const { t } = useTranslation()
   const navigate = useNavigate()
   const [email,    setEmail]    = useState('')
   const [password, setPassword] = useState('')
@@ -34,7 +36,7 @@ export function LoginModal({ onClose }: LoginModalProps) {
       onClose()
       navigate('/dashboard', { replace: true })
     } catch (err: unknown) {
-      setError(err instanceof Error ? err.message : 'Login mislykkedes. Prøv igen.')
+      setError(err instanceof Error ? err.message : t('auth.loginFailed'))
     }
   }
 
@@ -85,7 +87,7 @@ export function LoginModal({ onClose }: LoginModalProps) {
               LaundryBook
             </span>
           </div>
-          <button type="button" className="btn-close" aria-label="Luk" onClick={onClose} style={{ fontSize: '0.8rem' }} />
+          <button type="button" className="btn-close" aria-label={t('common.close')} onClick={onClose} style={{ fontSize: '0.8rem' }} />
         </div>
 
         {/* Body */}
@@ -129,20 +131,21 @@ function LoginView({
   onEmailChange: (v: string) => void; onPasswordChange: (v: string) => void
   onSubmit: (e: React.FormEvent) => void; onForgot: () => void; onClose: () => void
 }) {
+  const { t } = useTranslation()
   return (
     <>
       <h5 style={{ fontWeight: 700, color: colors.textPrimary, marginBottom: 4, fontSize: '1.2rem' }}>
-        Log ind
+        {t('auth.login')}
       </h5>
       <p style={{ fontSize: '0.88rem', color: colors.textSecondary, marginBottom: 20 }}>
-        Velkommen tilbage til LaundryBook.
+        {t('auth.loginSubtitle')}
       </p>
 
       <form onSubmit={onSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
         <input
           className="form-control"
           type="email"
-          placeholder="Email"
+          placeholder={t('auth.emailPlaceholder')}
           value={email}
           onChange={(e) => onEmailChange(e.target.value)}
           required
@@ -152,7 +155,7 @@ function LoginView({
         <input
           className="form-control"
           type="password"
-          placeholder="Adgangskode"
+          placeholder={t('auth.passwordPlaceholder')}
           value={password}
           onChange={(e) => onPasswordChange(e.target.value)}
           required
@@ -170,7 +173,7 @@ function LoginView({
           }}
           disabled={loading}
         >
-          {loading ? 'Logger ind…' : 'Log ind'}
+          {loading ? t('auth.loggingIn') : t('auth.login')}
         </button>
       </form>
 
@@ -180,13 +183,13 @@ function LoginView({
         onClick={onForgot}
         style={{ color: colors.textSecondary, fontSize: '0.84rem', textDecoration: 'none' }}
       >
-        Glemt adgangskode?
+        {t('auth.forgotPasswordLink')}
       </button>
 
       {/* Get-started callout */}
       <div style={{ borderTop: `1px solid ${colors.borderDefault}`, marginTop: 22, paddingTop: 20 }}>
         <p style={{ fontSize: '0.88rem', color: colors.textSecondary, marginBottom: 12, textAlign: 'center' }}>
-          Skal jeres forening med på LaundryBook?
+          {t('auth.getStartedPrompt')}
         </p>
         <Link
           to="/signup"
@@ -203,7 +206,7 @@ function LoginView({
           }}
           onClick={onClose}
         >
-          Opret forening
+          {t('auth.createAssociation')}
         </Link>
       </div>
     </>
@@ -219,15 +222,16 @@ function ForgotView({
   sent: boolean; loading: boolean
   onSubmit: (e: React.FormEvent) => void; onBack: () => void
 }) {
+  const { t } = useTranslation()
   return (
     <>
       <h5 style={{ fontWeight: 700, color: colors.textPrimary, marginBottom: 4, fontSize: '1.2rem' }}>
-        Glemt adgangskode
+        {t('auth.forgotPasswordTitle')}
       </h5>
       {sent ? (
         <>
           <p style={{ fontSize: '0.88rem', color: colors.textSecondary, marginBottom: 20, lineHeight: 1.6 }}>
-            Hvis din e-mail er registreret, modtager du snart et link til at nulstille din adgangskode.
+            {t('auth.forgotSentMessage')}
           </p>
           <button
             className="btn fw-semibold"
@@ -238,19 +242,19 @@ function ForgotView({
             }}
             onClick={onBack}
           >
-            ← Tilbage til login
+            {t('auth.backToLogin')}
           </button>
         </>
       ) : (
         <>
           <p style={{ fontSize: '0.88rem', color: colors.textSecondary, marginBottom: 20 }}>
-            Indtast din email, så sender vi dig et nulstillingslink.
+            {t('auth.forgotInstructions')}
           </p>
           <form onSubmit={onSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
             <input
               className="form-control"
               type="email"
-              placeholder="Email"
+              placeholder={t('auth.emailPlaceholder')}
               value={email}
               onChange={(e) => onEmailChange(e.target.value)}
               required
@@ -263,7 +267,7 @@ function ForgotView({
               style={{ backgroundColor: colors.primary, color: '#fff', border: 'none', borderRadius: 8, padding: '10px' }}
               disabled={loading}
             >
-              {loading ? 'Sender…' : 'Send nulstillingslink'}
+              {loading ? t('auth.sending') : t('auth.sendResetLink')}
             </button>
           </form>
           <button
@@ -272,7 +276,7 @@ function ForgotView({
             onClick={onBack}
             style={{ color: colors.textSecondary, fontSize: '0.84rem', textDecoration: 'none' }}
           >
-            ← Tilbage til login
+            {t('auth.backToLogin')}
           </button>
         </>
       )}

@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { ModalShell } from '../../shared/modals/ModalShell'
 import { useCreatePropertyMutation } from './propertiesApi'
 import { colors } from '../../shared/theme'
@@ -9,6 +10,7 @@ interface CreatePropertyModalProps {
 }
 
 export function CreatePropertyModal({ onClose, onCreated }: CreatePropertyModalProps) {
+  const { t } = useTranslation()
   const [name, setName] = useState('')
   const [address, setAddress] = useState('')
   const [error, setError] = useState<string | null>(null)
@@ -21,21 +23,21 @@ export function CreatePropertyModal({ onClose, onCreated }: CreatePropertyModalP
       const result = await createProperty({ name, address }).unwrap()
       onCreated(result.id)
     } catch {
-      setError('Noget gik galt. Prøv igen.')
+      setError(t('properties.createFailed'))
     }
   }
 
   return (
-    <ModalShell title="Opret ejendom" onClose={onClose}>
+    <ModalShell title={t('properties.createProperty')} onClose={onClose}>
       <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
         <div>
           <label className="form-label" style={{ fontSize: '0.85rem', fontWeight: 500, color: colors.textPrimary }}>
-            Navn
+            {t('properties.name')}
           </label>
           <input
             className="form-control"
             type="text"
-            placeholder="Ejendomsnavn"
+            placeholder={t('properties.namePlaceholder')}
             value={name}
             onChange={(e) => setName(e.target.value)}
             required
@@ -45,12 +47,12 @@ export function CreatePropertyModal({ onClose, onCreated }: CreatePropertyModalP
         </div>
         <div>
           <label className="form-label" style={{ fontSize: '0.85rem', fontWeight: 500, color: colors.textPrimary }}>
-            Adresse
+            {t('properties.address')}
           </label>
           <input
             className="form-control"
             type="text"
-            placeholder="Gade 1, 2100 København"
+            placeholder={t('properties.addressPlaceholder')}
             value={address}
             onChange={(e) => setAddress(e.target.value)}
             required
@@ -59,7 +61,7 @@ export function CreatePropertyModal({ onClose, onCreated }: CreatePropertyModalP
         </div>
         {error && <p style={{ color: colors.dangerText, margin: 0, fontSize: 14 }}>{error}</p>}
         <button className="btn btn-primary fw-semibold" type="submit" disabled={isLoading}>
-          {isLoading ? 'Opretter…' : 'Opret ejendom'}
+          {isLoading ? t('properties.creating') : t('properties.createProperty')}
         </button>
       </form>
     </ModalShell>

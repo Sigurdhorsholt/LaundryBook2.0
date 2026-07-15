@@ -1,35 +1,21 @@
+import { useTranslation } from 'react-i18next'
 import { colors } from '../../shared/theme'
 
 const STEPS = [
-  {
-    num: '1',
-    title: 'Opret konto',
-    body: 'Email og kodeord — tager under et minut.',
-  },
-  {
-    num: '2',
-    title: 'Opret din ejendom',
-    body: 'Navn, adresse og antal lejligheder. Vi sætter resten op for dig.',
-  },
-  {
-    num: '3',
-    title: 'Opsæt vaskerum',
-    body: 'Tilføj rum og definer tidspladser én gang. Systemet kører derefter selv.',
-  },
-  {
-    num: '4',
-    title: 'Inviter beboere',
-    body: 'Send et link — beboerne opretter sig selv på få sekunder.',
-  },
-]
+  { num: '1', key: 'account' },
+  { num: '2', key: 'property' },
+  { num: '3', key: 'rooms' },
+  { num: '4', key: 'invite' },
+] as const
 
 export function GetStartedSteps() {
+  const { t } = useTranslation()
   return (
     <section style={{ backgroundColor: '#fff' }}>
       <div className="container-xl px-4" style={{ paddingTop: '4rem', paddingBottom: '4rem' }}>
         <p className="text-center fw-semibold mb-5"
           style={{ color: colors.primary, fontSize: '0.82rem', letterSpacing: '0.12em', textTransform: 'uppercase' }}>
-          Sådan fungerer det
+          {t('public.getStartedSteps.eyebrow')}
         </p>
         <div className="row g-4">
           {STEPS.map((s, i) => (
@@ -45,10 +31,10 @@ export function GetStartedSteps() {
                   {s.num}
                 </div>
                 <h3 className="fw-bold mb-2" style={{ fontSize: '1rem', color: colors.textPrimary }}>
-                  {s.title}
+                  {t(`public.getStartedSteps.items.${s.key}.title`)}
                 </h3>
                 <p className="mb-0" style={{ color: colors.textSecondary, fontSize: '0.9rem', lineHeight: 1.6 }}>
-                  {s.body}
+                  {t(`public.getStartedSteps.items.${s.key}.body`)}
                 </p>
               </div>
             </div>

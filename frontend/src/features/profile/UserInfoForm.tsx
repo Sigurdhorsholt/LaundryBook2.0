@@ -1,9 +1,11 @@
 import { useState, useEffect } from 'react'
+import { useTranslation } from 'react-i18next'
 import { useMeQuery, useForgotPasswordMutation, useUpdateCurrentUserMutation } from '../auth/authApi'
 import { FormError } from '../../shared/ui'
 import { colors } from '../../shared/theme'
 
 export function UserInfoForm() {
+  const { t } = useTranslation()
   const { data: user } = useMeQuery()
   const [updateUser, { isLoading: saving, isSuccess: saved }] = useUpdateCurrentUserMutation()
   const [forgotPassword, { isLoading: resetting, isSuccess: resetSent }] = useForgotPasswordMutation()
@@ -26,7 +28,7 @@ export function UserInfoForm() {
     try {
       await updateUser({ firstName, lastName }).unwrap()
     } catch {
-      setSaveError('Kunne ikke gemme. Prøv igen.')
+      setSaveError(t('profile.saveFailed'))
     }
   }
 
@@ -37,11 +39,11 @@ export function UserInfoForm() {
   return (
     <div className="card border-0 shadow-sm" style={{ borderRadius: 12 }}>
       <div className="card-body p-4">
-        <h5 className="mb-4" style={{ fontWeight: 600, color: colors.textPrimary }}>Dine oplysninger</h5>
+        <h5 className="mb-4" style={{ fontWeight: 600, color: colors.textPrimary }}>{t('profile.yourInfo')}</h5>
         <form onSubmit={handleSave}>
           <div className="row g-3 mb-3">
             <div className="col-sm-6">
-              <label className="form-label" style={{ fontSize: '0.85rem', color: colors.textSecondary }}>Fornavn</label>
+              <label className="form-label" style={{ fontSize: '0.85rem', color: colors.textSecondary }}>{t('profile.firstName')}</label>
               <input
                 className="form-control"
                 value={firstName}
@@ -50,7 +52,7 @@ export function UserInfoForm() {
               />
             </div>
             <div className="col-sm-6">
-              <label className="form-label" style={{ fontSize: '0.85rem', color: colors.textSecondary }}>Efternavn</label>
+              <label className="form-label" style={{ fontSize: '0.85rem', color: colors.textSecondary }}>{t('profile.lastName')}</label>
               <input
                 className="form-control"
                 value={lastName}
@@ -60,17 +62,17 @@ export function UserInfoForm() {
             </div>
           </div>
           <div className="mb-3">
-            <label className="form-label" style={{ fontSize: '0.85rem', color: colors.textSecondary }}>E-mailadresse</label>
+            <label className="form-label" style={{ fontSize: '0.85rem', color: colors.textSecondary }}>{t('profile.emailAddress')}</label>
             <input
               className="form-control"
               value={user?.email ?? ''}
               readOnly
               style={{ backgroundColor: colors.bgSubtle }}
             />
-            <div className="form-text" style={{ color: colors.textMuted }}>E-mail kan ikke ændres.</div>
+            <div className="form-text" style={{ color: colors.textMuted }}>{t('profile.emailCannotChange')}</div>
           </div>
           <div className="mb-4">
-            <label className="form-label" style={{ fontSize: '0.85rem', color: colors.textSecondary }}>Lejlighedsnummer</label>
+            <label className="form-label" style={{ fontSize: '0.85rem', color: colors.textSecondary }}>{t('profile.apartmentNumber')}</label>
             <input
               className="form-control"
               value={apartment ?? ''}
@@ -81,23 +83,23 @@ export function UserInfoForm() {
           <FormError message={saveError} />
           {saved && (
             <p className="mb-3" style={{ fontSize: '0.85rem', color: colors.successText }}>
-              Dine oplysninger er gemt.
+              {t('profile.infoSaved')}
             </p>
           )}
           <button className="btn btn-primary btn-sm" type="submit" disabled={saving}>
-            {saving ? 'Gemmer…' : 'Gem ændringer'}
+            {saving ? t('profile.saving') : t('profile.saveChanges')}
           </button>
         </form>
 
         <hr style={{ margin: '1.75rem 0', borderColor: colors.borderDefault }} />
 
-        <h6 className="mb-2" style={{ fontWeight: 600, color: colors.textPrimary }}>Adgangskode</h6>
+        <h6 className="mb-2" style={{ fontWeight: 600, color: colors.textPrimary }}>{t('profile.password')}</h6>
         <p className="mb-3" style={{ fontSize: '0.85rem', color: colors.textSecondary }}>
-          Vi sender dig et link til at nulstille din adgangskode.
+          {t('profile.passwordResetInfo')}
         </p>
         {resetSent ? (
           <p style={{ fontSize: '0.85rem', color: colors.successText }}>
-            Tjek din indbakke — linket er på vej.
+            {t('profile.resetSent')}
           </p>
         ) : (
           <button
@@ -106,7 +108,7 @@ export function UserInfoForm() {
             onClick={handleResetPassword}
             disabled={resetting}
           >
-            {resetting ? 'Sender…' : 'Nulstil adgangskode'}
+            {resetting ? t('profile.sending') : t('profile.resetPassword')}
           </button>
         )}
       </div>

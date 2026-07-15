@@ -1,5 +1,6 @@
 import { type ReactNode } from 'react'
 import { createPortal } from 'react-dom'
+import { useTranslation } from 'react-i18next'
 
 interface ModalShellProps {
   title: string
@@ -9,6 +10,7 @@ interface ModalShellProps {
 }
 
 export function ModalShell({ title, onClose, children, size = 'md' }: ModalShellProps) {
+  const { t } = useTranslation()
   const sizeClass = size === 'sm' ? 'modal-sm' : size === 'lg' ? 'modal-lg' : ''
 
   return createPortal(
@@ -36,7 +38,7 @@ export function ModalShell({ title, onClose, children, size = 'md' }: ModalShell
               <button
                 type="button"
                 className="btn-close"
-                aria-label="Luk"
+                aria-label={t('common.close')}
                 onClick={onClose}
               />
             </div>
