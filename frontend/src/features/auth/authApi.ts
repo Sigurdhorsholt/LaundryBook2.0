@@ -59,7 +59,7 @@ export const authApi = baseApi.injectEndpoints({
       query: (token) => `/api/auth/invite-info?token=${encodeURIComponent(token)}`,
     }),
 
-    redeemInvite: builder.mutation<{ userId: string }, { idToken: string; inviteToken: string; apartmentNumber?: string; firstName: string; lastName: string }>({
+    redeemInvite: builder.mutation<{ userId: string }, { idToken: string; inviteToken: string; apartmentNumber?: string; firstName: string; lastName: string; acceptedTerms: boolean }>({
       query: (body) => ({
         url: '/api/auth/redeem-invite',
         method: 'POST',
@@ -68,7 +68,7 @@ export const authApi = baseApi.injectEndpoints({
       invalidatesTags: ['Auth'],
     }),
 
-    register: builder.mutation<{ userId: string; propertyId: string }, { idToken: string; firstName: string; lastName: string; propertyName: string; propertyAddress: string }>({
+    register: builder.mutation<{ userId: string; propertyId: string }, { idToken: string; firstName: string; lastName: string; propertyName: string; propertyAddress: string; acceptedTerms: boolean }>({
       query: (body) => ({
         url: '/api/auth/register',
         method: 'POST',

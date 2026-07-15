@@ -34,7 +34,7 @@ export function SignupPage() {
     try {
       const credential = await createUserWithEmailAndPassword(firebaseAuth, email, password)
       const idToken = await credential.user.getIdToken()
-      await register({ idToken, firstName, lastName, propertyName, propertyAddress }).unwrap()
+      await register({ idToken, firstName, lastName, propertyName, propertyAddress, acceptedTerms: consent }).unwrap()
       navigate('/dashboard', { replace: true })
     } catch (err: unknown) {
       setError(err instanceof Error ? err.message : t('signup.genericError'))

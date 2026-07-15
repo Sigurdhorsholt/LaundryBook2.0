@@ -1,4 +1,5 @@
 using Application.Common.Interfaces;
+using Domain.Common;
 using Domain.Entities;
 using Domain.Enums;
 using FluentValidation;
@@ -12,7 +13,8 @@ public record RegisterCommand(
     string FirstName,
     string LastName,
     string PropertyName,
-    string PropertyAddress) : IRequest<RegisterResult>;
+    string PropertyAddress,
+    bool AcceptedTerms) : IRequest<RegisterResult>;
 
 public record RegisterResult(string JwtToken, Guid UserId, Guid PropertyId);
 
@@ -25,6 +27,7 @@ public class RegisterCommandValidator : AbstractValidator<RegisterCommand>
         RuleFor(x => x.LastName).NotEmpty().MaximumLength(100);
         RuleFor(x => x.PropertyName).NotEmpty().MaximumLength(200);
         RuleFor(x => x.PropertyAddress).NotEmpty().MaximumLength(500);
+        RuleFor(x => x.AcceptedTerms).Equal(true).WithMessage("Du skal acceptere vilkårene og privatlivspolitikken.");
     }
 }
 
@@ -56,6 +59,9 @@ public class RegisterCommandHandler(
             user.FirstName = request.FirstName;
             user.LastName = request.LastName;
         }
+
+        user.TermsAcceptedAt = DateTime.UtcNow;
+        user.TermsVersion = TermsPolicy.CurrentVersion;
 
         var property = new Property
         {
