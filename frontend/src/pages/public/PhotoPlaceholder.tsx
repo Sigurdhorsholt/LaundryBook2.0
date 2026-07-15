@@ -1,8 +1,8 @@
-import type { CSSProperties } from 'react'
+import type { CSSProperties, ReactElement } from 'react'
 
 type SceneName = 'livingroom' | 'laundry' | 'building' | 'hallway' | 'kitchen'
 
-const scenes: Record<SceneName, JSX.Element> = {
+const scenes: Record<SceneName, ReactElement> = {
   livingroom: (
     <svg viewBox="0 0 400 300" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" style={{ width: '100%', height: '100%', display: 'block' }}>
       <defs>

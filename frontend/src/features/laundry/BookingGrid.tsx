@@ -1,17 +1,21 @@
 /**
  * BookingGrid — reusable day-view booking component.
  *
- * Designed to be used in both the admin preview page and the real resident booking
- * route. The parent is responsible for computing GridBooking[] from whatever data
- * source it has (local preview state today, real API data later).
- * The grid itself only handles rendering and the date-based past/locked states.
+ * Renders one of two layouts depending on the complex's BookingMode:
+ *   - BookEntireRoom     → one bookable row per time slot (SlotRow)
+ *   - BookSpecificMachine → time-slot rows that expand to a machine picker (MachineSlotRow)
+ *
+ * The parent computes GridBooking[] for the selected date+room and owns the data source.
+ * The grid only handles rendering and the date-based past/locked states.
  */
 
-import { useState, useEffect, useRef } from 'react'
-import type { TimeSlotTemplateDto } from './laundryApi'
+import type { LaundryMachineDto, TimeSlotTemplateDto } from './laundryApi'
 import type { GridBooking } from './types'
-import { isPast, isLocked, formatTime } from '../../shared/utils/dateUtils'
+import { BookingMode } from '../properties/propertiesApi'
+import { isPast, isLocked } from '../../shared/utils/dateUtils'
 import { colors } from '../../shared/theme'
+import { SlotRow } from './SlotRow'
+import { MachineSlotRow } from './MachineSlotRow'
 
 export type { GridBooking }
 
@@ -22,8 +26,10 @@ interface BookingGridProps {
   bookingLookaheadDays: number
   gridBookings: GridBooking[]  // pre-computed for this date+room combination
   maxReached: boolean          // active user has hit their concurrent booking limit
-  onBook: (slotId: string) => void
-  onCancel: (slotId: string) => void
+  bookingMode: BookingMode
+  machines: LaundryMachineDto[]  // active machines; only used in BookSpecificMachine mode
+  onBook: (slotId: string, machineId?: string) => void
+  onCancel: (slotId: string, machineId?: string) => void
   loading?: boolean            // shows skeleton rows while slots are fetched
 }
 
@@ -67,6 +73,8 @@ export function BookingGrid({
   bookingLookaheadDays,
   gridBookings,
   maxReached,
+  bookingMode,
+  machines,
   onBook,
   onCancel,
   loading,
@@ -92,13 +100,32 @@ export function BookingGrid({
     )
   }
 
-  const allUnavailable = slots.every((slot) => {
-    const booking = gridBookings.find((b) => b.slotId === slot.id) ?? null
+  const machineMode = bookingMode === BookingMode.BookSpecificMachine
+
+  if (machineMode && machines.length === 0) {
     return (
-      isPast(date, slot.startTime, today) ||
-      isLocked(date, today, bookingLookaheadDays) ||
-      booking !== null
+      <div style={{ padding: '32px 20px', textAlign: 'center' }}>
+        <p style={{ color: colors.textPrimary, fontWeight: 600, marginBottom: 4, fontSize: '0.9rem' }}>
+          Ingen maskiner opsat endnu
+        </p>
+        <p style={{ color: colors.textMuted, fontSize: '0.82rem', marginBottom: 0 }}>
+          Administratoren har ikke tilføjet maskiner til dette lokale.
+        </p>
+      </div>
     )
+  }
+
+  const slotBookings = (slotId: string) => gridBookings.filter((b) => b.slotId === slotId)
+
+  const allUnavailable = slots.every((slot) => {
+    const past = isPast(date, slot.startTime, today)
+    const locked = isLocked(date, today, bookingLookaheadDays)
+    if (past || locked) return true
+    if (machineMode) {
+      const booked = slotBookings(slot.id)
+      return machines.every((m) => booked.some((b) => b.machineId === m.id))
+    }
+    return slotBookings(slot.id).length > 0
   })
 
   return (
@@ -136,9 +163,26 @@ export function BookingGrid({
       )}
 
       {slots.map((slot) => {
-        const booking = gridBookings.find((b) => b.slotId === slot.id) ?? null
-        const past    = isPast(date, slot.startTime, today)
-        const locked  = isLocked(date, today, bookingLookaheadDays)
+        const past = isPast(date, slot.startTime, today)
+        const locked = isLocked(date, today, bookingLookaheadDays)
+
+        if (machineMode) {
+          return (
+            <MachineSlotRow
+              key={slot.id}
+              slot={slot}
+              machines={machines}
+              bookings={slotBookings(slot.id)}
+              past={past}
+              locked={locked}
+              maxReached={maxReached}
+              onBook={(machineId) => onBook(slot.id, machineId)}
+              onCancel={(machineId) => onCancel(slot.id, machineId)}
+            />
+          )
+        }
+
+        const booking = slotBookings(slot.id)[0] ?? null
         const blocked = maxReached && booking === null && !past && !locked
 
         return (
@@ -156,146 +200,4 @@ export function BookingGrid({
       })}
     </div>
   )
-}
-
-// ── SlotRow ────────────────────────────────────────────────────────────────────
-
-function SlotRow({
-  slot,
-  booking,
-  past,
-  locked,
-  blocked,
-  onBook,
-  onCancel,
-}: {
-  slot: TimeSlotTemplateDto
-  booking: GridBooking | null
-  past: boolean
-  locked: boolean
-  blocked: boolean
-  onBook: () => void
-  onCancel: () => void
-}) {
-  const [hovered, setHovered] = useState(false)
-
-  const [justBooked,    setJustBooked]    = useState(false)
-  const [justCancelled, setJustCancelled] = useState(false)
-  const prevBookingRef = useRef<GridBooking | null>(null)
-
-  useEffect(() => {
-    const prev = prevBookingRef.current
-    prevBookingRef.current = booking
-
-    if (prev === null && booking?.isOwn) {
-      setJustBooked(true)
-      const t = setTimeout(() => setJustBooked(false), 500)
-      return () => clearTimeout(t)
-    }
-    if (prev?.isOwn && booking === null) {
-      setJustCancelled(true)
-      const t = setTimeout(() => setJustCancelled(false), 400)
-      return () => clearTimeout(t)
-    }
-  }, [booking])
-
-  const timeLabel    = `${formatTime(slot.startTime)} – ${formatTime(slot.endTime)}`
-  const dimmed       = past || locked
-  const takenByOther = booking !== null && !booking.isOwn
-  const isClickable  = !past && !locked && booking === null && !blocked
-
-  const rowBg =
-    (justBooked || booking?.isOwn) ? colors.slotOwnBg :
-    takenByOther                    ? colors.slotTakenBg :
-    (hovered && isClickable)        ? colors.primaryLighter :
-                                      colors.bgCard
-
-  const animationStyle: React.CSSProperties = justBooked
-    ? { animation: 'slot-booked 0.45s ease-out' }
-    : justCancelled
-      ? { animation: 'slot-cancelled 0.35s ease-out' }
-      : {}
-
-  let status: React.ReactNode
-
-  if (past || locked) {
-    status = (
-      <span style={badge(colors.bgSubtle, colors.textMuted)}>
-        {past ? 'Passeret' : 'Ikke tilgængeligt'}
-      </span>
-    )
-  } else if (booking?.isOwn) {
-    status = (
-      <span className="d-flex align-items-center gap-2 flex-wrap justify-content-end">
-        <span style={badge(colors.successBg, colors.successText)}>Min booking</span>
-        {booking.canCancel ? (
-          <button
-            className="btn btn-sm btn-outline-secondary"
-            style={{ fontSize: '0.75rem', padding: '2px 10px', borderRadius: 20 }}
-            onClick={(e) => { e.stopPropagation(); onCancel() }}
-          >
-            Aflys
-          </button>
-        ) : (
-          <span style={{ fontSize: '0.72rem', color: colors.textMuted }}>Aflysfrist udløbet</span>
-        )}
-      </span>
-    )
-  } else if (takenByOther) {
-    status = <span style={badge(colors.bgSubtle, colors.textSecondary)}>{booking.label}</span>
-  } else if (blocked) {
-    status = null
-  } else {
-    status = (
-      <button
-        className="btn btn-sm btn-outline-primary fw-semibold"
-        style={{ fontSize: '0.78rem', borderRadius: 20, padding: '3px 16px', pointerEvents: 'none' }}
-        tabIndex={-1}
-        aria-hidden
-      >
-        Book
-      </button>
-    )
-  }
-
-  return (
-    <div
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
-      onClick={isClickable ? onBook : undefined}
-      style={{
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        padding: '11px 20px',
-        borderBottom: `1px solid ${colors.borderRow}`,
-        backgroundColor: rowBg,
-        opacity: dimmed ? 0.45 : blocked ? 0.5 : 1,
-        cursor: isClickable ? 'pointer' : 'default',
-        transition: (justBooked || justCancelled) ? 'none' : 'background-color 0.12s',
-        userSelect: 'none',
-        ...animationStyle,
-      }}
-    >
-      <span style={{ fontSize: '0.9rem', fontWeight: 500, color: takenByOther ? colors.slotTakenText : colors.textPrimary }}>
-        {timeLabel}
-      </span>
-      {status}
-    </div>
-  )
-}
-
-// ── Style helpers ──────────────────────────────────────────────────────────────
-
-function badge(bg: string, color: string): React.CSSProperties {
-  return {
-    display: 'inline-block',
-    padding: '3px 10px',
-    borderRadius: 20,
-    backgroundColor: bg,
-    color,
-    fontSize: '0.78rem',
-    fontWeight: 500,
-    whiteSpace: 'nowrap' as const,
-  }
 }

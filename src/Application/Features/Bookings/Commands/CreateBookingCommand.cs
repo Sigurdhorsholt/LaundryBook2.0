@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Application.Features.Bookings.Commands;
 
-public record CreateBookingCommand(Guid RoomId, Guid TimeSlotTemplateId, DateOnly Date) : IRequest<Guid>;
+public record CreateBookingCommand(Guid RoomId, Guid TimeSlotTemplateId, DateOnly Date, Guid? MachineId) : IRequest<Guid>;
 
 public class CreateBookingCommandHandler(
     IAppDbContext db,
@@ -49,17 +49,50 @@ public class CreateBookingCommandHandler(
         if (slotStartUtc <= DateTime.UtcNow)
             throw new ConflictException("Tidspladsen er allerede passeret.");
 
-        // Check slot is not already taken
-        var slotTaken = await db.Bookings
-            .AnyAsync(b =>
-                b.LaundryRoomId == request.RoomId &&
-                b.TimeSlotTemplateId == request.TimeSlotTemplateId &&
-                b.Date == request.Date &&
-                b.Status == BookingStatus.Active,
-                cancellationToken);
+        Guid? machineId = null;
 
-        if (slotTaken)
-            throw new ConflictException("Tidspladsen er allerede optaget.");
+        if (settings.BookingMode == BookingMode.BookSpecificMachine)
+        {
+            if (request.MachineId is null)
+                throw new ConflictException("Vælg en maskine for at booke.");
+
+            var machine = await db.LaundryMachines
+                .FirstOrDefaultAsync(m =>
+                    m.Id == request.MachineId &&
+                    m.LaundryRoomId == request.RoomId &&
+                    m.IsActive,
+                    cancellationToken)
+                ?? throw new NotFoundException(nameof(LaundryMachine), request.MachineId.Value);
+
+            machineId = machine.Id;
+
+            // Check this machine is not already taken for this slot
+            var machineTaken = await db.Bookings
+                .AnyAsync(b =>
+                    b.LaundryRoomId == request.RoomId &&
+                    b.TimeSlotTemplateId == request.TimeSlotTemplateId &&
+                    b.MachineId == machineId &&
+                    b.Date == request.Date &&
+                    b.Status == BookingStatus.Active,
+                    cancellationToken);
+
+            if (machineTaken)
+                throw new ConflictException("Maskinen er allerede optaget på dette tidspunkt.");
+        }
+        else
+        {
+            // Whole room: the entire slot is taken if any active booking exists
+            var slotTaken = await db.Bookings
+                .AnyAsync(b =>
+                    b.LaundryRoomId == request.RoomId &&
+                    b.TimeSlotTemplateId == request.TimeSlotTemplateId &&
+                    b.Date == request.Date &&
+                    b.Status == BookingStatus.Active,
+                    cancellationToken);
+
+            if (slotTaken)
+                throw new ConflictException("Tidspladsen er allerede optaget.");
+        }
 
         // Enforce max concurrent bookings per user
         var activeCount = await db.Bookings
@@ -78,6 +111,7 @@ public class CreateBookingCommandHandler(
             UserId = userId,
             LaundryRoomId = request.RoomId,
             TimeSlotTemplateId = request.TimeSlotTemplateId,
+            MachineId = machineId,
             Date = request.Date,
             Status = BookingStatus.Active,
         };

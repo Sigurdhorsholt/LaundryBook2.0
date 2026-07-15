@@ -53,6 +53,7 @@ export function UpcomingBookingsCard({ myBookings, today, expanded, onToggle, on
                 {dayShortLabel(b.date, today)} {dayNum(b.date)}. {MONTH_SHORT[monthIdx] ?? ''}
               </strong>
               {b.roomName} · {formatTimeRange(b.startTime, b.endTime)}
+              {b.machineName ? ` · ${b.machineName}` : ''}
             </span>
             {b.canCancel ? (
               <button

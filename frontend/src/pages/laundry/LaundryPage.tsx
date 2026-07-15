@@ -1,9 +1,10 @@
 import { useState, useMemo, useEffect, useRef } from 'react'
 import { skipToken } from '@reduxjs/toolkit/query/react'
 import { useMeQuery } from '../../features/auth/authApi'
-import { useGetPropertyQuery } from '../../features/properties/propertiesApi'
+import { useGetPropertyQuery, BookingMode } from '../../features/properties/propertiesApi'
 import {
   useGetLaundryRoomsQuery,
+  useGetMachinesQuery,
   useGetTimeSlotsQuery,
   useGetBookingsQuery,
   useGetMyBookingsQuery,
@@ -23,7 +24,6 @@ import {
   todayStr, addDays, getWeekMonday, formatTimeRange, formatDateFull,
   minutesUntilSlot,
 } from '../../shared/utils/dateUtils'
-import { DOT_COLOR } from '../../features/laundry/constants'
 import { colors } from '../../shared/theme'
 
 // ── localStorage helpers for booking count milestone ──────────────────────────
@@ -75,6 +75,8 @@ export function LaundryPage() {
 
   const { data: property } = useGetPropertyQuery(propertyId ?? skipToken)
   const settings = property?.settings
+  const bookingMode = settings?.bookingMode
+  const machineMode = bookingMode === BookingMode.BookSpecificMachine
 
   const { data: rooms, isLoading: roomsLoading } = useGetLaundryRoomsQuery(propertyId ?? skipToken)
 
@@ -88,6 +90,7 @@ export function LaundryPage() {
   const weekTo   = addDays(weekStart, 6)
 
   const { data: slots, isLoading: slotsLoading }     = useGetTimeSlotsQuery(selectedRoomId ?? skipToken)
+  const { data: machines } = useGetMachinesQuery(machineMode && selectedRoomId ? selectedRoomId : skipToken)
   const { data: bookings, isLoading: bookingsLoading } = useGetBookingsQuery(
     selectedRoomId ? { roomId: selectedRoomId, from: weekFrom, to: weekTo } : skipToken
   )
@@ -104,7 +107,15 @@ export function LaundryPage() {
   const gridBookings = useMemo((): GridBooking[] =>
     (bookings ?? [])
       .filter(b => b.date === selectedDate)
-      .map(b => ({ slotId: b.timeSlotTemplateId, isOwn: b.isOwn, label: b.label, canCancel: b.canCancel }))
+      .map(b => ({
+        bookingId: b.id,
+        slotId: b.timeSlotTemplateId,
+        isOwn: b.isOwn,
+        label: b.label,
+        canCancel: b.canCancel,
+        machineId: b.machineId,
+        machineName: b.machineName,
+      }))
   , [bookings, selectedDate])
 
   const maxReached =
@@ -115,17 +126,19 @@ export function LaundryPage() {
     const result: Record<string, AvailabilityState> = {}
     const lookaheadEnd = settings ? addDays(today, settings.bookingLookaheadDays) : null
     const totalSlots   = (slots ?? []).length
+    const capacityPerSlot = machineMode ? (machines?.length ?? 0) : 1
+    const totalCapacity   = totalSlots * capacityPerSlot
     for (const d of weekDays) {
       if (d < today || (lookaheadEnd !== null && d > lookaheadEnd)) {
         result[d] = 'past'
         continue
       }
       const bookedCount = (bookings ?? []).filter(b => b.date === d).length
-      const free        = totalSlots - bookedCount
-      result[d] = free === 0 ? 'full' : free <= 2 ? 'few' : 'free'
+      const free        = totalCapacity - bookedCount
+      result[d] = free <= 0 ? 'full' : free <= 2 ? 'few' : 'free'
     }
     return result
-  }, [weekDays, bookings, slots, today, settings])
+  }, [weekDays, bookings, slots, today, settings, machineMode, machines])
 
   const othersBookedToday = useMemo(
     () => (bookings ?? []).filter(b => b.date === selectedDate && !b.isOwn).length
@@ -145,21 +158,32 @@ export function LaundryPage() {
 
   // ── Booking handlers ───────────────────────────────────────────────────────
 
-  function handleBook(slotId: string) {
+  function handleBook(slotId: string, machineId?: string) {
     const slot = slots?.find(s => s.id === slotId)
     if (!slot) return
-    setPending({ type: 'book', slotId, date: selectedDate, slotTime: formatTimeRange(slot.startTime, slot.endTime) })
+    const machineName = machineId ? machines?.find(m => m.id === machineId)?.name : undefined
+    setPending({
+      type: 'book', slotId, date: selectedDate,
+      slotTime: formatTimeRange(slot.startTime, slot.endTime),
+      machineId, machineName,
+    })
     setConfirmError(null)
   }
 
-  function handleCancel(slotId: string) {
-    const b = myBookings?.find(m => m.timeSlotTemplateId === slotId && m.date === selectedDate)
-    if (!b) return
+  function handleCancel(slotId: string, machineId?: string) {
+    const slot = slots?.find(s => s.id === slotId)
+    const b = (bookings ?? []).find(x =>
+      x.timeSlotTemplateId === slotId &&
+      x.date === selectedDate &&
+      x.isOwn &&
+      (machineId ? x.machineId === machineId : true))
+    if (!slot || !b) return
     setPending({
       type: 'cancel', slotId, date: selectedDate,
-      slotTime: formatTimeRange(b.startTime, b.endTime),
+      slotTime: formatTimeRange(slot.startTime, slot.endTime),
       bookingId: b.id,
-      minutesUntil: minutesUntilSlot(selectedDate, b.startTime),
+      minutesUntil: minutesUntilSlot(selectedDate, slot.startTime),
+      machineName: b.machineName ?? undefined,
     })
     setConfirmError(null)
   }
@@ -182,6 +206,7 @@ export function LaundryPage() {
         await createBooking({
           roomId: selectedRoomId, propertyId,
           timeSlotTemplateId: pending.slotId, date: pending.date,
+          machineId: pending.machineId ?? null,
         }).unwrap()
         const newCount = incrementBookingCount()
         if (newCount % 5 === 0) {
@@ -210,7 +235,7 @@ export function LaundryPage() {
     )
   }
 
-  const gridLoading = slotsLoading || bookingsLoading
+  const gridLoading = slotsLoading || bookingsLoading || !settings
 
   return (
     <div className="container-xl px-4 py-5">
@@ -272,6 +297,8 @@ export function LaundryPage() {
             bookingLookaheadDays={settings?.bookingLookaheadDays ?? 14}
             gridBookings={gridBookings}
             maxReached={maxReached}
+            bookingMode={bookingMode ?? BookingMode.BookEntireRoom}
+            machines={machines ?? []}
             onBook={handleBook}
             onCancel={handleCancel}
             loading={gridLoading}

@@ -41,8 +41,8 @@ export function ConfirmBookingModal({ pending, error, loading, onConfirm, onClos
 
         <p style={{ color: colors.textSecondary, fontSize: '0.9rem', marginBottom: showTimeWarning ? 10 : 16 }}>
           {isBook
-            ? <>Vil du booke <strong>{pending.slotTime}</strong> den <strong>{dateText}</strong>?</>
-            : <>Vil du aflyse din booking kl. <strong>{pending.slotTime}</strong> den <strong>{dateText}</strong>?</>
+            ? <>Vil du booke <strong>{pending.slotTime}</strong>{pending.machineName ? <> på <strong>{pending.machineName}</strong></> : null} den <strong>{dateText}</strong>?</>
+            : <>Vil du aflyse din booking kl. <strong>{pending.slotTime}</strong>{pending.machineName ? <> på <strong>{pending.machineName}</strong></> : null} den <strong>{dateText}</strong>?</>
           }
         </p>
 

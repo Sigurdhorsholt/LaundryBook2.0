@@ -145,8 +145,9 @@ export function BookingPreviewPage() {
         const slot  = activeSlots.find((s) => s.id === b.slotId)
         if (isOwn) {
           return {
-            slotId: b.slotId, isOwn: true, label: 'Min booking',
+            bookingId: b.slotId, slotId: b.slotId, isOwn: true, label: 'Min booking',
             canCancel: slot ? canCancelBooking(b.date, slot.startTime, settings.cancellationWindowMinutes) : false,
+            machineId: null, machineName: null,
           }
         }
         const user = PREVIEW_USERS.find((u) => u.id === b.userId)
@@ -156,7 +157,7 @@ export function BookingPreviewPage() {
           case BookingVisibility.ApartmentOnly: label = user ? `Lejl. ${user.apartment}` : 'Beboer'; break
           default:                              label = 'Optaget'
         }
-        return { slotId: b.slotId, isOwn: false, label, canCancel: false }
+        return { bookingId: b.slotId, slotId: b.slotId, isOwn: false, label, canCancel: false, machineId: null, machineName: null }
       })
   }, [previewBookings, selectedDate, effectiveRoomId, activeUserId, settings, activeSlots])
 
@@ -484,6 +485,8 @@ export function BookingPreviewPage() {
             bookingLookaheadDays={settings?.bookingLookaheadDays ?? 7}
             gridBookings={gridBookings}
             maxReached={maxReached}
+            bookingMode={BookingMode.BookEntireRoom}
+            machines={[]}
             onBook={handleBook}
             onCancel={handleCancel}
             loading={slotsLoading}

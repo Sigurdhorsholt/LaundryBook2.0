@@ -1,6 +1,7 @@
 import { useState, useMemo } from 'react'
 import { BookingGrid, type GridBooking } from '../../features/laundry/BookingGrid'
 import type { TimeSlotTemplateDto } from '../../features/laundry/laundryApi'
+import { BookingMode } from '../../features/properties/propertiesApi'
 import { colors } from '../../shared/theme'
 import { IconChevronLeft, IconChevronRight } from '../../shared/icons'
 
@@ -103,10 +104,10 @@ export function ResidentDemoBooking() {
   }, [ownBookings, today])
 
   const gridBookings = useMemo((): GridBooking[] =>
-    SLOTS.flatMap((slot) => {
+    SLOTS.flatMap((slot): GridBooking[] => {
       const key = `${slot.id}_${selectedDate}`
-      if (ownBookings.has(key))   return [{ slotId: slot.id, isOwn: true,  label: 'Min booking', canCancel: true  }]
-      if (otherBookings.has(key)) return [{ slotId: slot.id, isOwn: false, label: 'Optaget',      canCancel: false }]
+      if (ownBookings.has(key))   return [{ bookingId: key, slotId: slot.id, isOwn: true,  label: 'Min booking', canCancel: true,  machineId: null, machineName: null }]
+      if (otherBookings.has(key)) return [{ bookingId: key, slotId: slot.id, isOwn: false, label: 'Optaget',      canCancel: false, machineId: null, machineName: null }]
       return []
     })
   , [ownBookings, otherBookings, selectedDate])
@@ -249,6 +250,8 @@ export function ResidentDemoBooking() {
           bookingLookaheadDays={LOOKAHEAD_DAYS}
           gridBookings={gridBookings}
           maxReached={maxReached}
+          bookingMode={BookingMode.BookEntireRoom}
+          machines={[]}
           onBook={(slotId)   => setPending({ type: 'book',   slotId, date: selectedDate })}
           onCancel={(slotId) => setPending({ type: 'cancel', slotId, date: selectedDate })}
         />

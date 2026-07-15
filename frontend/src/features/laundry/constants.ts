@@ -1,4 +1,5 @@
 import { colors } from '../../shared/theme'
+import { MachineType } from './laundryApi'
 
 // ── Booking grid ───────────────────────────────────────────────────────────────
 
@@ -7,6 +8,12 @@ export const DOT_COLOR: Record<string, string> = {
   few:  colors.dotFew,
   full: colors.dotFull,
   past: 'transparent',
+}
+
+export const MACHINE_TYPE_LABEL: Record<MachineType, string> = {
+  [MachineType.Washer]:      'Vaskemaskine',
+  [MachineType.Dryer]:       'Tørretumbler',
+  [MachineType.WasherDryer]: 'Vaske/tørre',
 }
 
 // ── Slot generator ─────────────────────────────────────────────────────────────

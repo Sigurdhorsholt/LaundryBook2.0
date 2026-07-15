@@ -15,7 +15,9 @@ public record BookingDto(
     DateOnly Date,
     bool IsOwn,
     string Label,
-    bool CanCancel);
+    bool CanCancel,
+    Guid? MachineId,
+    string? MachineName);
 
 public class GetBookingsQueryHandler(
     IAppDbContext db,
@@ -47,6 +49,7 @@ public class GetBookingsQueryHandler(
                 b.Status == BookingStatus.Active)
             .Include(b => b.User)
             .Include(b => b.TimeSlotTemplate)
+            .Include(b => b.Machine)
             .ToListAsync(cancellationToken);
 
         // Need apartment number for ApartmentOnly visibility
@@ -80,7 +83,7 @@ public class GetBookingsQueryHandler(
             var slotStartUtc = b.Date.ToDateTime(b.TimeSlotTemplate.StartTime, DateTimeKind.Unspecified);
             var canCancel = isOwn && (slotStartUtc - now).TotalMinutes > cancellationCutoffMinutes;
 
-            return new BookingDto(b.Id, b.TimeSlotTemplateId, b.Date, isOwn, label, canCancel);
+            return new BookingDto(b.Id, b.TimeSlotTemplateId, b.Date, isOwn, label, canCancel, b.MachineId, b.Machine?.Name);
         }).ToList();
     }
 }
