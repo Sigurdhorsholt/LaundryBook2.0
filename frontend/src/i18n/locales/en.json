@@ -419,7 +419,10 @@
   "laundry": {
     "actions": {
       "book": "Book",
-      "cancelBooking": "Cancel"
+      "cancelBooking": "Cancel",
+      "dismiss": "Cancel",
+      "confirmBook": "Confirm booking",
+      "confirmCancel": "Confirm cancellation"
     },
     "machineType": {
       "washer": "Washer",
