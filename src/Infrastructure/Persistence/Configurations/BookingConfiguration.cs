@@ -30,11 +30,14 @@ public class BookingConfiguration : IEntityTypeConfiguration<Booking>
         builder.Property(b => b.Status).IsRequired();
         builder.Property(b => b.Date).IsRequired();
 
-        // Prevent double-booking: unique index per slot + machine + date (when machine is set)
+        // Prevent double-booking: unique per slot + machine + date among active bookings (specific-machine mode)
         builder.HasIndex(b => new { b.TimeSlotTemplateId, b.MachineId, b.Date })
-            .HasFilter("\"MachineId\" IS NOT NULL AND \"Status\" = 0");
+            .HasFilter("\"MachineId\" IS NOT NULL AND \"Status\" = 0")
+            .IsUnique();
 
-        // Prevent double-booking entire room per slot + room + date
-        builder.HasIndex(b => new { b.TimeSlotTemplateId, b.LaundryRoomId, b.Date });
+        // Prevent double-booking: unique per slot + room + date among active bookings (entire-room mode)
+        builder.HasIndex(b => new { b.TimeSlotTemplateId, b.LaundryRoomId, b.Date })
+            .HasFilter("\"MachineId\" IS NULL AND \"Status\" = 0")
+            .IsUnique();
     }
 }

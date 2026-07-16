@@ -33,6 +33,7 @@ public class AddMemberCommandHandler(
     public async Task<Guid> Handle(AddMemberCommand request, CancellationToken cancellationToken)
     {
         await auth.RequireRoleAsync(request.PropertyId, UserRole.ComplexAdmin, cancellationToken);
+        await auth.RequireCanGrantRoleAsync(request.PropertyId, request.Role, cancellationToken);
 
         var user = await db.Users
             .FirstOrDefaultAsync(u => u.Email == request.Email, cancellationToken)

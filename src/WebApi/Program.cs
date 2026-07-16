@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.IdentityModel.Tokens;
 using Serilog;
 using Serilog.Events;
+using System.Net.Sockets;
 using System.Text;
 using System.Threading.RateLimiting;
 using WebApi.Middleware;
@@ -55,6 +56,11 @@ builder.Services.AddCors(options =>
               .AllowCredentials()); // required for httpOnly cookies
 });
 
+// Fail fast on a missing/weak signing key rather than issuing forgeable HS256 tokens.
+var jwtKey = builder.Configuration["Jwt:Key"];
+if (string.IsNullOrEmpty(jwtKey) || Encoding.UTF8.GetByteCount(jwtKey) < 32)
+    throw new InvalidOperationException("Jwt:Key must be configured with at least 32 bytes (256 bits) for HS256.");
+
 // JWT via httpOnly cookies
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
@@ -68,8 +74,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             ValidateIssuerSigningKey = true,
             ValidIssuer = builder.Configuration["Jwt:Issuer"],
             ValidAudience = builder.Configuration["Jwt:Audience"],
-            IssuerSigningKey = new SymmetricSecurityKey(
-                Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]!))
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey))
         };
 
         // Read JWT from httpOnly cookie instead of Authorization header
@@ -90,9 +95,22 @@ builder.Services.AddAuthorization();
 builder.Services.Configure<ForwardedHeadersOptions>(options =>
 {
     options.ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
-    options.KnownNetworks.Clear();
+    options.ForwardLimit = 1; // trust exactly one hop (Render's edge proxy)
+    options.KnownIPNetworks.Clear();
     options.KnownProxies.Clear();
 });
+
+// Partition rate limits by client IP, collapsing IPv6 to its /64 prefix so a single
+// allocation can't rotate addresses to earn fresh buckets.
+static string RateLimitClientKey(HttpContext ctx)
+{
+    var ip = ctx.Connection.RemoteIpAddress;
+    if (ip is null) return "unknown";
+    if (ip.IsIPv4MappedToIPv6) ip = ip.MapToIPv4();
+    return ip.AddressFamily == AddressFamily.InterNetworkV6
+        ? "v6:" + Convert.ToHexString(ip.GetAddressBytes()[..8])
+        : ip.ToString();
+}
 
 // Rate limiting on abuse-prone endpoints, partitioned per client IP.
 builder.Services.AddRateLimiter(options =>
@@ -102,13 +120,13 @@ builder.Services.AddRateLimiter(options =>
     // login / register / redeem-invite / invite-info — brute-force + spam signup.
     options.AddPolicy("auth", httpContext =>
         RateLimitPartition.GetFixedWindowLimiter(
-            httpContext.Connection.RemoteIpAddress?.ToString() ?? "unknown",
+            RateLimitClientKey(httpContext),
             _ => new FixedWindowRateLimiterOptions { PermitLimit = 10, Window = TimeSpan.FromMinutes(1) }));
 
     // endpoints that send email — stricter, to blunt email bombing.
     options.AddPolicy("email", httpContext =>
         RateLimitPartition.GetFixedWindowLimiter(
-            httpContext.Connection.RemoteIpAddress?.ToString() ?? "unknown",
+            RateLimitClientKey(httpContext),
             _ => new FixedWindowRateLimiterOptions { PermitLimit = 5, Window = TimeSpan.FromMinutes(1) }));
 
     options.OnRejected = (context, _) =>
