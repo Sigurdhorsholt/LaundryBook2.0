@@ -12,3 +12,15 @@ export function badge(bg: string, color: string): CSSProperties {
     whiteSpace: 'nowrap',
   }
 }
+
+/** High-contrast filled badge — reserved for the user's own booking. */
+export function solidBadge(bg: string, color: string): CSSProperties {
+  return {
+    ...badge(bg, color),
+    display: 'inline-flex',
+    alignItems: 'center',
+    gap: 5,
+    padding: '4px 11px',
+    fontWeight: 600,
+  }
+}

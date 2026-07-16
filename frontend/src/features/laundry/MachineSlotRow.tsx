@@ -4,9 +4,9 @@ import { MachineType, type LaundryMachineDto, type TimeSlotTemplateDto } from '.
 import type { GridBooking, PendingAction } from './types'
 import { formatTime } from '../../shared/utils/dateUtils'
 import { colors } from '../../shared/theme'
-import { badge } from './slotBadge'
+import { badge, solidBadge } from './slotBadge'
 import { MACHINE_TYPE_LABEL } from './constants'
-import { IconClock, IconChevronDown, IconWasher, IconDryer } from '../../shared/icons'
+import { IconClock, IconChevronDown, IconWasher, IconDryer, IconCheck } from '../../shared/icons'
 import { InlineConfirm, ConfirmMessage } from './InlineConfirm'
 
 interface Props {
@@ -66,8 +66,17 @@ export function MachineSlotRow({
             <span style={badge(colors.bgSubtle, colors.textMuted)}>{past ? t('laundry.slot.past') : t('laundry.slot.unavailable')}</span>
           ) : (
             <>
-              {ownCount > 0 && <span style={badge(colors.successBg, colors.successText)}>{t('laundry.slot.myBooking')}</span>}
-              <span style={badge(freeCount === 0 ? colors.slotTakenBg : colors.slotFreeBg, freeCount === 0 ? colors.slotTakenText : colors.slotFreeText)}>
+              {ownCount > 0 && (
+                <span style={solidBadge(colors.successText, colors.bgCard)}>
+                  <IconCheck size={11} color={colors.bgCard} strokeWidth={2.6} />
+                  {t('laundry.slot.myBooking')}
+                </span>
+              )}
+              <span style={
+                freeCount === 0 ? badge(colors.slotTakenBg, colors.slotTakenText) :
+                freeCount === 1 ? badge(colors.warningBg, colors.warningText) :
+                                  badge(colors.primaryLight, colors.primaryMutedText)
+              }>
                 {freeCount === 0 ? t('laundry.slot.fullyBooked') : t('laundry.slot.freeCount', { free: freeCount, total: machines.length })}
               </span>
               <span style={{ display: 'inline-flex', transform: expanded ? 'rotate(180deg)' : 'none', transition: 'transform 0.15s' }}>
@@ -92,11 +101,14 @@ export function MachineSlotRow({
             if (booking?.isOwn) {
               action = (
                 <span className="d-flex align-items-center" style={{ gap: 8 }}>
-                  <span style={badge(colors.successBg, colors.successText)}>{t('laundry.slot.myBooking')}</span>
+                  <span style={solidBadge(colors.successText, colors.bgCard)}>
+                    <IconCheck size={11} color={colors.bgCard} strokeWidth={2.6} />
+                    {t('laundry.slot.myBooking')}
+                  </span>
                   {machinePending?.type === 'cancel' ? (
                     <InlineConfirm variant="cancel" loading={!!confirmLoading} onConfirm={onConfirm!} onDismiss={onDismissConfirm!} />
                   ) : booking.canCancel ? (
-                    <button className="lb-btn lb-btn-ghost" style={{ fontSize: '0.75rem', padding: '6px 14px' }} onClick={() => onCancel(machine.id)}>{t('laundry.actions.cancelBooking')}</button>
+                    <button className="lb-btn lb-btn-ghost" style={{ fontSize: '0.8rem', padding: '8px 18px' }} onClick={() => onCancel(machine.id)}>{t('laundry.actions.cancelBooking')}</button>
                   ) : (
                     <span style={{ fontSize: '0.72rem', color: colors.textMuted }}>{t('laundry.slot.deadlinePassed')}</span>
                   )}
@@ -110,7 +122,7 @@ export function MachineSlotRow({
               action = <InlineConfirm variant="book" loading={!!confirmLoading} onConfirm={onConfirm!} onDismiss={onDismissConfirm!} />
             } else {
               action = (
-                <button className="lb-btn lb-btn-primary" style={{ fontSize: '0.78rem', padding: '7px 18px' }} onClick={() => onBook(machine.id)}>{t('laundry.actions.book')}</button>
+                <button className="lb-btn lb-btn-primary" style={{ fontSize: '0.85rem', padding: '9px 26px' }} onClick={() => onBook(machine.id)}>{t('laundry.actions.book')}</button>
               )
             }
 

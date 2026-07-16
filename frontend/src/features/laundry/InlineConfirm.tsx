@@ -11,7 +11,7 @@ interface InlineConfirmProps {
 }
 
 const roundBtn: React.CSSProperties = {
-  width: 28, height: 28, borderRadius: '50%', padding: 0,
+  width: 34, height: 34, borderRadius: '50%', padding: 0,
   display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
   cursor: 'pointer', flexShrink: 0,
 }
@@ -35,7 +35,7 @@ export function InlineConfirm({ variant, loading, onConfirm, onDismiss }: Inline
           animation: 'confirm-roll-in 0.2s ease-out both',
         }}
       >
-        <IconX size={13} color={colors.textSecondary} strokeWidth={2.2} />
+        <IconX size={15} color={colors.textSecondary} strokeWidth={2.2} />
       </button>
       <button
         aria-label={variant === 'book' ? t('laundry.actions.confirmBook') : t('laundry.actions.confirmCancel')}
@@ -52,10 +52,10 @@ export function InlineConfirm({ variant, loading, onConfirm, onDismiss }: Inline
         {loading ? (
           <span
             className="spinner-border spinner-border-sm"
-            style={{ width: 13, height: 13, borderWidth: 2, color: colors.bgCard }}
+            style={{ width: 15, height: 15, borderWidth: 2, color: colors.bgCard }}
           />
         ) : (
-          <IconCheck size={14} color={colors.bgCard} strokeWidth={2.4} />
+          <IconCheck size={16} color={colors.bgCard} strokeWidth={2.4} />
         )}
       </button>
     </span>

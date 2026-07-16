@@ -4,7 +4,8 @@ import type { TimeSlotTemplateDto } from './laundryApi'
 import type { GridBooking, PendingAction } from './types'
 import { formatTime } from '../../shared/utils/dateUtils'
 import { colors } from '../../shared/theme'
-import { badge } from './slotBadge'
+import { badge, solidBadge } from './slotBadge'
+import { IconCheck } from '../../shared/icons'
 import { InlineConfirm, ConfirmMessage } from './InlineConfirm'
 
 interface Props {
@@ -79,13 +80,16 @@ export function SlotRow({
   } else if (booking?.isOwn) {
     status = (
       <span className="d-flex align-items-center gap-2 flex-wrap justify-content-end">
-        <span style={badge(colors.successBg, colors.successText)}>{t('laundry.slot.myBooking')}</span>
+        <span style={solidBadge(colors.successText, colors.bgCard)}>
+          <IconCheck size={11} color={colors.bgCard} strokeWidth={2.6} />
+          {t('laundry.slot.myBooking')}
+        </span>
         {confirming && pending?.type === 'cancel' ? (
           <InlineConfirm variant="cancel" loading={!!confirmLoading} onConfirm={onConfirm!} onDismiss={onDismissConfirm!} />
         ) : booking.canCancel ? (
           <button
             className="lb-btn lb-btn-ghost"
-            style={{ fontSize: '0.75rem', padding: '6px 14px' }}
+            style={{ fontSize: '0.8rem', padding: '8px 18px' }}
             onClick={(e) => { e.stopPropagation(); onCancel() }}
           >
             {t('laundry.actions.cancelBooking')}
@@ -105,7 +109,7 @@ export function SlotRow({
     status = (
       <button
         className={`lb-btn ${hovered && isClickable ? 'lb-btn-primary' : 'lb-btn-soft'}`}
-        style={{ fontSize: '0.78rem', padding: '7px 18px', pointerEvents: 'none' }}
+        style={{ fontSize: '0.85rem', padding: '9px 26px', pointerEvents: 'none' }}
         tabIndex={-1}
         aria-hidden
       >

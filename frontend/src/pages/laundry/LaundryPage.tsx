@@ -56,6 +56,7 @@ export function LaundryPage() {
   const [selectedDate, setSelectedDate]     = useState(today)
   const [selectedRoomId, setSelectedRoomId] = useState<string | null>(null)
   const [pending, setPending]               = useState<PendingAction | null>(null)
+  const [settling, setSettling]             = useState(false)
   const [confirmError, setConfirmError]     = useState<string | null>(null)
   const [milestoneCount, setMilestoneCount] = useState<number | null>(null)
   const [bookingsExpanded, setBookingsExpanded] = useState(true)
@@ -100,10 +101,10 @@ export function LaundryPage() {
 
   const { data: slots, isFetching: slotsFetching }     = useGetTimeSlotsQuery(selectedRoomId ?? skipToken)
   const { data: machines, isFetching: machinesFetching } = useGetMachinesQuery(machineMode && selectedRoomId ? selectedRoomId : skipToken)
-  const { data: bookings, isFetching: bookingsFetching } = useGetBookingsQuery(
+  const { data: bookings, isFetching: bookingsFetching, refetch: refetchBookings } = useGetBookingsQuery(
     selectedRoomId ? { roomId: selectedRoomId, from: weekFrom, to: weekTo } : skipToken
   )
-  const { data: myBookings } = useGetMyBookingsQuery(propertyId ?? skipToken)
+  const { data: myBookings, refetch: refetchMyBookings } = useGetMyBookingsQuery(propertyId ?? skipToken)
 
   // Keep the last known structure on screen while a switch is in flight —
   // the grid then only shimmers the statuses instead of collapsing entirely.
@@ -239,9 +240,18 @@ export function LaundryPage() {
         if (!roomId) return
         await cancelBooking({ bookingId: pending.bookingId, roomId, propertyId }).unwrap()
       }
+      // Keep the spinner on the clicked button until the refreshed data is on
+      // screen — on a slow connection the row must not look untouched.
+      setSettling(true)
+      await Promise.allSettled([
+        selectedRoomId ? refetchBookings() : Promise.resolve(),
+        refetchMyBookings(),
+      ])
       setPending(null)
     } catch (err) {
       setConfirmError(extractErrorMessage(err, t('laundryPage.genericError')))
+    } finally {
+      setSettling(false)
     }
   }
 
@@ -264,17 +274,25 @@ export function LaundryPage() {
 
       <PageHeader title={t('nav.laundry')} description={t('laundryPage.description')} />
 
-      <UpcomingBookingsCard
-        myBookings={myBookings ?? []}
-        today={today}
-        expanded={bookingsExpanded}
-        onToggle={() => setBookingsExpanded(x => !x)}
-        onCancelUpcoming={handleCancelUpcoming}
-      />
+      <div className="lb-booking-layout">
+
+      <div className="lb-booking-side">
+        <UpcomingBookingsCard
+          myBookings={myBookings ?? []}
+          today={today}
+          expanded={bookingsExpanded}
+          onToggle={() => setBookingsExpanded(x => !x)}
+          onCancelUpcoming={handleCancelUpcoming}
+          loading={myBookings === undefined}
+        />
+      </div>
+
+      <div className="lb-booking-main">
 
       {roomsLoading ? (
-        <div className="mb-4">
-          <div className="lb-skeleton" style={{ width: 120, height: 34, borderRadius: 999, display: 'inline-block' }} />
+        <div className="mb-4 d-flex gap-2">
+          <div className="lb-skeleton" style={{ width: 130, height: 38, borderRadius: 999 }} />
+          <div className="lb-skeleton" style={{ width: 130, height: 38, borderRadius: 999 }} />
         </div>
       ) : (
         <RoomSelector
@@ -300,6 +318,7 @@ export function LaundryPage() {
           selectedDate={selectedDate}
           availabilityByDate={availabilityByDate}
           onSelectDate={setSelectedDate}
+          loading={gridLoading || statusesLoading}
         />
 
         <div style={{ padding: '8px 20px', borderBottom: `1px solid ${colors.borderRow}`, backgroundColor: colors.bgPage }}>
@@ -327,7 +346,7 @@ export function LaundryPage() {
             statusesLoading={statusesLoading}
             refreshing={refreshing}
             pending={pending?.source === 'grid' ? pending : null}
-            confirmLoading={creating || cancelling}
+            confirmLoading={creating || cancelling || settling}
             confirmError={confirmError}
             onConfirm={handleConfirm}
             onDismissConfirm={dismissConfirm}
@@ -355,6 +374,9 @@ export function LaundryPage() {
         )}
       </div>
 
+      </div>
+      </div>
+
       {myBookings && myBookings.length > 0 && !gridVisible && (
         <button
           aria-label={t('laundryPage.goToBooking')}
@@ -378,7 +400,7 @@ export function LaundryPage() {
         <ConfirmBookingModal
           pending={pending}
           error={confirmError}
-          loading={creating || cancelling}
+          loading={creating || cancelling || settling}
           onConfirm={handleConfirm}
           onClose={dismissConfirm}
         />

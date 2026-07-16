@@ -186,6 +186,25 @@ body {
   border-radius: 6px;
 }
 
+/* ── Booking page layout ─────────────────────────────────────────────────────
+   Single column on mobile (next-booking panel first); on desktop the grid gets
+   a readable width and the panel moves into a sticky side column. */
+
+.lb-booking-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 20px;
+  align-items: start;
+}
+.lb-booking-side { min-width: 0; }
+.lb-booking-main { min-width: 0; }
+
+@media (min-width: 992px) {
+  .lb-booking-layout { grid-template-columns: minmax(0, 1fr) 340px; gap: 28px; }
+  .lb-booking-main { grid-column: 1; grid-row: 1; }
+  .lb-booking-side { grid-column: 2; grid-row: 1; position: sticky; top: 84px; }
+}
+
 @keyframes lb-progress-slide {
   from { transform: translateX(-120%); }
   to   { transform: translateX(360%); }

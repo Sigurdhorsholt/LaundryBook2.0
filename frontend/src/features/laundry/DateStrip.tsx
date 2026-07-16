@@ -10,9 +10,10 @@ interface Props {
   selectedDate: string
   availabilityByDate: Record<string, AvailabilityState>
   onSelectDate: (date: string) => void
+  loading?: boolean   // availability unknown — show neutral shimmer dots
 }
 
-export function DateStrip({ weekDays, today, selectedDate, availabilityByDate, onSelectDate }: Props) {
+export function DateStrip({ weekDays, today, selectedDate, availabilityByDate, onSelectDate, loading }: Props) {
   const [hoveredDay, setHoveredDay] = useState<string | null>(null)
 
   return (
@@ -57,10 +58,15 @@ export function DateStrip({ weekDays, today, selectedDate, availabilityByDate, o
             }}>
               {num}
             </span>
-            <span style={{
-              width: 5, height: 5, borderRadius: '50%', display: 'block',
-              backgroundColor: isSelected ? colors.primaryBorder : (DOT_COLOR[dotState] ?? 'transparent'),
-            }} />
+            <span
+              className={loading && !isSelected ? 'lb-skeleton' : undefined}
+              style={{
+                width: 5, height: 5, borderRadius: '50%', display: 'block',
+                backgroundColor: loading && !isSelected
+                  ? undefined
+                  : isSelected ? colors.primaryBorder : (DOT_COLOR[dotState] ?? 'transparent'),
+              }}
+            />
           </button>
         )
       })}

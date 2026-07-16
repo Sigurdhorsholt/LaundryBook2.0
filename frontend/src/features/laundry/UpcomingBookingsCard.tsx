@@ -10,6 +10,27 @@ interface Props {
   expanded: boolean
   onToggle: () => void
   onCancelUpcoming: (b: MyBookingDto) => void
+  loading?: boolean   // bookings not fetched yet — show a skeleton card
+}
+
+function CardSkeleton() {
+  return (
+    <div className="lb-card mb-4" style={{ overflow: 'hidden' }}>
+      <div style={{ padding: '14px 20px', borderBottom: `1px solid ${colors.borderRow}`, backgroundColor: colors.bgHeader }}>
+        <div className="lb-skeleton" style={{ width: 180, height: 15 }} />
+      </div>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '10px 20px' }}>
+        <span style={{ display: 'inline-flex', alignItems: 'center', gap: 12 }}>
+          <div className="lb-skeleton" style={{ width: 40, height: 40, borderRadius: 10 }} />
+          <span style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+            <div className="lb-skeleton" style={{ width: 140, height: 13 }} />
+            <div className="lb-skeleton" style={{ width: 100, height: 11 }} />
+          </span>
+        </span>
+        <div className="lb-skeleton" style={{ width: 66, height: 32, borderRadius: 999 }} />
+      </div>
+    </div>
+  )
 }
 
 function DateChip({ date }: { date: string }) {
@@ -26,8 +47,9 @@ function DateChip({ date }: { date: string }) {
   )
 }
 
-export function UpcomingBookingsCard({ myBookings, today, expanded, onToggle, onCancelUpcoming }: Props) {
+export function UpcomingBookingsCard({ myBookings, today, expanded, onToggle, onCancelUpcoming, loading }: Props) {
   const { t } = useTranslation()
+  if (loading) return <CardSkeleton />
   if (myBookings.length === 0) return null
 
   return (
@@ -79,7 +101,7 @@ export function UpcomingBookingsCard({ myBookings, today, expanded, onToggle, on
           {b.canCancel ? (
             <button
               className="lb-btn lb-btn-ghost"
-              style={{ fontSize: '0.75rem', padding: '6px 14px' }}
+              style={{ fontSize: '0.8rem', padding: '8px 18px' }}
               onClick={() => onCancelUpcoming(b)}
             >
               {t('laundry.actions.cancelBooking')}
