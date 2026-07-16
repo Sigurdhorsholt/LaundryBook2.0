@@ -10,7 +10,7 @@
  */
 
 import type { LaundryMachineDto, TimeSlotTemplateDto } from './laundryApi'
-import type { GridBooking } from './types'
+import type { GridBooking, PendingAction } from './types'
 import { BookingMode } from '../properties/propertiesApi'
 import { isPast, isLocked } from '../../shared/utils/dateUtils'
 import { colors } from '../../shared/theme'
@@ -31,6 +31,13 @@ interface BookingGridProps {
   onBook: (slotId: string, machineId?: string) => void
   onCancel: (slotId: string, machineId?: string) => void
   loading?: boolean            // shows skeleton rows while slots are fetched
+  // Optional inline confirm: when provided, the armed row shows a ✗/✓ pair instead
+  // of the parent opening a modal.
+  pending?: PendingAction | null
+  confirmLoading?: boolean
+  confirmError?: string | null
+  onConfirm?: () => void
+  onDismissConfirm?: () => void
 }
 
 // ── Skeleton row ───────────────────────────────────────────────────────────────
@@ -78,6 +85,11 @@ export function BookingGrid({
   onBook,
   onCancel,
   loading,
+  pending,
+  confirmLoading,
+  confirmError,
+  onConfirm,
+  onDismissConfirm,
 }: BookingGridProps) {
   if (loading) {
     return (
@@ -165,6 +177,7 @@ export function BookingGrid({
       {slots.map((slot) => {
         const past = isPast(date, slot.startTime, today)
         const locked = isLocked(date, today, bookingLookaheadDays)
+        const slotPending = pending && pending.slotId === slot.id && pending.date === date ? pending : null
 
         if (machineMode) {
           return (
@@ -178,6 +191,11 @@ export function BookingGrid({
               maxReached={maxReached}
               onBook={(machineId) => onBook(slot.id, machineId)}
               onCancel={(machineId) => onCancel(slot.id, machineId)}
+              pending={slotPending}
+              confirmLoading={confirmLoading}
+              confirmError={confirmError}
+              onConfirm={onConfirm}
+              onDismissConfirm={onDismissConfirm}
             />
           )
         }
@@ -195,6 +213,11 @@ export function BookingGrid({
             blocked={blocked}
             onBook={() => onBook(slot.id)}
             onCancel={() => onCancel(slot.id)}
+            pending={slotPending}
+            confirmLoading={confirmLoading}
+            confirmError={confirmError}
+            onConfirm={onConfirm}
+            onDismissConfirm={onDismissConfirm}
           />
         )
       })}

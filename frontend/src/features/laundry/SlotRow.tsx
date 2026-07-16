@@ -1,9 +1,10 @@
 import { useState, useEffect, useRef } from 'react'
 import type { TimeSlotTemplateDto } from './laundryApi'
-import type { GridBooking } from './types'
+import type { GridBooking, PendingAction } from './types'
 import { formatTime } from '../../shared/utils/dateUtils'
 import { colors } from '../../shared/theme'
 import { badge } from './slotBadge'
+import { InlineConfirm, ConfirmMessage } from './InlineConfirm'
 
 interface Props {
   slot: TimeSlotTemplateDto
@@ -13,9 +14,17 @@ interface Props {
   blocked: boolean
   onBook: () => void
   onCancel: () => void
+  pending?: PendingAction | null   // armed inline confirm for this slot, matched by the grid
+  confirmLoading?: boolean
+  confirmError?: string | null
+  onConfirm?: () => void
+  onDismissConfirm?: () => void
 }
 
-export function SlotRow({ slot, booking, past, locked, blocked, onBook, onCancel }: Props) {
+export function SlotRow({
+  slot, booking, past, locked, blocked, onBook, onCancel,
+  pending, confirmLoading, confirmError, onConfirm, onDismissConfirm,
+}: Props) {
   const [hovered, setHovered] = useState(false)
 
   const [justBooked, setJustBooked] = useState(false)
@@ -41,13 +50,15 @@ export function SlotRow({ slot, booking, past, locked, blocked, onBook, onCancel
   const timeLabel = `${formatTime(slot.startTime)} – ${formatTime(slot.endTime)}`
   const dimmed = past || locked
   const takenByOther = booking !== null && !booking.isOwn
-  const isClickable = !past && !locked && booking === null && !blocked
+  const confirming = pending != null && !!onConfirm && !!onDismissConfirm
+  const isClickable = !past && !locked && booking === null && !blocked && !confirming
 
   const rowBg =
-    (justBooked || booking?.isOwn) ? colors.slotOwnBg :
-    takenByOther                    ? colors.slotTakenBg :
-    (hovered && isClickable)        ? colors.primaryLighter :
-                                      colors.bgCard
+    (justBooked || booking?.isOwn)              ? colors.slotOwnBg :
+    takenByOther                                ? colors.slotTakenBg :
+    (confirming && pending?.type === 'book')    ? colors.primaryLighter :
+    (hovered && isClickable)                    ? colors.primaryLighter :
+                                                  colors.bgCard
 
   const animationStyle: React.CSSProperties = justBooked
     ? { animation: 'slot-booked 0.45s ease-out' }
@@ -67,7 +78,9 @@ export function SlotRow({ slot, booking, past, locked, blocked, onBook, onCancel
     status = (
       <span className="d-flex align-items-center gap-2 flex-wrap justify-content-end">
         <span style={badge(colors.successBg, colors.successText)}>Min booking</span>
-        {booking.canCancel ? (
+        {confirming && pending?.type === 'cancel' ? (
+          <InlineConfirm variant="cancel" loading={!!confirmLoading} onConfirm={onConfirm!} onDismiss={onDismissConfirm!} />
+        ) : booking.canCancel ? (
           <button
             className="btn btn-sm btn-outline-secondary"
             style={{ fontSize: '0.75rem', padding: '2px 10px', borderRadius: 20 }}
@@ -84,6 +97,8 @@ export function SlotRow({ slot, booking, past, locked, blocked, onBook, onCancel
     status = <span style={badge(colors.bgSubtle, colors.textSecondary)}>{booking.label}</span>
   } else if (blocked) {
     status = null
+  } else if (confirming && pending?.type === 'book') {
+    status = <InlineConfirm variant="book" loading={!!confirmLoading} onConfirm={onConfirm!} onDismiss={onDismissConfirm!} />
   } else {
     status = (
       <button
@@ -103,10 +118,6 @@ export function SlotRow({ slot, booking, past, locked, blocked, onBook, onCancel
       onMouseLeave={() => setHovered(false)}
       onClick={isClickable ? onBook : undefined}
       style={{
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        padding: '11px 20px',
         borderBottom: `1px solid ${colors.borderRow}`,
         backgroundColor: rowBg,
         opacity: dimmed ? 0.45 : blocked ? 0.5 : 1,
@@ -116,10 +127,15 @@ export function SlotRow({ slot, booking, past, locked, blocked, onBook, onCancel
         ...animationStyle,
       }}
     >
-      <span style={{ fontSize: '0.9rem', fontWeight: 500, color: takenByOther ? colors.slotTakenText : colors.textPrimary }}>
-        {timeLabel}
-      </span>
-      {status}
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '11px 20px' }}>
+        <span style={{ fontSize: '0.9rem', fontWeight: 500, color: takenByOther ? colors.slotTakenText : colors.textPrimary }}>
+          {timeLabel}
+        </span>
+        {status}
+      </div>
+      {confirming && pending && (
+        <ConfirmMessage pending={pending} error={confirmError ?? null} style={{ padding: '0 20px 9px' }} />
+      )}
     </div>
   )
 }

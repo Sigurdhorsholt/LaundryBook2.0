@@ -86,6 +86,12 @@ export function LaundryPage() {
     }
   }, [rooms, selectedRoomId])
 
+  // Disarm an inline grid confirm when the user navigates to another day or room
+  useEffect(() => {
+    setPending(p => (p?.source === 'grid' ? null : p))
+    setConfirmError(null)
+  }, [selectedDate, selectedRoomId])
+
   const weekFrom = weekStart
   const weekTo   = addDays(weekStart, 6)
 
@@ -163,7 +169,7 @@ export function LaundryPage() {
     if (!slot) return
     const machineName = machineId ? machines?.find(m => m.id === machineId)?.name : undefined
     setPending({
-      type: 'book', slotId, date: selectedDate,
+      type: 'book', source: 'grid', slotId, date: selectedDate,
       slotTime: formatTimeRange(slot.startTime, slot.endTime),
       machineId, machineName,
     })
@@ -179,10 +185,11 @@ export function LaundryPage() {
       (machineId ? x.machineId === machineId : true))
     if (!slot || !b) return
     setPending({
-      type: 'cancel', slotId, date: selectedDate,
+      type: 'cancel', source: 'grid', slotId, date: selectedDate,
       slotTime: formatTimeRange(slot.startTime, slot.endTime),
       bookingId: b.id,
       minutesUntil: minutesUntilSlot(selectedDate, slot.startTime),
+      machineId: machineId ?? b.machineId ?? undefined,
       machineName: b.machineName ?? undefined,
     })
     setConfirmError(null)
@@ -190,11 +197,16 @@ export function LaundryPage() {
 
   function handleCancelUpcoming(b: MyBookingDto) {
     setPending({
-      type: 'cancel', slotId: b.timeSlotTemplateId, date: b.date,
+      type: 'cancel', source: 'upcoming', slotId: b.timeSlotTemplateId, date: b.date,
       slotTime: formatTimeRange(b.startTime, b.endTime),
       bookingId: b.id,
       minutesUntil: minutesUntilSlot(b.date, b.startTime),
     })
+    setConfirmError(null)
+  }
+
+  function dismissConfirm() {
+    setPending(null)
     setConfirmError(null)
   }
 
@@ -302,6 +314,11 @@ export function LaundryPage() {
             onBook={handleBook}
             onCancel={handleCancel}
             loading={gridLoading}
+            pending={pending?.source === 'grid' ? pending : null}
+            confirmLoading={creating || cancelling}
+            confirmError={confirmError}
+            onConfirm={handleConfirm}
+            onDismissConfirm={dismissConfirm}
           />
         ) : (
           <div style={{ padding: '40px 20px', textAlign: 'center', color: colors.textMuted, fontSize: '0.9rem' }}>
@@ -347,13 +364,13 @@ export function LaundryPage() {
         </button>
       )}
 
-      {pending && (
+      {pending?.source === 'upcoming' && (
         <ConfirmBookingModal
           pending={pending}
           error={confirmError}
           loading={creating || cancelling}
           onConfirm={handleConfirm}
-          onClose={() => { setPending(null); setConfirmError(null) }}
+          onClose={dismissConfirm}
         />
       )}
     </div>
