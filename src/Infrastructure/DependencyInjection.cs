@@ -47,9 +47,16 @@ public static class DependencyInjection
             InitializeFirebase(configuration, firebaseProjectId);
             services.AddScoped<IIdentityProvider, FirebaseIdentityProvider>();
         }
-        else
+        else if (environment.IsDevelopment())
         {
             services.AddScoped<IIdentityProvider, DevIdentityProvider>();
+        }
+        else
+        {
+            // Fail closed: the dev provider accepts unsigned tokens, so it must never be reachable
+            // outside Development. Refuse to start rather than silently falling back to it.
+            throw new InvalidOperationException(
+                "Firebase:ProjectId must be configured outside the Development environment.");
         }
 
         // Email service — use Mailgun when an API key is configured, otherwise log to console (dev)
