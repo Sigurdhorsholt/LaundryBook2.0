@@ -1,5 +1,4 @@
 import type { LaundryRoomDto } from './laundryApi'
-import { colors } from '../../shared/theme'
 
 interface Props {
   rooms: LaundryRoomDto[]
@@ -12,21 +11,19 @@ export function RoomSelector({ rooms, selectedRoomId, onSelect }: Props) {
 
   return (
     <div className="mb-4 d-flex gap-2 flex-wrap">
-      {rooms.map(room => (
-        <button
-          key={room.id}
-          className="btn btn-sm"
-          style={{
-            borderRadius: 20, padding: '5px 16px', fontSize: '0.85rem', fontWeight: 500,
-            backgroundColor: selectedRoomId === room.id ? colors.primary : colors.bgSubtle,
-            color: selectedRoomId === room.id ? '#ffffff' : colors.textPrimary,
-            border: 'none', transition: 'background-color 0.12s',
-          }}
-          onClick={() => onSelect(room.id)}
-        >
-          {room.name}
-        </button>
-      ))}
+      {rooms.map(room => {
+        const active = selectedRoomId === room.id
+        return (
+          <button
+            key={room.id}
+            className={`lb-btn ${active ? 'lb-btn-primary' : 'lb-btn-ghost'}`}
+            style={{ padding: '8px 18px', fontSize: '0.85rem', fontWeight: active ? 600 : 500 }}
+            onClick={() => onSelect(room.id)}
+          >
+            {room.name}
+          </button>
+        )
+      })}
     </div>
   )
 }

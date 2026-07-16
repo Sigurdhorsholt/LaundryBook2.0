@@ -10,32 +10,36 @@
 /* and the matching palette block in theme.ts.                                  */
 
 :root {
-  /* Active palette — Option A: Blue */
-  --color-primary:           #1565c0;
-  --color-primary-light:     #e8f0fe;
-  --color-primary-muted:     #dce8ff;
-  --color-primary-muted-text:#2c4f8c;
+  /* Active palette — Option C: Warm Sage */
+  --color-primary:           #3d7a5c;
+  --color-primary-dark:      #31644b;
+  --color-primary-light:     #e8f5ee;
+  --color-primary-muted:     #d0ecdb;
+  --color-primary-muted-text:#2a5c42;
 
-  /* Option B — Fresh Teal (swap these four + change theme.ts) */
+  /* Option A — Blue (swap these five + change theme.ts) */
+  /* --color-primary:           #1565c0; */
+  /* --color-primary-dark:      #0f4fa0; */
+  /* --color-primary-light:     #e8f0fe; */
+  /* --color-primary-muted:     #dce8ff; */
+  /* --color-primary-muted-text:#2c4f8c; */
+
+  /* Option B — Fresh Teal */
   /* --color-primary:           #0f7ea6; */
+  /* --color-primary-dark:      #0b6588; */
   /* --color-primary-light:     #e0f4fa; */
   /* --color-primary-muted:     #d0eef8; */
   /* --color-primary-muted-text:#0c5f7a; */
 
-  /* Option C — Warm Sage */
-  /* --color-primary:           #3d7a5c; */
-  /* --color-primary-light:     #e8f5ee; */
-  /* --color-primary-muted:     #d0ecdb; */
-  /* --color-primary-muted-text:#2a5c42; */
-
   /* Stable tokens */
-  --color-text-primary:   #0d1b2a;
+  --color-text-primary:   #1a2e24;
   --color-text-secondary: #5a6a7a;
   --color-text-muted:     #a0adb8;
   --color-bg-page:        #f8fafb;
   --color-bg-card:        #ffffff;
   --color-bg-subtle:      #f0f4f8;
   --color-border:         #e8ecf0;
+  --color-border-strong:  #d0d8e0;
   --color-success:        #2e7d32;
   --color-warning:        #b45309;
   --color-danger:         #c62828;
@@ -101,4 +105,103 @@ body {
 @keyframes skeleton-pulse {
   0%, 100% { opacity: 1;    }
   50%       { opacity: 0.45; }
+}
+
+/* ── LaundryBook buttons ────────────────────────────────────────────────────── */
+
+.lb-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  border: none;
+  border-radius: 999px;
+  font-family: inherit;
+  font-weight: 600;
+  line-height: 1;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition: background-color 0.15s, color 0.15s, box-shadow 0.15s, transform 0.1s, border-color 0.15s;
+}
+.lb-btn:disabled { opacity: 0.55; cursor: default; }
+.lb-btn:focus-visible { outline: 2px solid var(--color-primary); outline-offset: 2px; }
+.lb-btn:active:not(:disabled) { transform: scale(0.96); }
+
+.lb-btn-primary {
+  background-color: var(--color-primary);
+  color: #ffffff;
+  box-shadow: 0 1px 2px rgba(26, 46, 36, 0.16), 0 3px 10px rgba(61, 122, 92, 0.28);
+}
+.lb-btn-primary:hover:not(:disabled) {
+  background-color: var(--color-primary-dark);
+  box-shadow: 0 2px 4px rgba(26, 46, 36, 0.18), 0 5px 14px rgba(61, 122, 92, 0.34);
+  transform: translateY(-1px);
+  color: #ffffff;
+}
+.lb-btn-primary:active:not(:disabled) { transform: translateY(0) scale(0.96); }
+
+.lb-btn-soft {
+  background-color: var(--color-primary-light);
+  color: var(--color-primary);
+}
+.lb-btn-soft:hover:not(:disabled) { background-color: var(--color-primary-muted); color: var(--color-primary-muted-text); }
+
+.lb-btn-ghost {
+  background-color: var(--color-bg-card);
+  color: var(--color-text-secondary);
+  border: 1px solid var(--color-border-strong);
+}
+.lb-btn-ghost:hover:not(:disabled) {
+  background-color: var(--color-bg-subtle);
+  color: var(--color-text-primary);
+  border-color: var(--color-text-muted);
+}
+
+.lb-icon-btn {
+  width: 30px;
+  height: 30px;
+  padding: 0;
+  flex-shrink: 0;
+}
+
+/* ── Elevated card ──────────────────────────────────────────────────────────── */
+
+.lb-card {
+  background-color: var(--color-bg-card);
+  border: 1px solid var(--color-border);
+  border-radius: 14px;
+  box-shadow: 0 1px 2px rgba(26, 46, 36, 0.04), 0 8px 24px rgba(26, 46, 36, 0.06);
+}
+
+/* ── Shimmer skeleton & refresh progress ────────────────────────────────────── */
+
+@keyframes lb-shimmer {
+  from { background-position: 200% 0; }
+  to   { background-position: -200% 0; }
+}
+.lb-skeleton {
+  background: linear-gradient(90deg, #eef2f5 25%, #e2e9ee 40%, #eef2f5 60%);
+  background-size: 400% 100%;
+  animation: lb-shimmer 1.4s ease infinite;
+  border-radius: 6px;
+}
+
+@keyframes lb-progress-slide {
+  from { transform: translateX(-120%); }
+  to   { transform: translateX(360%); }
+}
+.lb-progress {
+  position: relative;
+  height: 2px;
+  overflow: hidden;
+  background-color: var(--color-primary-light);
+}
+.lb-progress::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  width: 35%;
+  border-radius: 2px;
+  background-color: var(--color-primary);
+  animation: lb-progress-slide 1.1s ease-in-out infinite;
 }

@@ -96,7 +96,7 @@ export function MachineSlotRow({
                   {machinePending?.type === 'cancel' ? (
                     <InlineConfirm variant="cancel" loading={!!confirmLoading} onConfirm={onConfirm!} onDismiss={onDismissConfirm!} />
                   ) : booking.canCancel ? (
-                    <button className="btn btn-sm btn-outline-secondary" style={{ fontSize: '0.75rem', padding: '2px 12px', borderRadius: 20 }} onClick={() => onCancel(machine.id)}>{t('laundry.actions.cancelBooking')}</button>
+                    <button className="lb-btn lb-btn-ghost" style={{ fontSize: '0.75rem', padding: '6px 14px' }} onClick={() => onCancel(machine.id)}>{t('laundry.actions.cancelBooking')}</button>
                   ) : (
                     <span style={{ fontSize: '0.72rem', color: colors.textMuted }}>{t('laundry.slot.deadlinePassed')}</span>
                   )}
@@ -110,7 +110,7 @@ export function MachineSlotRow({
               action = <InlineConfirm variant="book" loading={!!confirmLoading} onConfirm={onConfirm!} onDismiss={onDismissConfirm!} />
             } else {
               action = (
-                <button className="btn btn-sm btn-primary fw-semibold" style={{ fontSize: '0.78rem', borderRadius: 20, padding: '4px 18px' }} onClick={() => onBook(machine.id)}>{t('laundry.actions.book')}</button>
+                <button className="lb-btn lb-btn-primary" style={{ fontSize: '0.78rem', padding: '7px 18px' }} onClick={() => onBook(machine.id)}>{t('laundry.actions.book')}</button>
               )
             }
 

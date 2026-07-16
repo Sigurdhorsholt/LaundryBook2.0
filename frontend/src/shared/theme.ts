@@ -14,6 +14,7 @@
 // @ts-ignore
 const palette_NOTACTIVE1 = {
   primary:          '#1565c0',
+  primaryDark:      '#0f4fa0',
   primaryLight:     '#e8f0fe',
   primaryLighter:   '#f0f5ff',
   primaryBorder:    '#c5d9fb',
@@ -27,6 +28,7 @@ const palette_NOTACTIVE1 = {
 // @ts-ignore
  const palette_NOTACTIVE2 = {
    primary:          '#0f7ea6',
+   primaryDark:      '#0b6588',
    primaryLight:     '#e0f4fa',
    primaryLighter:   '#f0fafd',
    primaryBorder:    '#b3e0ef',
@@ -40,6 +42,7 @@ const palette_NOTACTIVE1 = {
 // @ts-ignore
  const palette = {
    primary:          '#3d7a5c',
+   primaryDark:      '#31644b',
    primaryLight:     '#e8f5ee',
    primaryLighter:   '#f2faf5',
    primaryBorder:    '#b8ddc9',

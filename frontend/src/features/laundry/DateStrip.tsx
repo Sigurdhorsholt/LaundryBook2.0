@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { dayShortLabel, dayNum } from '../../shared/utils/dateUtils'
 import { DOT_COLOR } from './constants'
 import type { AvailabilityState } from './types'
@@ -12,8 +13,10 @@ interface Props {
 }
 
 export function DateStrip({ weekDays, today, selectedDate, availabilityByDate, onSelectDate }: Props) {
+  const [hoveredDay, setHoveredDay] = useState<string | null>(null)
+
   return (
-    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', borderBottom: `1px solid ${colors.borderRow}` }}>
+    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', borderBottom: `1px solid ${colors.borderRow}`, padding: '6px 8px 8px' }}>
       {weekDays.map(d => {
         const shortLabel = dayShortLabel(d, today)
         const num        = dayNum(d)
@@ -25,24 +28,32 @@ export function DateStrip({ weekDays, today, selectedDate, availabilityByDate, o
           <button
             key={d}
             onClick={() => onSelectDate(d)}
+            onMouseEnter={() => setHoveredDay(d)}
+            onMouseLeave={() => setHoveredDay(null)}
             style={{
-              border: 'none', background: 'none', padding: '8px 4px',
+              border: 'none', background: 'none', padding: '6px 2px',
               cursor: 'pointer', display: 'flex', flexDirection: 'column',
-              alignItems: 'center', gap: 1,
-              borderBottom: isSelected ? `2px solid ${colors.primary}` : '2px solid transparent',
-              backgroundColor: isSelected ? colors.primaryLighter : 'transparent',
-              transition: 'background-color 0.1s',
+              alignItems: 'center', gap: 3, borderRadius: 10,
+              backgroundColor: !isSelected && hoveredDay === d ? colors.bgSubtle : 'transparent',
+              transition: 'background-color 0.12s',
             }}
           >
-            <span style={{ fontSize: '0.65rem', fontWeight: 500, color: isToday ? colors.primary : colors.slotTakenText, textTransform: 'uppercase', whiteSpace: 'nowrap' }}>
+            <span style={{
+              fontSize: '0.65rem', fontWeight: isToday || isSelected ? 700 : 500,
+              color: isSelected || isToday ? colors.primary : colors.slotTakenText,
+              textTransform: 'uppercase', letterSpacing: '0.04em', whiteSpace: 'nowrap',
+            }}>
               {shortLabel}
             </span>
             <span style={{
-              fontSize: '0.9rem', fontWeight: 600,
-              color: isToday ? colors.primary : colors.textPrimary,
-              width: 28, height: 28, display: 'flex', alignItems: 'center', justifyContent: 'center',
+              fontSize: '0.92rem', fontWeight: 600, fontVariantNumeric: 'tabular-nums',
+              color: isSelected ? colors.bgCard : isToday ? colors.primary : colors.textPrimary,
+              width: 32, height: 32, display: 'flex', alignItems: 'center', justifyContent: 'center',
               borderRadius: '50%',
-              backgroundColor: isToday && !isSelected ? colors.primaryLight : 'transparent',
+              backgroundColor: isSelected ? colors.primary : 'transparent',
+              border: isToday && !isSelected ? `1.5px solid ${colors.primaryBorder}` : '1.5px solid transparent',
+              boxShadow: isSelected ? '0 2px 8px rgba(61, 122, 92, 0.35)' : 'none',
+              transition: 'background-color 0.15s, box-shadow 0.15s, color 0.15s',
             }}>
               {num}
             </span>

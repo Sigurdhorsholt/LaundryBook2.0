@@ -84,8 +84,8 @@ export function SlotRow({
           <InlineConfirm variant="cancel" loading={!!confirmLoading} onConfirm={onConfirm!} onDismiss={onDismissConfirm!} />
         ) : booking.canCancel ? (
           <button
-            className="btn btn-sm btn-outline-secondary"
-            style={{ fontSize: '0.75rem', padding: '2px 10px', borderRadius: 20 }}
+            className="lb-btn lb-btn-ghost"
+            style={{ fontSize: '0.75rem', padding: '6px 14px' }}
             onClick={(e) => { e.stopPropagation(); onCancel() }}
           >
             {t('laundry.actions.cancelBooking')}
@@ -104,8 +104,8 @@ export function SlotRow({
   } else {
     status = (
       <button
-        className="btn btn-sm btn-outline-primary fw-semibold"
-        style={{ fontSize: '0.78rem', borderRadius: 20, padding: '3px 16px', pointerEvents: 'none' }}
+        className={`lb-btn ${hovered && isClickable ? 'lb-btn-primary' : 'lb-btn-soft'}`}
+        style={{ fontSize: '0.78rem', padding: '7px 18px', pointerEvents: 'none' }}
         tabIndex={-1}
         aria-hidden
       >
@@ -122,6 +122,7 @@ export function SlotRow({
       style={{
         borderBottom: `1px solid ${colors.borderRow}`,
         backgroundColor: rowBg,
+        boxShadow: booking?.isOwn ? `inset 3px 0 0 ${colors.successText}` : 'none',
         opacity: dimmed ? 0.45 : blocked ? 0.5 : 1,
         cursor: isClickable ? 'pointer' : 'default',
         transition: (justBooked || justCancelled) ? 'none' : 'background-color 0.12s',
@@ -129,8 +130,8 @@ export function SlotRow({
         ...animationStyle,
       }}
     >
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '11px 20px' }}>
-        <span style={{ fontSize: '0.9rem', fontWeight: 500, color: takenByOther ? colors.slotTakenText : colors.textPrimary }}>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '12px 20px', minHeight: 54 }}>
+        <span style={{ fontSize: '0.92rem', fontWeight: 500, fontVariantNumeric: 'tabular-nums', color: takenByOther ? colors.slotTakenText : colors.textPrimary }}>
           {timeLabel}
         </span>
         {status}

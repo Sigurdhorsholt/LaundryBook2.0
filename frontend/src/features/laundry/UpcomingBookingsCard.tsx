@@ -12,12 +12,26 @@ interface Props {
   onCancelUpcoming: (b: MyBookingDto) => void
 }
 
+function DateChip({ date }: { date: string }) {
+  const monthIdx = parseInt(date.split('-')[1] ?? '1', 10) - 1
+  return (
+    <span style={{
+      display: 'inline-flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
+      width: 40, height: 40, borderRadius: 10, flexShrink: 0,
+      backgroundColor: colors.primaryLight, color: colors.primary,
+    }}>
+      <span style={{ fontSize: '0.95rem', fontWeight: 700, lineHeight: 1.1, fontVariantNumeric: 'tabular-nums' }}>{dayNum(date)}</span>
+      <span style={{ fontSize: '0.58rem', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em', lineHeight: 1 }}>{monthShort(monthIdx)}</span>
+    </span>
+  )
+}
+
 export function UpcomingBookingsCard({ myBookings, today, expanded, onToggle, onCancelUpcoming }: Props) {
   const { t } = useTranslation()
   if (myBookings.length === 0) return null
 
   return (
-    <div className="rounded-3 mb-4" style={{ border: `1px solid ${colors.borderDefault}`, backgroundColor: colors.bgCard, overflow: 'hidden' }}>
+    <div className="lb-card mb-4" style={{ overflow: 'hidden' }}>
       <button
         onClick={onToggle}
         style={{
@@ -26,10 +40,13 @@ export function UpcomingBookingsCard({ myBookings, today, expanded, onToggle, on
           backgroundColor: colors.bgHeader, cursor: 'pointer', textAlign: 'left',
         }}
       >
-        <span style={{ fontWeight: 600, fontSize: '0.88rem', color: colors.textPrimary }}>
+        <span style={{ fontWeight: 600, fontSize: '0.88rem', color: colors.textPrimary, display: 'inline-flex', alignItems: 'center', gap: 8 }}>
           {t('laundry.upcoming.title')}
-          <span style={{ fontWeight: 400, color: colors.textMuted, marginLeft: 8, fontSize: '0.8rem' }}>
-            ({myBookings.length})
+          <span style={{
+            fontWeight: 600, fontSize: '0.72rem', padding: '2px 8px', borderRadius: 999,
+            backgroundColor: colors.primaryLight, color: colors.primary,
+          }}>
+            {myBookings.length}
           </span>
         </span>
         <svg
@@ -40,37 +57,38 @@ export function UpcomingBookingsCard({ myBookings, today, expanded, onToggle, on
         </svg>
       </button>
 
-      {expanded && myBookings.map(b => {
-        const monthIdx = parseInt(b.date.split('-')[1] ?? '1', 10) - 1
-        return (
-          <div
-            key={b.id}
-            style={{
-              display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-              padding: '10px 20px', borderBottom: `1px solid ${colors.borderRow}`, flexWrap: 'wrap', gap: 8,
-            }}
-          >
-            <span style={{ fontSize: '0.88rem', color: colors.textPrimary }}>
-              <strong style={{ color: colors.primary, marginRight: 6 }}>
-                {dayShortLabel(b.date, today)} {dayNum(b.date)}. {monthShort(monthIdx)}
-              </strong>
-              {b.roomName} · {formatTimeRange(b.startTime, b.endTime)}
-              {b.machineName ? ` · ${b.machineName}` : ''}
+      {expanded && myBookings.map(b => (
+        <div
+          key={b.id}
+          style={{
+            display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+            padding: '10px 20px', borderBottom: `1px solid ${colors.borderRow}`, flexWrap: 'wrap', gap: 10,
+          }}
+        >
+          <span style={{ display: 'inline-flex', alignItems: 'center', gap: 12, minWidth: 0 }}>
+            <DateChip date={b.date} />
+            <span style={{ display: 'flex', flexDirection: 'column', minWidth: 0 }}>
+              <span style={{ fontSize: '0.88rem', fontWeight: 600, color: colors.textPrimary }}>
+                {dayShortLabel(b.date, today)} · {formatTimeRange(b.startTime, b.endTime)}
+              </span>
+              <span style={{ fontSize: '0.76rem', color: colors.textSecondary }}>
+                {b.roomName}{b.machineName ? ` · ${b.machineName}` : ''}
+              </span>
             </span>
-            {b.canCancel ? (
-              <button
-                className="btn btn-sm btn-outline-secondary"
-                style={{ fontSize: '0.75rem', padding: '2px 10px', borderRadius: 20 }}
-                onClick={() => onCancelUpcoming(b)}
-              >
-                {t('laundry.actions.cancelBooking')}
-              </button>
-            ) : (
-              <span style={{ fontSize: '0.75rem', color: colors.textMuted }}>{t('laundry.slot.cancelDeadlinePassed')}</span>
-            )}
-          </div>
-        )
-      })}
+          </span>
+          {b.canCancel ? (
+            <button
+              className="lb-btn lb-btn-ghost"
+              style={{ fontSize: '0.75rem', padding: '6px 14px' }}
+              onClick={() => onCancelUpcoming(b)}
+            >
+              {t('laundry.actions.cancelBooking')}
+            </button>
+          ) : (
+            <span style={{ fontSize: '0.75rem', color: colors.textMuted }}>{t('laundry.slot.cancelDeadlinePassed')}</span>
+          )}
+        </div>
+      ))}
     </div>
   )
 }

@@ -14,6 +14,7 @@ import {
 } from '../../features/laundry/laundryApi'
 import type { MyBookingDto } from '../../features/laundry/laundryApi'
 import type { PendingAction, GridBooking, AvailabilityState } from '../../features/laundry/types'
+import { useLastDefined } from '../../features/laundry/hooks'
 import { BookingGrid } from '../../features/laundry/BookingGrid'
 import { UpcomingBookingsCard } from '../../features/laundry/UpcomingBookingsCard'
 import { RoomSelector } from '../../features/laundry/RoomSelector'
@@ -97,12 +98,17 @@ export function LaundryPage() {
   const weekFrom = weekStart
   const weekTo   = addDays(weekStart, 6)
 
-  const { data: slots, isLoading: slotsLoading }     = useGetTimeSlotsQuery(selectedRoomId ?? skipToken)
-  const { data: machines } = useGetMachinesQuery(machineMode && selectedRoomId ? selectedRoomId : skipToken)
-  const { data: bookings, isLoading: bookingsLoading } = useGetBookingsQuery(
+  const { data: slots, isFetching: slotsFetching }     = useGetTimeSlotsQuery(selectedRoomId ?? skipToken)
+  const { data: machines, isFetching: machinesFetching } = useGetMachinesQuery(machineMode && selectedRoomId ? selectedRoomId : skipToken)
+  const { data: bookings, isFetching: bookingsFetching } = useGetBookingsQuery(
     selectedRoomId ? { roomId: selectedRoomId, from: weekFrom, to: weekTo } : skipToken
   )
   const { data: myBookings } = useGetMyBookingsQuery(propertyId ?? skipToken)
+
+  // Keep the last known structure on screen while a switch is in flight —
+  // the grid then only shimmers the statuses instead of collapsing entirely.
+  const displaySlots    = useLastDefined(slots)
+  const displayMachines = useLastDefined(machines)
 
   const [createBooking, { isLoading: creating }]  = useCreateBookingMutation()
   const [cancelBooking, { isLoading: cancelling }] = useCancelBookingMutation()
@@ -249,7 +255,9 @@ export function LaundryPage() {
     )
   }
 
-  const gridLoading = slotsLoading || bookingsLoading || !settings
+  const gridLoading     = !settings || displaySlots === undefined
+  const statusesLoading = bookings === undefined || (machineMode && displayMachines === undefined)
+  const refreshing      = slotsFetching || bookingsFetching || machinesFetching
 
   return (
     <div className="container-xl px-4 py-5">
@@ -266,7 +274,7 @@ export function LaundryPage() {
 
       {roomsLoading ? (
         <div className="mb-4">
-          <div style={{ width: 120, height: 32, borderRadius: 20, backgroundColor: colors.borderDefault, display: 'inline-block' }} />
+          <div className="lb-skeleton" style={{ width: 120, height: 34, borderRadius: 999, display: 'inline-block' }} />
         </div>
       ) : (
         <RoomSelector
@@ -276,7 +284,7 @@ export function LaundryPage() {
         />
       )}
 
-      <div ref={gridRef} className="rounded-3" style={{ border: `1px solid ${colors.borderDefault}`, overflow: 'hidden', backgroundColor: colors.bgCard }}>
+      <div ref={gridRef} className="lb-card" style={{ overflow: 'hidden' }}>
 
         <WeekNavigator
           weekStart={weekStart}
@@ -305,17 +313,19 @@ export function LaundryPage() {
 
         {selectedRoomId ? (
           <BookingGrid
-            slots={slots ?? []}
+            slots={displaySlots ?? []}
             date={selectedDate}
             today={today}
             bookingLookaheadDays={settings?.bookingLookaheadDays ?? 14}
             gridBookings={gridBookings}
             maxReached={maxReached}
             bookingMode={bookingMode ?? BookingMode.BookEntireRoom}
-            machines={machines ?? []}
+            machines={displayMachines ?? []}
             onBook={handleBook}
             onCancel={handleCancel}
             loading={gridLoading}
+            statusesLoading={statusesLoading}
+            refreshing={refreshing}
             pending={pending?.source === 'grid' ? pending : null}
             confirmLoading={creating || cancelling}
             confirmError={confirmError}

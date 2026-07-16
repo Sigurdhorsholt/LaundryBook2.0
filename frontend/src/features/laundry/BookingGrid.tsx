@@ -13,7 +13,7 @@ import { useTranslation } from 'react-i18next'
 import type { LaundryMachineDto, TimeSlotTemplateDto } from './laundryApi'
 import type { GridBooking, PendingAction } from './types'
 import { BookingMode } from '../properties/propertiesApi'
-import { isPast, isLocked } from '../../shared/utils/dateUtils'
+import { isPast, isLocked, formatTime } from '../../shared/utils/dateUtils'
 import { colors } from '../../shared/theme'
 import { SlotRow } from './SlotRow'
 import { MachineSlotRow } from './MachineSlotRow'
@@ -31,7 +31,9 @@ interface BookingGridProps {
   machines: LaundryMachineDto[]  // active machines; only used in BookSpecificMachine mode
   onBook: (slotId: string, machineId?: string) => void
   onCancel: (slotId: string, machineId?: string) => void
-  loading?: boolean            // shows skeleton rows while slots are fetched
+  loading?: boolean            // no slot structure yet — full shimmer skeleton
+  statusesLoading?: boolean    // slots known but bookings not yet — real times, shimmer statuses
+  refreshing?: boolean         // background refetch — thin progress bar over current content
   // Optional inline confirm: when provided, the armed row shows a ✗/✓ pair instead
   // of the parent opening a modal.
   pending?: PendingAction | null
@@ -41,34 +43,38 @@ interface BookingGridProps {
   onDismissConfirm?: () => void
 }
 
-// ── Skeleton row ───────────────────────────────────────────────────────────────
+// ── Skeleton rows ──────────────────────────────────────────────────────────────
 
-function SlotSkeleton() {
+function SkeletonRowShell({ children }: { children: React.ReactNode }) {
   return (
     <div
       style={{
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        padding: '11px 20px',
-        borderBottom: `1px solid ${colors.borderRow}`,
+        display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+        padding: '12px 20px', minHeight: 54, borderBottom: `1px solid ${colors.borderRow}`,
       }}
     >
-      <div
-        style={{
-          width: 80, height: 14, borderRadius: 4,
-          backgroundColor: colors.borderDefault,
-          animation: 'skeleton-pulse 1.4s ease-in-out infinite',
-        }}
-      />
-      <div
-        style={{
-          width: 64, height: 28, borderRadius: 20,
-          backgroundColor: colors.borderDefault,
-          animation: 'skeleton-pulse 1.4s ease-in-out infinite',
-        }}
-      />
+      {children}
     </div>
+  )
+}
+
+function SlotSkeleton() {
+  return (
+    <SkeletonRowShell>
+      <div className="lb-skeleton" style={{ width: 96, height: 15 }} />
+      <div className="lb-skeleton" style={{ width: 72, height: 30, borderRadius: 999 }} />
+    </SkeletonRowShell>
+  )
+}
+
+function StatusSkeletonRow({ slot }: { slot: TimeSlotTemplateDto }) {
+  return (
+    <SkeletonRowShell>
+      <span style={{ fontSize: '0.92rem', fontWeight: 500, fontVariantNumeric: 'tabular-nums', color: colors.textPrimary }}>
+        {formatTime(slot.startTime)} – {formatTime(slot.endTime)}
+      </span>
+      <div className="lb-skeleton" style={{ width: 72, height: 30, borderRadius: 999 }} />
+    </SkeletonRowShell>
   )
 }
 
@@ -86,6 +92,8 @@ export function BookingGrid({
   onBook,
   onCancel,
   loading,
+  statusesLoading,
+  refreshing,
   pending,
   confirmLoading,
   confirmError,
@@ -96,7 +104,17 @@ export function BookingGrid({
   if (loading) {
     return (
       <div>
+        <div className="lb-progress" />
         {Array.from({ length: 8 }, (_, i) => <SlotSkeleton key={i} />)}
+      </div>
+    )
+  }
+
+  if (statusesLoading && slots.length > 0) {
+    return (
+      <div>
+        <div className="lb-progress" />
+        {slots.map((slot) => <StatusSkeletonRow key={slot.id} slot={slot} />)}
       </div>
     )
   }
@@ -144,6 +162,7 @@ export function BookingGrid({
 
   return (
     <div>
+      {refreshing ? <div className="lb-progress" /> : <div style={{ height: 2 }} />}
       {maxReached && (
         <div
           style={{

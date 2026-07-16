@@ -45,6 +45,7 @@ export function InlineConfirm({ variant, loading, onConfirm, onDismiss }: Inline
           ...roundBtn,
           border: 'none',
           backgroundColor: variant === 'book' ? colors.primary : colors.dangerText,
+          boxShadow: '0 2px 8px rgba(26, 46, 36, 0.25)',
           animation: 'confirm-roll-in 0.2s ease-out 0.06s both',
         }}
       >
