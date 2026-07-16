@@ -1,5 +1,6 @@
 using Application.Common.Exceptions;
 using FluentValidation;
+using Sentry;
 using System.Net;
 using System.Text.Json;
 
@@ -58,6 +59,7 @@ public class ExceptionHandlingMiddleware(RequestDelegate next, ILogger<Exception
         }
         catch (Exception ex)
         {
+            SentrySdk.CaptureException(ex);
             logger.LogError(ex, "Unhandled exception");
             await WriteJson(context, (int)HttpStatusCode.InternalServerError, new
             {

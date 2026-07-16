@@ -1,5 +1,6 @@
+import { useTranslation } from 'react-i18next'
 import { IconChevronLeft, IconChevronRight } from '../../shared/icons'
-import { dayNum, MONTH_SHORT } from '../../shared/utils/dateUtils'
+import { dayNum, monthShort } from '../../shared/utils/dateUtils'
 import { colors } from '../../shared/theme'
 
 interface Props {
@@ -13,10 +14,11 @@ interface Props {
 }
 
 function monthOf(dateStr: string): string {
-  return MONTH_SHORT[parseInt(dateStr.slice(5, 7), 10) - 1] ?? ''
+  return monthShort(parseInt(dateStr.slice(5, 7), 10) - 1)
 }
 
 export function AdminPeriodNavigator({ from, to, isCurrent, loading, onPrev, onNext, onJumpToToday }: Props) {
+  const { t } = useTranslation()
   const rangeLabel = `${dayNum(from)}. ${monthOf(from)} – ${dayNum(to)}. ${monthOf(to)} ${to.slice(0, 4)}`
 
   return (
@@ -30,7 +32,7 @@ export function AdminPeriodNavigator({ from, to, isCurrent, loading, onPrev, onN
           style={{ color: colors.textPrimary, lineHeight: 1 }}
           onClick={onPrev}
           disabled={loading}
-          aria-label="Tidligere periode"
+          aria-label={t('laundry.periodNav.prev')}
         >
           <IconChevronLeft size={16} />
         </button>
@@ -42,7 +44,7 @@ export function AdminPeriodNavigator({ from, to, isCurrent, loading, onPrev, onN
           style={{ color: colors.textPrimary, lineHeight: 1 }}
           onClick={onNext}
           disabled={loading}
-          aria-label="Senere periode"
+          aria-label={t('laundry.periodNav.next')}
         >
           <IconChevronRight size={16} />
         </button>
@@ -55,12 +57,12 @@ export function AdminPeriodNavigator({ from, to, isCurrent, loading, onPrev, onN
           onClick={onJumpToToday}
           disabled={loading}
         >
-          Spring til i dag
+          {t('laundry.periodNav.jumpToToday')}
         </button>
       )}
 
       {loading && (
-        <span style={{ fontSize: '0.78rem', color: colors.textMuted }}>Indlæser…</span>
+        <span style={{ fontSize: '0.78rem', color: colors.textMuted }}>{t('common.loading')}</span>
       )}
     </div>
   )

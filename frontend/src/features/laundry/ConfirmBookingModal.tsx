@@ -1,3 +1,4 @@
+import { useTranslation, Trans } from 'react-i18next'
 import type { PendingAction } from './types'
 import { formatDateFull } from '../../shared/utils/dateUtils'
 import { colors } from '../../shared/theme'
@@ -11,6 +12,7 @@ interface Props {
 }
 
 export function ConfirmBookingModal({ pending, error, loading, onConfirm, onClose }: Props) {
+  const { t } = useTranslation()
   const isBook   = pending.type === 'book'
   const dateText = formatDateFull(pending.date)
 
@@ -36,13 +38,17 @@ export function ConfirmBookingModal({ pending, error, loading, onConfirm, onClos
         }}
       >
         <h6 style={{ fontWeight: 700, marginBottom: 4, color: colors.textPrimary }}>
-          {isBook ? 'Bekræft booking' : 'Aflys booking'}
+          {isBook ? t('laundry.confirmBooking.titleBook') : t('laundry.confirmBooking.titleCancel')}
         </h6>
 
         <p style={{ color: colors.textSecondary, fontSize: '0.9rem', marginBottom: showTimeWarning ? 10 : 16 }}>
           {isBook
-            ? <>Vil du booke <strong>{pending.slotTime}</strong>{pending.machineName ? <> på <strong>{pending.machineName}</strong></> : null} den <strong>{dateText}</strong>?</>
-            : <>Vil du aflyse din booking kl. <strong>{pending.slotTime}</strong>{pending.machineName ? <> på <strong>{pending.machineName}</strong></> : null} den <strong>{dateText}</strong>?</>
+            ? (pending.machineName
+                ? <Trans i18nKey="laundry.confirmBooking.promptBookWithMachine" values={{ slotTime: pending.slotTime, machineName: pending.machineName, dateText }} components={{ s: <strong /> }} />
+                : <Trans i18nKey="laundry.confirmBooking.promptBook" values={{ slotTime: pending.slotTime, dateText }} components={{ s: <strong /> }} />)
+            : (pending.machineName
+                ? <Trans i18nKey="laundry.confirmBooking.promptCancelWithMachine" values={{ slotTime: pending.slotTime, machineName: pending.machineName, dateText }} components={{ s: <strong /> }} />
+                : <Trans i18nKey="laundry.confirmBooking.promptCancel" values={{ slotTime: pending.slotTime, dateText }} components={{ s: <strong /> }} />)
           }
         </p>
 
@@ -53,8 +59,8 @@ export function ConfirmBookingModal({ pending, error, loading, onConfirm, onClos
             borderRadius: 6, padding: '6px 10px', marginBottom: 16,
           }}>
             {(pending.minutesUntil ?? 0) < 60
-              ? `Der er kun ${pending.minutesUntil} minutter til din booking starter.`
-              : `Der er ${Math.floor((pending.minutesUntil ?? 0) / 60)} time${Math.floor((pending.minutesUntil ?? 0) / 60) === 1 ? '' : 'r'} til din booking starter.`
+              ? t('laundry.confirmBooking.warningMinutes', { count: pending.minutesUntil ?? 0 })
+              : t('laundry.confirmBooking.warningHours', { count: Math.floor((pending.minutesUntil ?? 0) / 60) })
             }
           </p>
         )}
@@ -72,7 +78,7 @@ export function ConfirmBookingModal({ pending, error, loading, onConfirm, onClos
             onClick={onClose}
             disabled={loading}
           >
-            Luk
+            {t('common.close')}
           </button>
           <button
             className={`btn btn-sm ${isBook ? 'btn-primary' : 'btn-danger'}`}
@@ -80,7 +86,7 @@ export function ConfirmBookingModal({ pending, error, loading, onConfirm, onClos
             onClick={onConfirm}
             disabled={loading}
           >
-            {loading ? <span className="spinner-border spinner-border-sm" /> : isBook ? 'Book' : 'Aflys'}
+            {loading ? <span className="spinner-border spinner-border-sm" /> : isBook ? t('laundry.actions.book') : t('laundry.actions.cancelBooking')}
           </button>
         </div>
       </div>

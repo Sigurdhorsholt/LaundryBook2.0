@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { MachineType, type LaundryMachineDto, type TimeSlotTemplateDto } from './laundryApi'
 import type { GridBooking, PendingAction } from './types'
 import { formatTime } from '../../shared/utils/dateUtils'
@@ -34,6 +35,7 @@ export function MachineSlotRow({
   slot, machines, bookings, past, locked, maxReached, onBook, onCancel,
   pending, confirmLoading, confirmError, onConfirm, onDismissConfirm,
 }: Props) {
+  const { t } = useTranslation()
   const [expanded, setExpanded] = useState(false)
 
   const timeLabel = `${formatTime(slot.startTime)} – ${formatTime(slot.endTime)}`
@@ -61,12 +63,12 @@ export function MachineSlotRow({
 
         <span className="d-flex align-items-center" style={{ gap: 8 }}>
           {past || locked ? (
-            <span style={badge(colors.bgSubtle, colors.textMuted)}>{past ? 'Passeret' : 'Ikke tilgængeligt'}</span>
+            <span style={badge(colors.bgSubtle, colors.textMuted)}>{past ? t('laundry.slot.past') : t('laundry.slot.unavailable')}</span>
           ) : (
             <>
-              {ownCount > 0 && <span style={badge(colors.successBg, colors.successText)}>Min booking</span>}
+              {ownCount > 0 && <span style={badge(colors.successBg, colors.successText)}>{t('laundry.slot.myBooking')}</span>}
               <span style={badge(freeCount === 0 ? colors.slotTakenBg : colors.slotFreeBg, freeCount === 0 ? colors.slotTakenText : colors.slotFreeText)}>
-                {freeCount === 0 ? 'Fuldt booket' : `${freeCount} af ${machines.length} ledige`}
+                {freeCount === 0 ? t('laundry.slot.fullyBooked') : t('laundry.slot.freeCount', { free: freeCount, total: machines.length })}
               </span>
               <span style={{ display: 'inline-flex', transform: expanded ? 'rotate(180deg)' : 'none', transition: 'transform 0.15s' }}>
                 <IconChevronDown size={14} color={colors.textMuted} strokeWidth={1.8} />
@@ -90,25 +92,25 @@ export function MachineSlotRow({
             if (booking?.isOwn) {
               action = (
                 <span className="d-flex align-items-center" style={{ gap: 8 }}>
-                  <span style={badge(colors.successBg, colors.successText)}>Min booking</span>
+                  <span style={badge(colors.successBg, colors.successText)}>{t('laundry.slot.myBooking')}</span>
                   {machinePending?.type === 'cancel' ? (
                     <InlineConfirm variant="cancel" loading={!!confirmLoading} onConfirm={onConfirm!} onDismiss={onDismissConfirm!} />
                   ) : booking.canCancel ? (
-                    <button className="btn btn-sm btn-outline-secondary" style={{ fontSize: '0.75rem', padding: '2px 12px', borderRadius: 20 }} onClick={() => onCancel(machine.id)}>Aflys</button>
+                    <button className="btn btn-sm btn-outline-secondary" style={{ fontSize: '0.75rem', padding: '2px 12px', borderRadius: 20 }} onClick={() => onCancel(machine.id)}>{t('laundry.actions.cancelBooking')}</button>
                   ) : (
-                    <span style={{ fontSize: '0.72rem', color: colors.textMuted }}>Frist udløbet</span>
+                    <span style={{ fontSize: '0.72rem', color: colors.textMuted }}>{t('laundry.slot.deadlinePassed')}</span>
                   )}
                 </span>
               )
             } else if (booking) {
               action = <span style={badge(colors.slotTakenBg, colors.slotTakenText)}>{booking.label}</span>
             } else if (blocked) {
-              action = <span style={badge(colors.slotWarningBg, colors.slotWarningText)}>Grænse nået</span>
+              action = <span style={badge(colors.slotWarningBg, colors.slotWarningText)}>{t('laundry.slot.limitReached')}</span>
             } else if (machinePending?.type === 'book') {
               action = <InlineConfirm variant="book" loading={!!confirmLoading} onConfirm={onConfirm!} onDismiss={onDismissConfirm!} />
             } else {
               action = (
-                <button className="btn btn-sm btn-primary fw-semibold" style={{ fontSize: '0.78rem', borderRadius: 20, padding: '4px 18px' }} onClick={() => onBook(machine.id)}>Book</button>
+                <button className="btn btn-sm btn-primary fw-semibold" style={{ fontSize: '0.78rem', borderRadius: 20, padding: '4px 18px' }} onClick={() => onBook(machine.id)}>{t('laundry.actions.book')}</button>
               )
             }
 
@@ -131,7 +133,7 @@ export function MachineSlotRow({
                     </span>
                     <span style={{ display: 'flex', flexDirection: 'column', minWidth: 0 }}>
                       <span style={{ fontSize: '0.88rem', fontWeight: 600, color: colors.textPrimary, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{machine.name}</span>
-                      <span style={{ fontSize: '0.72rem', color: colors.textMuted }}>{MACHINE_TYPE_LABEL[machine.machineType]}</span>
+                      <span style={{ fontSize: '0.72rem', color: colors.textMuted }}>{(t as (k: string) => string)(MACHINE_TYPE_LABEL[machine.machineType])}</span>
                     </span>
                   </span>
                   {action}

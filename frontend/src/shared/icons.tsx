@@ -120,6 +120,14 @@ export function IconMenu({ size = defaults.size, color = defaults.color, strokeW
   </>)
 }
 
+export function IconGlobe({ size = defaults.size, color = defaults.color, strokeWidth = defaults.strokeWidth }: IconProps) {
+  return base(size, color, strokeWidth, <>
+    <circle cx="12" cy="12" r="10"/>
+    <line x1="2" y1="12" x2="22" y2="12"/>
+    <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
+  </>)
+}
+
 export function IconShield({ size = defaults.size, color = defaults.color, strokeWidth = defaults.strokeWidth }: IconProps) {
   return base(size, color, strokeWidth, <>
     <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>

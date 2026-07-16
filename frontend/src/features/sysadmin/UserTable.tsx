@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { useTranslation } from 'react-i18next'
 import { useGetAllUsersQuery } from './sysAdminApi'
 import type { SysAdminUserDto } from './sysAdminApi'
 import { ManageUserMembershipsModal } from './ManageUserMembershipsModal'
@@ -7,6 +8,7 @@ import { colors } from '../../shared/theme'
 const PAGE_SIZE = 10
 
 export function UserTable() {
+  const { t } = useTranslation()
   const [search, setSearch] = useState('')
   const [debouncedSearch, setDebouncedSearch] = useState('')
   const [page, setPage] = useState(1)
@@ -34,13 +36,13 @@ export function UserTable() {
     <>
       <div className="d-flex justify-content-between align-items-center mb-3">
         <h2 style={{ fontSize: '1rem', fontWeight: 600, color: colors.textPrimary, margin: 0 }}>
-          Brugere
+          {t('sysadmin.users')}
         </h2>
         <input
           className="form-control form-control-sm"
           style={{ maxWidth: 260 }}
           type="search"
-          placeholder="Søg på navn eller e-mail..."
+          placeholder={t('sysadmin.searchPlaceholder')}
           value={search}
           onChange={(e) => setSearch(e.target.value)}
         />
@@ -50,9 +52,9 @@ export function UserTable() {
         <table className="table table-sm mb-0" style={{ fontSize: '0.875rem' }}>
           <thead>
             <tr style={{ backgroundColor: colors.bgHeader }}>
-              <th style={{ color: colors.textSecondary, fontWeight: 500, borderBottom: `1px solid ${colors.borderDefault}` }}>Navn</th>
-              <th style={{ color: colors.textSecondary, fontWeight: 500, borderBottom: `1px solid ${colors.borderDefault}` }}>E-mail</th>
-              <th style={{ color: colors.textSecondary, fontWeight: 500, borderBottom: `1px solid ${colors.borderDefault}` }}>Ejendomme</th>
+              <th style={{ color: colors.textSecondary, fontWeight: 500, borderBottom: `1px solid ${colors.borderDefault}` }}>{t('sysadmin.name')}</th>
+              <th style={{ color: colors.textSecondary, fontWeight: 500, borderBottom: `1px solid ${colors.borderDefault}` }}>{t('sysadmin.email')}</th>
+              <th style={{ color: colors.textSecondary, fontWeight: 500, borderBottom: `1px solid ${colors.borderDefault}` }}>{t('sysadmin.properties')}</th>
               <th style={{ borderBottom: `1px solid ${colors.borderDefault}` }} />
             </tr>
           </thead>
@@ -60,14 +62,14 @@ export function UserTable() {
             {isLoading && (
               <tr>
                 <td colSpan={4} style={{ color: colors.textSecondary, textAlign: 'center', padding: '20px 0' }}>
-                  Henter...
+                  {t('sysadmin.loading')}
                 </td>
               </tr>
             )}
             {!isLoading && data?.items.length === 0 && (
               <tr>
                 <td colSpan={4} style={{ color: colors.textSecondary, textAlign: 'center', padding: '20px 0' }}>
-                  Ingen brugere fundet.
+                  {t('sysadmin.noUsersFound')}
                 </td>
               </tr>
             )}
@@ -83,7 +85,7 @@ export function UserTable() {
                     className="btn btn-sm btn-outline-secondary"
                     onClick={() => setManagingUser(u)}
                   >
-                    Administrer adgang
+                    {t('sysadmin.manageAccess')}
                   </button>
                 </td>
               </tr>
@@ -94,14 +96,14 @@ export function UserTable() {
 
       {data && data.totalCount > 0 && (
         <div className="d-flex justify-content-between align-items-center mt-3" style={{ fontSize: '0.8rem', color: colors.textSecondary }}>
-          <span>Viser {from}–{to} af {data.totalCount} brugere</span>
+          <span>{t('sysadmin.showingUsers', { from, to, total: data.totalCount })}</span>
           <div className="d-flex gap-2">
             <button
               className="btn btn-sm btn-outline-secondary"
               disabled={page <= 1}
               onClick={() => setPage((p) => p - 1)}
             >
-              ← Forrige
+              {t('sysadmin.previous')}
             </button>
             <span style={{ lineHeight: '31px' }}>{page} / {totalPages}</span>
             <button
@@ -109,7 +111,7 @@ export function UserTable() {
               disabled={page >= totalPages}
               onClick={() => setPage((p) => p + 1)}
             >
-              Næste →
+              {t('sysadmin.next')}
             </button>
           </div>
         </div>

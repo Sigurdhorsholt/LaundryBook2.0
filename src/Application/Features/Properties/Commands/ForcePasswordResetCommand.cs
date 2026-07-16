@@ -28,12 +28,19 @@ public class ForcePasswordResetCommandHandler(
             .FirstOrDefaultAsync(u => u.Id == request.UserId, cancellationToken)
             ?? throw new NotFoundException("User", request.UserId);
 
+        // Guard against confused-deputy: the target must actually belong to this property,
+        // so an admin of one forening can't trigger resets for users elsewhere.
+        var isMember = await db.UserComplexMemberships
+            .AnyAsync(m => m.UserId == request.UserId && m.PropertyId == request.PropertyId, cancellationToken);
+        if (!isMember)
+            throw new NotFoundException("User", request.UserId);
+
         var adminId = currentUser.UserId!.Value;
         var admin = await db.Users.FirstOrDefaultAsync(u => u.Id == adminId, cancellationToken);
         var adminName = admin is not null ? $"{admin.FirstName} {admin.LastName}".Trim() : "Administrator";
 
         var resetLink = await identityProvider.GeneratePasswordResetLinkAsync(user.Email, cancellationToken);
-        await emailService.SendPasswordSetupEmailAsync(
-            user.Email, resetLink, property.Name, property.Address, adminName, cancellationToken);
+        await emailService.SendAdminPasswordResetEmailAsync(
+            user.Email, resetLink, property.Name, adminName, cancellationToken);
     }
 }

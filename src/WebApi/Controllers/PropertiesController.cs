@@ -4,6 +4,7 @@ using Domain.Enums;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.Extensions.Configuration;
 
 namespace WebApi.Controllers;
@@ -81,6 +82,7 @@ public class PropertiesController(IMediator mediator, IConfiguration configurati
         return NoContent();
     }
 
+    [EnableRateLimiting("email")]
     [HttpPost("{id:guid}/members/{userId:guid}/force-password-reset")]
     public async Task<IActionResult> ForcePasswordReset(Guid id, Guid userId, CancellationToken ct)
     {
@@ -88,10 +90,11 @@ public class PropertiesController(IMediator mediator, IConfiguration configurati
         return NoContent();
     }
 
+    [EnableRateLimiting("email")]
     [HttpPost("{id:guid}/members/invite")]
     public async Task<IActionResult> InviteByEmail(Guid id, [FromBody] InviteByEmailRequest request, CancellationToken ct)
     {
-        var appBaseUrl = configuration["App:BaseUrl"] ?? "https://app.laundrybook.com";
+        var appBaseUrl = configuration["App:BaseUrl"] ?? "https://laundrybook.dk";
         var email = await mediator.Send(new InviteUserByEmailCommand(
             id,
             request.Email,
@@ -109,10 +112,11 @@ public class PropertiesController(IMediator mediator, IConfiguration configurati
         return Ok(result);
     }
 
+    [EnableRateLimiting("email")]
     [HttpPost("{id:guid}/members/pending/{inviteId:guid}/resend")]
     public async Task<IActionResult> ResendInvite(Guid id, Guid inviteId, CancellationToken ct)
     {
-        var appBaseUrl = configuration["App:BaseUrl"] ?? "https://app.laundrybook.com";
+        var appBaseUrl = configuration["App:BaseUrl"] ?? "https://laundrybook.dk";
         await mediator.Send(new ResendInviteCommand(id, inviteId, appBaseUrl), ct);
         return NoContent();
     }

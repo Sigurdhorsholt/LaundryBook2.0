@@ -1,4 +1,5 @@
 import { useMemo } from 'react'
+import { useTranslation } from 'react-i18next'
 import type { AdminBookingDto } from './laundryApi'
 import { EmptyState } from '../../shared/ui'
 import { formatDateFull, formatTimeRange, dayShortLabel, isPast } from '../../shared/utils/dateUtils'
@@ -11,6 +12,7 @@ interface Props {
 }
 
 export function AdminBookingsList({ bookings, today, onCancel }: Props) {
+  const { t } = useTranslation()
   const groups = useMemo(() => {
     const byDate = new Map<string, AdminBookingDto[]>()
     for (const b of bookings) {
@@ -24,8 +26,8 @@ export function AdminBookingsList({ bookings, today, onCancel }: Props) {
   if (bookings.length === 0) {
     return (
       <EmptyState
-        title="Ingen bookinger i perioden"
-        description="Der blev ikke booket tider i det valgte tidsrum."
+        title={t('laundry.list.emptyTitle')}
+        description={t('laundry.list.emptyDescription')}
       />
     )
   }
@@ -62,7 +64,7 @@ export function AdminBookingsList({ bookings, today, onCancel }: Props) {
                 {formatDateFull(date)}
               </span>
               <span style={{ fontSize: '0.8rem', color: colors.textMuted, marginLeft: 'auto' }}>
-                {dayBookings.length} booking{dayBookings.length === 1 ? '' : 'er'}
+                {t('laundry.list.bookingCount', { count: dayBookings.length })}
               </span>
             </div>
 
@@ -82,6 +84,7 @@ export function AdminBookingsList({ bookings, today, onCancel }: Props) {
 }
 
 function BookingRow({ booking, canCancel, onCancel }: { booking: AdminBookingDto; canCancel: boolean; onCancel: () => void }) {
+  const { t } = useTranslation()
   return (
     <div
       style={{
@@ -107,7 +110,7 @@ function BookingRow({ booking, canCancel, onCancel }: { booking: AdminBookingDto
         <span style={{ fontSize: '0.85rem', color: colors.textPrimary }}>
           {booking.residentName}
           {booking.apartmentNumber && (
-            <span style={{ color: colors.textMuted, marginLeft: 6 }}>· Lejl. {booking.apartmentNumber}</span>
+            <span style={{ color: colors.textMuted, marginLeft: 6 }}>· {t('laundry.apartmentShort', { number: booking.apartmentNumber })}</span>
           )}
         </span>
         {canCancel && (
@@ -116,7 +119,7 @@ function BookingRow({ booking, canCancel, onCancel }: { booking: AdminBookingDto
             style={{ fontSize: '0.75rem', padding: '2px 12px', borderRadius: 20 }}
             onClick={onCancel}
           >
-            Aflys
+            {t('laundry.actions.cancelBooking')}
           </button>
         )}
       </div>

@@ -22,15 +22,14 @@ public class PropertyAuthorizationService(IAppDbContext db, ICurrentUserService 
         var userId = currentUser.UserId
             ?? throw new ForbiddenException();
 
-        // SysAdmin: global access via a SysAdmin membership on any property,
-        // or we can check a dedicated flag. For now: check if the user has SysAdmin on ANY property.
+        // SysAdmin: global access via an active SysAdmin membership on any property.
         var isSysAdmin = await db.UserComplexMemberships
-            .AnyAsync(m => m.UserId == userId && m.Role == UserRole.SysAdmin, ct);
+            .AnyAsync(m => m.UserId == userId && m.Role == UserRole.SysAdmin && m.IsActive, ct);
 
         if (isSysAdmin) return;
 
         var membership = await db.UserComplexMemberships
-            .FirstOrDefaultAsync(m => m.UserId == userId && m.PropertyId == propertyId, ct);
+            .FirstOrDefaultAsync(m => m.UserId == userId && m.PropertyId == propertyId && m.IsActive, ct);
 
         if (membership is null || membership.Role < minimumRole)
             throw new ForbiddenException();
@@ -43,6 +42,6 @@ public class PropertyAuthorizationService(IAppDbContext db, ICurrentUserService 
         if (userId is null) return false;
 
         return await db.UserComplexMemberships
-            .AnyAsync(m => m.UserId == userId && m.Role == UserRole.SysAdmin, ct);
+            .AnyAsync(m => m.UserId == userId && m.Role == UserRole.SysAdmin && m.IsActive, ct);
     }
 }

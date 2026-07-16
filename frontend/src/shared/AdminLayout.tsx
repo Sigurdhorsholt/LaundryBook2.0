@@ -1,10 +1,12 @@
 import { Outlet, NavLink, useNavigate, useMatch } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 import { useMeQuery } from '../features/auth/authApi'
 import { routes } from '../app/routes'
 import { isEnabled } from '../config/features'
 import { getHighestRole } from './roleUtils'
 import { colors } from './theme'
 import { AppNavbar } from './AppNavbar'
+import { AppFooter } from './AppFooter'
 import { PendingApprovalBanner } from './PendingApprovalBanner'
 import { useOffcanvasAutoClose } from './utils/bootstrapUtils'
 import {
@@ -17,49 +19,49 @@ interface SubNavSection {
   items: { path: string; label: string; icon: React.ReactNode; feature?: keyof typeof import('../config/features').FEATURES }[]
 }
 
-// ── Property sub-nav definition ───────────────────────────────────────────────
+// title/label hold i18n keys, resolved at render time
 function buildPropertySubNav(propertyId: string): SubNavSection[] {
   const base = `/admin/properties/${propertyId}`
   return [
     {
-      title: 'Administration',
+      title: 'nav.sectionAdministration',
       items: [
         {
           path: `${base}/users`,
-          label: 'Brugere',
+          label: 'nav.users',
           icon: <IconUsers size={15} />,
         },
         {
           path: `${base}/settings`,
-          label: 'Indstillinger',
+          label: 'nav.settings',
           icon: <IconSettings size={15} />,
         },
       ],
     },
     {
-      title: 'Vaskerum',
+      title: 'nav.sectionLaundry',
       items: [
         {
           path: `${base}/laundry`,
-          label: 'Lokaler & Maskiner',
+          label: 'nav.roomsAndMachines',
           feature: 'laundryBooking' as const,
           icon: <IconBuilding size={15} />,
         },
         {
           path: `${base}/timeslots`,
-          label: 'Tidspladser',
+          label: 'nav.timeslots',
           feature: 'laundryBooking' as const,
           icon: <IconClock size={15} />,
         },
         {
           path: `${base}/bookings`,
-          label: 'Bookinger',
+          label: 'nav.bookings',
           feature: 'laundryBooking' as const,
           icon: <IconCalendarCheck size={15} />,
         },
         {
           path: `${base}/preview`,
-          label: 'Forhåndsvisning',
+          label: 'nav.preview',
           feature: 'laundryBooking' as const,
           icon: <IconCalendar size={15} />,
         },
@@ -112,6 +114,9 @@ function SidebarSectionLabel({ children }: { children: React.ReactNode }) {
 
 export function AdminLayout() {
   const navigate = useNavigate()
+  const { t } = useTranslation()
+  // nav labels come from route/sub-nav config as runtime i18n-key strings
+  const tx = t as (key: string) => string
   const { data: user } = useMeQuery()
   useOffcanvasAutoClose('adminSidebar')
 
@@ -155,13 +160,13 @@ export function AdminLayout() {
         >
           {/* Mobile offcanvas header */}
           <div className="offcanvas-header d-lg-none border-bottom px-4 py-3">
-            <span id="adminSidebarLabel" className="fw-bold" style={{ color: colors.textPrimary }}>Menu</span>
+            <span id="adminSidebarLabel" className="fw-bold" style={{ color: colors.textPrimary }}>{t('nav.menu')}</span>
             <button
               type="button"
               className="btn-close"
               data-bs-dismiss="offcanvas"
               data-bs-target="#adminSidebar"
-              aria-label="Luk"
+              aria-label={t('common.close')}
             />
           </div>
 
@@ -179,24 +184,24 @@ export function AdminLayout() {
                     onClick={() => navigate('/admin/properties')}
                   >
                     <IconChevronLeft size={14} strokeWidth={2.5} />
-                    Alle ejendomme
+                    {t('nav.allProperties')}
                   </button>
 
                   {/* Property name */}
                   <div className="px-3 py-2 mb-1 rounded-2" style={{ backgroundColor: colors.bgPage, border: `1px solid ${colors.borderDefault}` }}>
                     <p className="mb-0 text-truncate fw-semibold" style={{ fontSize: '0.88rem', color: colors.textPrimary }}>
-                      {activeProperty?.propertyName ?? 'Ejendom'}
+                      {activeProperty?.propertyName ?? t('nav.property')}
                     </p>
                   </div>
 
                   {/* Grouped sub-nav */}
                   {propertySubNav.map((section) => (
                     <div key={section.title}>
-                      <SidebarSectionLabel>{section.title}</SidebarSectionLabel>
+                      <SidebarSectionLabel>{tx(section.title)}</SidebarSectionLabel>
                       {section.items
                         .filter((item) => !item.feature || isEnabled(item.feature))
                         .map((item) => (
-                          <SidebarLink key={item.path} to={item.path} icon={item.icon} label={item.label} />
+                          <SidebarLink key={item.path} to={item.path} icon={item.icon} label={tx(item.label)} />
                         ))}
                     </div>
                   ))}
@@ -204,13 +209,13 @@ export function AdminLayout() {
               ) : (
                 // ── Main admin nav ──────────────────────────────────────────
                 <>
-                  <SidebarSectionLabel>Oversigt</SidebarSectionLabel>
+                  <SidebarSectionLabel>{t('nav.overview')}</SidebarSectionLabel>
                   {topLevelItems.map((route) => (
                     <SidebarLink
                       key={route.path}
                       to={route.path}
                       icon={route.icon}
-                      label={route.label!}
+                      label={tx(route.label!)}
                       end={route.path === '/admin'}
                     />
                   ))}
@@ -238,6 +243,8 @@ export function AdminLayout() {
         </main>
 
       </div>
+
+      <AppFooter />
     </div>
   )
 }

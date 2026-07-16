@@ -1,9 +1,11 @@
+import { useTranslation } from 'react-i18next'
 import { useMeQuery } from '../features/auth/authApi'
 import { PageHeader, Spinner } from '../shared/ui'
 import { UserInfoForm } from '../features/profile/UserInfoForm'
 import { BookingsOverview } from '../features/profile/BookingsOverview'
 
 export function MyPage() {
+  const { t } = useTranslation()
   const { data: user, isLoading } = useMeQuery()
   const propertyId = user?.memberships[0]?.propertyId
 
@@ -11,7 +13,7 @@ export function MyPage() {
 
   return (
     <div className="container-fluid px-3 px-lg-4 py-4" style={{ maxWidth: 1100 }}>
-      <PageHeader title="Min side" />
+      <PageHeader title={t('nav.myPage')} />
       <div className="row g-4">
         <div className="col-lg-5">
           <UserInfoForm />

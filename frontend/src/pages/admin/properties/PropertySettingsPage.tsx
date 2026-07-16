@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { useTranslation } from 'react-i18next'
 import { useParams } from 'react-router-dom'
 import {
   BookingMode,
@@ -34,6 +35,7 @@ function serverToForm(settings: ComplexSettingsDto): FormState {
 }
 
 export function PropertySettingsPage() {
+  const { t } = useTranslation()
   const { propertyId } = useParams<{ propertyId: string }>()
 
   const { data: property, isLoading, isError } = useGetPropertyQuery(propertyId!, { skip: !propertyId })
@@ -87,7 +89,7 @@ export function PropertySettingsPage() {
       setSaveSuccess(true)
       setIsDirty(false)
     } catch {
-      setSaveError('Kunne ikke gemme indstillinger. Prøv igen.')
+      setSaveError(t('adminProperties.settings.saveError'))
     }
   }
 
@@ -102,7 +104,7 @@ export function PropertySettingsPage() {
     return (
       <div className="p-4 p-lg-5">
         <p style={{ color: colors.dangerText, fontSize: '0.9rem' }}>
-          Kunne ikke indlæse indstillinger. Prøv at genindlæse siden.
+          {t('adminProperties.settings.loadError')}
         </p>
       </div>
     )
@@ -112,28 +114,28 @@ export function PropertySettingsPage() {
     <div className="p-4 p-lg-5">
       <PageHeader
         eyebrow={property.name}
-        title="Indstillinger"
-        description="Gælder for alle beboere i denne ejendom."
+        title={t('adminProperties.settings.title')}
+        description={t('adminProperties.settings.description')}
       />
 
       <form onSubmit={handleSubmit} style={{ maxWidth: 640 }}>
 
         {/* ── Booking type ──────────────────────────────────────────────── */}
         <SettingsSection
-          title="Bookingtype"
-          description="Bestemmer om beboerne booker et helt lokale eller en specifik maskine."
+          title={t('adminProperties.settings.bookingType.title')}
+          description={t('adminProperties.settings.bookingType.description')}
         >
           <div className="d-flex flex-column gap-2">
             <RadioCard
               selected={form.bookingMode === BookingMode.BookSpecificMachine}
-              label="Specifik maskine"
-              description="Beboeren vælger præcis hvilken maskine eller tørretumbler de vil bruge."
+              label={t('adminProperties.settings.bookingType.specificMachine')}
+              description={t('adminProperties.settings.bookingType.specificMachineDesc')}
               onChange={() => patch({ bookingMode: BookingMode.BookSpecificMachine })}
             />
             <RadioCard
               selected={form.bookingMode === BookingMode.BookEntireRoom}
-              label="Helt lokale"
-              description="Beboeren booker adgang til hele vaskerummet i det valgte tidsrum."
+              label={t('adminProperties.settings.bookingType.entireRoom')}
+              description={t('adminProperties.settings.bookingType.entireRoomDesc')}
               onChange={() => patch({ bookingMode: BookingMode.BookEntireRoom })}
             />
           </div>
@@ -141,26 +143,26 @@ export function PropertySettingsPage() {
 
         {/* ── Privacy — booking visibility ──────────────────────────────── */}
         <SettingsSection
-          title="Synlighed i bookingkalenderen"
-          description="Hvad ser andre beboere, når de kigger i bookingkalenderen?"
+          title={t('adminProperties.settings.visibility.title')}
+          description={t('adminProperties.settings.visibility.description')}
         >
           <div className="d-flex flex-column gap-2">
             <RadioCard
               selected={form.bookingVisibility === BookingVisibility.ApartmentOnly}
-              label="Lejlighedsnummer"
-              description='Andre beboere ser "Lejl. 1A" — navne vises ikke.'
+              label={t('adminProperties.settings.visibility.apartmentOnly')}
+              description={t('adminProperties.settings.visibility.apartmentOnlyDesc')}
               onChange={() => patch({ bookingVisibility: BookingVisibility.ApartmentOnly })}
             />
             <RadioCard
               selected={form.bookingVisibility === BookingVisibility.FullName}
-              label="Fuldt navn"
-              description='Andre beboere ser beboerens fulde navn, fx "Anna Larsen".'
+              label={t('adminProperties.settings.visibility.fullName')}
+              description={t('adminProperties.settings.visibility.fullNameDesc')}
               onChange={() => patch({ bookingVisibility: BookingVisibility.FullName })}
             />
             <RadioCard
               selected={form.bookingVisibility === BookingVisibility.Anonymous}
-              label="Anonymt"
-              description='Andre beboere ser kun "Optaget" — maksimal privatliv.'
+              label={t('adminProperties.settings.visibility.anonymous')}
+              description={t('adminProperties.settings.visibility.anonymousDesc')}
               onChange={() => patch({ bookingVisibility: BookingVisibility.Anonymous })}
             />
           </div>
@@ -168,8 +170,8 @@ export function PropertySettingsPage() {
 
         {/* ── Booking horizon ───────────────────────────────────────────── */}
         <SettingsSection
-          title="Fremtidshorisont"
-          description="Hvor mange dage frem kan beboere oprette bookinger? (1–30)"
+          title={t('adminProperties.settings.lookahead.title')}
+          description={t('adminProperties.settings.lookahead.description')}
         >
           <div className="d-flex align-items-center gap-3">
             <input
@@ -181,19 +183,19 @@ export function PropertySettingsPage() {
               value={form.bookingLookaheadDays}
               onChange={(e) => patch({ bookingLookaheadDays: Number(e.target.value) })}
             />
-            <span style={{ fontSize: '0.85rem', color: colors.textSecondary }}>dage</span>
+            <span style={{ fontSize: '0.85rem', color: colors.textSecondary }}>{t('adminProperties.settings.lookahead.unit')}</span>
           </div>
           {lookaheadError && (
             <p className="mt-1 mb-0" style={{ fontSize: '0.8rem', color: colors.dangerText }}>
-              Skal være mellem 1 og {MAX_LOOKAHEAD_DAYS} dage.
+              {t('adminProperties.settings.lookahead.rangeError', { max: MAX_LOOKAHEAD_DAYS })}
             </p>
           )}
         </SettingsSection>
 
         {/* ── Cancellation window ───────────────────────────────────────── */}
         <SettingsSection
-          title="Afbestillingsfrist"
-          description="Beboere kan afbestille op til dette antal timer inden tidspladsen starter. Sæt til 0 for ingen frist."
+          title={t('adminProperties.settings.cancellation.title')}
+          description={t('adminProperties.settings.cancellation.description')}
         >
           <div className="d-flex align-items-center gap-3">
             <input
@@ -206,22 +208,22 @@ export function PropertySettingsPage() {
               value={form.cancellationWindowHours}
               onChange={(e) => patch({ cancellationWindowHours: Number(e.target.value) })}
             />
-            <span style={{ fontSize: '0.85rem', color: colors.textSecondary }}>timer</span>
+            <span style={{ fontSize: '0.85rem', color: colors.textSecondary }}>{t('adminProperties.settings.cancellation.unit')}</span>
             {!cancellationError && form.cancellationWindowHours === 0 && (
-              <span style={{ fontSize: '0.82rem', color: colors.textMuted }}>Ingen frist</span>
+              <span style={{ fontSize: '0.82rem', color: colors.textMuted }}>{t('adminProperties.settings.cancellation.noLimit')}</span>
             )}
           </div>
           {cancellationError && (
             <p className="mt-1 mb-0" style={{ fontSize: '0.8rem', color: colors.dangerText }}>
-              Skal være mellem 0 og {MAX_CANCELLATION_HOURS} timer.
+              {t('adminProperties.settings.cancellation.rangeError', { max: MAX_CANCELLATION_HOURS })}
             </p>
           )}
         </SettingsSection>
 
         {/* ── Max concurrent bookings ───────────────────────────────────── */}
         <SettingsSection
-          title="Maks. aktive bookinger pr. beboer"
-          description="Hvor mange kommende bookinger en beboer må have på samme tid. (1–10)"
+          title={t('adminProperties.settings.maxConcurrent.title')}
+          description={t('adminProperties.settings.maxConcurrent.description')}
         >
           <div className="d-flex align-items-center gap-3">
             <input
@@ -233,11 +235,11 @@ export function PropertySettingsPage() {
               value={form.maxConcurrentBookingsPerUser}
               onChange={(e) => patch({ maxConcurrentBookingsPerUser: Number(e.target.value) })}
             />
-            <span style={{ fontSize: '0.85rem', color: colors.textSecondary }}>bookinger</span>
+            <span style={{ fontSize: '0.85rem', color: colors.textSecondary }}>{t('adminProperties.settings.maxConcurrent.unit')}</span>
           </div>
           {maxBookingsError && (
             <p className="mt-1 mb-0" style={{ fontSize: '0.8rem', color: colors.dangerText }}>
-              Skal være mellem 1 og {MAX_CONCURRENT_BOOKINGS}.
+              {t('adminProperties.settings.maxConcurrent.rangeError', { max: MAX_CONCURRENT_BOOKINGS })}
             </p>
           )}
         </SettingsSection>
@@ -249,7 +251,7 @@ export function PropertySettingsPage() {
             className="btn btn-primary fw-semibold"
             disabled={isSaving || !isDirty || hasValidationError}
           >
-            {isSaving ? 'Gemmer…' : 'Gem indstillinger'}
+            {isSaving ? t('adminProperties.settings.saving') : t('adminProperties.settings.save')}
           </button>
 
           {isDirty && (
@@ -259,12 +261,12 @@ export function PropertySettingsPage() {
               disabled={isSaving}
               onClick={handleReset}
             >
-              Fortryd
+              {t('adminProperties.settings.undo')}
             </button>
           )}
 
           {saveSuccess && (
-            <span style={{ fontSize: '0.85rem', color: colors.successText, fontWeight: 500 }}>Gemt ✓</span>
+            <span style={{ fontSize: '0.85rem', color: colors.successText, fontWeight: 500 }}>{t('adminProperties.settings.saved')}</span>
           )}
           {saveError && (
             <span style={{ fontSize: '0.85rem', color: colors.dangerText }}>{saveError}</span>

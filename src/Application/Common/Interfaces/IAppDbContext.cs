@@ -14,6 +14,7 @@ public interface IAppDbContext
     DbSet<TimeSlotTemplate> TimeSlotTemplates { get; }
     DbSet<Booking> Bookings { get; }
     DbSet<UserInvite> UserInvites { get; }
+    DbSet<AuditLog> AuditLogs { get; }
 
     Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
 }

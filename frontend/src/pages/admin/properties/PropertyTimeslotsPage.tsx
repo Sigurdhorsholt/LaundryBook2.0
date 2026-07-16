@@ -1,4 +1,5 @@
 import { useState, useMemo, useEffect, useRef } from 'react'
+import { useTranslation } from 'react-i18next'
 import { useParams } from 'react-router-dom'
 import {
   type LaundryRoomDto,
@@ -47,6 +48,7 @@ function generateSlots(
 // ── Page ───────────────────────────────────────────────────────────────────────
 
 export function PropertyTimeslotsPage() {
+  const { t } = useTranslation()
   const { propertyId } = useParams<{ propertyId: string }>()
   const { data: user } = useMeQuery()
   const property = user?.memberships?.find((m) => m.propertyId === propertyId)
@@ -67,7 +69,7 @@ export function PropertyTimeslotsPage() {
     return (
       <div className="p-4 p-lg-5">
         <p style={{ color: colors.dangerText, fontSize: '0.9rem' }}>
-          Kunne ikke indlæse lokaler. Prøv at genindlæse siden.
+          {t('adminProperties.timeslots.loadError')}
         </p>
       </div>
     )
@@ -77,14 +79,14 @@ export function PropertyTimeslotsPage() {
     <div className="p-4 p-lg-5">
       <PageHeader
         eyebrow={property?.propertyName}
-        title="Tidspladser"
-        description="Tidspladsskabeloner gentages dagligt og gælder på ubestemt tid."
+        title={t('adminProperties.timeslots.title')}
+        description={t('adminProperties.timeslots.description')}
       />
 
       {rooms.length === 0 ? (
         <EmptyState
-          title="Ingen lokaler endnu"
-          description='Opret vaskerum under "Lokaler & Maskiner" først, inden du tilføjer tidspladser.'
+          title={t('adminProperties.timeslots.emptyTitle')}
+          description={t('adminProperties.timeslots.emptyDescription')}
         />
       ) : (
         <div className="d-flex flex-column gap-3">
@@ -114,6 +116,7 @@ function RoomCard({
   isExpanded: boolean
   onToggleExpand: () => void
 }) {
+  const { t } = useTranslation()
   const { data: apiSlots = [], isLoading, isFetching } = useGetTimeSlotsQuery(room.id, {
     skip: !isExpanded,
   })
@@ -243,7 +246,7 @@ function RoomCard({
       if (totalCancelled > 0) setCancelledCount(totalCancelled)
       setAfterSave(true)
     } catch {
-      setSaveError('Ikke alle ændringer kunne gemmes. Prøv igen.')
+      setSaveError(t('adminProperties.timeslots.saveError'))
     } finally {
       setSaving(false)
     }
@@ -319,7 +322,7 @@ function RoomCard({
                 <PendingSlotList slots={pendingSlots} onDelete={handleDeletePending} />
               ) : (
                 <div className="px-4 py-2" style={{ fontSize: '0.85rem', color: colors.textMuted }}>
-                  Ingen tidspladser — brug generatoren ovenfor eller tilføj manuelt.
+                  {t('adminProperties.timeslots.noSlots')}
                 </div>
               )}
 
@@ -331,7 +334,7 @@ function RoomCard({
                   onClick={() => setShowAddModal(true)}
                 >
                   <IconPlus size={13} color={colors.primary} />
-                  Tilføj enkelt tidsplads
+                  {t('adminProperties.timeslots.addSingleSlot')}
                 </button>
               </div>
 
@@ -377,6 +380,7 @@ function TemplateChips({
 }: {
   onApply: (from: string, to: string, durationMinutes: number) => void
 }) {
+  const { t } = useTranslation()
   return (
     <div className="px-4 pt-3 pb-2">
       <div
@@ -389,13 +393,13 @@ function TemplateChips({
           marginBottom: 8,
         }}
       >
-        Hurtigskabeloner
+        {t('adminProperties.timeslots.quickTemplates')}
       </div>
       <div className="d-flex flex-wrap gap-2">
-        {TEMPLATES.map((t) => (
+        {TEMPLATES.map((tpl) => (
           <button
-            key={t.label}
-            onClick={() => onApply(t.from, t.to, t.durationMinutes)}
+            key={tpl.labelKey}
+            onClick={() => onApply(tpl.from, tpl.to, tpl.durationMinutes)}
             style={{
               padding: '6px 14px',
               borderRadius: 20,
@@ -408,9 +412,9 @@ function TemplateChips({
               lineHeight: 1.4,
             }}
           >
-            {t.label}
+            {(t as (k: string) => string)(tpl.labelKey)}
             <span style={{ color: colors.textMuted, marginLeft: 6, fontSize: '0.75rem' }}>
-              {t.sublabel}
+              {tpl.sublabel}
             </span>
           </button>
         ))}
@@ -505,6 +509,7 @@ function SlotGenerator({
   onDurationChange: (v: number) => void
   onGenerate: () => void
 }) {
+  const { t } = useTranslation()
   const isValidWindow = toMinutes(from) < toMinutes(to)
 
   const previewCount = useMemo(() => {
@@ -513,8 +518,8 @@ function SlotGenerator({
   }, [from, to, durationMinutes, isValidWindow])
 
   const previewLabel = isValidWindow
-    ? `${previewCount} tidsplads${previewCount !== 1 ? 'er' : ''} · erstatter nuværende`
-    : 'Ugyldig tidsramme'
+    ? t('adminProperties.timeslots.previewLabel', { count: previewCount })
+    : t('adminProperties.timeslots.invalidWindow')
 
   return (
     <div
@@ -526,21 +531,21 @@ function SlotGenerator({
         padding: '14px 16px',
       }}
     >
-      <div style={sectionLabelStyle}>Generer tidsplan</div>
+      <div style={sectionLabelStyle}>{t('adminProperties.timeslots.generateSchedule')}</div>
 
       <div className="d-flex flex-wrap align-items-end gap-3 mb-3">
         <div>
-          <div style={genLabelStyle}>Fra</div>
+          <div style={genLabelStyle}>{t('adminProperties.timeslots.from')}</div>
           <HalfHourPicker value={from} onChange={onFromChange} />
         </div>
         <div>
-          <div style={genLabelStyle}>Til</div>
+          <div style={genLabelStyle}>{t('adminProperties.timeslots.to')}</div>
           <HalfHourPicker value={to} onChange={onToChange} />
         </div>
       </div>
 
       <div className="mb-3">
-        <div style={genLabelStyle}>Varighed per plads</div>
+        <div style={genLabelStyle}>{t('adminProperties.timeslots.durationPerSlot')}</div>
         <div className="d-flex flex-wrap gap-2 mt-1">
           {DURATION_OPTIONS.map((opt) => {
             const selected = durationMinutes === opt.minutes
@@ -567,7 +572,7 @@ function SlotGenerator({
           disabled={previewCount === 0 || !isValidWindow}
           onClick={onGenerate}
         >
-          Generer
+          {t('adminProperties.timeslots.generate')}
         </button>
       </div>
     </div>
@@ -583,13 +588,14 @@ function PendingSlotList({
   slots: PendingSlot[]
   onDelete: (key: string) => void
 }) {
+  const { t } = useTranslation()
   const sorted = [...slots].sort((a, b) => toMinutes(a.startTime) - toMinutes(b.startTime))
   return (
     <div className="table-responsive">
       <table className="table table-hover mb-0" style={{ fontSize: '0.85rem' }}>
         <thead>
           <tr style={{ backgroundColor: colors.bgSubtle }}>
-            <th className="px-4 py-2" style={thStyle}>Tidsrum</th>
+            <th className="px-4 py-2" style={thStyle}>{t('adminProperties.timeslots.colTimeRange')}</th>
             <th className="px-4 py-2" style={{ ...thStyle, width: 1, whiteSpace: 'nowrap' }}></th>
           </tr>
         </thead>
@@ -616,6 +622,7 @@ function PendingSlotRow({
   slot: PendingSlot
   onDelete: () => void
 }) {
+  const { t } = useTranslation()
   const isNew = slot.id === null
   return (
     <tr>
@@ -635,7 +642,7 @@ function PendingSlotRow({
               borderRadius: 10,
             }}
           >
-            Ny
+            {t('adminProperties.timeslots.new')}
           </span>
         )}
       </td>
@@ -644,8 +651,8 @@ function PendingSlotRow({
           className="btn btn-sm d-flex align-items-center"
           style={{ color: colors.textMuted }}
           onClick={onDelete}
-          aria-label="Fjern"
-          title="Fjern fra listen"
+          aria-label={t('adminProperties.timeslots.remove')}
+          title={t('adminProperties.timeslots.removeFromList')}
         >
           <IconX size={14} strokeWidth={2.5} />
         </button>
@@ -671,6 +678,7 @@ function SaveBar({
   onSave: () => void
   onDiscard: () => void
 }) {
+  const { t } = useTranslation()
   return (
     <div
       style={{
@@ -685,10 +693,10 @@ function SaveBar({
             <span style={{ color: colors.dangerText }}>{saveError}</span>
           ) : cancelledCount != null ? (
             <span style={{ color: colors.primary, fontWeight: 500 }}>
-              Gemt · {cancelledCount} aktiv{cancelledCount !== 1 ? 'e' : ''} booking{cancelledCount !== 1 ? 'er' : ''} annulleret automatisk
+              {t('adminProperties.timeslots.savedCancelled', { count: cancelledCount })}
             </span>
           ) : (
-            <span style={{ color: colors.primary, fontWeight: 500 }}>Ugemte ændringer</span>
+            <span style={{ color: colors.primary, fontWeight: 500 }}>{t('adminProperties.timeslots.unsavedChanges')}</span>
           )}
         </span>
         <div className="d-flex gap-2">
@@ -698,7 +706,7 @@ function SaveBar({
             onClick={onDiscard}
             style={{ fontSize: '0.82rem' }}
           >
-            Kassér
+            {t('adminProperties.timeslots.discard')}
           </button>
           <button
             className="btn btn-primary btn-sm fw-semibold"
@@ -706,7 +714,7 @@ function SaveBar({
             onClick={onSave}
             style={{ fontSize: '0.82rem', borderRadius: 8 }}
           >
-            {saving ? 'Gemmer…' : 'Gem ændringer'}
+            {saving ? t('adminProperties.timeslots.saving') : t('adminProperties.timeslots.saveChanges')}
           </button>
         </div>
       </div>
@@ -726,6 +734,7 @@ function AddSlotModal({
   onAdd: (startTime: string, endTime: string) => void
   onClose: () => void
 }) {
+  const { t } = useTranslation()
   const [startTime, setStartTime] = useState('08:00')
   const [durationMinutes, setDurationMinutes] = useState(90)
 
@@ -740,15 +749,15 @@ function AddSlotModal({
   }
 
   return (
-    <ModalShell title={`Tilføj tidsplads — ${roomName}`} onClose={onClose} size="sm">
+    <ModalShell title={t('adminProperties.timeslots.addSlotTitle', { room: roomName })} onClose={onClose} size="sm">
       <form onSubmit={handleSubmit}>
         <div className="mb-3">
-          <label className="form-label" style={labelStyle}>Starttidspunkt</label>
+          <label className="form-label" style={labelStyle}>{t('adminProperties.timeslots.startTime')}</label>
           <div><HalfHourPicker value={startTime} onChange={setStartTime} /></div>
         </div>
 
         <div className="mb-3">
-          <label className="form-label" style={labelStyle}>Varighed</label>
+          <label className="form-label" style={labelStyle}>{t('adminProperties.timeslots.duration')}</label>
           <div className="d-flex flex-wrap gap-2 mt-1">
             {DURATION_OPTIONS.map((opt) => {
               const selected = durationMinutes === opt.minutes
@@ -768,25 +777,25 @@ function AddSlotModal({
 
         <div className="mb-3">
           <span style={{ fontSize: '0.85rem', color: colors.textSecondary }}>
-            Slutter:{' '}
+            {t('adminProperties.timeslots.endsAt')}{' '}
             {endTimeDisplay != null ? (
               <strong style={{ color: colors.textPrimary }}>{endTimeDisplay}</strong>
             ) : (
-              <span style={{ color: colors.dangerText }}>Overskrider midnat</span>
+              <span style={{ color: colors.dangerText }}>{t('adminProperties.timeslots.exceedsMidnight')}</span>
             )}
           </span>
         </div>
 
         <div className="d-flex justify-content-end gap-2 mt-4">
           <button type="button" className="btn btn-outline-secondary" onClick={onClose}>
-            Annuller
+            {t('common.cancel')}
           </button>
           <button
             type="submit"
             className="btn btn-primary fw-semibold"
             disabled={endTimeDisplay == null}
           >
-            Tilføj
+            {t('adminProperties.timeslots.add')}
           </button>
         </div>
       </form>
@@ -805,10 +814,11 @@ function ConfirmSlotDeleteModal({
   onConfirm: () => void
   onCancel: () => void
 }) {
+  const { t } = useTranslation()
   return (
-    <ModalShell title="Fjern tidspladser?" onClose={onCancel} size="sm">
+    <ModalShell title={t('adminProperties.timeslots.removeSlotsTitle')} onClose={onCancel} size="sm">
       <p style={{ fontSize: '0.92rem', color: colors.textSecondary, lineHeight: 1.6 }}>
-        Du er ved at fjerne {slots.length} tidsplads{slots.length !== 1 ? 'er' : ''}:
+        {t('adminProperties.timeslots.aboutToRemove', { count: slots.length })}
       </p>
       <ul style={{ fontSize: '0.88rem', color: colors.textPrimary, marginBottom: 16 }}>
         {slots.map((s) => (
@@ -816,14 +826,14 @@ function ConfirmSlotDeleteModal({
         ))}
       </ul>
       <p style={{ fontSize: '0.88rem', color: colors.dangerText, fontWeight: 500, marginBottom: 20 }}>
-        Alle fremtidige aktive bookinger på disse tidspladser annulleres automatisk.
+        {t('adminProperties.timeslots.futureBookingsWarning')}
       </p>
       <div className="d-flex justify-content-end gap-2">
         <button className="btn btn-outline-secondary" onClick={onCancel}>
-          Annuller
+          {t('common.cancel')}
         </button>
         <button className="btn btn-danger fw-semibold" onClick={onConfirm}>
-          Fjern og annullér bookinger
+          {t('adminProperties.timeslots.removeAndCancel')}
         </button>
       </div>
     </ModalShell>
@@ -839,6 +849,7 @@ function HalfHourPicker({
   value: string   // "HH:mm"
   onChange: (v: string) => void
 }) {
+  const { t } = useTranslation()
   const parts  = value.split(':')
   const hour   = parseInt(parts[0] ?? '0', 10)
   const minute = parseInt(parts[1] ?? '0', 10)
@@ -871,7 +882,7 @@ function HalfHourPicker({
         value={hour}
         onChange={(e) => onChange(toHHmm(Number(e.target.value) * 60 + minute))}
         style={selectStyle}
-        aria-label="Time"
+        aria-label={t('adminProperties.timeslots.hour')}
       >
         {Array.from({ length: 24 }, (_, i) => (
           <option key={i} value={i}>{String(i).padStart(2, '0')}</option>
@@ -882,7 +893,7 @@ function HalfHourPicker({
         value={minute}
         onChange={(e) => onChange(toHHmm(hour * 60 + Number(e.target.value)))}
         style={selectStyle}
-        aria-label="Minute"
+        aria-label={t('adminProperties.timeslots.minute')}
       >
         <option value={0}>00</option>
         <option value={30}>30</option>

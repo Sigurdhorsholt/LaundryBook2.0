@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { useParams } from 'react-router-dom'
 import { useMeQuery } from '../../../features/auth/authApi'
 import { useModal } from '../../../shared/modals/useModal'
@@ -19,6 +20,7 @@ import { PageHeader, Spinner } from '../../../shared/ui'
 import { colors } from '../../../shared/theme'
 
 export function PropertyUsersPage() {
+  const { t } = useTranslation()
   const { propertyId } = useParams<{ propertyId: string }>()
   const { data: currentUser } = useMeQuery()
   const property = currentUser?.memberships.find((m) => m.propertyId === propertyId)
@@ -134,7 +136,7 @@ export function PropertyUsersPage() {
 
   const isEmpty = members.length === 0 && pendingInvites.length === 0
   const totalCount = members.length + pendingInvites.length
-  const countLabel = `${totalCount} bruger${totalCount !== 1 ? 'e' : ''}${pendingInvites.length > 0 ? ` (${pendingInvites.length} afventer)` : ''}`
+  const countLabel = `${t('adminProperties.users.count', { count: totalCount })}${pendingInvites.length > 0 ? ` (${t('adminProperties.users.pending', { count: pendingInvites.length })})` : ''}`
 
   let tableContent: React.ReactNode
   if (isLoading) {
@@ -142,13 +144,13 @@ export function PropertyUsersPage() {
   } else if (isError) {
     tableContent = (
       <div className="text-center py-5" style={{ color: colors.dangerText, fontSize: '0.9rem' }}>
-        Kunne ikke indlæse brugere.
+        {t('adminProperties.users.loadError')}
       </div>
     )
   } else if (isEmpty) {
     tableContent = (
       <div className="text-center py-5" style={{ color: colors.textMuted, fontSize: '0.9rem' }}>
-        Ingen brugere endnu. Inviter den første beboer.
+        {t('adminProperties.users.empty')}
       </div>
     )
   } else {
@@ -165,11 +167,11 @@ export function PropertyUsersPage() {
           <table className="table table-hover mb-0" style={{ fontSize: '0.875rem' }}>
             <thead style={{ backgroundColor: colors.bgPage }}>
               <tr>
-                <th className="border-0 px-4 py-3 fw-semibold" style={{ ...thStyle, borderTopLeftRadius: '0.5rem' }}>Navn</th>
-                <th className="border-0 px-4 py-3 fw-semibold" style={thStyle}>Email</th>
-                <th className="border-0 px-4 py-3 fw-semibold" style={thStyle}>Lejlighed</th>
-                <th className="border-0 px-4 py-3 fw-semibold" style={thStyle}>Rolle</th>
-                <th className="border-0 px-4 py-3 fw-semibold" style={thStyle}>Status</th>
+                <th className="border-0 px-4 py-3 fw-semibold" style={{ ...thStyle, borderTopLeftRadius: '0.5rem' }}>{t('adminProperties.users.colName')}</th>
+                <th className="border-0 px-4 py-3 fw-semibold" style={thStyle}>{t('adminProperties.users.colEmail')}</th>
+                <th className="border-0 px-4 py-3 fw-semibold" style={thStyle}>{t('adminProperties.users.colApartment')}</th>
+                <th className="border-0 px-4 py-3 fw-semibold" style={thStyle}>{t('adminProperties.users.colRole')}</th>
+                <th className="border-0 px-4 py-3 fw-semibold" style={thStyle}>{t('adminProperties.users.colStatus')}</th>
                 <th className="border-0 px-4 py-3" style={{ borderTopRightRadius: '0.5rem' }} />
               </tr>
             </thead>
@@ -187,17 +189,17 @@ export function PropertyUsersPage() {
     <div className="p-4 p-lg-5">
       <PageHeader
         eyebrow={property?.propertyName}
-        title="Brugere"
+        title={t('adminProperties.users.title')}
         action={
           <button
             className="btn btn-primary btn-sm d-flex align-items-center gap-2"
             style={{ borderRadius: '8px', fontSize: '0.85rem' }}
             onClick={() => openModal('inviteUser', { propertyId: propertyId! })}
             disabled={isPendingApproval}
-            title={isPendingApproval ? 'Foreningen skal godkendes, før I kan invitere beboere' : undefined}
+            title={isPendingApproval ? t('adminProperties.users.pendingApprovalTooltip') : undefined}
           >
             <IconPlus size={14} strokeWidth={2.5} />
-            Inviter beboer
+            {t('adminProperties.users.invite')}
           </button>
         }
       />

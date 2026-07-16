@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next'
 import type { PendingAction } from './types'
 import { colors } from '../../shared/theme'
 import { IconCheck, IconX } from '../../shared/icons'
@@ -17,13 +18,14 @@ const roundBtn: React.CSSProperties = {
 
 /** Compact ✗ / ✓ pair that rolls out in place of the clicked action button. */
 export function InlineConfirm({ variant, loading, onConfirm, onDismiss }: InlineConfirmProps) {
+  const { t } = useTranslation()
   return (
     <span
       onClick={(e) => e.stopPropagation()}
       style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}
     >
       <button
-        aria-label="Fortryd"
+        aria-label={t('laundry.actions.dismiss')}
         disabled={loading}
         onClick={onDismiss}
         style={{
@@ -36,7 +38,7 @@ export function InlineConfirm({ variant, loading, onConfirm, onDismiss }: Inline
         <IconX size={13} color={colors.textSecondary} strokeWidth={2.2} />
       </button>
       <button
-        aria-label={variant === 'book' ? 'Bekræft booking' : 'Bekræft aflysning'}
+        aria-label={variant === 'book' ? t('laundry.actions.confirmBook') : t('laundry.actions.confirmCancel')}
         disabled={loading}
         onClick={onConfirm}
         style={{
@@ -65,17 +67,17 @@ export function ConfirmMessage({ pending, error, style }: {
   error: string | null
   style?: React.CSSProperties
 }) {
+  const { t } = useTranslation()
   if (error) {
     return <div style={{ fontSize: '0.76rem', color: colors.dangerText, ...style }}>{error}</div>
   }
   const mu = pending.minutesUntil
   if (pending.type === 'cancel' && mu !== undefined && mu >= 0 && mu < 240) {
-    const hours = Math.floor(mu / 60)
     return (
       <div style={{ fontSize: '0.76rem', color: colors.warningText, ...style }}>
         {mu < 60
-          ? `Bookingen starter om ${mu} minutter.`
-          : `Bookingen starter om ${hours} time${hours === 1 ? '' : 'r'}.`}
+          ? t('laundry.confirmBooking.warningMinutes', { count: mu })
+          : t('laundry.confirmBooking.warningHours', { count: Math.floor(mu / 60) })}
       </div>
     )
   }

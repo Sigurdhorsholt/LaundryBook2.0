@@ -1,8 +1,9 @@
 import { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { QRCodeSVG } from 'qrcode.react'
 import { UserRole } from '../auth/authApi'
 import { useCreateInviteTokenMutation } from './usersApi'
-import { ROLE_OPTIONS } from '../../shared/constants'
+import { useRoleOptions } from '../../shared/constants'
 import { colors } from '../../shared/theme'
 import { extractErrorMessage } from '../../shared/utils/errorUtils'
 import { FormLabel } from '../../shared/ui/FormLabel'
@@ -15,9 +16,12 @@ interface QrInviteTabProps {
   roleOptions?: { value: UserRole; label: string }[]
 }
 
-export function QrInviteTab({ propertyId, roleOptions = ROLE_OPTIONS }: QrInviteTabProps) {
+export function QrInviteTab({ propertyId, roleOptions }: QrInviteTabProps) {
+  const { t } = useTranslation()
+  const defaultRoleOptions = useRoleOptions()
+  const options = roleOptions ?? defaultRoleOptions
   const [mode, setMode] = useState<QrMode>('specific')
-  const [role, setRole] = useState<UserRole>(roleOptions[0].value)
+  const [role, setRole] = useState<UserRole>(options[0].value)
   const [apartment, setApartment] = useState('')
   const [token, setToken] = useState<string | null>(null)
   const [isMultiUse, setIsMultiUse] = useState(false)
@@ -47,20 +51,20 @@ export function QrInviteTab({ propertyId, roleOptions = ROLE_OPTIONS }: QrInvite
       }).unwrap()
       setToken(result.token)
     } catch (err: unknown) {
-      setError(extractErrorMessage(err))
+      setError(extractErrorMessage(err, t('common.genericError')))
     }
   }
 
   if (joinUrl) {
     const isMass = mode === 'mass'
     const description = isMass
-      ? 'Print og hæng op i opgangen. Alle der scanner kan oprette sig. Udløber om 1 år.'
-      : 'Send eller vis QR-koden til beboeren. Udløber om 7 dage.'
+      ? t('users.qrMassDescription')
+      : t('users.qrSpecificDescription')
 
     return (
       <div className="text-center">
         {isMass && (
-          <p className="mb-1 fw-semibold" style={{ color: colors.textPrimary, fontSize: '0.9rem' }}>Masse-invitation</p>
+          <p className="mb-1 fw-semibold" style={{ color: colors.textPrimary, fontSize: '0.9rem' }}>{t('users.massInvite')}</p>
         )}
         <p className="mb-3" style={{ color: colors.textSecondary, fontSize: '0.88rem' }}>{description}</p>
         <div className="d-inline-block p-3 bg-white rounded-3 mb-3" style={{ border: `1px solid ${colors.borderDefault}` }}>
@@ -71,13 +75,13 @@ export function QrInviteTab({ propertyId, roleOptions = ROLE_OPTIONS }: QrInvite
         </p>
         <div className="d-flex justify-content-center gap-2">
           <button className="btn btn-sm btn-outline-secondary" onClick={() => window.print()}>
-            Udskriv
+            {t('users.print')}
           </button>
           <button
             className="btn btn-sm btn-outline-secondary"
             onClick={() => { setToken(null); setApartment('') }}
           >
-            Generer nyt
+            {t('users.generateNew')}
           </button>
         </div>
       </div>
@@ -85,17 +89,17 @@ export function QrInviteTab({ propertyId, roleOptions = ROLE_OPTIONS }: QrInvite
   }
 
   const modeDescription = mode === 'specific'
-    ? 'Til én bestemt beboer. Kan kun bruges én gang og udløber om 7 dage.'
-    : 'Kan bruges af alle. Print og hæng op i opgangen. Beboeren angiver selv lejlighedsnummer.'
+    ? t('users.qrModeSpecific')
+    : t('users.qrModeMass')
 
-  const submitLabel = isLoading ? 'Genererer…' : mode === 'mass' ? 'Generer masse-QR' : 'Generer QR-kode'
+  const submitLabel = isLoading ? t('users.generating') : mode === 'mass' ? t('users.generateMassQr') : t('users.generateQr')
 
   return (
     <form onSubmit={handleGenerate} style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
       <SegmentedControl
         segments={[
-          { value: 'specific' as QrMode, label: 'Specifik beboer' },
-          { value: 'mass' as QrMode, label: 'Masse-invitation' },
+          { value: 'specific' as QrMode, label: t('users.specificResident') },
+          { value: 'mass' as QrMode, label: t('users.massInvite') },
         ]}
         value={mode}
         onChange={handleModeChange}
@@ -106,13 +110,13 @@ export function QrInviteTab({ propertyId, roleOptions = ROLE_OPTIONS }: QrInvite
 
       <div className="d-flex gap-3">
         <div style={{ flex: 1 }}>
-          <FormLabel>Rolle</FormLabel>
+          <FormLabel>{t('users.role')}</FormLabel>
           <select
             className="form-select"
             value={role}
             onChange={(e) => setRole(Number(e.target.value) as UserRole)}
           >
-            {roleOptions.map((o) => (
+            {options.map((o) => (
               <option key={o.value} value={o.value}>{o.label}</option>
             ))}
           </select>
@@ -120,11 +124,11 @@ export function QrInviteTab({ propertyId, roleOptions = ROLE_OPTIONS }: QrInvite
 
         {mode === 'specific' && (
           <div style={{ flex: 1 }}>
-            <FormLabel hint="(valgfri)">Lejlighed</FormLabel>
+            <FormLabel hint={t('users.optional')}>{t('users.apartment')}</FormLabel>
             <input
               className="form-control"
               type="text"
-              placeholder="1A"
+              placeholder={t('users.apartmentPlaceholderShort')}
               maxLength={20}
               value={apartment}
               onChange={(e) => setApartment(e.target.value)}

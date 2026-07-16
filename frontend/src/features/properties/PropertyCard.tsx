@@ -1,14 +1,15 @@
 import { useNavigate } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 import type { UserComplexMembershipDto } from '../auth/authApi'
-import { ROLE_LABEL } from '../../shared/constants'
+import { useRoleLabel } from '../../shared/constants'
 import { IconBuilding, IconChevronRight } from '../../shared/icons'
 import { colors } from '../../shared/theme'
 
 const QUICK_LINKS = [
-  { label: 'Brugere', path: 'users' },
-  { label: 'Indstillinger', path: 'settings' },
-  { label: 'Vaskerum', path: 'laundry' },
-  { label: 'Bookinger', path: 'bookings' },
+  { labelKey: 'properties.quickLinkUsers', path: 'users' },
+  { labelKey: 'properties.quickLinkSettings', path: 'settings' },
+  { labelKey: 'properties.quickLinkLaundry', path: 'laundry' },
+  { labelKey: 'properties.quickLinkBookings', path: 'bookings' },
 ]
 
 interface PropertyCardProps {
@@ -17,6 +18,8 @@ interface PropertyCardProps {
 }
 
 export function PropertyCard({ membership: m, variant }: PropertyCardProps) {
+  const { t } = useTranslation()
+  const roleLabel = useRoleLabel()
   const navigate = useNavigate()
 
   if (variant === 'compact') {
@@ -37,7 +40,7 @@ export function PropertyCard({ membership: m, variant }: PropertyCardProps) {
             {m.propertyName}
           </p>
           <p className="mb-0" style={{ fontSize: '0.78rem', color: colors.textSecondary }}>
-            {ROLE_LABEL[m.role]}{m.apartmentNumber ? ` · Lejl. ${m.apartmentNumber}` : ''}
+            {roleLabel(m.role)}{m.apartmentNumber ? ` · ${t('properties.apartmentShort', { number: m.apartmentNumber })}` : ''}
           </p>
         </div>
         <span className="flex-shrink-0"><IconChevronRight size={16} color={colors.textMuted} /></span>
@@ -66,7 +69,7 @@ export function PropertyCard({ membership: m, variant }: PropertyCardProps) {
             className="badge"
             style={{ backgroundColor: colors.primaryLight, color: colors.primary, fontSize: '0.72rem', fontWeight: 500 }}
           >
-            {ROLE_LABEL[m.role]}
+            {roleLabel(m.role)}
           </span>
         </div>
       </div>
@@ -89,7 +92,7 @@ export function PropertyCard({ membership: m, variant }: PropertyCardProps) {
                 navigate(`/admin/properties/${m.propertyId}/${link.path}`)
               }}
             >
-              {link.label} →
+              {(t as (k: string) => string)(link.labelKey)} →
             </button>
           </div>
         ))}

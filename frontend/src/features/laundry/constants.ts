@@ -11,9 +11,9 @@ export const DOT_COLOR: Record<string, string> = {
 }
 
 export const MACHINE_TYPE_LABEL: Record<MachineType, string> = {
-  [MachineType.Washer]:      'Vaskemaskine',
-  [MachineType.Dryer]:       'Tørretumbler',
-  [MachineType.WasherDryer]: 'Vaske/tørre',
+  [MachineType.Washer]:      'laundry.machineType.washer',
+  [MachineType.Dryer]:       'laundry.machineType.dryer',
+  [MachineType.WasherDryer]: 'laundry.machineType.washerDryer',
 }
 
 // ── Slot generator ─────────────────────────────────────────────────────────────
@@ -28,9 +28,9 @@ export const DURATION_OPTIONS = [
 ]
 
 export const TEMPLATES = [
-  { label: 'Standard', sublabel: '07–22 · 1t30', from: '07:00', to: '22:00', durationMinutes: 90  },
-  { label: 'Kompakt',  sublabel: '07–22 · 1t',   from: '07:00', to: '22:00', durationMinutes: 60  },
-  { label: 'Halvdag',  sublabel: '07–13 · 2t',   from: '07:00', to: '13:00', durationMinutes: 120 },
+  { labelKey: 'laundry.template.standard', sublabel: '07–22 · 1t30', from: '07:00', to: '22:00', durationMinutes: 90  },
+  { labelKey: 'laundry.template.compact',  sublabel: '07–22 · 1t',   from: '07:00', to: '22:00', durationMinutes: 60  },
+  { labelKey: 'laundry.template.halfDay',  sublabel: '07–13 · 2t',   from: '07:00', to: '13:00', durationMinutes: 120 },
 ]
 
 // ── Day timeline ───────────────────────────────────────────────────────────────

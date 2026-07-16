@@ -4,6 +4,7 @@ using Google.Apis.Auth.OAuth2;
 using Infrastructure.Auth;
 using Infrastructure.Email;
 using Infrastructure.Persistence;
+using Infrastructure.Persistence.Interceptors;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -22,17 +23,14 @@ public static class DependencyInjection
         var connectionString = configuration.GetConnectionString("DefaultConnection")
             ?? throw new InvalidOperationException("Connection string 'DefaultConnection' is not configured.");
 
-        var provider = configuration["DatabaseProvider"] ?? "Sqlite";
+        services.AddScoped<AuditSaveChangesInterceptor>();
 
-        services.AddDbContext<AppDbContext>(options =>
-        {
-            if (provider.Equals("PostgreSQL", StringComparison.OrdinalIgnoreCase))
-                options.UseNpgsql(ToNpgsqlConnectionString(connectionString),
-                    b => b.MigrationsAssembly(typeof(AppDbContext).Assembly.FullName));
-            else
-                options.UseSqlite(connectionString,
-                    b => b.MigrationsAssembly(typeof(AppDbContext).Assembly.FullName));
-        });
+        services.AddDbContext<AppDbContext>((sp, options) =>
+            options.UseNpgsql(ToNpgsqlConnectionString(connectionString),
+                    b => b.MigrationsAssembly(typeof(AppDbContext).Assembly.FullName))
+                .AddInterceptors(sp.GetRequiredService<AuditSaveChangesInterceptor>()));
+
+        services.AddHostedService<AuditLogPruneService>();
 
         services.AddScoped<IAppDbContext>(sp => sp.GetRequiredService<AppDbContext>());
 

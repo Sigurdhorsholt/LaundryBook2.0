@@ -9,9 +9,21 @@ riderModule.iml
 *.db-shm
 *.db-wal
 
+# Database dumps / backups (never commit real data)
+*.dump
+*.sql.gz
+*.bak
+
+# Log files
+logs/
+*.log
+
 # Frontend
 frontend/node_modules/
 frontend/dist/
+
+# Firebase service account key
+firebase-service-account.json
 
 # User secrets / env
 appsettings.*.json

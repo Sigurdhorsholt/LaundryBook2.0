@@ -1,0 +1,1033 @@
+{
+  "common": {
+    "close": "Close",
+    "back": "Back",
+    "save": "Save",
+    "cancel": "Cancel",
+    "loading": "Loading…",
+    "genericError": "Something went wrong. Please try again.",
+    "acceptTerms": "I accept the <terms>terms</terms> and <privacy>privacy policy</privacy>"
+  },
+  "roles": {
+    "resident": "Resident",
+    "complexAdmin": "Property admin",
+    "orgAdmin": "Organization admin",
+    "sysAdmin": "System admin"
+  },
+  "nav": {
+    "laundry": "Laundry booking",
+    "myPage": "My page",
+    "overview": "Overview",
+    "properties": "Properties",
+    "system": "System",
+    "admin": "Admin",
+    "logout": "Log out",
+    "openSidebar": "Open sidebar",
+    "openNavigation": "Open navigation",
+    "menu": "Menu",
+    "allProperties": "All properties",
+    "property": "Property",
+    "sectionAdministration": "Administration",
+    "users": "Users",
+    "settings": "Settings",
+    "sectionLaundry": "Laundry rooms",
+    "roomsAndMachines": "Rooms & Machines",
+    "timeslots": "Time slots",
+    "bookings": "Bookings",
+    "preview": "Preview"
+  },
+  "layout": {
+    "pendingApproval": "Your association is awaiting approval. You can set up laundry rooms and settings, but can only invite residents once the association is activated."
+  },
+  "adminProperties": {
+    "list": {
+      "title": "Properties",
+      "countDescription_one": "1 property under your administration",
+      "countDescription_other": "{{count}} properties under your administration",
+      "emptyTitle": "No properties",
+      "emptyDescription": "You don't have access to any properties yet."
+    },
+    "settings": {
+      "title": "Settings",
+      "description": "Applies to all residents in this property.",
+      "loadError": "Could not load settings. Try reloading the page.",
+      "saveError": "Could not save settings. Please try again.",
+      "saving": "Saving…",
+      "save": "Save settings",
+      "undo": "Undo",
+      "saved": "Saved ✓",
+      "bookingType": {
+        "title": "Booking type",
+        "description": "Determines whether residents book an entire room or a specific machine.",
+        "specificMachine": "Specific machine",
+        "specificMachineDesc": "The resident chooses exactly which washer or dryer they want to use.",
+        "entireRoom": "Entire room",
+        "entireRoomDesc": "The resident books access to the whole laundry room for the selected time."
+      },
+      "visibility": {
+        "title": "Visibility in the booking calendar",
+        "description": "What do other residents see when they look at the booking calendar?",
+        "apartmentOnly": "Apartment number",
+        "apartmentOnlyDesc": "Other residents see \"Apt. 1A\" - names are not shown.",
+        "fullName": "Full name",
+        "fullNameDesc": "Other residents see the resident's full name, e.g. \"Anna Larsen\".",
+        "anonymous": "Anonymous",
+        "anonymousDesc": "Other residents only see \"Occupied\" - maximum privacy."
+      },
+      "lookahead": {
+        "title": "Booking horizon",
+        "description": "How many days ahead can residents create bookings? (1-30)",
+        "unit": "days",
+        "rangeError": "Must be between 1 and {{max}} days."
+      },
+      "cancellation": {
+        "title": "Cancellation deadline",
+        "description": "Residents can cancel up to this many hours before the time slot starts. Set to 0 for no deadline.",
+        "unit": "hours",
+        "noLimit": "No deadline",
+        "rangeError": "Must be between 0 and {{max}} hours."
+      },
+      "maxConcurrent": {
+        "title": "Max. active bookings per resident",
+        "description": "How many upcoming bookings a resident may have at the same time. (1-10)",
+        "unit": "bookings",
+        "rangeError": "Must be between 1 and {{max}}."
+      }
+    },
+    "bookings": {
+      "title": "Bookings",
+      "description": "Overview of all bookings in the property.",
+      "loadError": "Could not load bookings. Try reloading the page.",
+      "cancelError": "The booking could not be cancelled. Please try again.",
+      "viewList": "List",
+      "viewCalendar": "Calendar"
+    },
+    "users": {
+      "title": "Users",
+      "invite": "Invite resident",
+      "pendingApprovalTooltip": "The association must be approved before you can invite residents",
+      "loadError": "Could not load users.",
+      "empty": "No users yet. Invite the first resident.",
+      "count_one": "{{count}} user",
+      "count_other": "{{count}} users",
+      "pending": "{{count}} pending",
+      "colName": "Name",
+      "colEmail": "Email",
+      "colApartment": "Apartment",
+      "colRole": "Role",
+      "colStatus": "Status"
+    },
+    "userRow": {
+      "sent": "Sent",
+      "active": "Active",
+      "deactivated": "Deactivated",
+      "notCreatedYet": "Not created yet",
+      "pending": "Pending",
+      "apartment": "Apt. {{number}}"
+    },
+    "actionMenu": {
+      "yes": "Yes",
+      "no": "No",
+      "actions": "Actions",
+      "removeUserConfirm": "Remove user?",
+      "editRole": "Edit role/apt.",
+      "deactivateAccess": "Deactivate access",
+      "activateAccess": "Activate access",
+      "forcePasswordReset": "Force password reset",
+      "removeFromProperty": "Remove from property",
+      "deleteInviteConfirm": "Delete invitation?",
+      "resendInvite": "Resend invitation",
+      "deleteInvite": "Delete invitation"
+    },
+    "laundryRooms": {
+      "title": "Rooms & Machines",
+      "description": "Manage laundry rooms and machines for this property.",
+      "loadError": "Could not load rooms. Try reloading the page.",
+      "addRoom": "Add room",
+      "add": "Add",
+      "emptyTitle": "No rooms yet",
+      "emptyDescription": "Click \"Add room\" to create your first laundry room.",
+      "machineCount_one": "{{count}} machine",
+      "machineCount_other": "{{count}} machines",
+      "deleting": "Deleting…",
+      "confirmDelete": "Confirm delete",
+      "confirm": "Confirm",
+      "editRoom": "Edit room",
+      "delete": "Delete",
+      "edit": "Edit",
+      "addMachine": "Add machine",
+      "noMachines": "No machines. Add the first machine below.",
+      "colName": "Name",
+      "colType": "Type",
+      "nameLabel": "Name",
+      "descriptionLabel": "Description (optional)",
+      "typeLabel": "Type",
+      "roomNamePlaceholder": "e.g. Basement laundry room",
+      "descriptionPlaceholder": "e.g. By the parking basement",
+      "machineNamePlaceholder": "e.g. Washer 1",
+      "creating": "Creating…",
+      "createRoom": "Create room",
+      "createRoomError": "Could not create room. Please try again.",
+      "createMachine": "Create machine",
+      "createMachineError": "Could not create machine. Please try again.",
+      "saving": "Saving…",
+      "saveChanges": "Save changes",
+      "saveError": "Could not save changes. Please try again.",
+      "addMachineTitle": "Add machine - {{room}}",
+      "editMachine": "Edit machine",
+      "machineType": {
+        "washer": "Washer",
+        "dryer": "Dryer",
+        "combi": "Combo",
+        "combiOption": "Combo (wash+dry)"
+      }
+    },
+    "timeslots": {
+      "title": "Time slots",
+      "description": "Time slot templates repeat daily and apply indefinitely.",
+      "loadError": "Could not load rooms. Try reloading the page.",
+      "emptyTitle": "No rooms yet",
+      "emptyDescription": "Create laundry rooms under \"Rooms & Machines\" first, before adding time slots.",
+      "saveError": "Not all changes could be saved. Please try again.",
+      "noSlots": "No time slots - use the generator above or add manually.",
+      "addSingleSlot": "Add single time slot",
+      "quickTemplates": "Quick templates",
+      "previewLabel_one": "{{count}} time slot · replaces current",
+      "previewLabel_other": "{{count}} time slots · replaces current",
+      "invalidWindow": "Invalid time window",
+      "generateSchedule": "Generate schedule",
+      "from": "From",
+      "to": "To",
+      "durationPerSlot": "Duration per slot",
+      "generate": "Generate",
+      "colTimeRange": "Time range",
+      "new": "New",
+      "remove": "Remove",
+      "removeFromList": "Remove from list",
+      "savedCancelled_one": "Saved · {{count}} active booking cancelled automatically",
+      "savedCancelled_other": "Saved · {{count}} active bookings cancelled automatically",
+      "unsavedChanges": "Unsaved changes",
+      "discard": "Discard",
+      "saving": "Saving…",
+      "saveChanges": "Save changes",
+      "addSlotTitle": "Add time slot - {{room}}",
+      "startTime": "Start time",
+      "duration": "Duration",
+      "endsAt": "Ends:",
+      "exceedsMidnight": "Exceeds midnight",
+      "add": "Add",
+      "removeSlotsTitle": "Remove time slots?",
+      "aboutToRemove_one": "You are about to remove {{count}} time slot:",
+      "aboutToRemove_other": "You are about to remove {{count}} time slots:",
+      "futureBookingsWarning": "All future active bookings on these time slots will be cancelled automatically.",
+      "removeAndCancel": "Remove and cancel bookings",
+      "hour": "Hour",
+      "minute": "Minute"
+    },
+    "preview": {
+      "title": "Preview",
+      "description": "Simulate the residents' booking experience with test users",
+      "descriptionShort": "Simulate the residents' booking experience",
+      "noActiveRooms": "No active laundry rooms",
+      "noActiveRoomsDesc": "Create a laundry room under Rooms & Machines to see the preview.",
+      "adminSimSettings": "Admin · Simulation settings",
+      "reset": "Reset",
+      "viewingAs": "Viewing as:",
+      "room": "Laundry room:",
+      "residentView": "Resident view",
+      "nextBookingLabel": "{{name}}'s next booking",
+      "cancel": "Cancel",
+      "book": "Book",
+      "previousWeek": "Previous week",
+      "nextWeek": "Next week",
+      "myBooking": "My booking",
+      "resident": "Resident",
+      "occupied": "Occupied",
+      "apartmentLabel": "Apt. {{number}}",
+      "othersBookedToday_one": "1 other resident has booked this day",
+      "othersBookedToday_other": "{{count}} other residents have booked this day",
+      "visibilityFullName": "Name visible",
+      "visibilityApartment": "Apt. no.",
+      "visibilityAnonymous": "Anonymous",
+      "modeSpecificMachine": "Specific machine",
+      "modeEntireRoom": "Entire room",
+      "cancelWithinHours": "Cancel within {{hours}}h",
+      "cancelWithinMinutes": "Cancel within {{minutes}} min",
+      "maxBookings": "Max {{count}} booking",
+      "daysAhead": "{{count}} days ahead",
+      "confirmBookTitle": "Confirm booking",
+      "confirmCancelTitle": "Confirm cancellation",
+      "confirmBookQuestion": "Book <s>{{slotTime}}</s> on {{dateLabel}} as <s>{{userName}}</s>?",
+      "confirmCancelQuestion": "Cancel booking <s>{{slotTime}}</s> on {{dateLabel}}?",
+      "timeWarningMinutes": "There are only {{minutes}} minutes until the booking starts.",
+      "timeWarningHours_one": "There is {{count}} hour until the booking starts.",
+      "timeWarningHours_other": "There are {{count}} hours until the booking starts.",
+      "previewNotice": "This is a preview - no real bookings are created.",
+      "userActiveBookings_one": "{{name}} has {{count}} active booking",
+      "userActiveBookings_other": "{{name}} has {{count}} active bookings",
+      "maxLabel": "(max. {{count}})"
+    }
+  },
+  "auth": {
+    "login": "Log in",
+    "loginSubtitle": "Welcome back to LaundryBook.",
+    "loginFailed": "Login failed. Please try again.",
+    "loggingIn": "Logging in…",
+    "emailPlaceholder": "Email",
+    "passwordPlaceholder": "Password",
+    "forgotPasswordLink": "Forgot password?",
+    "getStartedPrompt": "Want to get your association on LaundryBook?",
+    "createAssociation": "Create association",
+    "forgotPasswordTitle": "Forgot password",
+    "forgotSentMessage": "If your email is registered, you'll soon receive a link to reset your password.",
+    "backToLogin": "← Back to login",
+    "forgotInstructions": "Enter your email and we'll send you a reset link.",
+    "sending": "Sending…",
+    "sendResetLink": "Send reset link"
+  },
+  "profile": {
+    "cancelBooking": "Cancel",
+    "upcomingBookings": "Upcoming bookings",
+    "noUpcomingBookings": "No upcoming bookings",
+    "pastBookings": "Past bookings",
+    "noPastBookings": "No past bookings",
+    "yourInfo": "Your information",
+    "firstName": "First name",
+    "lastName": "Last name",
+    "emailAddress": "Email address",
+    "emailCannotChange": "Email cannot be changed.",
+    "apartmentNumber": "Apartment number",
+    "infoSaved": "Your information has been saved.",
+    "saving": "Saving…",
+    "sending": "Sending…",
+    "saveChanges": "Save changes",
+    "saveFailed": "Could not save. Please try again.",
+    "password": "Password",
+    "passwordResetInfo": "We'll send you a link to reset your password.",
+    "resetSent": "Check your inbox - the link is on its way.",
+    "resetPassword": "Reset password"
+  },
+  "properties": {
+    "createProperty": "Create property",
+    "creating": "Creating…",
+    "createFailed": "Something went wrong. Please try again.",
+    "name": "Name",
+    "namePlaceholder": "Property name",
+    "address": "Address",
+    "addressPlaceholder": "Street 1, 8000 Aarhus C",
+    "properties": "Properties",
+    "loading": "Loading…",
+    "noPropertiesYet": "No properties yet.",
+    "memberCount_one": "{{count}} user",
+    "memberCount_other": "{{count}} users",
+    "inviteAdmin": "Invite admin",
+    "apartmentShort": "Apt. {{number}}",
+    "quickLinkUsers": "Users",
+    "quickLinkSettings": "Settings",
+    "quickLinkLaundry": "Laundry rooms",
+    "quickLinkBookings": "Bookings"
+  },
+  "sysadmin": {
+    "manageAccess": "Manage access",
+    "currentProperties": "Current properties",
+    "loading": "Loading…",
+    "noProperties": "No properties.",
+    "active": "Active",
+    "inactive": "Inactive",
+    "remove": "Remove",
+    "addToProperty": "Add to property",
+    "selectProperty": "Select property...",
+    "add": "Add",
+    "pendingApproval": "Awaiting approval",
+    "noPendingApproval": "No associations awaiting approval.",
+    "unknown": "Unknown",
+    "createdOn": "created {{date}}",
+    "activating": "Activating…",
+    "activate": "Activate",
+    "users": "Users",
+    "searchPlaceholder": "Search by name or email...",
+    "name": "Name",
+    "email": "Email",
+    "properties": "Properties",
+    "noUsersFound": "No users found.",
+    "showingUsers": "Showing {{from}}-{{to}} of {{total}} users",
+    "previous": "← Previous",
+    "next": "Next →",
+    "audit": {
+      "title": "Activity log",
+      "description": "Every change in the system - who did what and when.",
+      "colTime": "Time",
+      "colUser": "User",
+      "colAction": "Action",
+      "colEntity": "Object",
+      "colChanges": "Changes",
+      "system": "System",
+      "filterEntityPlaceholder": "Filter by object type (e.g. Booking)",
+      "filterActionAll": "All actions",
+      "actionCreated": "Created",
+      "actionUpdated": "Updated",
+      "actionDeleted": "Deleted",
+      "showing": "Showing {{from}}-{{to}} of {{total}}",
+      "prev": "← Previous",
+      "next": "Next →",
+      "empty": "No activity found.",
+      "loadError": "Could not load the activity log.",
+      "viewChanges": "View changes"
+    },
+    "testEmail": {
+      "title": "Test emails",
+      "description": "Send a test of each email template to check formatting and delivery.",
+      "recipientLabel": "Recipient",
+      "invite": "Send invite email",
+      "passwordReset": "Send reset email",
+      "adminReset": "Send admin reset email",
+      "sending": "Sending…",
+      "sent": "Test email sent to {{email}}.",
+      "error": "Could not send the test email. Try again."
+    }
+  },
+  "users": {
+    "editMember": "Edit - {{name}}",
+    "role": "Role",
+    "apartment": "Apartment",
+    "optional": "(optional)",
+    "apartmentPlaceholder": "e.g. 1A",
+    "apartmentPlaceholderShort": "1A",
+    "saveFailed": "Could not save changes. Please try again.",
+    "saving": "Saving…",
+    "inviteSent": "Invitation sent!",
+    "inviteEmailSentMessage": "{{email}} will receive an email with a link to create a password.",
+    "email": "Email",
+    "emailPlaceholder": "resident@example.com",
+    "sending": "Sending…",
+    "sendInvitation": "Send invitation",
+    "inviteUser": "Invite user",
+    "emailInviteTab": "Email invitation",
+    "qrTab": "QR code",
+    "qrMassDescription": "Print and hang it in the stairwell. Anyone who scans it can sign up. Expires in 1 year.",
+    "qrSpecificDescription": "Send or show the QR code to the resident. Expires in 7 days.",
+    "massInvite": "Mass invitation",
+    "print": "Print",
+    "generateNew": "Generate new",
+    "qrModeSpecific": "For one specific resident. Can only be used once and expires in 7 days.",
+    "qrModeMass": "Can be used by anyone. Print and hang it in the stairwell. The resident enters their own apartment number.",
+    "generating": "Generating…",
+    "generateMassQr": "Generate mass QR",
+    "generateQr": "Generate QR code",
+    "specificResident": "Specific resident"
+  },
+  "laundry": {
+    "actions": {
+      "book": "Book",
+      "cancelBooking": "Cancel",
+      "dismiss": "Cancel",
+      "confirmBook": "Confirm booking",
+      "confirmCancel": "Confirm cancellation"
+    },
+    "machineType": {
+      "washer": "Washer",
+      "dryer": "Dryer",
+      "washerDryer": "Washer/dryer"
+    },
+    "apartmentShort": "Apt. {{number}}",
+    "confirmBooking": {
+      "titleBook": "Confirm booking",
+      "titleCancel": "Cancel booking",
+      "promptBook": "Do you want to book <s>{{slotTime}}</s> on <s>{{dateText}}</s>?",
+      "promptBookWithMachine": "Do you want to book <s>{{slotTime}}</s> on <s>{{machineName}}</s> on <s>{{dateText}}</s>?",
+      "promptCancel": "Do you want to cancel your booking at <s>{{slotTime}}</s> on <s>{{dateText}}</s>?",
+      "promptCancelWithMachine": "Do you want to cancel your booking at <s>{{slotTime}}</s> on <s>{{machineName}}</s> on <s>{{dateText}}</s>?",
+      "warningMinutes": "There are only {{count}} minutes until your booking starts.",
+      "warningHours_one": "There is {{count}} hour until your booking starts.",
+      "warningHours_other": "There are {{count}} hours until your booking starts."
+    },
+    "stats": {
+      "bookingsInPeriod": "Bookings in period",
+      "activeResidents": "Active residents",
+      "roomsInUse": "Rooms in use",
+      "utilizationHeader": "Utilization per room · in period",
+      "roomUtilization_one": "{{count}} booking · {{utilization}}%",
+      "roomUtilization_other": "{{count}} bookings · {{utilization}}%"
+    },
+    "calendar": {
+      "noRoomsTitle": "No active laundry rooms",
+      "noRoomsDescription": "Activate a laundry room to see the calendar.",
+      "prevWeek": "Previous week",
+      "nextWeek": "Next week",
+      "noSlots": "No time slots set up for this room.",
+      "bookingCellTitle": "{{name}} - click to cancel"
+    },
+    "list": {
+      "emptyTitle": "No bookings in period",
+      "emptyDescription": "No times were booked in the selected period.",
+      "bookingCount_one": "{{count}} booking",
+      "bookingCount_other": "{{count}} bookings"
+    },
+    "adminCancel": {
+      "title": "Cancel booking",
+      "prompt": "Cancel <s>{{slotTime}}</s> on {{dateLabel}} in <s>{{roomName}}</s>?",
+      "bookedBy": "Booked by {{name}}. The resident's time slot will be released.",
+      "keep": "Keep",
+      "cancelling": "Cancelling…"
+    },
+    "periodNav": {
+      "prev": "Earlier period",
+      "next": "Later period",
+      "jumpToToday": "Jump to today"
+    },
+    "grid": {
+      "noSlotsTitle": "No times set up yet",
+      "noSlotsDescription": "The administrator has not configured time slots for this room.",
+      "noMachinesTitle": "No machines set up yet",
+      "noMachinesDescription": "The administrator has not added machines to this room.",
+      "limitReachedTitle": "You have reached your booking limit.",
+      "limitReachedHint": "Cancel an active booking to free up a slot.",
+      "noAvailableToday": "No available times this day."
+    },
+    "slot": {
+      "past": "Passed",
+      "unavailable": "Unavailable",
+      "myBooking": "My booking",
+      "fullyBooked": "Fully booked",
+      "freeCount": "{{free}} of {{total}} available",
+      "deadlinePassed": "Deadline passed",
+      "limitReached": "Limit reached",
+      "cancelDeadlinePassed": "Cancel deadline passed"
+    },
+    "upcoming": {
+      "title": "My upcoming bookings"
+    },
+    "template": {
+      "standard": "Standard",
+      "compact": "Compact",
+      "halfDay": "Half day"
+    }
+  },
+  "dashboard": {
+    "loggedInAs": "Logged in as <s>{{email}}</s>"
+  },
+  "join": {
+    "invalidLinkTitle": "Invalid or expired invitation link",
+    "invalidLinkBody": "Ask your administrator to send a new link.",
+    "genericError": "Something went wrong. Please try again.",
+    "title": "Create your account",
+    "subtitle": "You've been invited to LaundryBook",
+    "firstName": "First name",
+    "lastName": "Last name",
+    "email": "Email",
+    "emailPlaceholder": "your@email.com",
+    "password": "Password",
+    "passwordPlaceholder": "At least 6 characters",
+    "apartment": "Apartment number",
+    "optional": "(optional)",
+    "apartmentPlaceholder": "e.g. 1A",
+    "creatingAccount": "Creating account…",
+    "submit": "Create account and log in"
+  },
+  "landing": {
+    "heroBadge": "For Danish homeowner and cooperative housing associations",
+    "heroTitle": "A laundry room without <s>drama</s>.",
+    "heroSubtitle": "No more going down to the basement to see if there's a free laundry slot. With LaundryBook, residents book from home, and the board keeps track of the rest. No notes, no keys, no pointless trip down the stairs.",
+    "tryDemo": "Try demo",
+    "login": "Log in",
+    "heroNote": "Try the demo - no sign-up required.",
+    "cardLabel": "Your booking",
+    "cardTime": "Wednesday 10:00 - 11:30",
+    "cardRoom": "Laundry room 1",
+    "cardFreeToday": "6 free times today",
+    "valueBadge": "Made for your association",
+    "valueTitleLine1": "Less hassle.",
+    "valueTitleLine2": "Better neighborliness.",
+    "valueSubtitle": "The booking note in the basement has had its day. LaundryBook gives residents a place to find a free time - and the board an overview, without a lot of hassle.",
+    "residentEyebrow": "For the resident",
+    "residentTitle": "Book a wash on your way home from work",
+    "residentBody": "See which times are available today, tomorrow, or later in the week. Book with one tap.",
+    "residentFeature1": "Available times shown with color codes",
+    "residentFeature2": "Cancel directly in the app if plans change",
+    "residentFeature3": "Works on mobile, tablet and computer",
+    "boardEyebrow": "For the board",
+    "boardTitle": "Less hassle for the board",
+    "boardBody": "Create laundry rooms, define time slots and add residents. Once. After that the system runs itself - and you can focus on what actually needs your time.",
+    "boardFeature1": "Add or remove residents when they move in",
+    "boardFeature2": "See who booked when",
+    "boardFeature3": "Set booking rules and visibility for the association",
+    "ctaTitle": "Ready to make the laundry room easier?",
+    "ctaBody": "Try a demo or log in to get started with your association."
+  },
+  "notFound": {
+    "title": "Page not found",
+    "body": "The page you're looking for doesn't exist or has been moved.",
+    "goHome": "Go to home page"
+  },
+  "signup": {
+    "genericError": "Something went wrong. Please try again.",
+    "title": "Create your association",
+    "subtitle": "We'll activate the association as soon as we've reviewed it.",
+    "firstName": "First name",
+    "lastName": "Last name",
+    "email": "Email",
+    "emailPlaceholder": "your@email.com",
+    "password": "Password",
+    "passwordPlaceholder": "At least 6 characters",
+    "propertyName": "Association name",
+    "propertyNamePlaceholder": "e.g. A/B Solbakken",
+    "address": "Address",
+    "addressPlaceholder": "e.g. Solbakkevej 1, 8000 Aarhus C",
+    "creating": "Creating…",
+    "submit": "Create association",
+    "alreadyHaveAccount": "Already have an account?",
+    "login": "Log in",
+    "backToHome": "← Back to home page"
+  },
+  "laundryPage": {
+    "genericError": "An error occurred. Please try again.",
+    "notLinkedDescription": "You're not linked to any property yet.",
+    "description": "Book an available laundry time in your laundry room.",
+    "selectRoom": "Select a laundry room above.",
+    "othersBooked_one": "{{count}} other resident has booked this day",
+    "othersBooked_other": "{{count}} other residents have booked this day",
+    "milestone": "You've now booked {{count}} times - the laundry room is getting to know you.",
+    "goToBooking": "Go to booking"
+  },
+  "adminDashboard": {
+    "greeting": "Welcome back, {{name}}{{roleSuffix}}",
+    "statActiveBookingsLabel": "Active bookings",
+    "statActiveBookingsSub": "today",
+    "statResidentsLabel": "Residents",
+    "statResidentsSub": "registered",
+    "statRoomsLabel": "Laundry rooms",
+    "statRoomsSub": "active",
+    "propertiesHeading": "Your properties",
+    "seeAll": "See all →"
+  },
+  "sysadminPage": {
+    "subtitle": "Only visible to system administrators"
+  },
+  "dates": {
+    "today": "Today",
+    "tomorrow": "Tomorrow",
+    "week": "Week {{n}}"
+  },
+  "public": {
+    "layout": {
+      "nav": {
+        "features": "Why LaundryBook",
+        "demo": "Demo",
+        "faq": "FAQ",
+        "about": "About us",
+        "privacy": "Privacy policy",
+        "terms": "Terms"
+      },
+      "login": "Log in",
+      "getStarted": "Get started",
+      "backToApp": "Back to app",
+      "footer": {
+        "product": "Product",
+        "company": "Company",
+        "contact": "Contact",
+        "tagline": "Digital laundry booking for Danish homeowner and cooperative housing associations. Made in Aarhus, in the evenings, by someone who was tired of stairs.",
+        "legal": "Legal"
+      }
+    },
+    "getStarted": {
+      "eyebrow": "For Danish homeowner and cooperative housing associations",
+      "title": "Get your association going",
+      "subtitle": "Create your association right away. We'll activate it as soon as we've reviewed it, and you can set up laundry rooms and residents.",
+      "createAssociation": "Create association",
+      "tryDemoFirst": "Try the demo first",
+      "alreadyHaveAccount": "Already have an account?",
+      "loginHere": "Log in here",
+      "trust": {
+        "support": "Danish support via email",
+        "browser": "Works in the browser - no app to install",
+        "invite": "Residents are invited with a link"
+      },
+      "ctaTitle": "Ready to get rid of the booking hassle?",
+      "ctaSubtitle": "Create your association - it only takes a moment."
+    },
+    "getStartedSteps": {
+      "eyebrow": "How it works",
+      "items": {
+        "account": {
+          "title": "Create account",
+          "body": "Email and password - takes under a minute."
+        },
+        "property": {
+          "title": "Create your property",
+          "body": "Name, address and number of apartments. We set up the rest for you."
+        },
+        "rooms": {
+          "title": "Set up laundry rooms",
+          "body": "Add rooms and define time slots once. The system then runs itself."
+        },
+        "invite": {
+          "title": "Invite residents",
+          "body": "Send a link - residents sign themselves up in seconds."
+        }
+      }
+    },
+    "faq": {
+      "eyebrow": "Frequently asked questions",
+      "title": "Answers to what we're asked most often",
+      "subtitle": "Can't find what you're looking for? Write to {{email}}.",
+      "moreDoubtsTitle": "Anything else you're unsure about?",
+      "moreDoubtsSubtitle": "Write to us and we'll get back to you.",
+      "groups": {
+        "washingBookingStart": {
+          "title": "Washing, booking and getting started",
+          "items": {
+            "booking": {
+              "q": "How do residents book a wash?",
+              "a": "They log in and choose a free time in the calendar for your laundry room. Available times are green, occupied ones are gray. Book with one click - and cancel again if plans change."
+            },
+            "join": {
+              "q": "How does a resident get on board?",
+              "a": "An administrator in the association invites the resident with a link. The resident creates their own account via the invitation."
+            },
+            "mobile": {
+              "q": "Does it work on mobile?",
+              "a": "Yes. LaundryBook runs directly in the browser on mobile, tablet and computer - no app to install. You can add a shortcut to your home screen if you want it to feel like an app."
+            },
+            "pricing": {
+              "q": "How do we get our association on LaundryBook, and what does it cost?",
+              "a": "Write to us at {{email}}, and we'll set up your association and tell you the price."
+            }
+          }
+        }
+      }
+    },
+    "features": {
+      "eyebrow": "Why LaundryBook",
+      "title": "The laundry room shouldn't take up more space than it needs to",
+      "subtitle": "LaundryBook solves one small but annoying part of living together: the laundry times. Here's how it works in practice:",
+      "big": {
+        "booking": {
+          "tag": "Booking",
+          "title": "Like checking the weather forecast for the laundry room",
+          "body": "Available times are green, busy ones are yellow, occupied ones are gray. Pick a day of the week, find a time that suits you, book with one click. Done. Everyone in the association sees the same calendar at the same second."
+        },
+        "administration": {
+          "tag": "Administration",
+          "title": "Set it up once. Then forget it.",
+          "body": "The board creates laundry rooms, time slots and lists of apartments. New residents are added by email. Old residents are removed again. Nothing more, nothing less."
+        },
+        "overview": {
+          "tag": "Overview",
+          "title": "Figures for the general assembly",
+          "body": "How many washes per week? When's the rush? Is another laundry room needed? The numbers are there when you need them."
+        }
+      },
+      "smallSectionTitle": "More little things that make it easier",
+      "small": {
+        "slots": {
+          "title": "Flexible time slots",
+          "body": "Define the length of laundry slots yourself - 90 min, 2 hours, evening slot until 22."
+        },
+        "roles": {
+          "title": "Multiple roles",
+          "body": "Resident, property admin and system admin. Everyone sees what they should."
+        },
+        "rooms": {
+          "title": "Multiple laundry rooms per property",
+          "body": "Got two basements? No problem. Each gets its own calendar."
+        }
+      },
+      "beforeAfterTitle": "Before and after LaundryBook",
+      "beforeLabel": "Before",
+      "afterLabel": "After",
+      "before": {
+        "note": "A note in the basement that disappears",
+        "sms": "Neighbor text: \"Did you take Saturday 14-16?\"",
+        "doubleBooking": "Double bookings and sour laundry",
+        "noInsight": "Nobody knows what the laundry room is actually used for"
+      },
+      "after": {
+        "calendar": "A digital calendar all residents know",
+        "bookFromSofa": "Book from the sofa, cancel when plans change",
+        "noDoubleBooking": "No double bookings - the system doesn't allow it",
+        "boardInsight": "The board sees patterns and can plan maintenance"
+      },
+      "ctaTitle": "The best way to see it is to try it",
+      "ctaButton": "Try the demo"
+    },
+    "demo": {
+      "eyebrow": "Try without login",
+      "title": "Book a wash. Now. Here.",
+      "subtitle": "This is the real booking - just with a made-up association. Try booking a time, cancel again, switch day. This is what it looks like for your residents.",
+      "browserBar": "laundrybook.dk/laundry · Mejlgade 42 (demo)",
+      "noDataStored": "No data is stored. Refresh the page to reset the demo.",
+      "tipsTitle": "Try these things in the demo",
+      "tips": {
+        "book": "Click a free time in the list to book",
+        "switchDay": "Switch day with the arrow buttons in the date row",
+        "cancel": "Cancel your booking with the red button",
+        "dots": "Notice the dots - green = available, yellow = almost full, gray = occupied"
+      }
+    },
+    "adminDemo": {
+      "eyebrow": "The admin panel",
+      "title": "Full control for the board",
+      "subtitle": "Set up booking rules, invite residents and see everything from one place - no technical knowledge required.",
+      "browserBar": "laundrybook.dk/admin · Mejlgade 42 (demo)",
+      "ctaButton": "Create your association →",
+      "ctaNote": "We'll activate the association as soon as we've reviewed it.",
+      "roleAdmin": "Admin",
+      "tabs": {
+        "users": "Residents",
+        "rooms": "Rooms"
+      },
+      "dashboard": {
+        "welcome": "Welcome back, Sigurd",
+        "yourProperties": "Your properties",
+        "stats": {
+          "bookings": {
+            "label": "Active bookings",
+            "sub": "today"
+          },
+          "residents": {
+            "label": "Residents",
+            "sub": "registered"
+          },
+          "rooms": {
+            "label": "Laundry rooms",
+            "sub": "active"
+          }
+        }
+      },
+      "users": {
+        "subtitle": "Mejlgade 42 · {{count}} residents",
+        "invite": "Invite resident",
+        "apt": "Apt. {{apt}}",
+        "pendingInvite_one": "+ {{count}} invitation awaiting reply",
+        "pendingInvite_other": "+ {{count}} invitations awaiting reply"
+      },
+      "rooms": {
+        "roomName1": "Laundry room 1",
+        "roomName2": "Laundry room 2",
+        "washerA": "Washer A",
+        "dryerB": "Dryer B",
+        "washerC": "Washer C",
+        "washerD": "Washer D",
+        "addRoom": "Add room",
+        "active": "Active"
+      },
+      "settings": {
+        "subtitle": "Mejlgade 42 · Applies to all residents.",
+        "bookingType": {
+          "label": "Booking type",
+          "description": "What do residents book?",
+          "specificMachine": {
+            "label": "Specific machine",
+            "desc": "The resident chooses exactly which machine"
+          },
+          "entireRoom": {
+            "label": "Entire room",
+            "desc": "The resident books access to the whole laundry room"
+          }
+        },
+        "visibility": {
+          "label": "Visibility in the calendar",
+          "description": "What do other residents see?",
+          "apartment": {
+            "label": "Apartment number",
+            "desc": "Others see \"Apt. 1A\" - names are not shown"
+          },
+          "fullName": {
+            "label": "Full name",
+            "desc": "Others see the resident's full name"
+          },
+          "anonymous": {
+            "label": "Anonymous",
+            "desc": "Others only see \"Occupied\""
+          }
+        },
+        "horizon": {
+          "label": "Booking horizon",
+          "value": "14 days"
+        },
+        "cancelDeadline": {
+          "label": "Cancellation deadline",
+          "value": "2 hours"
+        },
+        "maxBookings": {
+          "label": "Max. bookings",
+          "value": "2 per resident"
+        }
+      }
+    },
+    "residentDemo": {
+      "subtitle": "Laundry room 1 · Mejlgade 42 (demo)",
+      "myBooking": "My booking",
+      "busy": "Occupied",
+      "nextBooking": "Your next booking",
+      "cancelBooking": "Cancel",
+      "book": "Book",
+      "prevWeek": "Previous week",
+      "nextWeek": "Next week",
+      "today": "today",
+      "tomorrow": "tomorrow",
+      "daysShort": {
+        "sun": "Sun",
+        "mon": "Mon",
+        "tue": "Tue",
+        "wed": "Wed",
+        "thu": "Thu",
+        "fri": "Fri",
+        "sat": "Sat"
+      },
+      "daysLong": {
+        "sun": "Sunday",
+        "mon": "Monday",
+        "tue": "Tuesday",
+        "wed": "Wednesday",
+        "thu": "Thursday",
+        "fri": "Friday",
+        "sat": "Saturday"
+      },
+      "monthsShort": {
+        "jan": "Jan",
+        "feb": "Feb",
+        "mar": "Mar",
+        "apr": "Apr",
+        "may": "May",
+        "jun": "Jun",
+        "jul": "Jul",
+        "aug": "Aug",
+        "sep": "Sep",
+        "oct": "Oct",
+        "nov": "Nov",
+        "dec": "Dec"
+      },
+      "modal": {
+        "confirmBookTitle": "Confirm booking",
+        "confirmCancelTitle": "Confirm cancellation",
+        "bookBody": "<s>{{slotTime}}</s> on {{dateLabel}}",
+        "cancelBody": "Cancel <s>{{slotTime}}</s> on {{dateLabel}}?",
+        "demoNote": "This is a demo - no real bookings are created."
+      }
+    },
+    "about": {
+      "eyebrow": "About LaundryBook",
+      "title": "It started four floors up",
+      "lead": "Laundry times should be easy. Here's the problem we set out to solve.",
+      "storyTitle": "The story",
+      "story1": "You know the feeling? You need to do laundry, but first you have to go all the way down to the basement to see if there's even a free time. Usually there isn't - the day is booked.",
+      "story2": "You can't book from home. You have to stand in the basement to see the schedule and put your name down. And a busy everyday gets rearranged around the laundry schedule, because you discover too late that the whole day is taken.",
+      "story3": "We experienced that problem ourselves - so that's why we built LaundryBook. A laundry booking you can check and use from home, so the trip to the basement is only about doing laundry.",
+      "honestTitle": "How we do it",
+      "honest1": "LaundryBook does one thing and does it properly: laundry times. No superfluous features and no app to install - just a calendar everyone in the association can figure out.",
+      "honest2": "Every new association is approved before it goes live. That keeps the system safe and clean, so you can trust the calendar to be accurate.",
+      "honest3": "We keep building on LaundryBook all the time. If you have wishes or ideas, let us know - we're happy to listen.",
+      "factsTitle": "In short",
+      "factLocation": "Made in Aarhus",
+      "factBrowser": "Runs in the browser - no app to install",
+      "factAudience": "For Danish homeowner and cooperative housing associations",
+      "factPrice": "Price by agreement - write and ask",
+      "ctaTitle": "Want to try it?",
+      "ctaBody": "Try the demo without creating anything, or set up your association. If you have questions, write to us - we're happy to answer.",
+      "tryDemo": "Try demo",
+      "getStarted": "Create association",
+      "contact": "Write to us"
+    },
+    "privacy": {
+      "eyebrow": "Legal",
+      "title": "Privacy policy",
+      "draftNotice": "Draft - to be legally reviewed before LaundryBook goes live.",
+      "intro": "How LaundryBook processes personal data. The policy explains what information we process, why, and what rights you have.",
+      "sections": {
+        "controller": {
+          "heading": "Data responsibility",
+          "body": "Your housing association is the data controller for the personal data processed in LaundryBook. LaundryBook is the data processor and only processes information according to the association's instructions and a data processing agreement."
+        },
+        "data": {
+          "heading": "What information we process",
+          "body": "We process your name, email address, possibly apartment number, as well as your bookings and your role in the association. Passwords are handled by our login provider and are not stored by us in plain text."
+        },
+        "purpose": {
+          "heading": "Purpose",
+          "body": "The information is used to provide access to the system, manage laundry bookings and send operational emails such as invitations and booking-related information."
+        },
+        "legalBasis": {
+          "heading": "Legal basis",
+          "body": "The processing takes place in order to provide the service to the association and its residents. [Insert final legal basis after legal review.]"
+        },
+        "subprocessors": {
+          "heading": "Sub-processors",
+          "body": "We use selected suppliers for hosting, database, login and email delivery. Data is hosted in the EU. An updated list of sub-processors is provided to the association. [Insert list.]"
+        },
+        "retention": {
+          "heading": "Retention",
+          "body": "Information is stored as long as the association uses LaundryBook and your account is active. Upon deletion of the account or termination of the agreement, the information is deleted within [insert deadline]."
+        },
+        "rights": {
+          "heading": "Your rights",
+          "body": "You have the right to access, rectification, erasure, restriction, objection and data portability. Requests regarding your rights should be directed to your association as data controller. You can complain to the Danish Data Protection Agency."
+        },
+        "security": {
+          "heading": "Security",
+          "body": "Data is transmitted encrypted (HTTPS), and access is controlled via roles, so residents only see their own association's information."
+        },
+        "cookies": {
+          "heading": "Cookies",
+          "body": "We only use the cookies necessary to keep you logged in. [Updated if statistics or analytics tools are added.]"
+        },
+        "changes": {
+          "heading": "Changes",
+          "body": "We may update this privacy policy. Significant changes are notified to the association."
+        },
+        "contact": {
+          "heading": "Contact",
+          "body": "Questions about privacy? Write to {{email}}."
+        }
+      }
+    },
+    "terms": {
+      "eyebrow": "Legal",
+      "title": "Terms",
+      "draftNotice": "Draft - to be legally reviewed before LaundryBook goes live.",
+      "intro": "These terms apply to the use of LaundryBook.",
+      "sections": {
+        "acceptance": {
+          "heading": "Acceptance of terms",
+          "body": "By creating an account or using LaundryBook, you accept these terms. Read them through before you sign up."
+        },
+        "service": {
+          "heading": "The service",
+          "body": "LaundryBook is a digital booking system for laundry rooms in Danish homeowner and cooperative housing associations. The service is delivered via the browser, without an app."
+        },
+        "signupApproval": {
+          "heading": "Sign-up and approval",
+          "body": "Anyone can test the system, but an association is only activated once we have approved it. This ensures that only real associations are created with residents."
+        },
+        "userResponsibility": {
+          "heading": "Your responsibility",
+          "body": "You are responsible for providing correct information, for activity on your account and for not misusing the system or bothering other residents."
+        },
+        "payment": {
+          "heading": "Payment",
+          "body": "Price and payment for an active association are agreed separately with the association. [Insert final payment terms once the pricing model is set.]"
+        },
+        "availability": {
+          "heading": "Availability and liability",
+          "body": "We strive for high uptime, but the service is delivered as is, without a guarantee of uninterrupted operation. We are not liable for indirect losses. [To be specified legally.]"
+        },
+        "termination": {
+          "heading": "Termination",
+          "body": "The association can stop using LaundryBook at any time. Upon termination, access is closed, and data is processed as described in the privacy policy."
+        },
+        "changes": {
+          "heading": "Changes to terms",
+          "body": "We may update these terms. Significant changes are notified to the association."
+        },
+        "law": {
+          "heading": "Governing law",
+          "body": "The terms are governed by Danish law with the Danish courts as venue."
+        },
+        "contact": {
+          "heading": "Contact",
+          "body": "Questions about the terms? Write to {{email}}."
+        }
+      }
+    }
+  }
+}

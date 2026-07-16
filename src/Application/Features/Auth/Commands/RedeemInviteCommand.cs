@@ -1,6 +1,8 @@
 using Application.Common.Exceptions;
 using Application.Common.Interfaces;
+using Domain.Common;
 using Domain.Entities;
+using FluentValidation;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
@@ -11,9 +13,22 @@ public record RedeemInviteCommand(
     string InviteToken,
     string? ApartmentNumber,
     string FirstName,
-    string LastName) : IRequest<RedeemInviteResult>;
+    string LastName,
+    bool AcceptedTerms) : IRequest<RedeemInviteResult>;
 
 public record RedeemInviteResult(string JwtToken, Guid UserId);
+
+public class RedeemInviteCommandValidator : AbstractValidator<RedeemInviteCommand>
+{
+    public RedeemInviteCommandValidator()
+    {
+        RuleFor(x => x.IdToken).NotEmpty();
+        RuleFor(x => x.InviteToken).NotEmpty();
+        RuleFor(x => x.FirstName).NotEmpty().MaximumLength(100);
+        RuleFor(x => x.LastName).NotEmpty().MaximumLength(100);
+        RuleFor(x => x.AcceptedTerms).Equal(true).WithMessage("Du skal acceptere vilkårene og privatlivspolitikken.");
+    }
+}
 
 public class RedeemInviteCommandHandler(
     IAppDbContext db,
@@ -49,6 +64,9 @@ public class RedeemInviteCommandHandler(
             user.FirstName = request.FirstName;
             user.LastName = request.LastName;
         }
+
+        user.TermsAcceptedAt = DateTime.UtcNow;
+        user.TermsVersion = TermsPolicy.CurrentVersion;
 
         var membershipExists = await db.UserComplexMemberships
             .AnyAsync(m => m.UserId == user.Id && m.PropertyId == invite.PropertyId, cancellationToken);

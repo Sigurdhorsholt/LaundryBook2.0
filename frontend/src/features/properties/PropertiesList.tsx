@@ -1,11 +1,14 @@
 import { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { useGetMyPropertiesQuery } from './propertiesApi'
 import { CreatePropertyModal } from './CreatePropertyModal'
 import { InviteUserModal } from '../users/InviteUserModal'
-import { ADMIN_ROLE_OPTIONS } from '../../shared/constants'
+import { useAdminRoleOptions } from '../../shared/constants'
 import { colors } from '../../shared/theme'
 
 export function PropertiesList() {
+  const { t } = useTranslation()
+  const adminRoleOptions = useAdminRoleOptions()
   const { data: properties = [], isLoading } = useGetMyPropertiesQuery()
   const [showCreate, setShowCreate] = useState(false)
   const [invitePropertyId, setInvitePropertyId] = useState<string | null>(null)
@@ -19,19 +22,19 @@ export function PropertiesList() {
     <>
       <div className="d-flex justify-content-between align-items-center mb-3">
         <h2 style={{ fontSize: '1rem', fontWeight: 600, color: colors.textPrimary, margin: 0 }}>
-          Ejendomme
+          {t('properties.properties')}
         </h2>
         <button className="btn btn-primary btn-sm" onClick={() => setShowCreate(true)}>
-          + Opret ejendom
+          + {t('properties.createProperty')}
         </button>
       </div>
 
       {isLoading && (
-        <p style={{ color: colors.textSecondary, fontSize: '0.9rem' }}>Henter...</p>
+        <p style={{ color: colors.textSecondary, fontSize: '0.9rem' }}>{t('properties.loading')}</p>
       )}
 
       {!isLoading && properties.length === 0 && (
-        <p style={{ color: colors.textSecondary, fontSize: '0.9rem' }}>Ingen ejendomme endnu.</p>
+        <p style={{ color: colors.textSecondary, fontSize: '0.9rem' }}>{t('properties.noPropertiesYet')}</p>
       )}
 
       {properties.length > 0 && (
@@ -47,12 +50,12 @@ export function PropertiesList() {
                 <p className="mb-0" style={{ color: colors.textSecondary, fontSize: '0.8rem' }}>{p.address}</p>
               </div>
               <div className="d-flex align-items-center gap-3">
-                <span style={{ color: colors.textMuted, fontSize: '0.8rem' }}>{p.memberCount} bruger(e)</span>
+                <span style={{ color: colors.textMuted, fontSize: '0.8rem' }}>{t('properties.memberCount', { count: p.memberCount })}</span>
                 <button
                   className="btn btn-sm btn-outline-secondary"
                   onClick={() => setInvitePropertyId(p.id)}
                 >
-                  Inviter admin
+                  {t('properties.inviteAdmin')}
                 </button>
               </div>
             </div>
@@ -68,7 +71,7 @@ export function PropertiesList() {
         <InviteUserModal
           propertyId={invitePropertyId}
           onClose={() => setInvitePropertyId(null)}
-          roleOptions={ADMIN_ROLE_OPTIONS}
+          roleOptions={adminRoleOptions}
         />
       )}
     </>

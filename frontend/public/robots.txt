@@ -1,0 +1,11 @@
+User-agent: *
+Allow: /
+
+Disallow: /dashboard
+Disallow: /laundry
+Disallow: /my-page
+Disallow: /admin
+Disallow: /join
+Disallow: /signup
+
+Sitemap: https://laundrybook.dk/sitemap.xml

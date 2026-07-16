@@ -4,6 +4,7 @@ import { Provider } from 'react-redux'
 import { BrowserRouter } from 'react-router-dom'
 import { store } from './app/store'
 import App from './App.tsx'
+import './i18n'
 import 'bootstrap/dist/js/bootstrap.bundle.min.js'
 import './index.css'
 import * as Sentry from "@sentry/react";

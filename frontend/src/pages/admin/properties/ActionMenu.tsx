@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect } from 'react'
+import { useTranslation } from 'react-i18next'
 import { createPortal } from 'react-dom'
 import { type PropertyMemberDto } from '../../../features/users/usersApi'
 import { colors } from '../../../shared/theme'
@@ -59,17 +60,18 @@ interface ConfirmPanelProps {
 }
 
 function ConfirmPanel({ message, isLoading, onConfirm, onCancel }: ConfirmPanelProps) {
+  const { t } = useTranslation()
   return (
     <div className="px-3 py-2">
       <div className="mb-2" style={{ fontSize: '0.78rem', color: colors.textSecondary }}>{message}</div>
       <div className="d-flex gap-2">
         <button type="button" className="btn btn-danger btn-sm w-100" style={{ fontSize: '0.75rem' }}
           disabled={isLoading} onClick={onConfirm}>
-          {isLoading ? '…' : 'Ja'}
+          {isLoading ? '…' : t('adminProperties.actionMenu.yes')}
         </button>
         <button type="button" className="btn btn-outline-secondary btn-sm w-100" style={{ fontSize: '0.75rem' }}
           onClick={onCancel}>
-          Nej
+          {t('adminProperties.actionMenu.no')}
         </button>
       </div>
     </div>
@@ -79,6 +81,7 @@ function ConfirmPanel({ message, isLoading, onConfirm, onCancel }: ConfirmPanelP
 // ── ActionMenu ─────────────────────────────────────────────────────────────────
 
 export function ActionMenu(props: ActionMenuProps) {
+  const { t } = useTranslation()
   const [confirmingDelete, setConfirmingDelete] = useState(false)
   const triggerRef = useRef<HTMLButtonElement>(null)
   const dropdownRef = useRef<HTMLDivElement>(null)
@@ -139,7 +142,7 @@ export function ActionMenu(props: ActionMenuProps) {
     if (confirmingDelete) {
       menuContent = (
         <ConfirmPanel
-          message="Fjern bruger?"
+          message={t('adminProperties.actionMenu.removeUserConfirm')}
           isLoading={isActionLoading}
           onConfirm={() => { onDelete(); onMenuClose() }}
           onCancel={() => setConfirmingDelete(false)}
@@ -148,17 +151,17 @@ export function ActionMenu(props: ActionMenuProps) {
     } else {
       menuContent = (
         <div className="py-1">
-          <MenuButton onClick={() => { onEdit(); onMenuClose() }}>Rediger rolle/lejl.</MenuButton>
+          <MenuButton onClick={() => { onEdit(); onMenuClose() }}>{t('adminProperties.actionMenu.editRole')}</MenuButton>
           <MenuButton disabled={isActionLoading || isSelf} onClick={() => { onToggleActive(); onMenuClose() }}>
-            {member.isActive ? 'Deaktiver adgang' : 'Aktiver adgang'}
+            {member.isActive ? t('adminProperties.actionMenu.deactivateAccess') : t('adminProperties.actionMenu.activateAccess')}
           </MenuButton>
           <MenuButton disabled={isActionLoading} onClick={() => { onForceReset(); onMenuClose() }}>
-            Tving passwordskift
+            {t('adminProperties.actionMenu.forcePasswordReset')}
           </MenuButton>
           <Divider />
           <MenuButton style={{ color: colors.dangerText }} disabled={isActionLoading || isSelf}
             onClick={() => setConfirmingDelete(true)}>
-            Fjern fra ejendom
+            {t('adminProperties.actionMenu.removeFromProperty')}
           </MenuButton>
         </div>
       )
@@ -169,7 +172,7 @@ export function ActionMenu(props: ActionMenuProps) {
     if (confirmingDelete) {
       menuContent = (
         <ConfirmPanel
-          message="Slet invitation?"
+          message={t('adminProperties.actionMenu.deleteInviteConfirm')}
           isLoading={isActionLoading}
           onConfirm={() => { onDelete(); onMenuClose() }}
           onCancel={() => setConfirmingDelete(false)}
@@ -179,12 +182,12 @@ export function ActionMenu(props: ActionMenuProps) {
       menuContent = (
         <div className="py-1">
           <MenuButton disabled={isActionLoading} onClick={() => { onResend(); onMenuClose() }}>
-            Gensend invitation
+            {t('adminProperties.actionMenu.resendInvite')}
           </MenuButton>
           <Divider />
           <MenuButton style={{ color: colors.dangerText }} disabled={isActionLoading}
             onClick={() => setConfirmingDelete(true)}>
-            Slet invitation
+            {t('adminProperties.actionMenu.deleteInvite')}
           </MenuButton>
         </div>
       )
@@ -201,7 +204,7 @@ export function ActionMenu(props: ActionMenuProps) {
         type="button"
         className="btn btn-sm btn-outline-secondary d-flex align-items-center justify-content-center"
         style={{ width: 32, height: 32, borderRadius: '6px', padding: 0 }}
-        aria-label="Handlinger"
+        aria-label={t('adminProperties.actionMenu.actions')}
         disabled={props.isActionLoading}
         onClick={props.onMenuToggle}
       >

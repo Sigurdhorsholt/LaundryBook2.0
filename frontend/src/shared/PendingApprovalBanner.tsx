@@ -1,8 +1,10 @@
+import { useTranslation } from 'react-i18next'
 import { useMeQuery } from '../features/auth/authApi'
 import { colors } from './theme'
 import { IconClock } from './icons'
 
 export function PendingApprovalBanner() {
+  const { t } = useTranslation()
   const { data: user } = useMeQuery()
   const hasPending = user?.memberships.some((m) => !m.propertyIsActive) ?? false
 
@@ -16,7 +18,7 @@ export function PendingApprovalBanner() {
       >
         <IconClock size={16} />
         <span>
-          Jeres forening afventer godkendelse. I kan opsætte vaskerum og indstillinger, men kan først invitere beboere, når foreningen er aktiveret.
+          {t('layout.pendingApproval')}
         </span>
       </div>
     </div>

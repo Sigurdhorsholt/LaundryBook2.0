@@ -1,3 +1,5 @@
+import i18n from '../../i18n'
+
 // ── Date string helpers ────────────────────────────────────────────────────────
 
 export function todayStr(): string {
@@ -56,39 +58,60 @@ export function formatTimeRange(start: string, end: string): string {
   return `${start.slice(0, 5)}–${end.slice(0, 5)}`
 }
 
-// ── Display label helpers (Danish) ────────────────────────────────────────────
+// ── Display label helpers (locale-aware) ───────────────────────────────────────
+// Monday-first arrays (index 0 = Monday).
 
-const DAY_SHORT   = ['Man', 'Tir', 'Ons', 'Tor', 'Fre', 'Lør', 'Søn']
-const MONTH_SHORT = ['jan', 'feb', 'mar', 'apr', 'maj', 'jun', 'jul', 'aug', 'sep', 'okt', 'nov', 'dec']
-const DAY_FULL    = ['Mandag', 'Tirsdag', 'Onsdag', 'Torsdag', 'Fredag', 'Lørdag', 'Søndag']
+const DAY_SHORT: Record<string, string[]> = {
+  da: ['Man', 'Tir', 'Ons', 'Tor', 'Fre', 'Lør', 'Søn'],
+  en: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+}
+const DAY_FULL: Record<string, string[]> = {
+  da: ['Mandag', 'Tirsdag', 'Onsdag', 'Torsdag', 'Fredag', 'Lørdag', 'Søndag'],
+  en: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
+}
+const MONTH_SHORT: Record<string, string[]> = {
+  da: ['jan', 'feb', 'mar', 'apr', 'maj', 'jun', 'jul', 'aug', 'sep', 'okt', 'nov', 'dec'],
+  en: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+}
 
-export { MONTH_SHORT, DAY_SHORT }
+function activeLang(): 'da' | 'en' {
+  return i18n.language === 'en' ? 'en' : 'da'
+}
 
-/** "I dag" / "I morgen" / short day abbreviation */
+/** Localized short month name for a 0-based month index. */
+export function monthShort(monthIndex: number): string {
+  return MONTH_SHORT[activeLang()]?.[monthIndex] ?? ''
+}
+
+/** "I dag"/"Today" · "I morgen"/"Tomorrow" · else short day abbreviation */
 export function dayShortLabel(dateStr: string, today: string): string {
-  if (dateStr === today)             return 'I dag'
-  if (dateStr === addDays(today, 1)) return 'I morgen'
+  if (dateStr === today)             return i18n.t('dates.today')
+  if (dateStr === addDays(today, 1)) return i18n.t('dates.tomorrow')
   const parts = dateStr.split('-').map(Number)
   const d = new Date(parts[0] ?? 2025, (parts[1] ?? 1) - 1, parts[2] ?? 1)
   const dow = d.getDay()
-  return DAY_SHORT[dow === 0 ? 6 : dow - 1] ?? ''
+  return DAY_SHORT[activeLang()]?.[dow === 0 ? 6 : dow - 1] ?? ''
 }
 
-/** "Onsdag 2. apr" */
+/** "Onsdag 2. apr" / "Wednesday 2 Apr" */
 export function formatDateFull(dateStr: string): string {
   const parts = dateStr.split('-').map(Number)
   const d = new Date(parts[0] ?? 2025, (parts[1] ?? 1) - 1, parts[2] ?? 1)
   const dow = d.getDay()
-  return `${DAY_FULL[dow === 0 ? 6 : dow - 1] ?? ''} ${d.getDate()}. ${MONTH_SHORT[d.getMonth()] ?? ''}`
+  const lang = activeLang()
+  const dayName = DAY_FULL[lang]?.[dow === 0 ? 6 : dow - 1] ?? ''
+  const sep = lang === 'en' ? '' : '.'
+  return `${dayName} ${d.getDate()}${sep} ${MONTH_SHORT[lang]?.[d.getMonth()] ?? ''}`
 }
 
-/** "Uge 22" */
+/** "Uge 22" / "Week 22" */
 export function weekLabel(weekStart: string): string {
   const parts = weekStart.split('-').map(Number)
   const d = new Date(parts[0] ?? 2025, (parts[1] ?? 1) - 1, parts[2] ?? 1)
   const jan4 = new Date(d.getFullYear(), 0, 4)
   const diff = (d.getTime() - jan4.getTime()) / 86400000
-  return `Uge ${Math.ceil((diff + jan4.getDay() + 1) / 7)}`
+  const weekNum = Math.ceil((diff + jan4.getDay() + 1) / 7)
+  return i18n.t('dates.week', { n: weekNum })
 }
 
 /** Minutes remaining until a slot starts (negative = already past) */
