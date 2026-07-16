@@ -45,6 +45,12 @@ public class RedeemInviteCommandHandler(
                 cancellationToken)
             ?? throw new NotFoundException("UserInvite", request.InviteToken);
 
+        // Email-targeted invites may only be redeemed by the address they were issued to.
+        // (Multi-use / QR invites carry no email and stay open by design.)
+        if (!string.IsNullOrEmpty(invite.Email) &&
+            !string.Equals(invite.Email, external.Email, StringComparison.OrdinalIgnoreCase))
+            throw new ForbiddenException("This invitation was issued to a different email address.");
+
         var user = await db.Users
             .FirstOrDefaultAsync(u => u.ExternalId == external.ExternalId, cancellationToken);
 

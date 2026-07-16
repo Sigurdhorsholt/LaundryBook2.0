@@ -123,7 +123,6 @@ public static class DependencyInjection
             Username = userInfo.Length > 0 ? userInfo[0] : string.Empty,
             Password = userInfo.Length > 1 ? userInfo[1] : string.Empty,
             SslMode = SslMode.Require,
-            TrustServerCertificate = true,
         }.ConnectionString;
     }
 }
