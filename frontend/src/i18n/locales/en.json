@@ -215,6 +215,7 @@
       "duration": "Duration",
       "endsAt": "Ends:",
       "exceedsMidnight": "Exceeds midnight",
+      "overlapsExisting": "Overlaps an existing time slot.",
       "add": "Add",
       "removeSlotsTitle": "Remove time slots?",
       "aboutToRemove_one": "You are about to remove {{count}} time slot:",

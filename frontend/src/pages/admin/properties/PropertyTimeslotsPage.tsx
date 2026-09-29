@@ -45,6 +45,12 @@ function generateSlots(
   return slots
 }
 
+function overlapsAny(startTime: string, endTime: string, slots: PendingSlot[]): boolean {
+  const start = toMinutes(startTime)
+  const end = toMinutes(endTime)
+  return slots.some((s) => start < toMinutes(s.endTime) && end > toMinutes(s.startTime))
+}
+
 // ── Page ───────────────────────────────────────────────────────────────────────
 
 export function PropertyTimeslotsPage() {
@@ -187,12 +193,15 @@ function RoomCard({
   }
 
   function handleGenerate() {
-    const generated = generateSlots(genFrom, genDuration, genTo).map((s) => ({
-      id: null as string | null,
-      startTime: s.startTime,
-      endTime: s.endTime,
-      key: crypto.randomUUID(),
-    }))
+    // Reuse saved slots with identical times — replacing them would cancel their bookings
+    const generated = generateSlots(genFrom, genDuration, genTo).map((s): PendingSlot => {
+      const existing = apiSlots.find(
+        (a) => toMinutes(a.startTime) === toMinutes(s.startTime) && toMinutes(a.endTime) === toMinutes(s.endTime),
+      )
+      return existing
+        ? slotToLocal(existing)
+        : { id: null, startTime: s.startTime, endTime: s.endTime, key: crypto.randomUUID() }
+    })
     setPendingSlots(generated)
   }
 
@@ -244,10 +253,12 @@ function RoomCard({
         }).unwrap()
       }
       if (totalCancelled > 0) setCancelledCount(totalCancelled)
-      setAfterSave(true)
     } catch {
       setSaveError(t('adminProperties.timeslots.saveError'))
     } finally {
+      // Resync after failures too: a partial save leaves the server ahead of the sandbox,
+      // and retrying stale id:null entries would only hit overlap errors.
+      setAfterSave(true)
       setSaving(false)
     }
   }
@@ -357,6 +368,7 @@ function RoomCard({
       {showAddModal && (
         <AddSlotModal
           roomName={room.name}
+          pendingSlots={pendingSlots}
           onAdd={handleAddSlot}
           onClose={() => setShowAddModal(false)}
         />
@@ -727,10 +739,12 @@ function SaveBar({
 
 function AddSlotModal({
   roomName,
+  pendingSlots,
   onAdd,
   onClose,
 }: {
   roomName: string
+  pendingSlots: PendingSlot[]
   onAdd: (startTime: string, endTime: string) => void
   onClose: () => void
 }) {
@@ -740,10 +754,11 @@ function AddSlotModal({
 
   const endMinutes = toMinutes(startTime) + durationMinutes
   const endTimeDisplay = endMinutes < 24 * 60 ? toHHmm(endMinutes) : null
+  const overlaps = endTimeDisplay != null && overlapsAny(startTime, endTimeDisplay, pendingSlots)
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
-    if (endTimeDisplay == null) return
+    if (endTimeDisplay == null || overlaps) return
     onAdd(startTime + ':00', toHHmmss(endMinutes))
     onClose()
   }
@@ -784,6 +799,11 @@ function AddSlotModal({
               <span style={{ color: colors.dangerText }}>{t('adminProperties.timeslots.exceedsMidnight')}</span>
             )}
           </span>
+          {overlaps && (
+            <div style={{ fontSize: '0.85rem', color: colors.dangerText, marginTop: 6 }}>
+              {t('adminProperties.timeslots.overlapsExisting')}
+            </div>
+          )}
         </div>
 
         <div className="d-flex justify-content-end gap-2 mt-4">
@@ -793,7 +813,7 @@ function AddSlotModal({
           <button
             type="submit"
             className="btn btn-primary fw-semibold"
-            disabled={endTimeDisplay == null}
+            disabled={endTimeDisplay == null || overlaps}
           >
             {t('adminProperties.timeslots.add')}
           </button>

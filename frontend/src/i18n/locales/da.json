@@ -215,6 +215,7 @@
       "duration": "Varighed",
       "endsAt": "Slutter:",
       "exceedsMidnight": "Overskrider midnat",
+      "overlapsExisting": "Overlapper en eksisterende tidsplads.",
       "add": "Tilføj",
       "removeSlotsTitle": "Fjern tidspladser?",
       "aboutToRemove_one": "Du er ved at fjerne {{count}} tidsplads:",
