@@ -33,6 +33,8 @@ public class UpdateMemberCommandHandler(
     public async Task Handle(UpdateMemberCommand request, CancellationToken cancellationToken)
     {
         await auth.RequireRoleAsync(request.PropertyId, UserRole.ComplexAdmin, cancellationToken);
+        await auth.RequireCanManageMemberAsync(request.PropertyId, request.UserId, cancellationToken);
+        await auth.RequireCanGrantRoleAsync(request.PropertyId, request.Role, cancellationToken);
 
         var membership = await db.UserComplexMemberships
             .FirstOrDefaultAsync(m => m.UserId == request.UserId && m.PropertyId == request.PropertyId, cancellationToken)
@@ -41,6 +43,11 @@ public class UpdateMemberCommandHandler(
         // Prevent an admin from disabling or demoting themselves
         if (request.UserId == currentUser.UserId && (!request.IsActive || request.Role < UserRole.ComplexAdmin))
             throw new InvalidOperationException("You cannot disable or demote your own account.");
+
+        // Don't let the property lose its last active admin through demotion/deactivation
+        var remainsAdmin = request.IsActive && request.Role >= UserRole.ComplexAdmin;
+        if (membership.Role >= UserRole.ComplexAdmin && !remainsAdmin)
+            await auth.RequireNotLastAdminAsync(request.PropertyId, request.UserId, cancellationToken);
 
         membership.ApartmentNumber = request.ApartmentNumber;
         membership.Role = request.Role;

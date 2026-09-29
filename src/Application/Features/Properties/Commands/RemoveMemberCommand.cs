@@ -18,6 +18,7 @@ public class RemoveMemberCommandHandler(
     public async Task Handle(RemoveMemberCommand request, CancellationToken cancellationToken)
     {
         await auth.RequireRoleAsync(request.PropertyId, UserRole.ComplexAdmin, cancellationToken);
+        await auth.RequireCanManageMemberAsync(request.PropertyId, request.UserId, cancellationToken);
 
         if (request.UserId == currentUser.UserId)
             throw new InvalidOperationException("You cannot remove yourself from the property.");
@@ -25,6 +26,9 @@ public class RemoveMemberCommandHandler(
         var membership = await db.UserComplexMemberships
             .FirstOrDefaultAsync(m => m.UserId == request.UserId && m.PropertyId == request.PropertyId, cancellationToken)
             ?? throw new NotFoundException("Membership", $"{request.UserId} in property {request.PropertyId}");
+
+        if (membership.Role >= UserRole.ComplexAdmin)
+            await auth.RequireNotLastAdminAsync(request.PropertyId, request.UserId, cancellationToken);
 
         db.UserComplexMemberships.Remove(membership);
         await db.SaveChangesAsync(cancellationToken);

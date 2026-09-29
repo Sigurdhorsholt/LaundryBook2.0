@@ -32,6 +32,7 @@ public class CreateInviteTokenCommandHandler(
     public async Task<string> Handle(CreateInviteTokenCommand request, CancellationToken cancellationToken)
     {
         await auth.RequireRoleAsync(request.PropertyId, UserRole.ComplexAdmin, cancellationToken);
+        await auth.RequireCanGrantRoleAsync(request.PropertyId, request.Role, cancellationToken);
 
         var isActive = await db.Properties
             .Where(p => p.Id == request.PropertyId)

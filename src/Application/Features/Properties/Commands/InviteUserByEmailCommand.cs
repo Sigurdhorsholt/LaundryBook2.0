@@ -36,6 +36,7 @@ public class InviteUserByEmailCommandHandler(
     public async Task<string> Handle(InviteUserByEmailCommand request, CancellationToken cancellationToken)
     {
         await auth.RequireRoleAsync(request.PropertyId, UserRole.ComplexAdmin, cancellationToken);
+        await auth.RequireCanGrantRoleAsync(request.PropertyId, request.Role, cancellationToken);
 
         var property = await db.Properties
             .FirstOrDefaultAsync(p => p.Id == request.PropertyId, cancellationToken)

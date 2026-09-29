@@ -1,5 +1,7 @@
 using Application.Common.Exceptions;
 using FluentValidation;
+using Microsoft.EntityFrameworkCore;
+using Npgsql;
 using Sentry;
 using System.Net;
 using System.Text.Json;
@@ -55,6 +57,14 @@ public class ExceptionHandlingMiddleware(RequestDelegate next, ILogger<Exception
             {
                 title = ex.Message,
                 status = 401
+            });
+        }
+        catch (DbUpdateException ex) when (ex.InnerException is PostgresException { SqlState: PostgresErrorCodes.UniqueViolation })
+        {
+            await WriteJson(context, (int)HttpStatusCode.Conflict, new
+            {
+                title = "The resource was just taken. Please try again.",
+                status = 409
             });
         }
         catch (Exception ex)
