@@ -34,10 +34,15 @@ export function AdminBookingsCalendar({ rooms, bookings, today, weekStart, maxWe
 
   const days = useMemo(() => Array.from({ length: 7 }, (_, i) => addDays(viewWeekStart, i)), [viewWeekStart])
 
-  const bookingByCell = useMemo(() => {
-    const map = new Map<string, AdminBookingDto>()
+  // A cell holds several bookings in BookSpecificMachine mode (one per machine)
+  const bookingsByCell = useMemo(() => {
+    const map = new Map<string, AdminBookingDto[]>()
     for (const b of bookings) {
-      if (b.roomId === roomId) map.set(`${b.date}|${b.timeSlotTemplateId}`, b)
+      if (b.roomId !== roomId) continue
+      const key = `${b.date}|${b.timeSlotTemplateId}`
+      const cell = map.get(key)
+      if (cell) cell.push(b)
+      else map.set(key, [b])
     }
     return map
   }, [bookings, roomId])
@@ -130,7 +135,7 @@ export function AdminBookingsCalendar({ rooms, bookings, today, weekStart, maxWe
                 {days.map((date) => (
                   <Cell
                     key={date}
-                    booking={bookingByCell.get(`${date}|${slot.id}`) ?? null}
+                    bookings={bookingsByCell.get(`${date}|${slot.id}`) ?? []}
                     past={isPast(date, slot.startTime, today)}
                     onCancel={onCancel}
                   />
@@ -170,34 +175,60 @@ function CalendarHeader({ days, today }: { days: string[]; today: string }) {
   )
 }
 
-function Cell({ booking, past, onCancel }: { booking: AdminBookingDto | null; past: boolean; onCancel: (b: AdminBookingDto) => void }) {
+function Cell({ bookings, past, onCancel }: { bookings: AdminBookingDto[]; past: boolean; onCancel: (b: AdminBookingDto) => void }) {
   const { t } = useTranslation()
   const base: React.CSSProperties = {
     padding: '6px 4px',
     borderRight: `1px solid ${colors.borderRow}`,
     minHeight: 40,
     display: 'flex',
-    alignItems: 'center',
+    flexDirection: 'column',
+    alignItems: 'stretch',
     justifyContent: 'center',
+    gap: 4,
   }
 
-  if (booking) {
-    const label = booking.apartmentNumber ? t('laundry.apartmentShort', { number: booking.apartmentNumber }) : booking.residentName
+  if (bookings.length > 0) {
     return (
       <div style={{ ...base, opacity: past ? 0.5 : 1 }}>
-        <button
-          className="btn p-0 w-100"
-          title={t('laundry.calendar.bookingCellTitle', { name: booking.residentName })}
-          onClick={() => onCancel(booking)}
-          style={{
+        {bookings.map((booking) => {
+          const label = booking.apartmentNumber ? t('laundry.apartmentShort', { number: booking.apartmentNumber }) : booking.residentName
+          const chipStyle: React.CSSProperties = {
+            display: 'block', width: '100%',
             fontSize: '0.72rem', fontWeight: 600, lineHeight: 1.2,
             color: colors.primary, backgroundColor: colors.primaryLight,
             border: `1px solid ${colors.primaryBorder}`, borderRadius: 6,
             padding: '4px 6px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis',
-          }}
-        >
-          {label}
-        </button>
+          }
+          const content = (
+            <>
+              {label}
+              {booking.machineName && (
+                <span style={{ display: 'block', fontWeight: 400, fontSize: '0.66rem', color: colors.textSecondary, overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                  {booking.machineName}
+                </span>
+              )}
+            </>
+          )
+          if (past) {
+            return (
+              <span key={booking.id} title={booking.residentName} style={{ ...chipStyle, textAlign: 'center' }}>
+                {content}
+              </span>
+            )
+          }
+          return (
+            <button
+              key={booking.id}
+              className="btn p-0"
+              title={t('laundry.calendar.bookingCellTitle', { name: booking.residentName })}
+              onClick={() => onCancel(booking)}
+              style={chipStyle}
+            >
+              {content}
+            </button>
+          )
+        })}
       </div>
     )
   }

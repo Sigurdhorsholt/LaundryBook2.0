@@ -23,7 +23,8 @@ public record AdminBookingDto(
     TimeOnly EndTime,
     Guid UserId,
     string ResidentName,
-    string? ApartmentNumber);
+    string? ApartmentNumber,
+    string? MachineName);
 
 public record AdminRoomSummaryDto(
     Guid Id,
@@ -56,6 +57,7 @@ public class GetPropertyBookingsQueryHandler(
                 b.Status == BookingStatus.Active)
             .OrderBy(b => b.Date)
             .ThenBy(b => b.TimeSlotTemplate.StartTime)
+            .ThenBy(b => b.Machine != null ? b.Machine.Name : null)
             .Select(b => new AdminBookingDto(
                 b.Id,
                 b.LaundryRoomId,
@@ -69,7 +71,8 @@ public class GetPropertyBookingsQueryHandler(
                 db.UserComplexMemberships
                     .Where(m => m.UserId == b.UserId && m.PropertyId == request.PropertyId)
                     .Select(m => m.ApartmentNumber)
-                    .FirstOrDefault()))
+                    .FirstOrDefault(),
+                b.Machine != null ? b.Machine.Name : null))
             .ToListAsync(cancellationToken);
 
         return new PropertyBookingsDto(bookings, rooms);

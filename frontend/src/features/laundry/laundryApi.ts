@@ -69,6 +69,7 @@ export interface AdminBookingDto {
   userId: string
   residentName: string
   apartmentNumber: string | null
+  machineName: string | null
 }
 
 export interface AdminRoomSummaryDto {

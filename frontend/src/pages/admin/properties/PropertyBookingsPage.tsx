@@ -61,7 +61,7 @@ export function PropertyBookingsPage() {
     setCancelTarget({
       bookingId: b.id,
       roomId: b.roomId,
-      roomName: b.roomName,
+      roomName: b.machineName ? `${b.roomName} · ${b.machineName}` : b.roomName,
       residentName: b.residentName,
       dateLabel: formatDateFull(b.date),
       slotTime: formatTimeRange(b.startTime, b.endTime),
