@@ -107,10 +107,11 @@ export function formatDateFull(dateStr: string): string {
 /** "Uge 22" / "Week 22" */
 export function weekLabel(weekStart: string): string {
   const parts = weekStart.split('-').map(Number)
-  const d = new Date(parts[0] ?? 2025, (parts[1] ?? 1) - 1, parts[2] ?? 1)
-  const jan4 = new Date(d.getFullYear(), 0, 4)
-  const diff = (d.getTime() - jan4.getTime()) / 86400000
-  const weekNum = Math.ceil((diff + jan4.getDay() + 1) / 7)
+  // ISO-8601: the week belongs to the year containing its Thursday. UTC avoids DST-length days.
+  const d = new Date(Date.UTC(parts[0] ?? 2025, (parts[1] ?? 1) - 1, parts[2] ?? 1))
+  d.setUTCDate(d.getUTCDate() + 3 - ((d.getUTCDay() + 6) % 7))
+  const yearStart = Date.UTC(d.getUTCFullYear(), 0, 1)
+  const weekNum = Math.floor((d.getTime() - yearStart) / 86400000 / 7) + 1
   return i18n.t('dates.week', { n: weekNum })
 }
 
