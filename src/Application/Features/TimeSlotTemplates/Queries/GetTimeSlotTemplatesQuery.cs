@@ -9,7 +9,7 @@ namespace Application.Features.TimeSlotTemplates.Queries;
 
 public record GetTimeSlotTemplatesQuery(Guid RoomId) : IRequest<List<TimeSlotTemplateDto>>;
 
-public record TimeSlotTemplateDto(Guid Id, TimeOnly StartTime, TimeOnly EndTime, bool IsActive);
+public record TimeSlotTemplateDto(Guid Id, TimeOnly StartTime, TimeOnly EndTime, bool IsActive, int UpcomingBookingCount);
 
 public class GetTimeSlotTemplatesQueryHandler(
     IAppDbContext db,
@@ -23,10 +23,20 @@ public class GetTimeSlotTemplatesQueryHandler(
 
         await auth.RequireRoleAsync(room.PropertyId, UserRole.Resident, cancellationToken);
 
+        var today = DateOnly.FromDateTime(DateTime.UtcNow);
+
         return await db.TimeSlotTemplates
             .Where(t => t.LaundryRoomId == request.RoomId && t.IsActive)
             .OrderBy(t => t.StartTime)
-            .Select(t => new TimeSlotTemplateDto(t.Id, t.StartTime, t.EndTime, t.IsActive))
+            .Select(t => new TimeSlotTemplateDto(
+                t.Id,
+                t.StartTime,
+                t.EndTime,
+                t.IsActive,
+                db.Bookings.Count(b =>
+                    b.TimeSlotTemplateId == t.Id &&
+                    b.Date >= today &&
+                    b.Status == BookingStatus.Active)))
             .ToListAsync(cancellationToken);
     }
 }

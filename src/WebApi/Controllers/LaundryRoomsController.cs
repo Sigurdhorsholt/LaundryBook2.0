@@ -91,6 +91,13 @@ public class LaundryRoomsController(IMediator mediator) : ControllerBase
         return Ok(new { id });
     }
 
+    [HttpPut("api/laundry-rooms/{roomId:guid}/timeslots")]
+    public async Task<IActionResult> ReplaceTimeSlots(Guid roomId, [FromBody] ReplaceTimeSlotsRequest request, CancellationToken ct)
+    {
+        var cancelledBookings = await mediator.Send(new ReplaceTimeSlotScheduleCommand(roomId, request.Slots), ct);
+        return Ok(new { cancelledBookings });
+    }
+
     [HttpDelete("api/laundry-rooms/{roomId:guid}/timeslots/{templateId:guid}")]
     public async Task<IActionResult> DeactivateTimeSlot(Guid roomId, Guid templateId, CancellationToken ct)
     {
@@ -104,3 +111,4 @@ public record UpdateLaundryRoomRequest(string Name, string? Description);
 public record CreateMachineRequest(string Name, MachineType MachineType);
 public record UpdateMachineRequest(string Name, MachineType MachineType);
 public record CreateTimeSlotRequest(TimeOnly StartTime, TimeOnly EndTime);
+public record ReplaceTimeSlotsRequest(List<TimeSlotScheduleEntry> Slots);

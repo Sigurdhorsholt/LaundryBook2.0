@@ -220,8 +220,11 @@
       "removeSlotsTitle": "Fjern tidspladser?",
       "aboutToRemove_one": "Du er ved at fjerne {{count}} tidsplads:",
       "aboutToRemove_other": "Du er ved at fjerne {{count}} tidspladser:",
-      "futureBookingsWarning": "Alle fremtidige aktive bookinger på disse tidspladser annulleres automatisk.",
+      "futureBookingsWarning_one": "{{count}} fremtidig booking på disse tidspladser annulleres automatisk.",
+      "futureBookingsWarning_other": "{{count}} fremtidige bookinger på disse tidspladser annulleres automatisk.",
+      "noFutureBookings": "Ingen fremtidige bookinger berøres.",
       "removeAndCancel": "Fjern og annullér bookinger",
+      "removeOnly": "Fjern tidspladser",
       "hour": "Time",
       "minute": "Minut"
     },
