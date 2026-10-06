@@ -55,7 +55,7 @@
     "roomsAndMachines": "Lokaler & Maskiner",
     "timeslots": "Tidspladser",
     "bookings": "Bookinger",
-    "preview": "Forhåndsvisning"
+    "residentView": "Beboervisning"
   },
   "layout": {
     "pendingApproval": "Jeres forening afventer godkendelse. I kan opsætte vaskerum og indstillinger, men kan først invitere beboere, når foreningen er aktiveret."
@@ -253,49 +253,6 @@
       "removeOnly": "Fjern tidspladser",
       "hour": "Time",
       "minute": "Minut"
-    },
-    "preview": {
-      "title": "Forhåndsvisning",
-      "description": "Simulér beboernes bookingoplevelse med testbrugere",
-      "descriptionShort": "Simulér beboernes bookingoplevelse",
-      "noActiveRooms": "Ingen aktive vaskerum",
-      "noActiveRoomsDesc": "Opret et vaskerum under Lokaler & Maskiner for at se forhåndsvisningen.",
-      "adminSimSettings": "Admin · Simuleringsindstillinger",
-      "reset": "Nulstil",
-      "viewingAs": "Viser som:",
-      "room": "Vaskerum:",
-      "residentView": "Beboervisning",
-      "nextBookingLabel": "{{name}}s næste booking",
-      "cancel": "Aflys",
-      "book": "Book",
-      "previousWeek": "Forrige uge",
-      "nextWeek": "Næste uge",
-      "myBooking": "Min booking",
-      "resident": "Beboer",
-      "occupied": "Optaget",
-      "apartmentLabel": "Lejl. {{number}}",
-      "othersBookedToday_one": "1 anden beboer har booket denne dag",
-      "othersBookedToday_other": "{{count}} andre beboere har booket denne dag",
-      "visibilityFullName": "Navn synligt",
-      "visibilityApartment": "Lejl. nr.",
-      "visibilityAnonymous": "Anonymt",
-      "modeSpecificMachine": "Specifik maskine",
-      "modeEntireRoom": "Helt lokale",
-      "cancelWithinHours": "Aflys inden {{hours}}t",
-      "cancelWithinMinutes": "Aflys inden {{minutes}} min",
-      "maxBookings": "Max {{count}} booking",
-      "daysAhead": "{{count}} dage frem",
-      "confirmBookTitle": "Bekræft booking",
-      "confirmCancelTitle": "Bekræft aflysning",
-      "confirmBookQuestion": "Book <s>{{slotTime}}</s> den {{dateLabel}} som <s>{{userName}}</s>?",
-      "confirmCancelQuestion": "Aflys booking <s>{{slotTime}}</s> den {{dateLabel}}?",
-      "timeWarningMinutes": "Der er kun {{minutes}} minutter til bookingen starter.",
-      "timeWarningHours_one": "Der er {{count}} time til bookingen starter.",
-      "timeWarningHours_other": "Der er {{count}} timer til bookingen starter.",
-      "previewNotice": "Dette er en forhåndsvisning - ingen rigtige bookinger oprettes.",
-      "userActiveBookings_one": "{{name}} har {{count}} aktiv booking",
-      "userActiveBookings_other": "{{name}} har {{count}} aktive bookinger",
-      "maxLabel": "(maks. {{count}})"
     }
   },
   "auth": {
