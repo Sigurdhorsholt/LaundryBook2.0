@@ -102,12 +102,6 @@ export function LaundryPage() {
     }
   }, [rooms, selectedRoomId])
 
-  // Disarm an inline grid confirm when the user navigates to another day or room
-  useEffect(() => {
-    setPending(p => (p?.source === 'grid' ? null : p))
-    setConfirmError(null)
-  }, [selectedDate, selectedRoomId])
-
   const weekFrom = weekStart
   const weekTo   = addDays(weekStart, 6)
 
@@ -176,7 +170,24 @@ export function LaundryPage() {
   // Weeks entirely beyond the booking window would only show "not available" slots
   const canGoForward    = !settings || addDays(weekStart, 7) <= addDays(today, settings.bookingLookaheadDays)
 
+  // An armed inline confirm belongs to one row; leaving the day or room must not leave it armed
+  function disarmGridConfirm() {
+    setPending(p => (p?.source === 'grid' ? null : p))
+    setConfirmError(null)
+  }
+
+  function selectDate(date: string) {
+    setSelectedDate(date)
+    disarmGridConfirm()
+  }
+
+  function selectRoom(roomId: string) {
+    setSelectedRoomId(roomId)
+    disarmGridConfirm()
+  }
+
   function shiftWeek(delta: number) {
+    disarmGridConfirm()
     const newStart = addDays(weekStart, delta * 7)
     setWeekStart(newStart)
     const newEnd = addDays(newStart, 6)
@@ -316,7 +327,7 @@ export function LaundryPage() {
         <RoomSelector
           rooms={rooms ?? []}
           selectedRoomId={selectedRoomId}
-          onSelect={setSelectedRoomId}
+          onSelect={selectRoom}
         />
       )}
 
@@ -337,7 +348,7 @@ export function LaundryPage() {
           today={today}
           selectedDate={selectedDate}
           availabilityByDate={availabilityByDate}
-          onSelectDate={setSelectedDate}
+          onSelectDate={selectDate}
         />
 
         <div style={{ padding: '8px 20px', borderBottom: `1px solid ${colors.borderRow}`, backgroundColor: colors.bgPage }}>
