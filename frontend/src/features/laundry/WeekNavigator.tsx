@@ -6,10 +6,11 @@ interface Props {
   weekFrom: string
   weekTo: string
   canGoBack: boolean
+  canGoForward: boolean
   onShift: (delta: number) => void
 }
 
-export function WeekNavigator({ weekStart, weekFrom, weekTo, canGoBack, onShift }: Props) {
+export function WeekNavigator({ weekStart, weekFrom, weekTo, canGoBack, canGoForward, onShift }: Props) {
   const fromMonth  = monthShort(parseInt(weekFrom.split('-')[1] ?? '1', 10) - 1)
   const toMonth    = monthShort(parseInt(weekTo.split('-')[1]   ?? '1', 10) - 1)
   const fromDay    = weekFrom.slice(8).replace(/^0/, '')
@@ -33,6 +34,7 @@ export function WeekNavigator({ weekStart, weekFrom, weekTo, canGoBack, onShift 
         className="btn btn-sm btn-outline-secondary"
         style={{ borderRadius: 20, padding: '2px 12px', fontSize: '0.8rem' }}
         onClick={() => onShift(1)}
+        disabled={!canGoForward}
       >→</button>
     </div>
   )

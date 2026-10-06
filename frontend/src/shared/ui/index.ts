@@ -1,5 +1,6 @@
 export { PageHeader } from './PageHeader'
 export { EmptyState } from './EmptyState'
+export { ErrorState } from './ErrorState'
 export { Spinner } from './Spinner'
 export { FormError } from './FormError'
 export { FormLabel } from './FormLabel'
