@@ -1,20 +1,25 @@
 import { useState } from 'react'
+import { useDispatch } from 'react-redux'
 import { createPortal } from 'react-dom'
 import { useTranslation } from 'react-i18next'
 import { Link, useNavigate } from 'react-router-dom'
 import { signInWithEmailAndPassword } from 'firebase/auth'
 import { firebaseAuth } from '../../lib/firebase'
 import { useLoginMutation, useForgotPasswordMutation } from './authApi'
+import { baseApi } from '../../app/baseApi'
 import { colors } from '../../shared/theme'
 import { BrandLogo } from '../../shared/BrandLogo'
 
 interface LoginModalProps {
   onClose: () => void
+  // Set when a protected page asked for login (e.g. expired session); otherwise go to the dashboard
+  redirectTo?: string
 }
 
-export function LoginModal({ onClose }: LoginModalProps) {
+export function LoginModal({ onClose, redirectTo }: LoginModalProps) {
   const { t } = useTranslation()
   const navigate = useNavigate()
+  const dispatch = useDispatch()
   const [email,    setEmail]    = useState('')
   const [password, setPassword] = useState('')
   const [error,    setError]    = useState<string | null>(null)
@@ -33,8 +38,11 @@ export function LoginModal({ onClose }: LoginModalProps) {
       const credential = await signInWithEmailAndPassword(firebaseAuth, email, password)
       const idToken = await credential.user.getIdToken()
       await login({ idToken }).unwrap()
+      // Drop everything cached before this login: after an expired session a different person may be
+      // signing in on the same device, and they must not see the previous user's bookings
+      dispatch(baseApi.util.resetApiState())
       onClose()
-      navigate('/dashboard', { replace: true })
+      navigate(redirectTo ?? '/dashboard', { replace: true })
     } catch (err: unknown) {
       setError(err instanceof Error ? err.message : t('auth.loginFailed'))
     }

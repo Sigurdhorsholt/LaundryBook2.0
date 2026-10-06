@@ -288,6 +288,11 @@
     }
   },
   "auth": {
+    "signInRequiredTitle": "Log ind for at fortsætte",
+    "signInRequiredBody": "Din session er udløbet, eller du er ikke logget ind. Log ind, så kommer du tilbage til samme side.",
+    "goHome": "Til forsiden",
+    "sessionCheckFailedTitle": "Kunne ikke kontakte LaundryBook",
+    "sessionCheckFailedBody": "Tjek din internetforbindelse, og prøv igen.",
     "login": "Log ind",
     "loginSubtitle": "Velkommen tilbage til LaundryBook.",
     "loginFailed": "Login mislykkedes. Prøv igen.",

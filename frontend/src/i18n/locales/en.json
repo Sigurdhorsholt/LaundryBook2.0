@@ -288,6 +288,11 @@
     }
   },
   "auth": {
+    "signInRequiredTitle": "Log in to continue",
+    "signInRequiredBody": "Your session has expired, or you are not logged in. Log in and you will be taken back to this page.",
+    "goHome": "Go to home page",
+    "sessionCheckFailedTitle": "Could not reach LaundryBook",
+    "sessionCheckFailedBody": "Check your internet connection and try again.",
     "login": "Log in",
     "loginSubtitle": "Welcome back to LaundryBook.",
     "loginFailed": "Login failed. Please try again.",

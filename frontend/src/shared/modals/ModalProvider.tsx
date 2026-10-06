@@ -10,7 +10,7 @@ import type { PropertyMemberDto } from '../../features/users/usersApi'
 // ── Modal registry — add new modals here ─────────────────────────────────────
 
 type ModalRegistry = {
-  login: React.ComponentType<{ onClose: () => void }>
+  login: React.ComponentType<{ onClose: () => void; redirectTo?: string }>
   inviteUser: React.ComponentType<{ propertyId: string; onClose: () => void }>
   editMember: React.ComponentType<{ propertyId: string; member: PropertyMemberDto; onClose: () => void }>
 }
