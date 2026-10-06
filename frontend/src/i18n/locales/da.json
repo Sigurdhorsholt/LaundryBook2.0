@@ -13,6 +13,12 @@
     "genericError": "Noget gik galt. Prøv igen.",
     "acceptTerms": "Jeg accepterer <terms>vilkårene</terms> og <privacy>privatlivspolitikken</privacy>"
   },
+  "errorBoundary": {
+    "title": "Noget gik galt",
+    "body": "Siden kunne ikke vises. Prøv at genindlæse – fejlen er registreret, så vi kan rette den.",
+    "reload": "Genindlæs",
+    "home": "Til forsiden"
+  },
   "roles": {
     "resident": "Beboer",
     "complexAdmin": "Ejendomsadmin",
