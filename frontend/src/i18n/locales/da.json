@@ -62,7 +62,9 @@
         "specificMachine": "Specifik maskine",
         "specificMachineDesc": "Beboeren vælger præcis hvilken maskine eller tørretumbler de vil bruge.",
         "entireRoom": "Helt lokale",
-        "entireRoomDesc": "Beboeren booker adgang til hele vaskerummet i det valgte tidsrum."
+        "entireRoomDesc": "Beboeren booker adgang til hele vaskerummet i det valgte tidsrum.",
+        "locked_one": "Bookingtypen kan ikke ændres, mens der er {{count}} kommende booking. Vent til den er afviklet, eller aflys den under Bookinger.",
+        "locked_other": "Bookingtypen kan ikke ændres, mens der er {{count}} kommende bookinger. Vent til de er afviklet, eller aflys dem under Bookinger."
       },
       "visibility": {
         "title": "Synlighed i bookingkalenderen",

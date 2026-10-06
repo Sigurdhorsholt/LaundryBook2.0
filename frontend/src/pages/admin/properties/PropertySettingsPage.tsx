@@ -9,6 +9,7 @@ import {
 } from '../../../features/properties/propertiesApi'
 import type { ComplexSettingsDto } from '../../../features/properties/propertiesApi'
 import { PageHeader, Spinner } from '../../../shared/ui'
+import { extractErrorMessage } from '../../../shared/utils/errorUtils'
 import { colors } from '../../../shared/theme'
 
 // Mirrors backend validation rules
@@ -38,7 +39,11 @@ export function PropertySettingsPage() {
   const { t } = useTranslation()
   const { propertyId } = useParams<{ propertyId: string }>()
 
-  const { data: property, isLoading, isError } = useGetPropertyQuery(propertyId!, { skip: !propertyId })
+  // Always refetch: upcomingBookingCount gates the booking-mode switch and isn't invalidated by bookings
+  const { data: property, isLoading, isError } = useGetPropertyQuery(propertyId!, {
+    skip: !propertyId,
+    refetchOnMountOrArgChange: true,
+  })
   const [updateSettings, { isLoading: isSaving }] = useUpdateComplexSettingsMutation()
 
   const [form, setForm] = useState<FormState>({
@@ -88,8 +93,8 @@ export function PropertySettingsPage() {
       }).unwrap()
       setSaveSuccess(true)
       setIsDirty(false)
-    } catch {
-      setSaveError(t('adminProperties.settings.saveError'))
+    } catch (err) {
+      setSaveError(extractErrorMessage(err, t('adminProperties.settings.saveError')))
     }
   }
 
@@ -97,6 +102,7 @@ export function PropertySettingsPage() {
   const lookaheadError = form.bookingLookaheadDays < 1 || form.bookingLookaheadDays > MAX_LOOKAHEAD_DAYS
   const maxBookingsError = form.maxConcurrentBookingsPerUser < 1 || form.maxConcurrentBookingsPerUser > MAX_CONCURRENT_BOOKINGS
   const hasValidationError = cancellationError || lookaheadError || maxBookingsError
+  const modeLocked = (property?.upcomingBookingCount ?? 0) > 0
 
   if (isLoading) return <Spinner fullPage />
 
@@ -130,14 +136,21 @@ export function PropertySettingsPage() {
               selected={form.bookingMode === BookingMode.BookSpecificMachine}
               label={t('adminProperties.settings.bookingType.specificMachine')}
               description={t('adminProperties.settings.bookingType.specificMachineDesc')}
+              disabled={modeLocked}
               onChange={() => patch({ bookingMode: BookingMode.BookSpecificMachine })}
             />
             <RadioCard
               selected={form.bookingMode === BookingMode.BookEntireRoom}
               label={t('adminProperties.settings.bookingType.entireRoom')}
               description={t('adminProperties.settings.bookingType.entireRoomDesc')}
+              disabled={modeLocked}
               onChange={() => patch({ bookingMode: BookingMode.BookEntireRoom })}
             />
+            {modeLocked && (
+              <p style={{ fontSize: '0.82rem', color: colors.textSecondary, margin: '4px 0 0' }}>
+                {t('adminProperties.settings.bookingType.locked', { count: property.upcomingBookingCount })}
+              </p>
+            )}
           </div>
         </SettingsSection>
 
@@ -301,11 +314,13 @@ function RadioCard({
   selected,
   label,
   description,
+  disabled = false,
   onChange,
 }: {
   selected: boolean
   label: string
   description: string
+  disabled?: boolean
   onChange: () => void
 }) {
   const borderColor = selected ? colors.primary : colors.borderDefault
@@ -321,13 +336,15 @@ function RadioCard({
         borderRadius: 10,
         border: `1.5px solid ${borderColor}`,
         backgroundColor: bg,
-        cursor: 'pointer',
+        cursor: disabled ? 'not-allowed' : 'pointer',
+        opacity: disabled && !selected ? 0.6 : 1,
         transition: 'border-color 0.15s, background-color 0.15s',
       }}
     >
       <input
         type="radio"
         checked={selected}
+        disabled={disabled}
         onChange={onChange}
         style={{ marginTop: 3, accentColor: colors.primary, flexShrink: 0 }}
       />

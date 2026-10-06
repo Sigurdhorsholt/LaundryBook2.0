@@ -25,6 +25,13 @@ public class GetPropertyQueryHandler(
             .FirstOrDefaultAsync(p => p.Id == request.PropertyId, cancellationToken)
             ?? throw new NotFoundException(nameof(Domain.Entities.Property), request.PropertyId);
 
+        var today = DateOnly.FromDateTime(DateTime.UtcNow);
+        var upcomingBookingCount = await db.Bookings.CountAsync(b =>
+            b.LaundryRoom.PropertyId == request.PropertyId &&
+            b.Date >= today &&
+            b.Status == Domain.Enums.BookingStatus.Active,
+            cancellationToken);
+
         return new PropertyDetailDto(
             property.Id,
             property.Name,
@@ -43,6 +50,7 @@ public class GetPropertyQueryHandler(
                 m.User.FirstName,
                 m.User.LastName,
                 m.Role,
-                m.ApartmentNumber)).ToList());
+                m.ApartmentNumber)).ToList(),
+            upcomingBookingCount);
     }
 }

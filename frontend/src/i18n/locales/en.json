@@ -62,7 +62,9 @@
         "specificMachine": "Specific machine",
         "specificMachineDesc": "The resident chooses exactly which washer or dryer they want to use.",
         "entireRoom": "Entire room",
-        "entireRoomDesc": "The resident books access to the whole laundry room for the selected time."
+        "entireRoomDesc": "The resident books access to the whole laundry room for the selected time.",
+        "locked_one": "The booking type can't be changed while there is {{count}} upcoming booking. Wait until it has passed, or cancel it under Bookings.",
+        "locked_other": "The booking type can't be changed while there are {{count}} upcoming bookings. Wait until they have passed, or cancel them under Bookings."
       },
       "visibility": {
         "title": "Visibility in the booking calendar",
