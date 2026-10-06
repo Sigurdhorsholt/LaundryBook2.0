@@ -198,6 +198,7 @@
     },
     "timeslots": {
       "title": "Time slots",
+      "discardUnsavedConfirm": "You have unsaved time slot changes. Discard them?",
       "goToRooms": "Go to Rooms & Machines",
       "description": "Time slot templates repeat daily and apply indefinitely.",
       "loadError": "Could not load rooms. Try reloading the page.",

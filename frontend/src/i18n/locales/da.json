@@ -198,6 +198,7 @@
     },
     "timeslots": {
       "title": "Tidspladser",
+      "discardUnsavedConfirm": "Du har ændringer i tidspladserne, som ikke er gemt. Vil du kassere dem?",
       "goToRooms": "Gå til Lokaler & Maskiner",
       "description": "Tidspladsskabeloner gentages dagligt og gælder på ubestemt tid.",
       "loadError": "Kunne ikke indlæse lokaler. Prøv at genindlæse siden.",
