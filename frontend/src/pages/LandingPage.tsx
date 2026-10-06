@@ -10,9 +10,10 @@ import { IconCheck } from '../shared/icons'
 export function LandingPage() {
   const { t } = useTranslation()
   const { openModal } = useModal()
-  const { data: user, isLoading } = useMeQuery()
+  const { data: user } = useMeQuery()
 
-  if (isLoading) return null
+  // Render the marketing page while /me is in flight: on a cold API start that can take many seconds,
+  // and visitors (and crawlers) would otherwise see a blank page.
   if (user) return <Navigate to="/dashboard" replace />
 
   return (
