@@ -1,5 +1,9 @@
 {
   "common": {
+    "upcomingBookingsWillBeCancelled_one": "{{count}} kommende booking annulleres.",
+    "upcomingBookingsWillBeCancelled_other": "{{count}} kommende bookinger annulleres.",
+    "upcomingBookingsCancelled_one": "{{count}} kommende booking blev annulleret.",
+    "upcomingBookingsCancelled_other": "{{count}} kommende bookinger blev annulleret.",
     "close": "Luk",
     "back": "Tilbage",
     "save": "Gem",
@@ -130,6 +134,7 @@
       "no": "Nej",
       "actions": "Handlinger",
       "removeUserConfirm": "Fjern bruger?",
+      "deactivateConfirm": "Deaktiver adgang?",
       "editRole": "Rediger rolle/lejl.",
       "deactivateAccess": "Deaktiver adgang",
       "activateAccess": "Aktiver adgang",

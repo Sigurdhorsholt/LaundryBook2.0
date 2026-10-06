@@ -16,7 +16,7 @@ import {
 } from '../../../features/users/usersApi'
 import { UserRow, UserCard } from './UserRow'
 import { IconPlus } from '../../../shared/icons'
-import { PageHeader, Spinner } from '../../../shared/ui'
+import { PageHeader, Spinner, Notice } from '../../../shared/ui'
 import { colors } from '../../../shared/theme'
 
 export function PropertyUsersPage() {
@@ -44,6 +44,7 @@ export function PropertyUsersPage() {
   const [actionLoadingId, setActionLoadingId] = useState<string | null>(null)
   const [resetSuccessId, setResetSuccessId] = useState<string | null>(null)
   const [resendSuccessId, setResendSuccessId] = useState<string | null>(null)
+  const [cancelledNotice, setCancelledNotice] = useState<number | null>(null)
 
   const toggleMenu = (id: string) => setOpenMenuId((prev) => (prev === id ? null : id))
   const closeMenu = () => setOpenMenuId(null)
@@ -51,13 +52,14 @@ export function PropertyUsersPage() {
   async function handleToggleActive(member: PropertyMemberDto) {
     setActionLoadingId(member.userId)
     try {
-      await updateMember({
+      const { cancelledBookings } = await updateMember({
         propertyId: propertyId!,
         userId: member.userId,
         apartmentNumber: member.apartmentNumber,
         role: member.role,
         isActive: !member.isActive,
       }).unwrap()
+      setCancelledNotice(cancelledBookings > 0 ? cancelledBookings : null)
     } finally {
       setActionLoadingId(null)
     }
@@ -66,7 +68,8 @@ export function PropertyUsersPage() {
   async function handleDelete(userId: string) {
     setActionLoadingId(userId)
     try {
-      await removeMember({ propertyId: propertyId!, userId }).unwrap()
+      const { cancelledBookings } = await removeMember({ propertyId: propertyId!, userId }).unwrap()
+      setCancelledNotice(cancelledBookings > 0 ? cancelledBookings : null)
     } finally {
       setActionLoadingId(null)
     }
@@ -203,6 +206,12 @@ export function PropertyUsersPage() {
           </button>
         }
       />
+
+      {cancelledNotice != null && (
+        <Notice onDismiss={() => setCancelledNotice(null)}>
+          {t('common.upcomingBookingsCancelled', { count: cancelledNotice })}
+        </Notice>
+      )}
 
       <div className="bg-white rounded-3" style={{ border: `1px solid ${colors.borderDefault}` }}>
         {tableContent}

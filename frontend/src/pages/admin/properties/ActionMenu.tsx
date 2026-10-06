@@ -82,7 +82,7 @@ function ConfirmPanel({ message, isLoading, onConfirm, onCancel }: ConfirmPanelP
 
 export function ActionMenu(props: ActionMenuProps) {
   const { t } = useTranslation()
-  const [confirmingDelete, setConfirmingDelete] = useState(false)
+  const [confirming, setConfirming] = useState<'delete' | 'deactivate' | null>(null)
   const triggerRef = useRef<HTMLButtonElement>(null)
   const dropdownRef = useRef<HTMLDivElement>(null)
   const [dropdownPos, setDropdownPos] = useState<{ top: number; right: number } | null>(null)
@@ -103,7 +103,7 @@ export function ActionMenu(props: ActionMenuProps) {
   // Reset confirm state and position when the menu closes
   useEffect(() => {
     if (!props.isMenuOpen) {
-      setConfirmingDelete(false)
+      setConfirming(null)
       setDropdownPos(null)
     }
   }, [props.isMenuOpen])
@@ -139,20 +139,43 @@ export function ActionMenu(props: ActionMenuProps) {
   if (props.kind === 'member') {
     const { member, isSelf, isActionLoading, onEdit, onToggleActive, onForceReset, onDelete, onMenuClose } = props
 
-    if (confirmingDelete) {
+    const bookingWarning = member.upcomingBookingCount > 0
+      ? ` ${t('common.upcomingBookingsWillBeCancelled', { count: member.upcomingBookingCount })}`
+      : ''
+
+    if (confirming === 'delete') {
       menuContent = (
         <ConfirmPanel
-          message={t('adminProperties.actionMenu.removeUserConfirm')}
+          message={t('adminProperties.actionMenu.removeUserConfirm') + bookingWarning}
           isLoading={isActionLoading}
           onConfirm={() => { onDelete(); onMenuClose() }}
-          onCancel={() => setConfirmingDelete(false)}
+          onCancel={() => setConfirming(null)}
+        />
+      )
+    } else if (confirming === 'deactivate') {
+      menuContent = (
+        <ConfirmPanel
+          message={t('adminProperties.actionMenu.deactivateConfirm') + bookingWarning}
+          isLoading={isActionLoading}
+          onConfirm={() => { onToggleActive(); onMenuClose() }}
+          onCancel={() => setConfirming(null)}
         />
       )
     } else {
       menuContent = (
         <div className="py-1">
           <MenuButton onClick={() => { onEdit(); onMenuClose() }}>{t('adminProperties.actionMenu.editRole')}</MenuButton>
-          <MenuButton disabled={isActionLoading || isSelf} onClick={() => { onToggleActive(); onMenuClose() }}>
+          <MenuButton
+            disabled={isActionLoading || isSelf}
+            onClick={() => {
+              if (member.isActive) {
+                setConfirming('deactivate')
+              } else {
+                onToggleActive()
+                onMenuClose()
+              }
+            }}
+          >
             {member.isActive ? t('adminProperties.actionMenu.deactivateAccess') : t('adminProperties.actionMenu.activateAccess')}
           </MenuButton>
           <MenuButton disabled={isActionLoading} onClick={() => { onForceReset(); onMenuClose() }}>
@@ -160,7 +183,7 @@ export function ActionMenu(props: ActionMenuProps) {
           </MenuButton>
           <Divider />
           <MenuButton style={{ color: colors.dangerText }} disabled={isActionLoading || isSelf}
-            onClick={() => setConfirmingDelete(true)}>
+            onClick={() => setConfirming('delete')}>
             {t('adminProperties.actionMenu.removeFromProperty')}
           </MenuButton>
         </div>
@@ -169,13 +192,13 @@ export function ActionMenu(props: ActionMenuProps) {
   } else {
     const { isActionLoading, onResend, onDelete, onMenuClose } = props
 
-    if (confirmingDelete) {
+    if (confirming === 'delete') {
       menuContent = (
         <ConfirmPanel
           message={t('adminProperties.actionMenu.deleteInviteConfirm')}
           isLoading={isActionLoading}
           onConfirm={() => { onDelete(); onMenuClose() }}
-          onCancel={() => setConfirmingDelete(false)}
+          onCancel={() => setConfirming(null)}
         />
       )
     } else {
@@ -186,7 +209,7 @@ export function ActionMenu(props: ActionMenuProps) {
           </MenuButton>
           <Divider />
           <MenuButton style={{ color: colors.dangerText }} disabled={isActionLoading}
-            onClick={() => setConfirmingDelete(true)}>
+            onClick={() => setConfirming('delete')}>
             {t('adminProperties.actionMenu.deleteInvite')}
           </MenuButton>
         </div>

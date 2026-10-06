@@ -1,5 +1,9 @@
 {
   "common": {
+    "upcomingBookingsWillBeCancelled_one": "{{count}} upcoming booking will be cancelled.",
+    "upcomingBookingsWillBeCancelled_other": "{{count}} upcoming bookings will be cancelled.",
+    "upcomingBookingsCancelled_one": "{{count}} upcoming booking was cancelled.",
+    "upcomingBookingsCancelled_other": "{{count}} upcoming bookings were cancelled.",
     "close": "Close",
     "back": "Back",
     "save": "Save",
@@ -130,6 +134,7 @@
       "no": "No",
       "actions": "Actions",
       "removeUserConfirm": "Remove user?",
+      "deactivateConfirm": "Deactivate access?",
       "editRole": "Edit role/apt.",
       "deactivateAccess": "Deactivate access",
       "activateAccess": "Activate access",
