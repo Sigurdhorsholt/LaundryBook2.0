@@ -423,6 +423,14 @@
     }
   },
   "users": {
+    "openLinkActive": "Aktivt fælles link",
+    "openLinkMeta": "Oprettet {{created}} · udløber {{expires}}",
+    "showQr": "Vis QR-kode",
+    "revokeLink": "Tilbagekald link",
+    "confirmRevoke": "Bekræft tilbagekald",
+    "revoking": "Tilbagekalder…",
+    "revokeWarning": "Den udskrevne QR-kode holder op med at virke med det samme. Beboere, der allerede er tilmeldt, beholder adgangen.",
+    "newLinkReplacesOld": "Et nyt fælles link gør den tidligere QR-kode ugyldig.",
     "editMember": "Rediger - {{name}}",
     "role": "Rolle",
     "apartment": "Lejlighed",
