@@ -420,8 +420,18 @@
     "specificResident": "Specific resident"
   },
   "laundry": {
+    "availability": {
+      "free": "free slots",
+      "few": "few free slots",
+      "full": "fully booked",
+      "past": "not bookable"
+    },
     "noMachinesWarning": "No machines yet - residents cannot book in this laundry room until at least one is added.",
     "actions": {
+      "bookSlot": "Book {{time}}",
+      "cancelSlot": "Cancel booking {{time}}",
+      "bookMachine": "Book {{machine}}, {{time}}",
+      "cancelMachine": "Cancel {{machine}}, {{time}}",
       "book": "Book",
       "cancelBooking": "Cancel",
       "dismiss": "Cancel",

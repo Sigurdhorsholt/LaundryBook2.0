@@ -1,8 +1,9 @@
 import { useTranslation } from 'react-i18next'
 import type { MyBookingDto } from './laundryApi'
 import type { PendingAction } from './types'
-import { dayShortLabel, dayNum, formatTimeRange, monthShort } from '../../shared/utils/dateUtils'
+import { dayShortLabel, dayNum, formatTimeRange, formatDateFull, monthShort } from '../../shared/utils/dateUtils'
 import { colors } from '../../shared/theme'
+import { TAP_TARGET_PX } from './constants'
 
 interface Props {
   myBookings: MyBookingDto[]
@@ -19,7 +20,9 @@ export function UpcomingBookingsCard({ myBookings, today, expanded, onToggle, on
   return (
     <div className="rounded-3 mb-4" style={{ border: `1px solid ${colors.borderDefault}`, backgroundColor: colors.bgCard, overflow: 'hidden' }}>
       <button
+        type="button"
         onClick={onToggle}
+        aria-expanded={expanded}
         style={{
           width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'space-between',
           padding: '12px 20px', border: 'none', borderBottom: expanded ? `1px solid ${colors.borderRow}` : 'none',
@@ -33,6 +36,7 @@ export function UpcomingBookingsCard({ myBookings, today, expanded, onToggle, on
           </span>
         </span>
         <svg
+          aria-hidden="true"
           width="14" height="14" viewBox="0 0 14 14" fill="none"
           style={{ transition: 'transform 0.2s', transform: expanded ? 'rotate(0deg)' : 'rotate(-90deg)', flexShrink: 0 }}
         >
@@ -59,8 +63,10 @@ export function UpcomingBookingsCard({ myBookings, today, expanded, onToggle, on
             </span>
             {b.canCancel ? (
               <button
+                type="button"
                 className="btn btn-sm btn-outline-secondary"
-                style={{ fontSize: '0.75rem', padding: '2px 10px', borderRadius: 20 }}
+                style={{ fontSize: '0.78rem', padding: '0 14px', borderRadius: 20, minHeight: TAP_TARGET_PX }}
+                aria-label={t('laundry.actions.cancelSlot', { time: `${formatDateFull(b.date)} ${formatTimeRange(b.startTime, b.endTime)}` })}
                 onClick={() => onCancelUpcoming(b)}
               >
                 {t('laundry.actions.cancelBooking')}

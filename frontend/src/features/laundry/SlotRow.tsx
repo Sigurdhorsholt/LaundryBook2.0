@@ -6,6 +6,7 @@ import { formatTime } from '../../shared/utils/dateUtils'
 import { colors } from '../../shared/theme'
 import { badge } from './slotBadge'
 import { InlineConfirm, ConfirmMessage } from './InlineConfirm'
+import { TAP_TARGET_PX } from './constants'
 
 interface Props {
   slot: TimeSlotTemplateDto
@@ -84,8 +85,10 @@ export function SlotRow({
           <InlineConfirm variant="cancel" loading={!!confirmLoading} onConfirm={onConfirm!} onDismiss={onDismissConfirm!} />
         ) : booking.canCancel ? (
           <button
+            type="button"
             className="btn btn-sm btn-outline-secondary"
-            style={{ fontSize: '0.75rem', padding: '2px 10px', borderRadius: 20 }}
+            style={{ fontSize: '0.78rem', padding: '0 14px', borderRadius: 20, minHeight: TAP_TARGET_PX }}
+            aria-label={t('laundry.actions.cancelSlot', { time: timeLabel })}
             onClick={(e) => { e.stopPropagation(); onCancel() }}
           >
             {t('laundry.actions.cancelBooking')}
@@ -103,11 +106,13 @@ export function SlotRow({
     status = <InlineConfirm variant="book" loading={!!confirmLoading} onConfirm={onConfirm!} onDismiss={onDismissConfirm!} />
   } else {
     status = (
+      // The real control for keyboard/screen-reader users; the row itself stays clickable for mouse users
       <button
+        type="button"
         className="btn btn-sm btn-outline-primary fw-semibold"
-        style={{ fontSize: '0.78rem', borderRadius: 20, padding: '3px 16px', pointerEvents: 'none' }}
-        tabIndex={-1}
-        aria-hidden
+        style={{ fontSize: '0.8rem', borderRadius: 20, padding: '0 18px', minHeight: TAP_TARGET_PX }}
+        aria-label={t('laundry.actions.bookSlot', { time: timeLabel })}
+        onClick={(e) => { e.stopPropagation(); onBook() }}
       >
         {t('laundry.actions.book')}
       </button>
@@ -129,7 +134,7 @@ export function SlotRow({
         ...animationStyle,
       }}
     >
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '11px 20px' }}>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '6px 20px', minHeight: TAP_TARGET_PX + 12 }}>
         <span style={{ fontSize: '0.9rem', fontWeight: 500, color: takenByOther ? colors.slotTakenText : colors.textPrimary }}>
           {timeLabel}
         </span>
