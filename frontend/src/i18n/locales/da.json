@@ -191,6 +191,7 @@
     },
     "timeslots": {
       "title": "Tidspladser",
+      "goToRooms": "Gå til Lokaler & Maskiner",
       "description": "Tidspladsskabeloner gentages dagligt og gælder på ubestemt tid.",
       "loadError": "Kunne ikke indlæse lokaler. Prøv at genindlæse siden.",
       "emptyTitle": "Ingen lokaler endnu",
@@ -319,6 +320,7 @@
     "resetPassword": "Nulstil adgangskode"
   },
   "properties": {
+    "quickLinkTimeslots": "Tidspladser",
     "createProperty": "Opret ejendom",
     "creating": "Opretter…",
     "createFailed": "Noget gik galt. Prøv igen.",
@@ -428,6 +430,7 @@
     "specificResident": "Specifik beboer"
   },
   "laundry": {
+    "noMachinesWarning": "Ingen maskiner endnu - beboerne kan ikke booke i dette vaskerum, før der er tilføjet mindst én.",
     "actions": {
       "book": "Book",
       "cancelBooking": "Aflys"
@@ -598,13 +601,20 @@
     "goToBooking": "Gå til booking"
   },
   "adminDashboard": {
+    "setup": {
+      "title": "Kom godt i gang med {{property}}",
+      "progress": "{{done}} af {{total}} trin",
+      "stepDone": "(færdig)",
+      "rooms": "Opret et vaskerum",
+      "roomsDesc": "Start med det vaskerum, beboerne skal kunne booke.",
+      "machines": "Tilføj maskiner",
+      "machinesDesc": "Beboerne booker en bestemt maskine, så hvert vaskerum skal have mindst én.",
+      "timeslots": "Opsæt tidspladser",
+      "timeslotsDesc": "Bestem hvilke tider, der kan bookes. Tidspladserne gentages hver dag.",
+      "invite": "Inviter beboere",
+      "inviteDesc": "Send en invitation på e-mail, eller print en QR-kode til opslagstavlen."
+    },
     "greeting": "Velkommen tilbage, {{name}}{{roleSuffix}}",
-    "statActiveBookingsLabel": "Aktive bookinger",
-    "statActiveBookingsSub": "i dag",
-    "statResidentsLabel": "Beboere",
-    "statResidentsSub": "registrerede",
-    "statRoomsLabel": "Vaskerum",
-    "statRoomsSub": "aktive",
     "propertiesHeading": "Dine ejendomme",
     "seeAll": "Se alle →"
   },

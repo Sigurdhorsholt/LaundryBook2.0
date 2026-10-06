@@ -1,6 +1,6 @@
 import { useState, useMemo, useEffect, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
-import { useParams } from 'react-router-dom'
+import { Link, useParams } from 'react-router-dom'
 import {
   type LaundryRoomDto,
   type TimeSlotTemplateDto,
@@ -18,6 +18,8 @@ import { ModalShell } from '../../../shared/modals/ModalShell'
 import { IconPlus, IconChevronDown, IconX } from '../../../shared/icons'
 import { useMeQuery } from '../../../features/auth/authApi'
 import { PageHeader, EmptyState, Spinner } from '../../../shared/ui'
+import { BookingMode, useGetPropertyQuery } from '../../../features/properties/propertiesApi'
+import { NoMachinesWarning } from '../../../features/laundry/NoMachinesWarning'
 import { colors } from '../../../shared/theme'
 
 // ── Helpers ────────────────────────────────────────────────────────────────────
@@ -61,6 +63,8 @@ export function PropertyTimeslotsPage() {
   const { data: rooms = [], isLoading, isError } = useGetLaundryRoomsQuery(propertyId!, {
     skip: !propertyId,
   })
+  const { data: propertyDetail } = useGetPropertyQuery(propertyId!, { skip: !propertyId })
+  const needsMachines = propertyDetail?.settings.bookingMode === BookingMode.BookSpecificMachine
 
   const [expandedRoomId, setExpandedRoomId] = useState<string | null>(null)
 
@@ -92,6 +96,11 @@ export function PropertyTimeslotsPage() {
         <EmptyState
           title={t('adminProperties.timeslots.emptyTitle')}
           description={t('adminProperties.timeslots.emptyDescription')}
+          action={
+            <Link to={`/admin/properties/${propertyId}/laundry`} className="btn btn-primary btn-sm fw-semibold">
+              {t('adminProperties.timeslots.goToRooms')}
+            </Link>
+          }
         />
       ) : (
         <div className="d-flex flex-column gap-3">
@@ -100,6 +109,7 @@ export function PropertyTimeslotsPage() {
               key={room.id}
               room={room}
               propertyId={propertyId!}
+              showNoMachinesWarning={needsMachines && room.machineCount === 0}
               isExpanded={expandedRoomId === room.id}
               onToggleExpand={() => toggleExpand(room.id)}
             />
@@ -116,11 +126,13 @@ export function PropertyTimeslotsPage() {
 function RoomCard({
   room,
   propertyId,
+  showNoMachinesWarning,
   isExpanded,
   onToggleExpand,
 }: {
   room: LaundryRoomDto
   propertyId: string
+  showNoMachinesWarning: boolean
   isExpanded: boolean
   onToggleExpand: () => void
 }) {
@@ -293,6 +305,12 @@ function RoomCard({
           </span>
         </div>
       </button>
+
+      {showNoMachinesWarning && (
+        <div className="px-4 pb-3">
+          <NoMachinesWarning />
+        </div>
+      )}
 
       {/* Expanded content */}
       {isExpanded && (

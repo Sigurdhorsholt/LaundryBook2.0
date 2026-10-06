@@ -12,6 +12,7 @@ export interface LaundryRoomDto {
   description: string | null
   isActive: boolean
   machineCount: number
+  timeSlotCount: number
   upcomingBookingCount: number
 }
 
@@ -187,6 +188,7 @@ export const laundryApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: (_result, _err, { roomId, propertyId }) => [
         { type: 'TimeSlot', id: roomId },
+        { type: 'LaundryRoom', id: propertyId },  // refresh timeSlotCount
         { type: 'Booking', id: roomId },
         { type: 'Booking', id: `mine-${propertyId}` },
         { type: 'Booking', id: `admin-${propertyId}` },

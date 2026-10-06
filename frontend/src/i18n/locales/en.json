@@ -191,6 +191,7 @@
     },
     "timeslots": {
       "title": "Time slots",
+      "goToRooms": "Go to Rooms & Machines",
       "description": "Time slot templates repeat daily and apply indefinitely.",
       "loadError": "Could not load rooms. Try reloading the page.",
       "emptyTitle": "No rooms yet",
@@ -319,6 +320,7 @@
     "resetPassword": "Reset password"
   },
   "properties": {
+    "quickLinkTimeslots": "Time slots",
     "createProperty": "Create property",
     "creating": "Creating…",
     "createFailed": "Something went wrong. Please try again.",
@@ -428,6 +430,7 @@
     "specificResident": "Specific resident"
   },
   "laundry": {
+    "noMachinesWarning": "No machines yet - residents cannot book in this laundry room until at least one is added.",
     "actions": {
       "book": "Book",
       "cancelBooking": "Cancel"
@@ -598,13 +601,20 @@
     "goToBooking": "Go to booking"
   },
   "adminDashboard": {
+    "setup": {
+      "title": "Get started with {{property}}",
+      "progress": "{{done}} of {{total}} steps",
+      "stepDone": "(done)",
+      "rooms": "Create a laundry room",
+      "roomsDesc": "Start with the laundry room residents should be able to book.",
+      "machines": "Add machines",
+      "machinesDesc": "Residents book a specific machine, so each laundry room needs at least one.",
+      "timeslots": "Set up time slots",
+      "timeslotsDesc": "Decide which times can be booked. Time slots repeat every day.",
+      "invite": "Invite residents",
+      "inviteDesc": "Send an email invitation, or print a QR code for the notice board."
+    },
     "greeting": "Welcome back, {{name}}{{roleSuffix}}",
-    "statActiveBookingsLabel": "Active bookings",
-    "statActiveBookingsSub": "today",
-    "statResidentsLabel": "Residents",
-    "statResidentsSub": "registered",
-    "statRoomsLabel": "Laundry rooms",
-    "statRoomsSub": "active",
     "propertiesHeading": "Your properties",
     "seeAll": "See all →"
   },
