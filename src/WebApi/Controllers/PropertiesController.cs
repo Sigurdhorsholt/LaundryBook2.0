@@ -139,6 +139,20 @@ public class PropertiesController(IMediator mediator, IConfiguration configurati
 
         return Ok(new { token });
     }
+
+    [HttpGet("{id:guid}/members/invite-link")]
+    public async Task<IActionResult> GetOpenInviteLink(Guid id, CancellationToken ct)
+    {
+        var link = await mediator.Send(new GetOpenInviteLinkQuery(id), ct);
+        return link is null ? NoContent() : Ok(link);
+    }
+
+    [HttpDelete("{id:guid}/members/invite-link")]
+    public async Task<IActionResult> RevokeOpenInviteLinks(Guid id, CancellationToken ct)
+    {
+        var revoked = await mediator.Send(new RevokeOpenInviteLinksCommand(id), ct);
+        return Ok(new { revoked });
+    }
 }
 
 public record UpdateSettingsRequest(

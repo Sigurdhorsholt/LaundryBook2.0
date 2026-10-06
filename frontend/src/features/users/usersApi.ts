@@ -33,6 +33,12 @@ export interface PendingInviteDto {
   expiresAt: string
 }
 
+export interface OpenInviteLinkDto {
+  token: string
+  createdAt: string   // ISO datetime (UTC)
+  expiresAt: string   // ISO datetime (UTC)
+}
+
 export interface UpdateMemberRequest {
   apartmentNumber: string | null
   role: UserRole
@@ -98,6 +104,22 @@ export const usersApi = baseApi.injectEndpoints({
         method: 'POST',
         body,
       }),
+      // A new shared link revokes the previous one server-side
+      invalidatesTags: (_result, _err, { propertyId, isMultiUse }) =>
+        isMultiUse ? [{ type: 'InviteLink', id: propertyId }] : [],
+    }),
+
+    getOpenInviteLink: builder.query<OpenInviteLinkDto | null, string>({
+      query: (propertyId) => `/api/properties/${propertyId}/members/invite-link`,
+      providesTags: (_result, _err, propertyId) => [{ type: 'InviteLink', id: propertyId }],
+    }),
+
+    revokeOpenInviteLink: builder.mutation<{ revoked: number }, string>({
+      query: (propertyId) => ({
+        url: `/api/properties/${propertyId}/members/invite-link`,
+        method: 'DELETE',
+      }),
+      invalidatesTags: (_result, _err, propertyId) => [{ type: 'InviteLink', id: propertyId }],
     }),
 
     getPendingInvites: builder.query<PendingInviteDto[], string>({
@@ -130,6 +152,8 @@ export const {
   useRemoveMemberMutation,
   useForcePasswordResetMutation,
   useCreateInviteTokenMutation,
+  useGetOpenInviteLinkQuery,
+  useRevokeOpenInviteLinkMutation,
   useGetPendingInvitesQuery,
   useResendInviteMutation,
   useDeleteInviteMutation,

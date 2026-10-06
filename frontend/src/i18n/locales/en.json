@@ -390,6 +390,14 @@
     }
   },
   "users": {
+    "openLinkActive": "Active shared link",
+    "openLinkMeta": "Created {{created}} · expires {{expires}}",
+    "showQr": "Show QR code",
+    "revokeLink": "Revoke link",
+    "confirmRevoke": "Confirm revoke",
+    "revoking": "Revoking…",
+    "revokeWarning": "The printed QR code stops working immediately. Residents who already joined keep their access.",
+    "newLinkReplacesOld": "A new shared link makes the previous QR code invalid.",
     "editMember": "Edit - {{name}}",
     "role": "Role",
     "apartment": "Apartment",
