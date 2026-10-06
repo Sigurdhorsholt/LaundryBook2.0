@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 import { useDispatch } from 'react-redux'
 import { createPortal } from 'react-dom'
 import { useTranslation } from 'react-i18next'
@@ -10,6 +10,7 @@ import { authErrorMessage } from './utils'
 import { baseApi } from '../../app/baseApi'
 import { colors } from '../../shared/theme'
 import { BrandLogo } from '../../shared/BrandLogo'
+import { useDialog } from '../../shared/modals/useDialog'
 
 interface LoginModalProps {
   onClose: () => void
@@ -32,6 +33,9 @@ export function LoginModal({ onClose, redirectTo }: LoginModalProps) {
   const [forgotEmail, setForgotEmail] = useState('')
   const [forgotSent,  setForgotSent]  = useState(false)
   const [forgotError, setForgotError] = useState<string | null>(null)
+
+  const dialogRef = useRef<HTMLDivElement>(null)
+  useDialog(dialogRef, onClose)
 
   const [login]                                   = useLoginMutation()
   const [forgotPassword, { isLoading: isSending }] = useForgotPasswordMutation()
@@ -83,6 +87,11 @@ export function LoginModal({ onClose, redirectTo }: LoginModalProps) {
 
       {/* Card */}
       <div
+        ref={dialogRef}
+        role="dialog"
+        aria-modal="true"
+        aria-label={showForgot ? t('auth.forgotPasswordTitle') : t('auth.login')}
+        tabIndex={-1}
         style={{
           position: 'fixed', top: '50%', left: '50%',
           transform: 'translate(-50%, -50%)',

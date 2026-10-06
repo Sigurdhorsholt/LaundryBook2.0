@@ -1,4 +1,6 @@
+import { useId, useRef } from 'react'
 import { useTranslation, Trans } from 'react-i18next'
+import { useDialog } from '../../shared/modals/useDialog'
 import type { AdminCancelTarget } from './types'
 import { colors } from '../../shared/theme'
 
@@ -12,6 +14,9 @@ interface Props {
 
 export function AdminCancelBookingModal({ target, cancelling, error, onConfirm, onClose }: Props) {
   const { t } = useTranslation()
+  const titleId = useId()
+  const dialogRef = useRef<HTMLDivElement>(null)
+  useDialog(dialogRef, onClose, !cancelling)
   return (
     <>
       <div
@@ -19,6 +24,11 @@ export function AdminCancelBookingModal({ target, cancelling, error, onConfirm, 
         onClick={cancelling ? undefined : onClose}
       />
       <div
+        ref={dialogRef}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby={titleId}
+        tabIndex={-1}
         style={{
           position: 'fixed', top: '50%', left: '50%',
           transform: 'translate(-50%, -50%)',
@@ -27,7 +37,7 @@ export function AdminCancelBookingModal({ target, cancelling, error, onConfirm, 
           zIndex: 1051, boxShadow: '0 8px 40px rgba(0,0,0,0.15)',
         }}
       >
-        <h6 style={{ fontWeight: 700, color: colors.textPrimary, marginBottom: 8, fontSize: '1rem' }}>
+        <h6 id={titleId} style={{ fontWeight: 700, color: colors.textPrimary, marginBottom: 8, fontSize: '1rem' }}>
           {t('laundry.adminCancel.title')}
         </h6>
 
