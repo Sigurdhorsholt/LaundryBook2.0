@@ -1,55 +1,17 @@
-/**
- * theme.ts — single source of truth for all UI colors.
- *
- * HOW TO SWITCH PALETTE:
- *   1. Comment out the active `const palette = { ... }` block below.
- *   2. Uncomment the palette block you want.
- *   3. Save. Everything propagates automatically.
- *
- * The primary cluster is the only thing that differs between palettes.
- * All other tokens (text, surfaces, borders, semantic) are palette-neutral.
- */
+// Single source of truth for all UI colors. The primary cluster is the brand (Warm Sage);
+// all other tokens (text, surfaces, borders, semantic) are palette-neutral.
 
-// ── OPTION A — Blue (current default) ─────────────────────────────────────────
-// @ts-ignore
-const palette_NOTACTIVE1 = {
-  primary:          '#1565c0',
-  primaryLight:     '#e8f0fe',
-  primaryLighter:   '#f0f5ff',
-  primaryBorder:    '#c5d9fb',
-  primaryMuted:     '#dce8ff',
-  primaryMutedText: '#2c4f8c',
-  primaryAccent:    '#3d5a8a',
-  textPrimary:      '#0d1b2a',   // neutral dark — unchanged for this palette
+const palette = {
+  primary:          '#3d7a5c',
+  primaryLight:     '#e8f5ee',
+  primaryLighter:   '#f2faf5',
+  primaryBorder:    '#b8ddc9',
+  primaryMuted:     '#d0ecdb',
+  primaryMutedText: '#2a5c42',
+  primaryAccent:    '#336650',
+  textPrimary:      '#1a2e24',   // slightly green-tinted dark for cohesion
 }
 
-// ── OPTION B — Fresh Teal ──────────────────────────────────────────────────────
-// @ts-ignore
- const palette_NOTACTIVE2 = {
-   primary:          '#0f7ea6',
-   primaryLight:     '#e0f4fa',
-   primaryLighter:   '#f0fafd',
-   primaryBorder:    '#b3e0ef',
-   primaryMuted:     '#d0eef8',
-   primaryMutedText: '#0c5f7a',
-   primaryAccent:    '#1a6e8a',
-   textPrimary:      '#0d1b2a',   // unchanged
- }
-
-// ── OPTION C — Warm Sage ───────────────────────────────────────────────────────
-// @ts-ignore
- const palette = {
-   primary:          '#3d7a5c',
-   primaryLight:     '#e8f5ee',
-   primaryLighter:   '#f2faf5',
-   primaryBorder:    '#b8ddc9',
-   primaryMuted:     '#d0ecdb',
-   primaryMutedText: '#2a5c42',
-   primaryAccent:    '#336650',
-   textPrimary:      '#1a2e24',   // slightly green-tinted dark for cohesion
- }
-
- 
 // ── Stable tokens (palette-neutral) ───────────────────────────────────────────
 
 export const colors = {
@@ -127,4 +89,3 @@ export const colors = {
 
 } as const
 
-export type ColorToken = keyof typeof colors

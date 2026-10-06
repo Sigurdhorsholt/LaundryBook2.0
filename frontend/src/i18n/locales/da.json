@@ -6,7 +6,6 @@
     "upcomingBookingsCancelled_one": "{{count}} kommende booking blev annulleret.",
     "upcomingBookingsCancelled_other": "{{count}} kommende bookinger blev annulleret.",
     "close": "Luk",
-    "back": "Tilbage",
     "save": "Gem",
     "cancel": "Annuller",
     "loading": "Indlæser…",
