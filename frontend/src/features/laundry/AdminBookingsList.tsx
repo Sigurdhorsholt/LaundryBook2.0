@@ -103,6 +103,7 @@ function BookingRow({ booking, canCancel, onCancel }: { booking: AdminBookingDto
         </span>
         <span style={{ fontSize: '0.85rem', color: colors.textSecondary }}>
           {booking.roomName}
+          {booking.machineName && <span style={{ color: colors.textMuted }}> · {booking.machineName}</span>}
         </span>
       </div>
 

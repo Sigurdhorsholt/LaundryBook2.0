@@ -6,8 +6,7 @@ import {
   type TimeSlotTemplateDto,
   useGetLaundryRoomsQuery,
   useGetTimeSlotsQuery,
-  useCreateTimeSlotMutation,
-  useDeleteTimeSlotMutation,
+  useReplaceTimeSlotsMutation,
 } from '../../../features/laundry/laundryApi'
 import type { PendingSlot } from '../../../features/laundry/types'
 import {
@@ -43,6 +42,12 @@ function generateSlots(
     current += durationMinutes
   }
   return slots
+}
+
+function overlapsAny(startTime: string, endTime: string, slots: PendingSlot[]): boolean {
+  const start = toMinutes(startTime)
+  const end = toMinutes(endTime)
+  return slots.some((s) => start < toMinutes(s.endTime) && end > toMinutes(s.startTime))
 }
 
 // ── Page ───────────────────────────────────────────────────────────────────────
@@ -94,6 +99,7 @@ export function PropertyTimeslotsPage() {
             <RoomCard
               key={room.id}
               room={room}
+              propertyId={propertyId!}
               isExpanded={expandedRoomId === room.id}
               onToggleExpand={() => toggleExpand(room.id)}
             />
@@ -109,10 +115,12 @@ export function PropertyTimeslotsPage() {
 
 function RoomCard({
   room,
+  propertyId,
   isExpanded,
   onToggleExpand,
 }: {
   room: LaundryRoomDto
+  propertyId: string
   isExpanded: boolean
   onToggleExpand: () => void
 }) {
@@ -164,8 +172,7 @@ function RoomCard({
   const [confirmDelete, setConfirmDelete] = useState<TimeSlotTemplateDto[] | null>(null)
 
   // ── Save ───────────────────────────────────────────────────────────────────
-  const [createTimeSlot] = useCreateTimeSlotMutation()
-  const [deleteTimeSlot] = useDeleteTimeSlotMutation()
+  const [replaceTimeSlots] = useReplaceTimeSlotsMutation()
   const [saving, setSaving] = useState(false)
   const [saveError, setSaveError] = useState<string | null>(null)
   const [cancelledCount, setCancelledCount] = useState<number | null>(null)
@@ -187,12 +194,15 @@ function RoomCard({
   }
 
   function handleGenerate() {
-    const generated = generateSlots(genFrom, genDuration, genTo).map((s) => ({
-      id: null as string | null,
-      startTime: s.startTime,
-      endTime: s.endTime,
-      key: crypto.randomUUID(),
-    }))
+    // Reuse saved slots with identical times — replacing them would cancel their bookings
+    const generated = generateSlots(genFrom, genDuration, genTo).map((s): PendingSlot => {
+      const existing = apiSlots.find(
+        (a) => toMinutes(a.startTime) === toMinutes(s.startTime) && toMinutes(a.endTime) === toMinutes(s.endTime),
+      )
+      return existing
+        ? slotToLocal(existing)
+        : { id: null, startTime: s.startTime, endTime: s.endTime, key: crypto.randomUUID() }
+    })
     setPendingSlots(generated)
   }
 
@@ -218,32 +228,23 @@ function RoomCard({
     if (toDelete.length > 0) {
       setConfirmDelete(toDelete)
     } else {
-      void runSave([])
+      void runSave()
     }
   }
 
-  async function runSave(toDelete: TimeSlotTemplateDto[]) {
-    const toCreate = pendingSlots.filter((p) => p.id === null)
-
+  async function runSave() {
     setSaving(true)
     setSaveError(null)
     setCancelledCount(null)
     setConfirmDelete(null)
 
     try {
-      let totalCancelled = 0
-      for (const slot of toDelete) {
-        const result = await deleteTimeSlot({ roomId: room.id, templateId: slot.id }).unwrap()
-        totalCancelled += result.cancelledBookings
-      }
-      for (const slot of toCreate) {
-        await createTimeSlot({
-          roomId: room.id,
-          startTime: slot.startTime,
-          endTime: slot.endTime,
-        }).unwrap()
-      }
-      if (totalCancelled > 0) setCancelledCount(totalCancelled)
+      const { cancelledBookings } = await replaceTimeSlots({
+        roomId: room.id,
+        propertyId,
+        slots: pendingSlots.map(({ id, startTime, endTime }) => ({ id, startTime, endTime })),
+      }).unwrap()
+      if (cancelledBookings > 0) setCancelledCount(cancelledBookings)
       setAfterSave(true)
     } catch {
       setSaveError(t('adminProperties.timeslots.saveError'))
@@ -357,6 +358,7 @@ function RoomCard({
       {showAddModal && (
         <AddSlotModal
           roomName={room.name}
+          pendingSlots={pendingSlots}
           onAdd={handleAddSlot}
           onClose={() => setShowAddModal(false)}
         />
@@ -365,7 +367,7 @@ function RoomCard({
       {confirmDelete != null && (
         <ConfirmSlotDeleteModal
           slots={confirmDelete}
-          onConfirm={() => runSave(confirmDelete)}
+          onConfirm={runSave}
           onCancel={() => setConfirmDelete(null)}
         />
       )}
@@ -727,10 +729,12 @@ function SaveBar({
 
 function AddSlotModal({
   roomName,
+  pendingSlots,
   onAdd,
   onClose,
 }: {
   roomName: string
+  pendingSlots: PendingSlot[]
   onAdd: (startTime: string, endTime: string) => void
   onClose: () => void
 }) {
@@ -740,10 +744,11 @@ function AddSlotModal({
 
   const endMinutes = toMinutes(startTime) + durationMinutes
   const endTimeDisplay = endMinutes < 24 * 60 ? toHHmm(endMinutes) : null
+  const overlaps = endTimeDisplay != null && overlapsAny(startTime, endTimeDisplay, pendingSlots)
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
-    if (endTimeDisplay == null) return
+    if (endTimeDisplay == null || overlaps) return
     onAdd(startTime + ':00', toHHmmss(endMinutes))
     onClose()
   }
@@ -784,6 +789,11 @@ function AddSlotModal({
               <span style={{ color: colors.dangerText }}>{t('adminProperties.timeslots.exceedsMidnight')}</span>
             )}
           </span>
+          {overlaps && (
+            <div style={{ fontSize: '0.85rem', color: colors.dangerText, marginTop: 6 }}>
+              {t('adminProperties.timeslots.overlapsExisting')}
+            </div>
+          )}
         </div>
 
         <div className="d-flex justify-content-end gap-2 mt-4">
@@ -793,7 +803,7 @@ function AddSlotModal({
           <button
             type="submit"
             className="btn btn-primary fw-semibold"
-            disabled={endTimeDisplay == null}
+            disabled={endTimeDisplay == null || overlaps}
           >
             {t('adminProperties.timeslots.add')}
           </button>
@@ -815,6 +825,7 @@ function ConfirmSlotDeleteModal({
   onCancel: () => void
 }) {
   const { t } = useTranslation()
+  const bookingCount = slots.reduce((sum, s) => sum + s.upcomingBookingCount, 0)
   return (
     <ModalShell title={t('adminProperties.timeslots.removeSlotsTitle')} onClose={onCancel} size="sm">
       <p style={{ fontSize: '0.92rem', color: colors.textSecondary, lineHeight: 1.6 }}>
@@ -822,18 +833,31 @@ function ConfirmSlotDeleteModal({
       </p>
       <ul style={{ fontSize: '0.88rem', color: colors.textPrimary, marginBottom: 16 }}>
         {slots.map((s) => (
-          <li key={s.id}>{formatTime(s.startTime)} – {formatTime(s.endTime)}</li>
+          <li key={s.id}>
+            {formatTime(s.startTime)} – {formatTime(s.endTime)}
+            {s.upcomingBookingCount > 0 && (
+              <span style={{ color: colors.dangerText, marginLeft: 6 }}>({s.upcomingBookingCount})</span>
+            )}
+          </li>
         ))}
       </ul>
-      <p style={{ fontSize: '0.88rem', color: colors.dangerText, fontWeight: 500, marginBottom: 20 }}>
-        {t('adminProperties.timeslots.futureBookingsWarning')}
-      </p>
+      {bookingCount > 0 ? (
+        <p style={{ fontSize: '0.88rem', color: colors.dangerText, fontWeight: 500, marginBottom: 20 }}>
+          {t('adminProperties.timeslots.futureBookingsWarning', { count: bookingCount })}
+        </p>
+      ) : (
+        <p style={{ fontSize: '0.88rem', color: colors.textSecondary, marginBottom: 20 }}>
+          {t('adminProperties.timeslots.noFutureBookings')}
+        </p>
+      )}
       <div className="d-flex justify-content-end gap-2">
         <button className="btn btn-outline-secondary" onClick={onCancel}>
           {t('common.cancel')}
         </button>
         <button className="btn btn-danger fw-semibold" onClick={onConfirm}>
-          {t('adminProperties.timeslots.removeAndCancel')}
+          {bookingCount > 0
+            ? t('adminProperties.timeslots.removeAndCancel')
+            : t('adminProperties.timeslots.removeOnly')}
         </button>
       </div>
     </ModalShell>

@@ -26,6 +26,13 @@ export interface TimeSlotTemplateDto {
   startTime: string   // "HH:mm:ss"
   endTime: string     // "HH:mm:ss"
   isActive: boolean
+  upcomingBookingCount: number
+}
+
+export interface TimeSlotScheduleEntry {
+  id: string | null   // null = create new
+  startTime: string
+  endTime: string
 }
 
 export interface BookingDto {
@@ -62,6 +69,7 @@ export interface AdminBookingDto {
   userId: string
   residentName: string
   apartmentNumber: string | null
+  machineName: string | null
 }
 
 export interface AdminRoomSummaryDto {
@@ -158,21 +166,21 @@ export const laundryApi = baseApi.injectEndpoints({
       providesTags: (_result, _err, roomId) => [{ type: 'TimeSlot', id: roomId }],
     }),
 
-    createTimeSlot: build.mutation<{ id: string }, { roomId: string; startTime: string; endTime: string }>({
-      query: ({ roomId, startTime, endTime }) => ({
+    replaceTimeSlots: build.mutation<
+      { cancelledBookings: number },
+      { roomId: string; propertyId: string; slots: TimeSlotScheduleEntry[] }
+    >({
+      query: ({ roomId, slots }) => ({
         url: `/api/laundry-rooms/${roomId}/timeslots`,
-        method: 'POST',
-        body: { startTime, endTime },
+        method: 'PUT',
+        body: { slots },
       }),
-      invalidatesTags: (_result, _err, { roomId }) => [{ type: 'TimeSlot', id: roomId }],
-    }),
-
-    deleteTimeSlot: build.mutation<{ cancelledBookings: number }, { roomId: string; templateId: string }>({
-      query: ({ roomId, templateId }) => ({
-        url: `/api/laundry-rooms/${roomId}/timeslots/${templateId}`,
-        method: 'DELETE',
-      }),
-      invalidatesTags: (_result, _err, { roomId }) => [{ type: 'TimeSlot', id: roomId }],
+      invalidatesTags: (_result, _err, { roomId, propertyId }) => [
+        { type: 'TimeSlot', id: roomId },
+        { type: 'Booking', id: roomId },
+        { type: 'Booking', id: `mine-${propertyId}` },
+        { type: 'Booking', id: `admin-${propertyId}` },
+      ],
     }),
 
     // ── Bookings ─────────────────────────────────────────────────────────────
@@ -231,8 +239,7 @@ export const {
   useUpdateMachineMutation,
   useDeleteMachineMutation,
   useGetTimeSlotsQuery,
-  useCreateTimeSlotMutation,
-  useDeleteTimeSlotMutation,
+  useReplaceTimeSlotsMutation,
   useGetBookingsQuery,
   useGetMyBookingsQuery,
   useGetPropertyBookingsQuery,

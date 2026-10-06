@@ -10,14 +10,14 @@ import { IconChevronLeft, IconChevronRight } from '../../shared/icons'
 // ── Mock data ──────────────────────────────────────────────────────────────────
 
 const SLOTS: TimeSlotTemplateDto[] = [
-  { id: 's1', startTime: '07:00:00', endTime: '08:30:00', isActive: true },
-  { id: 's2', startTime: '08:30:00', endTime: '10:00:00', isActive: true },
-  { id: 's3', startTime: '10:00:00', endTime: '11:30:00', isActive: true },
-  { id: 's4', startTime: '11:30:00', endTime: '13:00:00', isActive: true },
-  { id: 's5', startTime: '13:00:00', endTime: '14:30:00', isActive: true },
-  { id: 's6', startTime: '14:30:00', endTime: '16:00:00', isActive: true },
-  { id: 's7', startTime: '16:00:00', endTime: '17:30:00', isActive: true },
-  { id: 's8', startTime: '17:30:00', endTime: '19:00:00', isActive: true },
+  { id: 's1', startTime: '07:00:00', endTime: '08:30:00', isActive: true, upcomingBookingCount: 0 },
+  { id: 's2', startTime: '08:30:00', endTime: '10:00:00', isActive: true, upcomingBookingCount: 0 },
+  { id: 's3', startTime: '10:00:00', endTime: '11:30:00', isActive: true, upcomingBookingCount: 0 },
+  { id: 's4', startTime: '11:30:00', endTime: '13:00:00', isActive: true, upcomingBookingCount: 0 },
+  { id: 's5', startTime: '13:00:00', endTime: '14:30:00', isActive: true, upcomingBookingCount: 0 },
+  { id: 's6', startTime: '14:30:00', endTime: '16:00:00', isActive: true, upcomingBookingCount: 0 },
+  { id: 's7', startTime: '16:00:00', endTime: '17:30:00', isActive: true, upcomingBookingCount: 0 },
+  { id: 's8', startTime: '17:30:00', endTime: '19:00:00', isActive: true, upcomingBookingCount: 0 },
 ]
 
 const MAX_CONCURRENT = 2
