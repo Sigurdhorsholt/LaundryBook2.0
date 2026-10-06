@@ -2,6 +2,7 @@ import { useTranslation } from 'react-i18next'
 import type { PendingAction } from './types'
 import { colors } from '../../shared/theme'
 import { IconCheck, IconX } from '../../shared/icons'
+import { TAP_TARGET_PX } from './constants'
 
 interface InlineConfirmProps {
   variant: 'book' | 'cancel'
@@ -11,7 +12,7 @@ interface InlineConfirmProps {
 }
 
 const roundBtn: React.CSSProperties = {
-  width: 28, height: 28, borderRadius: '50%', padding: 0,
+  width: TAP_TARGET_PX, height: TAP_TARGET_PX, borderRadius: '50%', padding: 0,
   display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
   cursor: 'pointer', flexShrink: 0,
 }
@@ -25,6 +26,7 @@ export function InlineConfirm({ variant, loading, onConfirm, onDismiss }: Inline
       style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}
     >
       <button
+        type="button"
         aria-label={t('laundry.actions.dismiss')}
         disabled={loading}
         onClick={onDismiss}
@@ -38,6 +40,7 @@ export function InlineConfirm({ variant, loading, onConfirm, onDismiss }: Inline
         <IconX size={13} color={colors.textSecondary} strokeWidth={2.2} />
       </button>
       <button
+        type="button"
         aria-label={variant === 'book' ? t('laundry.actions.confirmBook') : t('laundry.actions.confirmCancel')}
         disabled={loading}
         onClick={onConfirm}

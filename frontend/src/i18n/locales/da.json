@@ -453,8 +453,18 @@
     "specificResident": "Specifik beboer"
   },
   "laundry": {
+    "availability": {
+      "free": "ledige tider",
+      "few": "få ledige tider",
+      "full": "fuldt booket",
+      "past": "kan ikke bookes"
+    },
     "noMachinesWarning": "Ingen maskiner endnu - beboerne kan ikke booke i dette vaskerum, før der er tilføjet mindst én.",
     "actions": {
+      "bookSlot": "Book {{time}}",
+      "cancelSlot": "Aflys booking {{time}}",
+      "bookMachine": "Book {{machine}}, {{time}}",
+      "cancelMachine": "Aflys {{machine}}, {{time}}",
       "book": "Book",
       "cancelBooking": "Aflys",
       "dismiss": "Fortryd",

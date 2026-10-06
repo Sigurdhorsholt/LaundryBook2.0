@@ -5,7 +5,7 @@ import type { GridBooking, PendingAction } from './types'
 import { formatTime } from '../../shared/utils/dateUtils'
 import { colors } from '../../shared/theme'
 import { badge } from './slotBadge'
-import { MACHINE_TYPE_LABEL } from './constants'
+import { MACHINE_TYPE_LABEL, TAP_TARGET_PX } from './constants'
 import { IconClock, IconChevronDown, IconWasher, IconDryer } from '../../shared/icons'
 import { InlineConfirm, ConfirmMessage } from './InlineConfirm'
 
@@ -45,14 +45,20 @@ export function MachineSlotRow({
   const freeCount = machines.filter((m) => bookingFor(m.id) === null).length
   const ownCount = bookings.filter((b) => b.isOwn).length
   const canExpand = !past && !locked
+  const panelId = `machines-${slot.id}`
 
   return (
     <div style={{ borderBottom: `1px solid ${colors.borderRow}` }}>
-      <div
+      <button
+        type="button"
         onClick={canExpand ? () => setExpanded((x) => !x) : undefined}
+        disabled={!canExpand}
+        aria-expanded={canExpand ? expanded : undefined}
+        aria-controls={canExpand ? panelId : undefined}
         style={{
-          display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-          gap: 12, padding: '11px 20px', backgroundColor: colors.bgCard,
+          display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%',
+          gap: 12, padding: '11px 20px', minHeight: TAP_TARGET_PX + 8, backgroundColor: colors.bgCard,
+          border: 'none', textAlign: 'left',
           opacity: dimmed ? 0.45 : 1, cursor: canExpand ? 'pointer' : 'default', userSelect: 'none',
         }}
       >
@@ -70,16 +76,16 @@ export function MachineSlotRow({
               <span style={badge(freeCount === 0 ? colors.slotTakenBg : colors.slotFreeBg, freeCount === 0 ? colors.slotTakenText : colors.slotFreeText)}>
                 {freeCount === 0 ? t('laundry.slot.fullyBooked') : t('laundry.slot.freeCount', { free: freeCount, total: machines.length })}
               </span>
-              <span style={{ display: 'inline-flex', transform: expanded ? 'rotate(180deg)' : 'none', transition: 'transform 0.15s' }}>
+              <span aria-hidden="true" style={{ display: 'inline-flex', transform: expanded ? 'rotate(180deg)' : 'none', transition: 'transform 0.15s' }}>
                 <IconChevronDown size={14} color={colors.textMuted} strokeWidth={1.8} />
               </span>
             </>
           )}
         </span>
-      </div>
+      </button>
 
       {expanded && canExpand && (
-        <div style={{ backgroundColor: colors.bgPage, padding: '8px 12px 10px' }}>
+        <div id={panelId} style={{ backgroundColor: colors.bgPage, padding: '8px 12px 10px' }}>
           {machines.map((machine) => {
             const booking = bookingFor(machine.id)
             const blocked = maxReached && booking === null
@@ -96,7 +102,15 @@ export function MachineSlotRow({
                   {machinePending?.type === 'cancel' ? (
                     <InlineConfirm variant="cancel" loading={!!confirmLoading} onConfirm={onConfirm!} onDismiss={onDismissConfirm!} />
                   ) : booking.canCancel ? (
-                    <button className="btn btn-sm btn-outline-secondary" style={{ fontSize: '0.75rem', padding: '2px 12px', borderRadius: 20 }} onClick={() => onCancel(machine.id)}>{t('laundry.actions.cancelBooking')}</button>
+                    <button
+                      type="button"
+                      className="btn btn-sm btn-outline-secondary"
+                      style={{ fontSize: '0.78rem', padding: '0 14px', borderRadius: 20, minHeight: TAP_TARGET_PX }}
+                      aria-label={t('laundry.actions.cancelMachine', { machine: machine.name, time: timeLabel })}
+                      onClick={() => onCancel(machine.id)}
+                    >
+                      {t('laundry.actions.cancelBooking')}
+                    </button>
                   ) : (
                     <span style={{ fontSize: '0.72rem', color: colors.textMuted }}>{t('laundry.slot.deadlinePassed')}</span>
                   )}
@@ -110,7 +124,15 @@ export function MachineSlotRow({
               action = <InlineConfirm variant="book" loading={!!confirmLoading} onConfirm={onConfirm!} onDismiss={onDismissConfirm!} />
             } else {
               action = (
-                <button className="btn btn-sm btn-primary fw-semibold" style={{ fontSize: '0.78rem', borderRadius: 20, padding: '4px 18px' }} onClick={() => onBook(machine.id)}>{t('laundry.actions.book')}</button>
+                <button
+                  type="button"
+                  className="btn btn-sm btn-primary fw-semibold"
+                  style={{ fontSize: '0.8rem', borderRadius: 20, padding: '0 18px', minHeight: TAP_TARGET_PX }}
+                  aria-label={t('laundry.actions.bookMachine', { machine: machine.name, time: timeLabel })}
+                  onClick={() => onBook(machine.id)}
+                >
+                  {t('laundry.actions.book')}
+                </button>
               )
             }
 
@@ -125,7 +147,7 @@ export function MachineSlotRow({
               >
                 <div className="d-flex align-items-center justify-content-between" style={{ gap: 12, padding: '9px 12px' }}>
                   <span className="d-flex align-items-center" style={{ gap: 10, minWidth: 0 }}>
-                    <span style={{
+                    <span aria-hidden="true" style={{
                       display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
                       width: 34, height: 34, borderRadius: 9, backgroundColor: chipBg, flexShrink: 0,
                     }}>
