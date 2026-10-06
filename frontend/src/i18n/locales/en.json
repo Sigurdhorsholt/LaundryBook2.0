@@ -84,7 +84,7 @@
         "title": "Booking horizon",
         "description": "How many days ahead can residents create bookings? (1-30)",
         "unit": "days",
-        "rangeError": "Must be between 1 and {{max}} days."
+        "rangeError": "Must be a whole number between 1 and {{max}} days."
       },
       "cancellation": {
         "title": "Cancellation deadline",
@@ -97,7 +97,7 @@
         "title": "Max. active bookings per resident",
         "description": "How many upcoming bookings a resident may have at the same time. (1-10)",
         "unit": "bookings",
-        "rangeError": "Must be between 1 and {{max}}."
+        "rangeError": "Must be a whole number between 1 and {{max}}."
       }
     },
     "bookings": {

@@ -30,7 +30,8 @@ public record AdminRoomSummaryDto(
     Guid Id,
     string Name,
     bool IsActive,
-    int ActiveSlotCount);
+    int ActiveSlotCount,
+    int CapacityPerSlot);
 
 public class GetPropertyBookingsQueryHandler(
     IAppDbContext db,
@@ -40,13 +41,20 @@ public class GetPropertyBookingsQueryHandler(
     {
         await auth.RequireRoleAsync(request.PropertyId, UserRole.ComplexAdmin, cancellationToken);
 
+        var machineMode = await db.ComplexSettings
+            .Where(s => s.PropertyId == request.PropertyId)
+            .Select(s => s.BookingMode == BookingMode.BookSpecificMachine)
+            .FirstOrDefaultAsync(cancellationToken);
+
         var rooms = await db.LaundryRooms
             .Where(r => r.PropertyId == request.PropertyId)
             .Select(r => new AdminRoomSummaryDto(
                 r.Id,
                 r.Name,
                 r.IsActive,
-                r.TimeSlotTemplates.Count(t => t.IsActive)))
+                r.TimeSlotTemplates.Count(t => t.IsActive),
+                // In machine mode each active machine can be booked once per slot
+                machineMode ? r.Machines.Count(m => m.IsActive) : 1))
             .ToListAsync(cancellationToken);
 
         var bookings = await db.Bookings

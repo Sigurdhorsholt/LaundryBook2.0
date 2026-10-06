@@ -24,7 +24,7 @@ export function AdminBookingStats({ bookings, rooms, periodDays }: Props) {
       .filter((r) => r.isActive)
       .map((r) => {
         const booked = bookedByRoom.get(r.id) ?? 0
-        const capacity = r.activeSlotCount * periodDays
+        const capacity = r.activeSlotCount * r.capacityPerSlot * periodDays
         const utilization = capacity > 0 ? Math.round((booked / capacity) * 100) : 0
         return { id: r.id, name: r.name, booked, utilization }
       })
