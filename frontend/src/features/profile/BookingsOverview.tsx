@@ -3,22 +3,11 @@ import { useTranslation } from 'react-i18next'
 import { useGetMyBookingsQuery, useCancelBookingMutation, type MyBookingDto } from '../laundry/laundryApi'
 import { EmptyState, Spinner } from '../../shared/ui'
 import { colors } from '../../shared/theme'
+import { todayStr, formatDateFull, formatTimeRange } from '../../shared/utils/dateUtils'
 
 interface Props {
   propertyId: string
 }
-
-function todayStr() {
-  return new Date().toISOString().slice(0, 10)
-}
-
-function fmtDate(date: string) {
-  return new Date(date + 'T00:00:00').toLocaleDateString('da-DK', {
-    weekday: 'short', day: 'numeric', month: 'short',
-  })
-}
-
-function fmtTime(t: string) { return t.slice(0, 5) }
 
 function BookingRow({
   booking, onCancel, cancelling,
@@ -34,7 +23,7 @@ function BookingRow({
           {booking.roomName}
         </div>
         <div style={{ fontSize: '0.8rem', color: colors.textSecondary }}>
-          {fmtDate(booking.date)} · {fmtTime(booking.startTime)}–{fmtTime(booking.endTime)}
+          {formatDateFull(booking.date)} · {formatTimeRange(booking.startTime, booking.endTime)}
         </div>
       </div>
       {onCancel && booking.canCancel && (

@@ -1,6 +1,7 @@
 using Application.Common.Authorization;
 using Application.Common.Exceptions;
 using Application.Common.Interfaces;
+using Application.Common.Time;
 using Domain.Enums;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
@@ -23,7 +24,7 @@ public class GetTimeSlotTemplatesQueryHandler(
 
         await auth.RequireRoleAsync(room.PropertyId, UserRole.Resident, cancellationToken);
 
-        var today = DateOnly.FromDateTime(DateTime.UtcNow);
+        var today = CopenhagenTime.Today;
 
         return await db.TimeSlotTemplates
             .Where(t => t.LaundryRoomId == request.RoomId && t.IsActive)
