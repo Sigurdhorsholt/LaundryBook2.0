@@ -71,15 +71,15 @@ public class PropertiesController(IMediator mediator, IConfiguration configurati
     [HttpPut("{id:guid}/members/{userId:guid}")]
     public async Task<IActionResult> UpdateMember(Guid id, Guid userId, [FromBody] UpdateMemberRequest request, CancellationToken ct)
     {
-        await mediator.Send(new UpdateMemberCommand(id, userId, request.ApartmentNumber, request.Role, request.IsActive), ct);
-        return NoContent();
+        var cancelledBookings = await mediator.Send(new UpdateMemberCommand(id, userId, request.ApartmentNumber, request.Role, request.IsActive), ct);
+        return Ok(new { cancelledBookings });
     }
 
     [HttpDelete("{id:guid}/members/{userId:guid}")]
     public async Task<IActionResult> RemoveMember(Guid id, Guid userId, CancellationToken ct)
     {
-        await mediator.Send(new RemoveMemberCommand(id, userId), ct);
-        return NoContent();
+        var cancelledBookings = await mediator.Send(new RemoveMemberCommand(id, userId), ct);
+        return Ok(new { cancelledBookings });
     }
 
     [EnableRateLimiting("email")]

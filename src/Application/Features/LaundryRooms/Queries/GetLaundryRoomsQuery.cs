@@ -1,4 +1,5 @@
 using Application.Common.Authorization;
+using Application.Common.Bookings;
 using Application.Common.Interfaces;
 using Domain.Enums;
 using MediatR;
@@ -8,7 +9,7 @@ namespace Application.Features.LaundryRooms.Queries;
 
 public record GetLaundryRoomsQuery(Guid PropertyId) : IRequest<List<LaundryRoomDto>>;
 
-public record LaundryRoomDto(Guid Id, string Name, string? Description, bool IsActive, int MachineCount);
+public record LaundryRoomDto(Guid Id, string Name, string? Description, bool IsActive, int MachineCount, int UpcomingBookingCount);
 
 public class GetLaundryRoomsQueryHandler(
     IAppDbContext db,
@@ -18,6 +19,8 @@ public class GetLaundryRoomsQueryHandler(
     {
         await auth.RequireRoleAsync(request.PropertyId, UserRole.Resident, cancellationToken);
 
+        var today = UpcomingBookings.Today();
+
         return await db.LaundryRooms
             .Where(r => r.PropertyId == request.PropertyId && r.IsActive)
             .Select(r => new LaundryRoomDto(
@@ -25,7 +28,8 @@ public class GetLaundryRoomsQueryHandler(
                 r.Name,
                 r.Description,
                 r.IsActive,
-                r.Machines.Count(m => m.IsActive)))
+                r.Machines.Count(m => m.IsActive),
+                r.Bookings.Count(b => b.Date >= today && b.Status == BookingStatus.Active)))
             .ToListAsync(cancellationToken);
     }
 }

@@ -10,6 +10,7 @@ export interface PropertyMemberDto {
   role: UserRole
   isActive: boolean
   joinedAt: string
+  upcomingBookingCount: number
 }
 
 export interface InviteByEmailRequest {
@@ -54,19 +55,21 @@ export const usersApi = baseApi.injectEndpoints({
       invalidatesTags: (_result, _err, { propertyId }) => [{ type: 'Auth', id: `members-${propertyId}` }],
     }),
 
-    updateMember: builder.mutation<void, { propertyId: string; userId: string } & UpdateMemberRequest>({
+    updateMember: builder.mutation<{ cancelledBookings: number }, { propertyId: string; userId: string } & UpdateMemberRequest>({
       query: ({ propertyId, userId, ...body }) => ({
         url: `/api/properties/${propertyId}/members/${userId}`,
         method: 'PUT',
         body,
       }),
+      // Deactivation cancels the member's bookings, which can be in any room
       invalidatesTags: (_result, _err, { propertyId, userId }) => [
         { type: 'Auth', id: `members-${propertyId}` },
         { type: 'User', id: userId },
+        'Booking',
       ],
     }),
 
-    removeMember: builder.mutation<void, { propertyId: string; userId: string }>({
+    removeMember: builder.mutation<{ cancelledBookings: number }, { propertyId: string; userId: string }>({
       query: ({ propertyId, userId }) => ({
         url: `/api/properties/${propertyId}/members/${userId}`,
         method: 'DELETE',
@@ -75,6 +78,7 @@ export const usersApi = baseApi.injectEndpoints({
         { type: 'Auth', id: `members-${propertyId}` },
         { type: 'User', id: userId },
         { type: 'User', id: 'LIST' },
+        'Booking',
       ],
     }),
 

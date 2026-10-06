@@ -1,4 +1,5 @@
 using Application.Common.Authorization;
+using Application.Common.Bookings;
 using Application.Common.Exceptions;
 using Application.Common.Interfaces;
 using Domain.Entities;
@@ -68,20 +69,10 @@ public class ReplaceTimeSlotScheduleCommandHandler(
 
         var removeIds = active.Keys.Where(id => !keepIds.Contains(id)).ToList();
         var now = DateTime.UtcNow;
-        var today = DateOnly.FromDateTime(now);
 
-        var affected = await db.Bookings
-            .Where(b =>
-                removeIds.Contains(b.TimeSlotTemplateId) &&
-                b.Date >= today &&
-                b.Status == BookingStatus.Active)
-            .ToListAsync(cancellationToken);
-
-        foreach (var booking in affected)
-        {
-            booking.Status = BookingStatus.CancelledByAdmin;
-            booking.CancelledAt = now;
-        }
+        var cancelled = await db.Bookings
+            .Where(b => removeIds.Contains(b.TimeSlotTemplateId))
+            .CancelUpcomingByAdminAsync(cancellationToken);
 
         foreach (var id in removeIds)
         {
@@ -102,6 +93,6 @@ public class ReplaceTimeSlotScheduleCommandHandler(
         // Single SaveChanges so removals, booking cancellations and creations commit atomically.
         await db.SaveChangesAsync(cancellationToken);
 
-        return affected.Count;
+        return cancelled;
     }
 }

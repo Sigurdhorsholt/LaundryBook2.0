@@ -1,4 +1,5 @@
 using Application.Common.Authorization;
+using Application.Common.Bookings;
 using Application.Common.Exceptions;
 using Application.Common.Interfaces;
 using Domain.Entities;
@@ -8,13 +9,13 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Application.Features.LaundryMachines.Commands;
 
-public record DeactivateLaundryMachineCommand(Guid RoomId, Guid MachineId) : IRequest;
+public record DeactivateLaundryMachineCommand(Guid RoomId, Guid MachineId) : IRequest<int>;
 
 public class DeactivateLaundryMachineCommandHandler(
     IAppDbContext db,
-    PropertyAuthorizationService auth) : IRequestHandler<DeactivateLaundryMachineCommand>
+    PropertyAuthorizationService auth) : IRequestHandler<DeactivateLaundryMachineCommand, int>
 {
-    public async Task Handle(DeactivateLaundryMachineCommand request, CancellationToken cancellationToken)
+    public async Task<int> Handle(DeactivateLaundryMachineCommand request, CancellationToken cancellationToken)
     {
         var machine = await db.LaundryMachines
             .FirstOrDefaultAsync(m => m.Id == request.MachineId && m.LaundryRoomId == request.RoomId, cancellationToken)
@@ -26,9 +27,15 @@ public class DeactivateLaundryMachineCommandHandler(
 
         await auth.RequireRoleAsync(room.PropertyId, UserRole.ComplexAdmin, cancellationToken);
 
+        var cancelled = await db.Bookings
+            .Where(b => b.MachineId == machine.Id)
+            .CancelUpcomingByAdminAsync(cancellationToken);
+
         machine.IsActive = false;
         machine.UpdatedAt = DateTime.UtcNow;
 
         await db.SaveChangesAsync(cancellationToken);
+
+        return cancelled;
     }
 }

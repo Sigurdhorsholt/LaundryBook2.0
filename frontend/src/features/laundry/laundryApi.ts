@@ -12,6 +12,7 @@ export interface LaundryRoomDto {
   description: string | null
   isActive: boolean
   machineCount: number
+  upcomingBookingCount: number
 }
 
 export interface LaundryMachineDto {
@@ -19,6 +20,7 @@ export interface LaundryMachineDto {
   name: string
   machineType: MachineType
   isActive: boolean
+  upcomingBookingCount: number
 }
 
 export interface TimeSlotTemplateDto {
@@ -112,12 +114,17 @@ export const laundryApi = baseApi.injectEndpoints({
       invalidatesTags: (_result, _err, { propertyId }) => [{ type: 'LaundryRoom', id: propertyId }],
     }),
 
-    deleteLaundryRoom: build.mutation<void, { propertyId: string; roomId: string }>({
+    deleteLaundryRoom: build.mutation<{ cancelledBookings: number }, { propertyId: string; roomId: string }>({
       query: ({ roomId }) => ({
         url: `/api/laundry-rooms/${roomId}`,
         method: 'DELETE',
       }),
-      invalidatesTags: (_result, _err, { propertyId }) => [{ type: 'LaundryRoom', id: propertyId }],
+      invalidatesTags: (_result, _err, { propertyId, roomId }) => [
+        { type: 'LaundryRoom', id: propertyId },
+        { type: 'Booking', id: roomId },
+        { type: 'Booking', id: `mine-${propertyId}` },
+        { type: 'Booking', id: `admin-${propertyId}` },
+      ],
     }),
 
     // ── Machines ─────────────────────────────────────────────────────────────
@@ -148,14 +155,17 @@ export const laundryApi = baseApi.injectEndpoints({
       invalidatesTags: (_result, _err, { roomId }) => [{ type: 'LaundryMachine', id: roomId }],
     }),
 
-    deleteMachine: build.mutation<void, { roomId: string; machineId: string; propertyId: string }>({
+    deleteMachine: build.mutation<{ cancelledBookings: number }, { roomId: string; machineId: string; propertyId: string }>({
       query: ({ roomId, machineId }) => ({
         url: `/api/laundry-rooms/${roomId}/machines/${machineId}`,
         method: 'DELETE',
       }),
       invalidatesTags: (_result, _err, { roomId, propertyId }) => [
         { type: 'LaundryMachine', id: roomId },
-        { type: 'LaundryRoom', id: propertyId },  // refresh machineCount
+        { type: 'LaundryRoom', id: propertyId },  // refresh machineCount + upcomingBookingCount
+        { type: 'Booking', id: roomId },
+        { type: 'Booking', id: `mine-${propertyId}` },
+        { type: 'Booking', id: `admin-${propertyId}` },
       ],
     }),
 

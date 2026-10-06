@@ -1,4 +1,5 @@
 using Application.Common.Authorization;
+using Application.Common.Bookings;
 using Application.Common.Interfaces;
 using Domain.Enums;
 using MediatR;
@@ -16,7 +17,8 @@ public record PropertyMemberDto(
     string? ApartmentNumber,
     UserRole Role,
     bool IsActive,
-    DateTime JoinedAt);
+    DateTime JoinedAt,
+    int UpcomingBookingCount);
 
 public class GetPropertyMembersQueryHandler(
     IAppDbContext db,
@@ -25,6 +27,8 @@ public class GetPropertyMembersQueryHandler(
     public async Task<IReadOnlyList<PropertyMemberDto>> Handle(GetPropertyMembersQuery request, CancellationToken cancellationToken)
     {
         await auth.RequireRoleAsync(request.PropertyId, UserRole.ComplexAdmin, cancellationToken);
+
+        var today = UpcomingBookings.Today();
 
         return await db.UserComplexMemberships
             .Where(m => m.PropertyId == request.PropertyId)
@@ -39,7 +43,12 @@ public class GetPropertyMembersQueryHandler(
                 m.ApartmentNumber,
                 m.Role,
                 m.IsActive,
-                m.JoinedAt))
+                m.JoinedAt,
+                db.Bookings.Count(b =>
+                    b.UserId == m.UserId &&
+                    b.LaundryRoom.PropertyId == request.PropertyId &&
+                    b.Date >= today &&
+                    b.Status == BookingStatus.Active)))
             .ToListAsync(cancellationToken);
     }
 }

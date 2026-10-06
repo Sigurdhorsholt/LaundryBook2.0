@@ -1,4 +1,5 @@
 using Application.Common.Authorization;
+using Application.Common.Bookings;
 using Application.Common.Exceptions;
 using Application.Common.Interfaces;
 using Domain.Entities;
@@ -26,27 +27,15 @@ public class DeactivateTimeSlotTemplateCommandHandler(
 
         await auth.RequireRoleAsync(room.PropertyId, UserRole.ComplexAdmin, cancellationToken);
 
-        // Cancel all future active bookings that reference this template in the same transaction.
-        var today = DateOnly.FromDateTime(DateTime.UtcNow);
-        var affected = await db.Bookings
-            .Where(b =>
-                b.TimeSlotTemplateId == request.TemplateId &&
-                b.Date >= today &&
-                b.Status == BookingStatus.Active)
-            .ToListAsync(cancellationToken);
-
-        var now = DateTime.UtcNow;
-        foreach (var booking in affected)
-        {
-            booking.Status = BookingStatus.CancelledByAdmin;
-            booking.CancelledAt = now;
-        }
+        var cancelled = await db.Bookings
+            .Where(b => b.TimeSlotTemplateId == request.TemplateId)
+            .CancelUpcomingByAdminAsync(cancellationToken);
 
         template.IsActive = false;
-        template.UpdatedAt = now;
+        template.UpdatedAt = DateTime.UtcNow;
 
         await db.SaveChangesAsync(cancellationToken);
 
-        return affected.Count;
+        return cancelled;
     }
 }

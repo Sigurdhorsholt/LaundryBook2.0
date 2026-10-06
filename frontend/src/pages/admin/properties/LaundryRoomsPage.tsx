@@ -17,7 +17,8 @@ import {
 import { ModalShell } from '../../../shared/modals/ModalShell'
 import { IconPlus } from '../../../shared/icons'
 import { useMeQuery } from '../../../features/auth/authApi'
-import { PageHeader, EmptyState, Spinner, FormError } from '../../../shared/ui'
+import { PageHeader, EmptyState, Spinner, FormError, Notice } from '../../../shared/ui'
+import { extractErrorMessage } from '../../../shared/utils/errorUtils'
 import { colors } from '../../../shared/theme'
 
 function useMachineTypeLabel(): Record<MachineType, string> {
@@ -56,6 +57,11 @@ export function LaundryRoomsPage() {
 
   const [expandedRoomId, setExpandedRoomId] = useState<string | null>(null)
   const [modal, setModal] = useState<ModalState>(null)
+  const [cancelledNotice, setCancelledNotice] = useState<number | null>(null)
+
+  function handleDeleted(cancelledBookings: number) {
+    setCancelledNotice(cancelledBookings > 0 ? cancelledBookings : null)
+  }
 
   function toggleExpand(roomId: string) {
     setExpandedRoomId((prev) => (prev === roomId ? null : roomId))
@@ -92,6 +98,12 @@ export function LaundryRoomsPage() {
         }
       />
 
+      {cancelledNotice != null && (
+        <Notice onDismiss={() => setCancelledNotice(null)}>
+          {t('common.upcomingBookingsCancelled', { count: cancelledNotice })}
+        </Notice>
+      )}
+
       {/* Room list */}
       {rooms.length === 0 ? (
         <EmptyState
@@ -110,6 +122,7 @@ export function LaundryRoomsPage() {
               onEdit={() => setModal({ type: 'editRoom', room })}
               onAddMachine={() => setModal({ type: 'addMachine', roomId: room.id, roomName: room.name })}
               onEditMachine={(machine) => setModal({ type: 'editMachine', roomId: room.id, machine })}
+              onDeleted={handleDeleted}
             />
           ))}
         </div>
@@ -142,6 +155,7 @@ function RoomCard({
   onEdit,
   onAddMachine,
   onEditMachine,
+  onDeleted,
 }: {
   room: LaundryRoomDto
   propertyId: string
@@ -150,17 +164,22 @@ function RoomCard({
   onEdit: () => void
   onAddMachine: () => void
   onEditMachine: (machine: LaundryMachineDto) => void
+  onDeleted: (cancelledBookings: number) => void
 }) {
   const { t } = useTranslation()
   const [deleteRoom] = useDeleteLaundryRoomMutation()
   const [isConfirmingDelete, setIsConfirmingDelete] = useState(false)
   const [isDeleting, setIsDeleting] = useState(false)
+  const [deleteError, setDeleteError] = useState<string | null>(null)
 
   async function handleDelete() {
     setIsDeleting(true)
+    setDeleteError(null)
     try {
-      await deleteRoom({ propertyId, roomId: room.id }).unwrap()
-    } catch {
+      const { cancelledBookings } = await deleteRoom({ propertyId, roomId: room.id }).unwrap()
+      onDeleted(cancelledBookings)
+    } catch (err) {
+      setDeleteError(extractErrorMessage(err, t('common.genericError')))
       setIsDeleting(false)
       setIsConfirmingDelete(false)
     }
@@ -221,6 +240,11 @@ function RoomCard({
       >
         {isConfirmingDelete ? (
           <>
+            {room.upcomingBookingCount > 0 && (
+              <span className="w-100 pt-2" style={{ fontSize: '0.82rem', color: colors.dangerText }}>
+                {t('common.upcomingBookingsWillBeCancelled', { count: room.upcomingBookingCount })}
+              </span>
+            )}
             <button
               className="btn btn-danger btn-sm"
               disabled={isDeleting}
@@ -254,6 +278,9 @@ function RoomCard({
             >
               {t('adminProperties.laundryRooms.delete')}
             </button>
+            {deleteError != null && (
+              <span style={{ fontSize: '0.82rem', color: colors.dangerText }}>{deleteError}</span>
+            )}
           </>
         )}
       </div>
@@ -261,7 +288,7 @@ function RoomCard({
       {/* Machines section */}
       {isExpanded && (
         <div style={{ borderTop: `1.5px solid ${colors.borderDefault}`, backgroundColor: colors.bgPage }}>
-          <MachineList roomId={room.id} propertyId={propertyId} onEdit={onEditMachine} />
+          <MachineList roomId={room.id} propertyId={propertyId} onEdit={onEditMachine} onDeleted={onDeleted} />
           <div className="px-4 pb-3 pt-2">
             <button
               className="btn btn-sm d-flex align-items-center gap-1"
@@ -284,10 +311,12 @@ function MachineList({
   roomId,
   propertyId,
   onEdit,
+  onDeleted,
 }: {
   roomId: string
   propertyId: string
   onEdit: (machine: LaundryMachineDto) => void
+  onDeleted: (cancelledBookings: number) => void
 }) {
   const { t } = useTranslation()
   const { data: machines = [], isLoading } = useGetMachinesQuery(roomId)
@@ -314,7 +343,7 @@ function MachineList({
         </thead>
         <tbody>
           {machines.map((machine) => (
-            <MachineRow key={machine.id} machine={machine} roomId={roomId} propertyId={propertyId} onEdit={onEdit} />
+            <MachineRow key={machine.id} machine={machine} roomId={roomId} propertyId={propertyId} onEdit={onEdit} onDeleted={onDeleted} />
           ))}
         </tbody>
       </table>
@@ -329,23 +358,29 @@ function MachineRow({
   roomId,
   propertyId,
   onEdit,
+  onDeleted,
 }: {
   machine: LaundryMachineDto
   roomId: string
   propertyId: string
   onEdit: (machine: LaundryMachineDto) => void
+  onDeleted: (cancelledBookings: number) => void
 }) {
   const { t } = useTranslation()
   const machineTypeLabel = useMachineTypeLabel()
   const [deleteMachine] = useDeleteMachineMutation()
   const [isConfirmingDelete, setIsConfirmingDelete] = useState(false)
   const [isDeleting, setIsDeleting] = useState(false)
+  const [deleteError, setDeleteError] = useState<string | null>(null)
 
   async function handleDelete() {
     setIsDeleting(true)
+    setDeleteError(null)
     try {
-      await deleteMachine({ roomId, machineId: machine.id, propertyId }).unwrap()
-    } catch {
+      const { cancelledBookings } = await deleteMachine({ roomId, machineId: machine.id, propertyId }).unwrap()
+      onDeleted(cancelledBookings)
+    } catch (err) {
+      setDeleteError(extractErrorMessage(err, t('common.genericError')))
       setIsDeleting(false)
       setIsConfirmingDelete(false)
     }
@@ -358,6 +393,14 @@ function MachineRow({
         <div className="d-sm-none" style={{ fontSize: '0.78rem', color: colors.textMuted, marginTop: 1 }}>
           {machineTypeLabel[machine.machineType]}
         </div>
+        {isConfirmingDelete && machine.upcomingBookingCount > 0 && (
+          <div style={{ fontSize: '0.78rem', color: colors.dangerText, marginTop: 2 }}>
+            {t('common.upcomingBookingsWillBeCancelled', { count: machine.upcomingBookingCount })}
+          </div>
+        )}
+        {deleteError != null && (
+          <div style={{ fontSize: '0.78rem', color: colors.dangerText, marginTop: 2 }}>{deleteError}</div>
+        )}
       </td>
       <td className="px-4 py-2 align-middle d-none d-sm-table-cell" style={{ color: colors.textSecondary }}>
         {machineTypeLabel[machine.machineType]}

@@ -1,4 +1,5 @@
 using Application.Common.Authorization;
+using Application.Common.Bookings;
 using Application.Common.Exceptions;
 using Application.Common.Interfaces;
 using Domain.Enums;
@@ -13,7 +14,7 @@ public record UpdateMemberCommand(
     Guid UserId,
     string? ApartmentNumber,
     UserRole Role,
-    bool IsActive) : IRequest;
+    bool IsActive) : IRequest<int>;
 
 public class UpdateMemberCommandValidator : AbstractValidator<UpdateMemberCommand>
 {
@@ -28,9 +29,9 @@ public class UpdateMemberCommandValidator : AbstractValidator<UpdateMemberComman
 public class UpdateMemberCommandHandler(
     IAppDbContext db,
     ICurrentUserService currentUser,
-    PropertyAuthorizationService auth) : IRequestHandler<UpdateMemberCommand>
+    PropertyAuthorizationService auth) : IRequestHandler<UpdateMemberCommand, int>
 {
-    public async Task Handle(UpdateMemberCommand request, CancellationToken cancellationToken)
+    public async Task<int> Handle(UpdateMemberCommand request, CancellationToken cancellationToken)
     {
         await auth.RequireRoleAsync(request.PropertyId, UserRole.ComplexAdmin, cancellationToken);
         await auth.RequireCanManageMemberAsync(request.PropertyId, request.UserId, cancellationToken);
@@ -49,11 +50,20 @@ public class UpdateMemberCommandHandler(
         if (membership.Role >= UserRole.ComplexAdmin && !remainsAdmin)
             await auth.RequireNotLastAdminAsync(request.PropertyId, request.UserId, cancellationToken);
 
+        // A deactivated member can no longer see or cancel their bookings, so free the slots.
+        var cancelled = membership.IsActive && !request.IsActive
+            ? await db.Bookings
+                .Where(b => b.UserId == request.UserId && b.LaundryRoom.PropertyId == request.PropertyId)
+                .CancelUpcomingByAdminAsync(cancellationToken)
+            : 0;
+
         membership.ApartmentNumber = request.ApartmentNumber;
         membership.Role = request.Role;
         membership.IsActive = request.IsActive;
         membership.UpdatedAt = DateTime.UtcNow;
 
         await db.SaveChangesAsync(cancellationToken);
+
+        return cancelled;
     }
 }
