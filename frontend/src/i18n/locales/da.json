@@ -538,8 +538,8 @@
   },
   "landing": {
     "heroBadge": "Til danske ejer- og andelsboligforeninger",
-    "heroTitle": "Et vaskerum uden <s>drama</s>.",
-    "heroSubtitle": "Slut med at gå i kælderen for at se, om der er en ledig vasketid. Med LaundryBook booker beboerne hjemmefra, og bestyrelsen har styr på resten. Ingen sedler, ingen nøgler, ingen tur ned ad trappen forgæves.",
+    "heroTitle": "Vasketider, der kan bookes <s>hjemmefra</s>.",
+    "heroSubtitle": "Slut med at gå i kælderen for at se, om der er en ledig vasketid. Med LaundryBook booker beboerne hjemmefra, og bestyrelsen har overblikket. Ingen sedler og ingen forgæves ture ned ad trappen.",
     "tryDemo": "Prøv demo",
     "login": "Log ind",
     "heroNote": "Prøv demoen - ingen oprettelse nødvendig.",
@@ -555,7 +555,7 @@
     "residentTitle": "Book en vask på vej hjem fra arbejde",
     "residentBody": "Se hvilke tider der er ledige i dag, i morgen, eller senere på ugen. Book med ét tryk.",
     "residentFeature1": "Ledige tider vist med farvekoder",
-    "residentFeature2": "Aflys direkte i appen hvis planer ændrer sig",
+    "residentFeature2": "Aflys direkte i kalenderen, hvis planerne ændrer sig",
     "residentFeature3": "Virker på mobil, tablet og computer",
     "boardEyebrow": "For bestyrelsen",
     "boardTitle": "Mindre bøvl for bestyrelsen",
@@ -648,7 +648,7 @@
         "product": "Produkt",
         "company": "Selskab",
         "contact": "Kontakt",
-        "tagline": "Digital vaskebooking til danske ejer- og andelsboligforeninger. Lavet i Aarhus, om aftenen, af én der var træt af trapper.",
+        "tagline": "Digital vaskebooking til danske ejer- og andelsboligforeninger.",
         "legal": "Juridisk"
       }
     },
@@ -677,7 +677,7 @@
         },
         "property": {
           "title": "Opret din ejendom",
-          "body": "Navn, adresse og antal lejligheder. Vi sætter resten op for dig."
+          "body": "Navn og adresse på foreningen. Derefter godkender vi den."
         },
         "rooms": {
           "title": "Opsæt vaskerum",
@@ -701,7 +701,7 @@
           "items": {
             "booking": {
               "q": "Hvordan booker beboerne en vask?",
-              "a": "De logger ind og vælger en ledig tid i kalenderen for jeres vaskerum. Ledige tider er grønne, optagede er grå. Book med ét klik - og aflys igen, hvis planerne ændrer sig."
+              "a": "De logger ind og vælger en ledig tid i kalenderen for jeres vaskerum. Ledige tider er grønne, optagede er grå. Book med et par klik - og aflys igen, hvis planerne ændrer sig."
             },
             "join": {
               "q": "Hvordan kommer en beboer med?",
@@ -713,7 +713,7 @@
             },
             "pricing": {
               "q": "Hvordan får vi vores forening på LaundryBook, og hvad koster det?",
-              "a": "Skriv til os på {{email}}, så sætter vi jeres forening op og fortæller jer prisen."
+              "a": "Opret jeres forening under \"Kom i gang\", så godkender vi den. LaundryBook koster 80 kr. om måneden eller 800 kr. om året pr. forening, og betalingen aftales direkte med os - der er ingen betaling i appen. Spørgsmål? Skriv til {{email}}."
             }
           }
         }
@@ -727,7 +727,7 @@
         "booking": {
           "tag": "Booking",
           "title": "Som at se vejrudsigten for vaskerummet",
-          "body": "Ledige tider er grønne, travle er gule, optagede er grå. Vælg en dag i ugen, find et tidsrum der passer, book med ét klik. Færdig. Alle i foreningen ser den samme kalender i samme sekund."
+          "body": "Ledige tider er grønne, travle er gule, optagede er grå. Vælg en dag i ugen, find et tidsrum der passer, og book det. Alle i foreningen ser den samme kalender."
         },
         "administration": {
           "tag": "Administration",
@@ -737,7 +737,7 @@
         "overview": {
           "tag": "Overblik",
           "title": "Tal til generalforsamlingen",
-          "body": "Hvor mange vaske om ugen? Hvornår er der run på? Er der brug for et vaskerum mere? Tallene er der, når I skal bruge dem."
+          "body": "Se antal bookinger og belægning pr. vaskerum for en valgt periode. Tallene er der, når I skal bruge dem."
         }
       },
       "smallSectionTitle": "Flere små ting der gør det nemmere",
@@ -748,7 +748,7 @@
         },
         "roles": {
           "title": "Flere roller",
-          "body": "Beboer, ejendomsadmin og systemadmin. Alle ser det de skal."
+          "body": "Beboere og administratorer. Alle ser det, de skal."
         },
         "rooms": {
           "title": "Flere vaskerum pr. ejendom",
@@ -768,14 +768,14 @@
         "calendar": "En digital kalender alle beboere kender",
         "bookFromSofa": "Book fra sofaen, aflys når planerne skifter",
         "noDoubleBooking": "Ingen dobbeltbookinger - systemet tillader det ikke",
-        "boardInsight": "Bestyrelsen ser mønstre og kan planlægge vedligehold"
+        "boardInsight": "Bestyrelsen kan se, hvor meget vaskerummene bliver brugt"
       },
       "ctaTitle": "Den bedste måde at se det på er at prøve det",
       "ctaButton": "Prøv demoen"
     },
     "demo": {
       "eyebrow": "Prøv uden login",
-      "title": "Book en vask. Nu. Her.",
+      "title": "Prøv at booke en vasketid",
       "subtitle": "Det her er den rigtige booking - bare med en opdigtet forening. Prøv at booke en tid, aflys igen, skift dag. Sådan ser det ud for jeres beboere.",
       "browserBar": "laundrybook.dk/laundry · Mejlgade 42 (demo)",
       "noDataStored": "Ingen data gemmes. Opdater siden for at nulstille demoen.",
@@ -800,7 +800,7 @@
         "rooms": "Lokaler"
       },
       "dashboard": {
-        "welcome": "Velkommen tilbage, Sigurd",
+        "welcome": "Velkommen tilbage",
         "yourProperties": "Dine ejendomme",
         "stats": {
           "bookings": {
@@ -945,7 +945,7 @@
       "factLocation": "Lavet i Aarhus",
       "factBrowser": "Kører i browseren - ingen app at installere",
       "factAudience": "Til danske ejer- og andelsboligforeninger",
-      "factPrice": "Pris aftales - skriv og spørg",
+      "factPrice": "80 kr./md. eller 800 kr./år pr. forening",
       "ctaTitle": "Vil du prøve det?",
       "ctaBody": "Prøv demoen uden at oprette noget, eller sæt jeres forening op. Har I spørgsmål, så skriv - vi svarer gerne.",
       "tryDemo": "Prøv demo",
