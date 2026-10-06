@@ -1,6 +1,7 @@
 using Application.Common.Authorization;
 using Application.Common.Exceptions;
 using Application.Common.Interfaces;
+using Application.Common.Time;
 using Domain.Enums;
 using FluentValidation;
 using MediatR;
@@ -45,7 +46,7 @@ public class UpdateComplexSettingsCommandHandler(
         // slots be double-booked or show wrongly.
         if (request.BookingMode != settings.BookingMode)
         {
-            var today = DateOnly.FromDateTime(DateTime.UtcNow);
+            var today = CopenhagenTime.Today;
             var upcoming = await db.Bookings.CountAsync(b =>
                 b.LaundryRoom.PropertyId == request.PropertyId &&
                 b.Date >= today &&

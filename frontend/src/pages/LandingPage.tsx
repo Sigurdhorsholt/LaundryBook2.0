@@ -3,6 +3,7 @@ import { useTranslation, Trans } from 'react-i18next'
 import { useMeQuery } from '../features/auth/authApi'
 import { useModal } from '../shared/modals/useModal'
 import { PublicLayout } from './public/PublicLayout'
+import { PageMeta } from '../shared/PageMeta'
 import { PhotoPlaceholder } from './public/PhotoPlaceholder'
 import { colors } from '../shared/theme'
 import { IconCheck } from '../shared/icons'
@@ -10,13 +11,15 @@ import { IconCheck } from '../shared/icons'
 export function LandingPage() {
   const { t } = useTranslation()
   const { openModal } = useModal()
-  const { data: user, isLoading } = useMeQuery()
+  const { data: user } = useMeQuery()
 
-  if (isLoading) return null
+  // Render the marketing page while /me is in flight: on a cold API start that can take many seconds,
+  // and visitors (and crawlers) would otherwise see a blank page.
   if (user) return <Navigate to="/dashboard" replace />
 
   return (
     <PublicLayout>
+      <PageMeta page="home" />
 
       {/* ── WarmSage hero ── */}
       <section className="w-100 position-relative overflow-hidden" style={{ backgroundColor: '#f7f3ea' }}>

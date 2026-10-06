@@ -8,4 +8,4 @@ Disallow: /admin
 Disallow: /join
 Disallow: /signup
 
-Sitemap: https://laundrybook.dk/sitemap.xml
+Sitemap: https://www.laundrybook.dk/sitemap.xml

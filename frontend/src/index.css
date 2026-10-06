@@ -1,10 +1,6 @@
 /* Bootstrap 5 */
 @import "bootstrap/dist/css/bootstrap.min.css";
 
-/* Tailwind v4 — utilities only, preflight skipped (Bootstrap Reboot handles reset) */
-@import "tailwindcss/theme" layer(theme);
-@import "tailwindcss/utilities" layer(utilities);
-
 /* ── Color tokens (keep in sync with src/shared/theme.ts) ──────────────────── */
 /* To switch palette: change the four --color-primary-* variables here          */
 /* and the matching palette block in theme.ts.                                  */
@@ -89,6 +85,11 @@ body {
 @keyframes slot-cancelled {
   0%   { background-color: #ffcdd2; }
   100% { background-color: #ffffff; }
+}
+
+@keyframes confirm-roll-in {
+  from { opacity: 0; transform: translateX(12px) rotate(-90deg) scale(0.4); }
+  to   { opacity: 1; transform: translateX(0) rotate(0deg) scale(1); }
 }
 
 /* ── Skeleton loading pulse ─────────────────────────────────────────────────── */

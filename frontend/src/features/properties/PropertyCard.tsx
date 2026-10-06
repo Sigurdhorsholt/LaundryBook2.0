@@ -6,10 +6,11 @@ import { IconBuilding, IconChevronRight } from '../../shared/icons'
 import { colors } from '../../shared/theme'
 
 const QUICK_LINKS = [
+  { labelKey: 'properties.quickLinkLaundry', path: 'laundry' },
+  { labelKey: 'properties.quickLinkTimeslots', path: 'timeslots' },
+  { labelKey: 'properties.quickLinkBookings', path: 'bookings' },
   { labelKey: 'properties.quickLinkUsers', path: 'users' },
   { labelKey: 'properties.quickLinkSettings', path: 'settings' },
-  { labelKey: 'properties.quickLinkLaundry', path: 'laundry' },
-  { labelKey: 'properties.quickLinkBookings', path: 'bookings' },
 ]
 
 interface PropertyCardProps {
@@ -27,7 +28,7 @@ export function PropertyCard({ membership: m, variant }: PropertyCardProps) {
       <div
         className="property-card bg-white rounded-3 p-3 d-flex align-items-center gap-3"
         style={{ border: `1px solid ${colors.borderDefault}` }}
-        onClick={() => navigate(`/admin/properties/${m.propertyId}/users`)}
+        onClick={() => navigate(`/admin/properties/${m.propertyId}`)}
       >
         <div
           className="rounded-2 d-flex align-items-center justify-content-center flex-shrink-0"
@@ -52,7 +53,7 @@ export function PropertyCard({ membership: m, variant }: PropertyCardProps) {
     <div
       className="property-card bg-white rounded-3 p-4 h-100 d-flex flex-column"
       style={{ border: `1px solid ${colors.borderDefault}` }}
-      onClick={() => navigate(`/admin/properties/${m.propertyId}/users`)}
+      onClick={() => navigate(`/admin/properties/${m.propertyId}`)}
     >
       <div className="d-flex align-items-center gap-3 mb-4">
         <div

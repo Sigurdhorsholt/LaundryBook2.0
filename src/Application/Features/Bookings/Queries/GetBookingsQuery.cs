@@ -1,6 +1,7 @@
 using Application.Common.Authorization;
 using Application.Common.Exceptions;
 using Application.Common.Interfaces;
+using Application.Common.Time;
 using Domain.Enums;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
@@ -80,7 +81,7 @@ public class GetBookingsQueryHandler(
             }
 
             // canCancel: only own bookings, only within cancellation window
-            var slotStartUtc = b.Date.ToDateTime(b.TimeSlotTemplate.StartTime, DateTimeKind.Unspecified);
+            var slotStartUtc = CopenhagenTime.ToUtc(b.Date, b.TimeSlotTemplate.StartTime);
             var canCancel = isOwn && (slotStartUtc - now).TotalMinutes > cancellationCutoffMinutes;
 
             return new BookingDto(b.Id, b.TimeSlotTemplateId, b.Date, isOwn, label, canCancel, b.MachineId, b.Machine?.Name);

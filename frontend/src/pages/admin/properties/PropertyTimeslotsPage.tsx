@@ -1,6 +1,6 @@
-import { useState, useMemo, useEffect, useRef } from 'react'
+import { useState, useMemo, useEffect, useRef, useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
-import { useParams } from 'react-router-dom'
+import { Link, useParams } from 'react-router-dom'
 import {
   type LaundryRoomDto,
   type TimeSlotTemplateDto,
@@ -18,6 +18,8 @@ import { ModalShell } from '../../../shared/modals/ModalShell'
 import { IconPlus, IconChevronDown, IconX } from '../../../shared/icons'
 import { useMeQuery } from '../../../features/auth/authApi'
 import { PageHeader, EmptyState, Spinner } from '../../../shared/ui'
+import { BookingMode, useGetPropertyQuery } from '../../../features/properties/propertiesApi'
+import { NoMachinesWarning } from '../../../features/laundry/NoMachinesWarning'
 import { colors } from '../../../shared/theme'
 
 // ── Helpers ────────────────────────────────────────────────────────────────────
@@ -61,10 +63,24 @@ export function PropertyTimeslotsPage() {
   const { data: rooms = [], isLoading, isError } = useGetLaundryRoomsQuery(propertyId!, {
     skip: !propertyId,
   })
+  const { data: propertyDetail } = useGetPropertyQuery(propertyId!, { skip: !propertyId })
+  const needsMachines = propertyDetail?.settings.bookingMode === BookingMode.BookSpecificMachine
 
   const [expandedRoomId, setExpandedRoomId] = useState<string | null>(null)
+  // Ref, not state: cards report dirtiness from effects and the page only reads it when toggling
+  const dirtyRoomIds = useRef(new Set<string>())
+  const reportDirty = useCallback((roomId: string, dirty: boolean) => {
+    if (dirty) dirtyRoomIds.current.add(roomId)
+    else dirtyRoomIds.current.delete(roomId)
+  }, [])
 
   function toggleExpand(roomId: string) {
+    // Collapsing the open card (directly or by opening another) drops its unsaved sandbox
+    if (
+      expandedRoomId !== null &&
+      dirtyRoomIds.current.has(expandedRoomId) &&
+      !window.confirm(t('adminProperties.timeslots.discardUnsavedConfirm'))
+    ) return
     setExpandedRoomId((prev) => (prev === roomId ? null : roomId))
   }
 
@@ -92,6 +108,11 @@ export function PropertyTimeslotsPage() {
         <EmptyState
           title={t('adminProperties.timeslots.emptyTitle')}
           description={t('adminProperties.timeslots.emptyDescription')}
+          action={
+            <Link to={`/admin/properties/${propertyId}/laundry`} className="btn btn-primary btn-sm fw-semibold">
+              {t('adminProperties.timeslots.goToRooms')}
+            </Link>
+          }
         />
       ) : (
         <div className="d-flex flex-column gap-3">
@@ -100,8 +121,10 @@ export function PropertyTimeslotsPage() {
               key={room.id}
               room={room}
               propertyId={propertyId!}
+              showNoMachinesWarning={needsMachines && room.machineCount === 0}
               isExpanded={expandedRoomId === room.id}
               onToggleExpand={() => toggleExpand(room.id)}
+              onDirtyChange={reportDirty}
             />
           ))}
         </div>
@@ -116,13 +139,17 @@ export function PropertyTimeslotsPage() {
 function RoomCard({
   room,
   propertyId,
+  showNoMachinesWarning,
   isExpanded,
   onToggleExpand,
+  onDirtyChange,
 }: {
   room: LaundryRoomDto
   propertyId: string
+  showNoMachinesWarning: boolean
   isExpanded: boolean
   onToggleExpand: () => void
+  onDirtyChange: (roomId: string, dirty: boolean) => void
 }) {
   const { t } = useTranslation()
   const { data: apiSlots = [], isLoading, isFetching } = useGetTimeSlotsQuery(room.id, {
@@ -184,6 +211,22 @@ function RoomCard({
     if (apiSlots.some((a) => !pendingSlots.some((p) => p.id === a.id))) return true
     return false
   }, [pendingSlots, apiSlots, synced])
+
+  useEffect(() => {
+    onDirtyChange(room.id, isDirty)
+    return () => onDirtyChange(room.id, false)
+  }, [room.id, isDirty, onDirtyChange])
+
+  // Reloading or closing the tab would silently drop the sandbox
+  useEffect(() => {
+    if (!isDirty) return
+    const warn = (e: BeforeUnloadEvent) => {
+      e.preventDefault()
+      e.returnValue = ''
+    }
+    window.addEventListener('beforeunload', warn)
+    return () => window.removeEventListener('beforeunload', warn)
+  }, [isDirty])
 
   // ── Handlers ───────────────────────────────────────────────────────────────
 
@@ -293,6 +336,12 @@ function RoomCard({
           </span>
         </div>
       </button>
+
+      {showNoMachinesWarning && (
+        <div className="px-4 pb-3">
+          <NoMachinesWarning />
+        </div>
+      )}
 
       {/* Expanded content */}
       {isExpanded && (

@@ -1,6 +1,7 @@
 using Application.Common.Authorization;
 using Application.Common.Exceptions;
 using Application.Common.Interfaces;
+using Application.Common.Time;
 using Domain.Entities;
 using Domain.Enums;
 using MediatR;
@@ -39,14 +40,13 @@ public class CreateBookingCommandHandler(
             ?? throw new NotFoundException(nameof(ComplexSettings), room.PropertyId);
 
         // Enforce lookahead limit
-        var today = DateOnly.FromDateTime(DateTime.UtcNow);
+        var today = CopenhagenTime.Today;
         var latestAllowed = today.AddDays(settings.BookingLookaheadDays);
         if (request.Date < today || request.Date > latestAllowed)
             throw new ConflictException("Datoen er uden for den tilladte bookingperiode.");
 
         // Slot must not be in the past
-        var slotStartUtc = request.Date.ToDateTime(template.StartTime, DateTimeKind.Unspecified);
-        if (slotStartUtc <= DateTime.UtcNow)
+        if (CopenhagenTime.ToUtc(request.Date, template.StartTime) <= DateTime.UtcNow)
             throw new ConflictException("Tidspladsen er allerede passeret.");
 
         Guid? machineId = null;

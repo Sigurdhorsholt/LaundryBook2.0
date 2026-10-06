@@ -2,6 +2,8 @@ export type AvailabilityState = 'free' | 'few' | 'full' | 'past'
 
 export type PendingAction = {
   type: 'book' | 'cancel'
+  // 'grid' actions confirm inline in the row; 'upcoming' actions use the modal
+  source: 'grid' | 'upcoming'
   slotId: string
   date: string
   slotTime: string

@@ -1,3 +1,4 @@
+using Application.Common.Time;
 using Domain.Entities;
 using Domain.Enums;
 using Microsoft.EntityFrameworkCore;
@@ -6,11 +7,9 @@ namespace Application.Common.Bookings;
 
 public static class UpcomingBookings
 {
-    public static DateOnly Today() => DateOnly.FromDateTime(DateTime.UtcNow);
-
     public static IQueryable<Booking> WhereUpcoming(this IQueryable<Booking> bookings)
     {
-        var today = Today();
+        var today = CopenhagenTime.Today;
         return bookings.Where(b => b.Date >= today && b.Status == BookingStatus.Active);
     }
 

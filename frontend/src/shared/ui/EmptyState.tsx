@@ -1,11 +1,13 @@
+import type { ReactNode } from 'react'
 import { colors } from '../theme'
 
 interface EmptyStateProps {
   title: string
   description?: string
+  action?: ReactNode
 }
 
-export function EmptyState({ title, description }: EmptyStateProps) {
+export function EmptyState({ title, description, action }: EmptyStateProps) {
   return (
     <div
       className="d-flex flex-column align-items-center justify-content-center"
@@ -24,6 +26,7 @@ export function EmptyState({ title, description }: EmptyStateProps) {
           {description}
         </p>
       )}
+      {action && <div className="mt-3">{action}</div>}
     </div>
   )
 }

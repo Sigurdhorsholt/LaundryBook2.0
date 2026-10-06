@@ -1,6 +1,7 @@
 using Application.Common.Authorization;
 using Application.Common.Exceptions;
 using Application.Common.Interfaces;
+using Application.Common.Time;
 using Domain.Enums;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
@@ -41,8 +42,8 @@ public class CancelBookingCommandHandler(
                 .FirstOrDefaultAsync(s => s.PropertyId == booking.LaundryRoom.PropertyId, cancellationToken);
 
             var windowMinutes = settings?.CancellationWindowMinutes ?? 60;
-            var slotStart = booking.Date.ToDateTime(booking.TimeSlotTemplate.StartTime, DateTimeKind.Unspecified);
-            if ((slotStart - DateTime.UtcNow).TotalMinutes <= windowMinutes)
+            var slotStartUtc = CopenhagenTime.ToUtc(booking.Date, booking.TimeSlotTemplate.StartTime);
+            if ((slotStartUtc - DateTime.UtcNow).TotalMinutes <= windowMinutes)
                 throw new ConflictException("Aflysningstiden er udløbet.");
         }
 

@@ -19,6 +19,8 @@ import { IconPlus } from '../../../shared/icons'
 import { useMeQuery } from '../../../features/auth/authApi'
 import { PageHeader, EmptyState, Spinner, FormError, Notice } from '../../../shared/ui'
 import { extractErrorMessage } from '../../../shared/utils/errorUtils'
+import { BookingMode, useGetPropertyQuery } from '../../../features/properties/propertiesApi'
+import { NoMachinesWarning } from '../../../features/laundry/NoMachinesWarning'
 import { colors } from '../../../shared/theme'
 
 function useMachineTypeLabel(): Record<MachineType, string> {
@@ -54,6 +56,8 @@ export function LaundryRoomsPage() {
   const property = user?.memberships?.find((m) => m.propertyId === propertyId)
 
   const { data: rooms = [], isLoading, isError } = useGetLaundryRoomsQuery(propertyId!, { skip: !propertyId })
+  const { data: propertyDetail } = useGetPropertyQuery(propertyId!, { skip: !propertyId })
+  const needsMachines = propertyDetail?.settings.bookingMode === BookingMode.BookSpecificMachine
 
   const [expandedRoomId, setExpandedRoomId] = useState<string | null>(null)
   const [modal, setModal] = useState<ModalState>(null)
@@ -109,6 +113,11 @@ export function LaundryRoomsPage() {
         <EmptyState
           title={t('adminProperties.laundryRooms.emptyTitle')}
           description={t('adminProperties.laundryRooms.emptyDescription')}
+          action={
+            <button className="btn btn-primary btn-sm fw-semibold" onClick={() => setModal({ type: 'addRoom' })}>
+              {t('adminProperties.laundryRooms.addRoom')}
+            </button>
+          }
         />
       ) : (
         <div className="d-flex flex-column gap-3">
@@ -123,6 +132,7 @@ export function LaundryRoomsPage() {
               onAddMachine={() => setModal({ type: 'addMachine', roomId: room.id, roomName: room.name })}
               onEditMachine={(machine) => setModal({ type: 'editMachine', roomId: room.id, machine })}
               onDeleted={handleDeleted}
+              showNoMachinesWarning={needsMachines && room.machineCount === 0}
             />
           ))}
         </div>
@@ -156,6 +166,7 @@ function RoomCard({
   onAddMachine,
   onEditMachine,
   onDeleted,
+  showNoMachinesWarning,
 }: {
   room: LaundryRoomDto
   propertyId: string
@@ -165,6 +176,7 @@ function RoomCard({
   onAddMachine: () => void
   onEditMachine: (machine: LaundryMachineDto) => void
   onDeleted: (cancelledBookings: number) => void
+  showNoMachinesWarning: boolean
 }) {
   const { t } = useTranslation()
   const [deleteRoom] = useDeleteLaundryRoomMutation()
@@ -232,6 +244,12 @@ function RoomCard({
           </span>
         </div>
       </button>
+
+      {showNoMachinesWarning && (
+        <div className="px-4 pb-3">
+          <NoMachinesWarning />
+        </div>
+      )}
 
       {/* Action row */}
       <div
