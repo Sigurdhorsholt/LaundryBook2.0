@@ -1,5 +1,5 @@
 using Application.Common.Authorization;
-using Application.Common.Bookings;
+using Application.Common.Time;
 using Application.Common.Exceptions;
 using Application.Common.Interfaces;
 using Domain.Enums;
@@ -24,7 +24,7 @@ public class GetLaundryMachinesQueryHandler(
 
         await auth.RequireRoleAsync(room.PropertyId, UserRole.Resident, cancellationToken);
 
-        var today = UpcomingBookings.Today();
+        var today = CopenhagenTime.Today;
 
         return await db.LaundryMachines
             .Where(m => m.LaundryRoomId == request.RoomId && m.IsActive)

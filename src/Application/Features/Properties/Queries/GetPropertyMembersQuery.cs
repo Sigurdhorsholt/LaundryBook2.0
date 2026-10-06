@@ -1,5 +1,5 @@
 using Application.Common.Authorization;
-using Application.Common.Bookings;
+using Application.Common.Time;
 using Application.Common.Interfaces;
 using Domain.Enums;
 using MediatR;
@@ -28,7 +28,7 @@ public class GetPropertyMembersQueryHandler(
     {
         await auth.RequireRoleAsync(request.PropertyId, UserRole.ComplexAdmin, cancellationToken);
 
-        var today = UpcomingBookings.Today();
+        var today = CopenhagenTime.Today;
 
         return await db.UserComplexMemberships
             .Where(m => m.PropertyId == request.PropertyId)

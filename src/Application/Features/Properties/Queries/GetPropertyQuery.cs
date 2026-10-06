@@ -1,6 +1,7 @@
 using Application.Common.Authorization;
 using Application.Common.Exceptions;
 using Application.Common.Interfaces;
+using Application.Common.Time;
 using Application.Features.Properties.DTOs;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
@@ -25,7 +26,7 @@ public class GetPropertyQueryHandler(
             .FirstOrDefaultAsync(p => p.Id == request.PropertyId, cancellationToken)
             ?? throw new NotFoundException(nameof(Domain.Entities.Property), request.PropertyId);
 
-        var today = DateOnly.FromDateTime(DateTime.UtcNow);
+        var today = CopenhagenTime.Today;
         var upcomingBookingCount = await db.Bookings.CountAsync(b =>
             b.LaundryRoom.PropertyId == request.PropertyId &&
             b.Date >= today &&

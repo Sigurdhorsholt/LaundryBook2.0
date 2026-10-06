@@ -1,5 +1,6 @@
 using Application.Common.Authorization;
 using Application.Common.Interfaces;
+using Application.Common.Time;
 using Domain.Enums;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
@@ -29,7 +30,7 @@ public class GetMyBookingsQueryHandler(
         await auth.RequireRoleAsync(request.PropertyId, UserRole.Resident, cancellationToken);
 
         var userId = currentUser.UserId!.Value;
-        var today = DateOnly.FromDateTime(DateTime.UtcNow);
+        var today = CopenhagenTime.Today;
 
         var settings = await db.ComplexSettings
             .FirstOrDefaultAsync(s => s.PropertyId == request.PropertyId, cancellationToken);
@@ -56,7 +57,7 @@ public class GetMyBookingsQueryHandler(
                 b.TimeSlotTemplate.StartTime,
                 b.TimeSlotTemplate.EndTime,
                 b.Date,
-                (b.Date.ToDateTime(b.TimeSlotTemplate.StartTime, DateTimeKind.Unspecified) - now).TotalMinutes > cancellationWindowMinutes,
+                (CopenhagenTime.ToUtc(b.Date, b.TimeSlotTemplate.StartTime) - now).TotalMinutes > cancellationWindowMinutes,
                 b.Machine != null ? b.Machine.Name : null))
             .ToListAsync(cancellationToken);
     }
