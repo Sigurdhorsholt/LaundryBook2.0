@@ -1,5 +1,6 @@
 {
   "common": {
+    "retry": "Prøv igen",
     "upcomingBookingsWillBeCancelled_one": "{{count}} kommende booking annulleres.",
     "upcomingBookingsWillBeCancelled_other": "{{count}} kommende bookinger annulleres.",
     "upcomingBookingsCancelled_one": "{{count}} kommende booking blev annulleret.",
@@ -588,6 +589,10 @@
     "backToHome": "← Tilbage til forsiden"
   },
   "laundryPage": {
+    "loadErrorTitle": "Kunne ikke hente vasketiderne",
+    "loadErrorDescription": "Tjek din internetforbindelse, og prøv igen.",
+    "noRoomsTitle": "Ingen vaskerum endnu",
+    "noRoomsDescription": "Administratoren har ikke oprettet et vaskerum endnu. Kig forbi igen senere.",
     "genericError": "Der opstod en fejl. Prøv igen.",
     "notLinkedDescription": "Du er ikke tilknyttet nogen ejendom endnu.",
     "description": "Book en ledig vasketid i dit vaskerum.",

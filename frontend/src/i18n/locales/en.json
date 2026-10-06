@@ -1,5 +1,6 @@
 {
   "common": {
+    "retry": "Try again",
     "upcomingBookingsWillBeCancelled_one": "{{count}} upcoming booking will be cancelled.",
     "upcomingBookingsWillBeCancelled_other": "{{count}} upcoming bookings will be cancelled.",
     "upcomingBookingsCancelled_one": "{{count}} upcoming booking was cancelled.",
@@ -588,6 +589,10 @@
     "backToHome": "← Back to home page"
   },
   "laundryPage": {
+    "loadErrorTitle": "Could not load laundry times",
+    "loadErrorDescription": "Check your internet connection and try again.",
+    "noRoomsTitle": "No laundry rooms yet",
+    "noRoomsDescription": "The administrator has not created a laundry room yet. Check back later.",
     "genericError": "An error occurred. Please try again.",
     "notLinkedDescription": "You're not linked to any property yet.",
     "description": "Book an available laundry time in your laundry room.",

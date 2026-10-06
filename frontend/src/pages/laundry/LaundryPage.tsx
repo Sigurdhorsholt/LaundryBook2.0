@@ -20,7 +20,8 @@ import { RoomSelector } from '../../features/laundry/RoomSelector'
 import { WeekNavigator } from '../../features/laundry/WeekNavigator'
 import { DateStrip } from '../../features/laundry/DateStrip'
 import { ConfirmBookingModal } from '../../features/laundry/ConfirmBookingModal'
-import { PageHeader } from '../../shared/ui'
+import { PageHeader, EmptyState, ErrorState } from '../../shared/ui'
+import { extractErrorMessage } from '../../shared/utils/errorUtils'
 import {
   todayStr, addDays, getWeekMonday, formatTimeRange, formatDateFull,
   minutesUntilSlot,
@@ -38,19 +39,12 @@ function incrementBookingCount(): number {
   return next
 }
 
-function extractErrorMessage(err: unknown, fallback: string): string {
-  if (err && typeof err === 'object' && 'data' in err) {
-    const data = (err as { data?: { title?: string } }).data
-    if (data?.title) return data.title
-  }
-  return fallback
-}
-
 // ── Component ──────────────────────────────────────────────────────────────────
 
 export function LaundryPage() {
   const { t } = useTranslation()
-  const today = todayStr()
+  const [today, setToday]                   = useState(todayStr)
+  const todayRef                            = useRef(today)
   const [weekStart, setWeekStart]           = useState(() => getWeekMonday(today))
   const [selectedDate, setSelectedDate]     = useState(today)
   const [selectedRoomId, setSelectedRoomId] = useState<string | null>(null)
@@ -58,29 +52,49 @@ export function LaundryPage() {
   const [confirmError, setConfirmError]     = useState<string | null>(null)
   const [milestoneCount, setMilestoneCount] = useState<number | null>(null)
   const [bookingsExpanded, setBookingsExpanded] = useState(true)
-  const gridRef    = useRef<HTMLDivElement>(null)
-  const [gridVisible, setGridVisible] = useState(false)
+  // State (not a ref) so the observer attaches once the grid mounts after the session/property load
+  const [gridEl, setGridEl] = useState<HTMLDivElement | null>(null)
+  const [gridBelowViewport, setGridBelowViewport] = useState(false)
 
   useEffect(() => {
-    const el = gridRef.current
-    if (!el) return
-    const obs = new IntersectionObserver(
-      ([entry]) => setGridVisible((entry?.intersectionRatio ?? 0) >= 0.7),
-      { threshold: [0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7] },
-    )
-    obs.observe(el)
+    if (!gridEl) return
+    // Show the jump-to-grid button only while the whole grid is still below the screen; a ratio
+    // threshold never cleared for tall grids and left the button covering the slot actions.
+    const obs = new IntersectionObserver(([entry]) => {
+      if (entry) setGridBelowViewport(!entry.isIntersecting && entry.boundingClientRect.top > 0)
+    })
+    obs.observe(gridEl)
     return () => obs.disconnect()
+  }, [gridEl])
+
+  // A phone tab left open overnight would otherwise keep showing (and booking against) yesterday
+  useEffect(() => {
+    function syncToday() {
+      if (document.visibilityState !== 'visible') return
+      const now = todayStr()
+      if (now === todayRef.current) return
+      todayRef.current = now
+      setToday(now)
+      setSelectedDate((d) => (d < now ? now : d))
+      setWeekStart((w) => (w < getWeekMonday(now) ? getWeekMonday(now) : w))
+    }
+    document.addEventListener('visibilitychange', syncToday)
+    window.addEventListener('focus', syncToday)
+    return () => {
+      document.removeEventListener('visibilitychange', syncToday)
+      window.removeEventListener('focus', syncToday)
+    }
   }, [])
 
   const { data: me } = useMeQuery()
   const propertyId   = me?.memberships[0]?.propertyId ?? null
 
-  const { data: property } = useGetPropertyQuery(propertyId ?? skipToken)
+  const { data: property, isError: propertyError, refetch: refetchProperty } = useGetPropertyQuery(propertyId ?? skipToken)
   const settings = property?.settings
   const bookingMode = settings?.bookingMode
   const machineMode = bookingMode === BookingMode.BookSpecificMachine
 
-  const { data: rooms, isLoading: roomsLoading } = useGetLaundryRoomsQuery(propertyId ?? skipToken)
+  const { data: rooms, isLoading: roomsLoading, isError: roomsError, refetch: refetchRooms } = useGetLaundryRoomsQuery(propertyId ?? skipToken)
 
   useEffect(() => {
     if (rooms && rooms.length > 0 && selectedRoomId === null) {
@@ -91,12 +105,17 @@ export function LaundryPage() {
   const weekFrom = weekStart
   const weekTo   = addDays(weekStart, 6)
 
-  const { data: slots, isLoading: slotsLoading }     = useGetTimeSlotsQuery(selectedRoomId ?? skipToken)
+  const { data: slots, isLoading: slotsLoading, isError: slotsError, refetch: refetchSlots } =
+    useGetTimeSlotsQuery(selectedRoomId ?? skipToken)
   const { data: machines } = useGetMachinesQuery(machineMode && selectedRoomId ? selectedRoomId : skipToken)
-  const { data: bookings, isLoading: bookingsLoading } = useGetBookingsQuery(
-    selectedRoomId ? { roomId: selectedRoomId, from: weekFrom, to: weekTo } : skipToken
+  const { data: bookings, isLoading: bookingsLoading, isError: bookingsError, refetch: refetchBookings } = useGetBookingsQuery(
+    selectedRoomId ? { roomId: selectedRoomId, from: weekFrom, to: weekTo } : skipToken,
+    { refetchOnFocus: true, refetchOnReconnect: true },
   )
-  const { data: myBookings } = useGetMyBookingsQuery(propertyId ?? skipToken)
+  const { data: myBookings } = useGetMyBookingsQuery(
+    propertyId ?? skipToken,
+    { refetchOnFocus: true, refetchOnReconnect: true },
+  )
 
   const [createBooking, { isLoading: creating }]  = useCreateBookingMutation()
   const [cancelBooking, { isLoading: cancelling }] = useCancelBookingMutation()
@@ -148,6 +167,8 @@ export function LaundryPage() {
 
   const todayWeekMonday = getWeekMonday(today)
   const canGoBack       = weekStart > todayWeekMonday
+  // Weeks entirely beyond the booking window would only show "not available" slots
+  const canGoForward    = !settings || addDays(weekStart, 7) <= addDays(today, settings.bookingLookaheadDays)
 
   function shiftWeek(delta: number) {
     const newStart = addDays(weekStart, delta * 7)
@@ -217,7 +238,8 @@ export function LaundryPage() {
         }
       } else {
         if (!pending.bookingId) return
-        const roomId = selectedRoomId ?? myBookings?.find(m => m.id === pending.bookingId)?.roomId
+        // Prefer the booking's own room: cancelling from the upcoming card can target another room
+        const roomId = myBookings?.find(m => m.id === pending.bookingId)?.roomId ?? selectedRoomId
         if (!roomId) return
         await cancelBooking({ bookingId: pending.bookingId, roomId, propertyId }).unwrap()
       }
@@ -239,6 +261,24 @@ export function LaundryPage() {
 
   const gridLoading = slotsLoading || bookingsLoading || !settings
 
+  if (propertyError || roomsError) {
+    return (
+      <div className="container-xl px-4 py-5">
+        <PageHeader title={t('nav.laundry')} description={t('laundryPage.description')} />
+        <ErrorState
+          title={t('laundryPage.loadErrorTitle')}
+          description={t('laundryPage.loadErrorDescription')}
+          onRetry={() => {
+            if (propertyError) refetchProperty()
+            if (roomsError) refetchRooms()
+          }}
+        />
+      </div>
+    )
+  }
+
+  const noRooms = rooms !== undefined && rooms.length === 0
+
   return (
     <div className="container-xl px-4 py-5">
 
@@ -252,6 +292,10 @@ export function LaundryPage() {
         onCancelUpcoming={handleCancelUpcoming}
       />
 
+      {noRooms && (
+        <EmptyState title={t('laundryPage.noRoomsTitle')} description={t('laundryPage.noRoomsDescription')} />
+      )}
+
       {roomsLoading ? (
         <div className="mb-4">
           <div style={{ width: 120, height: 32, borderRadius: 20, backgroundColor: colors.borderDefault, display: 'inline-block' }} />
@@ -264,13 +308,15 @@ export function LaundryPage() {
         />
       )}
 
-      <div ref={gridRef} className="rounded-3" style={{ border: `1px solid ${colors.borderDefault}`, overflow: 'hidden', backgroundColor: colors.bgCard }}>
+      {!noRooms && (
+      <div ref={setGridEl} className="rounded-3" style={{ border: `1px solid ${colors.borderDefault}`, overflow: 'hidden', backgroundColor: colors.bgCard }}>
 
         <WeekNavigator
           weekStart={weekStart}
           weekFrom={weekFrom}
           weekTo={weekTo}
           canGoBack={canGoBack}
+          canGoForward={canGoForward}
           onShift={shiftWeek}
         />
 
@@ -291,7 +337,16 @@ export function LaundryPage() {
           </span>
         </div>
 
-        {selectedRoomId ? (
+        {slotsError || bookingsError ? (
+          <ErrorState
+            title={t('laundryPage.loadErrorTitle')}
+            description={t('laundryPage.loadErrorDescription')}
+            onRetry={() => {
+              if (slotsError) refetchSlots()
+              if (bookingsError) refetchBookings()
+            }}
+          />
+        ) : selectedRoomId ? (
           <BookingGrid
             slots={slots ?? []}
             date={selectedDate}
@@ -327,11 +382,12 @@ export function LaundryPage() {
           </div>
         )}
       </div>
+      )}
 
-      {myBookings && myBookings.length > 0 && !gridVisible && (
+      {myBookings && myBookings.length > 0 && gridBelowViewport && (
         <button
           aria-label={t('laundryPage.goToBooking')}
-          onClick={() => gridRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })}
+          onClick={() => gridEl?.scrollIntoView({ behavior: 'smooth', block: 'start' })}
           style={{
             position: 'fixed', bottom: 24, right: 20, zIndex: 900,
             width: 38, height: 38, borderRadius: '50%',
