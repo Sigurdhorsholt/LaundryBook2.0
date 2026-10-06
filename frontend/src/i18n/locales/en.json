@@ -12,6 +12,12 @@
     "genericError": "Something went wrong. Please try again.",
     "acceptTerms": "I accept the <terms>terms</terms> and <privacy>privacy policy</privacy>"
   },
+  "errorBoundary": {
+    "title": "Something went wrong",
+    "body": "The page could not be displayed. Try reloading – the error has been logged so we can fix it.",
+    "reload": "Reload",
+    "home": "Go to home page"
+  },
   "roles": {
     "resident": "Resident",
     "complexAdmin": "Property admin",
