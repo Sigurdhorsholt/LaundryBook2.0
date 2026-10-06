@@ -19,6 +19,16 @@
     "reload": "Genindlæs",
     "home": "Til forsiden"
   },
+  "seo": {
+    "home": { "title": "LaundryBook - vaskebooking til jeres forening", "description": "Digital vaskebooking til danske ejer- og andelsboligforeninger. Beboerne booker vasketider hjemmefra, og bestyrelsen har overblikket." },
+    "features": { "title": "Funktioner - LaundryBook", "description": "Booking af vasketider, opsætning af vaskerum og tidspladser, invitationer og overblik over belægning - alt i browseren." },
+    "demo": { "title": "Prøv demoen - LaundryBook", "description": "Prøv LaundryBook uden login: book og aflys en vasketid i en demo-forening, og se admin-panelet." },
+    "faq": { "title": "Spørgsmål og svar - LaundryBook", "description": "Svar på de mest almindelige spørgsmål om LaundryBook: booking, mobil, pris og hvordan jeres forening kommer i gang." },
+    "about": { "title": "Om LaundryBook", "description": "Hvem står bag LaundryBook, og hvorfor findes det." },
+    "getStarted": { "title": "Kom i gang - LaundryBook", "description": "Opret jeres forening på LaundryBook: konto, vaskerum, tidspladser og invitationer til beboerne." },
+    "privacy": { "title": "Privatlivspolitik - LaundryBook", "description": "Sådan behandler LaundryBook personoplysninger." },
+    "terms": { "title": "Vilkår - LaundryBook", "description": "Vilkår for brug af LaundryBook." }
+  },
   "roles": {
     "resident": "Beboer",
     "complexAdmin": "Ejendomsadmin",

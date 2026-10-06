@@ -1,5 +1,6 @@
 import { useTranslation } from 'react-i18next'
 import { PublicLayout } from './PublicLayout'
+import { PageMeta } from '../../shared/PageMeta'
 import { ResidentDemoBooking } from './ResidentDemoBooking'
 import { AdminDemoSection } from './AdminDemoSection'
 import { colors } from '../../shared/theme'
@@ -10,6 +11,7 @@ export function DemoPage() {
   const { t } = useTranslation()
   return (
     <PublicLayout>
+      <PageMeta page="demo" />
 
       <section style={{ backgroundColor: '#f7f3ea' }}>
         <div className="container-xl px-4" style={{ paddingTop: '3.5rem', paddingBottom: '2rem' }}>

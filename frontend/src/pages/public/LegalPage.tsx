@@ -1,11 +1,12 @@
 import { useTranslation } from 'react-i18next'
 import { PublicLayout } from './PublicLayout'
+import { PageMeta } from '../../shared/PageMeta'
 import { colors } from '../../shared/theme'
 
 const CONTACT_EMAIL = 'sigurd-horsholt@hotmail.com'
 
 interface LegalPageProps {
-  ns: string
+  ns: 'public.privacy' | 'public.terms'
   sectionKeys: readonly string[]
 }
 
@@ -15,6 +16,7 @@ export function LegalPage({ ns, sectionKeys }: LegalPageProps) {
 
   return (
     <PublicLayout>
+      <PageMeta page={ns === 'public.privacy' ? 'privacy' : 'terms'} />
 
       <section style={{ backgroundColor: '#f7f3ea' }}>
         <div className="container-xl px-4" style={{ paddingTop: '4rem', paddingBottom: '2.5rem' }}>

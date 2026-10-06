@@ -19,6 +19,16 @@
     "reload": "Reload",
     "home": "Go to home page"
   },
+  "seo": {
+    "home": { "title": "LaundryBook - laundry booking for your association", "description": "Digital laundry booking for Danish homeowner and cooperative housing associations. Residents book from home, and the board has the overview." },
+    "features": { "title": "Features - LaundryBook", "description": "Laundry slot booking, room and time slot setup, invitations and an overview of utilisation - all in the browser." },
+    "demo": { "title": "Try the demo - LaundryBook", "description": "Try LaundryBook without logging in: book and cancel a laundry slot in a demo association, and see the admin panel." },
+    "faq": { "title": "Questions and answers - LaundryBook", "description": "Answers to the most common questions about LaundryBook: booking, mobile, price and how your association gets started." },
+    "about": { "title": "About LaundryBook", "description": "Who is behind LaundryBook, and why it exists." },
+    "getStarted": { "title": "Get started - LaundryBook", "description": "Set up your association on LaundryBook: account, laundry rooms, time slots and invitations for residents." },
+    "privacy": { "title": "Privacy policy - LaundryBook", "description": "How LaundryBook processes personal data." },
+    "terms": { "title": "Terms - LaundryBook", "description": "Terms of use for LaundryBook." }
+  },
   "roles": {
     "resident": "Resident",
     "complexAdmin": "Property admin",
