@@ -33,6 +33,7 @@ export interface PropertyDetailDto {
   address: string
   settings: ComplexSettingsDto
   members: unknown[]
+  upcomingBookingCount: number
 }
 
 export interface UpdateComplexSettingsRequest {

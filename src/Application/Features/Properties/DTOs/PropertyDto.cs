@@ -14,7 +14,8 @@ public record PropertyDetailDto(
     string Name,
     string Address,
     ComplexSettingsDto Settings,
-    IReadOnlyList<MemberDto> Members);
+    IReadOnlyList<MemberDto> Members,
+    int UpcomingBookingCount);
 
 public record ComplexSettingsDto(
     BookingMode BookingMode,

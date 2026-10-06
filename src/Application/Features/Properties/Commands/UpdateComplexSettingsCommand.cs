@@ -24,6 +24,7 @@ public class UpdateComplexSettingsCommandValidator : AbstractValidator<UpdateCom
         RuleFor(x => x.MaxConcurrentBookingsPerUser).GreaterThan(0).LessThanOrEqualTo(10);
         RuleFor(x => x.BookingLookaheadDays).GreaterThan(0).LessThanOrEqualTo(30);
         RuleFor(x => x.BookingVisibility).IsInEnum();
+        RuleFor(x => x.BookingMode).IsInEnum();
     }
 }
 
@@ -38,6 +39,23 @@ public class UpdateComplexSettingsCommandHandler(
         var settings = await db.ComplexSettings
             .FirstOrDefaultAsync(s => s.PropertyId == request.PropertyId, cancellationToken)
             ?? throw new NotFoundException(nameof(Domain.Entities.ComplexSettings), request.PropertyId);
+
+        // Existing bookings were made under the old mode's rules (whole-room bookings have no
+        // machine; machine bookings share a slot), so switching with live bookings would let
+        // slots be double-booked or show wrongly.
+        if (request.BookingMode != settings.BookingMode)
+        {
+            var today = DateOnly.FromDateTime(DateTime.UtcNow);
+            var upcoming = await db.Bookings.CountAsync(b =>
+                b.LaundryRoom.PropertyId == request.PropertyId &&
+                b.Date >= today &&
+                b.Status == BookingStatus.Active,
+                cancellationToken);
+
+            if (upcoming > 0)
+                throw new ConflictException(
+                    $"Bookingtypen kan ikke ændres, mens der er {upcoming} kommende bookinger. Vent til de er afviklet, eller aflys dem først.");
+        }
 
         settings.BookingMode = request.BookingMode;
         settings.CancellationWindowMinutes = request.CancellationWindowMinutes;
