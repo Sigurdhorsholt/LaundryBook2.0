@@ -6,7 +6,6 @@
     "upcomingBookingsCancelled_one": "{{count}} upcoming booking was cancelled.",
     "upcomingBookingsCancelled_other": "{{count}} upcoming bookings were cancelled.",
     "close": "Close",
-    "back": "Back",
     "save": "Save",
     "cancel": "Cancel",
     "loading": "Loading…",

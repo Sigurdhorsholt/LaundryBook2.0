@@ -53,7 +53,7 @@ export function PropertyBookingsPage() {
   const [cancelBooking, { isLoading: cancelling }] = useCancelBookingMutation()
 
   const bookings = data?.bookings ?? []
-  const rooms = data?.rooms ?? []
+  const rooms = useMemo(() => data?.rooms ?? [], [data?.rooms])
   const activeRooms = useMemo(() => rooms.filter((r) => r.isActive), [rooms])
 
   function openCancel(b: AdminBookingDto) {
