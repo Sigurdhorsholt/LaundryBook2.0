@@ -1,3 +1,4 @@
+import { Suspense } from 'react'
 import { Outlet, NavLink, useNavigate, useMatch } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { useMeQuery } from '../features/auth/authApi'
@@ -5,6 +6,7 @@ import { routes } from '../app/routes'
 import { isEnabled } from '../config/features'
 import { getHighestRole } from './roleUtils'
 import { colors } from './theme'
+import { Spinner } from './ui'
 import { AppNavbar } from './AppNavbar'
 import { AppFooter } from './AppFooter'
 import { PendingApprovalBanner } from './PendingApprovalBanner'
@@ -239,7 +241,10 @@ export function AdminLayout() {
           style={{ minWidth: 0, overflowX: 'hidden', backgroundColor: colors.bgPage }}
         >
           <PendingApprovalBanner />
-          <Outlet />
+          {/* Inside the shell so the sidebar stays put while a lazy page chunk loads */}
+          <Suspense fallback={<Spinner fullPage />}>
+            <Outlet />
+          </Suspense>
         </main>
 
       </div>
