@@ -534,8 +534,8 @@
   },
   "landing": {
     "heroBadge": "For Danish homeowner and cooperative housing associations",
-    "heroTitle": "A laundry room without <s>drama</s>.",
-    "heroSubtitle": "No more going down to the basement to see if there's a free laundry slot. With LaundryBook, residents book from home, and the board keeps track of the rest. No notes, no keys, no pointless trip down the stairs.",
+    "heroTitle": "Laundry times you can book <s>from home</s>.",
+    "heroSubtitle": "No more going down to the basement to see if there is a free laundry slot. With LaundryBook, residents book from home and the board has the overview. No notes and no wasted trips down the stairs.",
     "tryDemo": "Try demo",
     "login": "Log in",
     "heroNote": "Try the demo - no sign-up required.",
@@ -551,7 +551,7 @@
     "residentTitle": "Book a wash on your way home from work",
     "residentBody": "See which times are available today, tomorrow, or later in the week. Book with one tap.",
     "residentFeature1": "Available times shown with color codes",
-    "residentFeature2": "Cancel directly in the app if plans change",
+    "residentFeature2": "Cancel directly in the calendar if plans change",
     "residentFeature3": "Works on mobile, tablet and computer",
     "boardEyebrow": "For the board",
     "boardTitle": "Less hassle for the board",
@@ -633,7 +633,7 @@
         "product": "Product",
         "company": "Company",
         "contact": "Contact",
-        "tagline": "Digital laundry booking for Danish homeowner and cooperative housing associations. Made in Aarhus, in the evenings, by someone who was tired of stairs.",
+        "tagline": "Digital laundry booking for Danish homeowner and cooperative housing associations.",
         "legal": "Legal"
       }
     },
@@ -662,7 +662,7 @@
         },
         "property": {
           "title": "Create your property",
-          "body": "Name, address and number of apartments. We set up the rest for you."
+          "body": "Your association’s name and address. We then approve it."
         },
         "rooms": {
           "title": "Set up laundry rooms",
@@ -686,7 +686,7 @@
           "items": {
             "booking": {
               "q": "How do residents book a wash?",
-              "a": "They log in and choose a free time in the calendar for your laundry room. Available times are green, occupied ones are gray. Book with one click - and cancel again if plans change."
+              "a": "They log in and choose a free time in the calendar for your laundry room. Available times are green, occupied ones are gray. Book in a couple of clicks - and cancel again if plans change."
             },
             "join": {
               "q": "How does a resident get on board?",
@@ -698,7 +698,7 @@
             },
             "pricing": {
               "q": "How do we get our association on LaundryBook, and what does it cost?",
-              "a": "Write to us at {{email}}, and we'll set up your association and tell you the price."
+              "a": "Create your association under \"Get started\", and we will approve it. LaundryBook costs DKK 80 per month or DKK 800 per year per association, and payment is arranged directly with us - there is no payment in the app. Questions? Write to {{email}}."
             }
           }
         }
@@ -712,7 +712,7 @@
         "booking": {
           "tag": "Booking",
           "title": "Like checking the weather forecast for the laundry room",
-          "body": "Available times are green, busy ones are yellow, occupied ones are gray. Pick a day of the week, find a time that suits you, book with one click. Done. Everyone in the association sees the same calendar at the same second."
+          "body": "Available times are green, busy ones are yellow, occupied ones are gray. Pick a day of the week, find a time that suits you, and book it. Everyone in the association sees the same calendar."
         },
         "administration": {
           "tag": "Administration",
@@ -722,7 +722,7 @@
         "overview": {
           "tag": "Overview",
           "title": "Figures for the general assembly",
-          "body": "How many washes per week? When's the rush? Is another laundry room needed? The numbers are there when you need them."
+          "body": "See the number of bookings and the utilisation per laundry room for a chosen period. The numbers are there when you need them."
         }
       },
       "smallSectionTitle": "More little things that make it easier",
@@ -733,7 +733,7 @@
         },
         "roles": {
           "title": "Multiple roles",
-          "body": "Resident, property admin and system admin. Everyone sees what they should."
+          "body": "Residents and administrators. Everyone sees what they should."
         },
         "rooms": {
           "title": "Multiple laundry rooms per property",
@@ -753,14 +753,14 @@
         "calendar": "A digital calendar all residents know",
         "bookFromSofa": "Book from the sofa, cancel when plans change",
         "noDoubleBooking": "No double bookings - the system doesn't allow it",
-        "boardInsight": "The board sees patterns and can plan maintenance"
+        "boardInsight": "The board can see how much the laundry rooms are used"
       },
       "ctaTitle": "The best way to see it is to try it",
       "ctaButton": "Try the demo"
     },
     "demo": {
       "eyebrow": "Try without login",
-      "title": "Book a wash. Now. Here.",
+      "title": "Try booking a laundry slot",
       "subtitle": "This is the real booking - just with a made-up association. Try booking a time, cancel again, switch day. This is what it looks like for your residents.",
       "browserBar": "laundrybook.dk/laundry · Mejlgade 42 (demo)",
       "noDataStored": "No data is stored. Refresh the page to reset the demo.",
@@ -785,7 +785,7 @@
         "rooms": "Rooms"
       },
       "dashboard": {
-        "welcome": "Welcome back, Sigurd",
+        "welcome": "Welcome back",
         "yourProperties": "Your properties",
         "stats": {
           "bookings": {
@@ -930,7 +930,7 @@
       "factLocation": "Made in Aarhus",
       "factBrowser": "Runs in the browser - no app to install",
       "factAudience": "For Danish homeowner and cooperative housing associations",
-      "factPrice": "Price by agreement - write and ask",
+      "factPrice": "DKK 80/month or DKK 800/year per association",
       "ctaTitle": "Want to try it?",
       "ctaBody": "Try the demo without creating anything, or set up your association. If you have questions, write to us - we're happy to answer.",
       "tryDemo": "Try demo",
