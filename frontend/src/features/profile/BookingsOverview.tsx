@@ -3,7 +3,10 @@ import { useTranslation } from 'react-i18next'
 import { useGetMyBookingsQuery, useCancelBookingMutation, type MyBookingDto } from '../laundry/laundryApi'
 import { EmptyState, Spinner } from '../../shared/ui'
 import { colors } from '../../shared/theme'
-import { todayStr, formatDateFull, formatTimeRange } from '../../shared/utils/dateUtils'
+import { todayStr, formatDateFull, formatTimeRange, minutesUntilSlot } from '../../shared/utils/dateUtils'
+import { extractErrorMessage } from '../../shared/utils/errorUtils'
+import { ConfirmBookingModal } from '../laundry/ConfirmBookingModal'
+import type { PendingAction } from '../laundry/types'
 
 interface Props {
   propertyId: string
@@ -49,8 +52,9 @@ function BookingRow({
 export function BookingsOverview({ propertyId }: Props) {
   const { t } = useTranslation()
   const { data: bookings, isLoading } = useGetMyBookingsQuery(propertyId)
-  const [cancelBooking] = useCancelBookingMutation()
-  const [cancelling, setCancelling] = useState<string | null>(null)
+  const [cancelBooking, { isLoading: cancelling }] = useCancelBookingMutation()
+  const [pendingCancel, setPendingCancel] = useState<{ action: PendingAction; booking: MyBookingDto } | null>(null)
+  const [cancelError, setCancelError] = useState<string | null>(null)
   const today = todayStr()
 
   const { upcoming, past } = useMemo(() => {
@@ -62,12 +66,29 @@ export function BookingsOverview({ propertyId }: Props) {
     }
   }, [bookings, today])
 
-  async function handleCancel(booking: MyBookingDto) {
-    setCancelling(booking.id)
+  // One tap used to cancel immediately with no confirmation and no feedback on failure
+  function askCancel(booking: MyBookingDto) {
+    setCancelError(null)
+    setPendingCancel({
+      booking,
+      action: {
+        type: 'cancel', source: 'upcoming', slotId: booking.timeSlotTemplateId, date: booking.date,
+        slotTime: formatTimeRange(booking.startTime, booking.endTime),
+        bookingId: booking.id,
+        minutesUntil: minutesUntilSlot(booking.date, booking.startTime),
+        machineName: booking.machineName ?? undefined,
+      },
+    })
+  }
+
+  async function confirmCancel() {
+    if (!pendingCancel) return
+    const { booking } = pendingCancel
     try {
       await cancelBooking({ bookingId: booking.id, roomId: booking.roomId, propertyId }).unwrap()
-    } finally {
-      setCancelling(null)
+      setPendingCancel(null)
+    } catch (err) {
+      setCancelError(extractErrorMessage(err, t('common.genericError')))
     }
   }
 
@@ -84,8 +105,8 @@ export function BookingsOverview({ propertyId }: Props) {
                 <BookingRow
                   key={b.id}
                   booking={b}
-                  onCancel={() => handleCancel(b)}
-                  cancelling={cancelling === b.id}
+                  onCancel={() => askCancel(b)}
+                  cancelling={cancelling && pendingCancel?.booking.id === b.id}
                 />
               ))
           }
@@ -102,6 +123,16 @@ export function BookingsOverview({ propertyId }: Props) {
           }
         </div>
       </div>
+
+      {pendingCancel && (
+        <ConfirmBookingModal
+          pending={pendingCancel.action}
+          error={cancelError}
+          loading={cancelling}
+          onConfirm={confirmCancel}
+          onClose={() => { setPendingCancel(null); setCancelError(null) }}
+        />
+      )}
     </div>
   )
 }

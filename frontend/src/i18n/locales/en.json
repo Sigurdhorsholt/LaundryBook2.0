@@ -372,6 +372,8 @@
     "quickLinkBookings": "Bookings"
   },
   "sysadmin": {
+    "confirmRemove": "Confirm remove",
+    "confirmActivate": "Confirm activation",
     "manageAccess": "Manage access",
     "currentProperties": "Current properties",
     "loading": "Loading…",

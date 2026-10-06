@@ -20,7 +20,8 @@ public class ExceptionHandlingMiddleware(RequestDelegate next, ILogger<Exception
         {
             await WriteJson(context, (int)HttpStatusCode.UnprocessableEntity, new
             {
-                title = "Validation failed",
+                // Handlers throw ValidationException(message) without field errors; keep that message
+                title = ex.Errors.Any() ? "Validation failed" : ex.Message,
                 status = 422,
                 errors = ex.Errors
                     .GroupBy(e => e.PropertyName)
