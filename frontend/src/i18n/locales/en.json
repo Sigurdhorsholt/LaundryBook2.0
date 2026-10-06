@@ -728,7 +728,7 @@
             },
             "pricing": {
               "q": "How do we get our association on LaundryBook, and what does it cost?",
-              "a": "Create your association under \"Get started\", and we will approve it. LaundryBook costs DKK 80 per month or DKK 800 per year per association, and payment is arranged directly with us - there is no payment in the app. Questions? Write to {{email}}."
+              "a": "Create your association under \"Get started\", and we will approve it. Write to us at {{email}} for a price - there is no payment in the app."
             }
           }
         }
@@ -960,7 +960,7 @@
       "factLocation": "Made in Aarhus",
       "factBrowser": "Runs in the browser - no app to install",
       "factAudience": "For Danish homeowner and cooperative housing associations",
-      "factPrice": "DKK 80/month or DKK 800/year per association",
+      "factPrice": "Write to us for a price",
       "ctaTitle": "Want to try it?",
       "ctaBody": "Try the demo without creating anything, or set up your association. If you have questions, write to us - we're happy to answer.",
       "tryDemo": "Try demo",

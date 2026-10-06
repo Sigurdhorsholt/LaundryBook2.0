@@ -728,7 +728,7 @@
             },
             "pricing": {
               "q": "Hvordan får vi vores forening på LaundryBook, og hvad koster det?",
-              "a": "Opret jeres forening under \"Kom i gang\", så godkender vi den. LaundryBook koster 80 kr. om måneden eller 800 kr. om året pr. forening, og betalingen aftales direkte med os - der er ingen betaling i appen. Spørgsmål? Skriv til {{email}}."
+              "a": "Opret jeres forening under \"Kom i gang\", så godkender vi den. Skriv til os på {{email}} for en pris - der er ingen betaling i appen."
             }
           }
         }
@@ -960,7 +960,7 @@
       "factLocation": "Lavet i Aarhus",
       "factBrowser": "Kører i browseren - ingen app at installere",
       "factAudience": "Til danske ejer- og andelsboligforeninger",
-      "factPrice": "80 kr./md. eller 800 kr./år pr. forening",
+      "factPrice": "Skriv til os for en pris",
       "ctaTitle": "Vil du prøve det?",
       "ctaBody": "Prøv demoen uden at oprette noget, eller sæt jeres forening op. Har I spørgsmål, så skriv - vi svarer gerne.",
       "tryDemo": "Prøv demo",
