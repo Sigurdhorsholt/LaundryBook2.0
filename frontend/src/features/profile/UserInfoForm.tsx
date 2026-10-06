@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next'
 import { useMeQuery, useForgotPasswordMutation, useUpdateCurrentUserMutation } from '../auth/authApi'
 import { FormError } from '../../shared/ui'
 import { colors } from '../../shared/theme'
+import { extractErrorMessage } from '../../shared/utils/errorUtils'
 
 export function UserInfoForm() {
   const { t } = useTranslation()
@@ -12,6 +13,7 @@ export function UserInfoForm() {
   const [firstName, setFirstName] = useState('')
   const [lastName, setLastName] = useState('')
   const [saveError, setSaveError] = useState<string | null>(null)
+  const [resetError, setResetError] = useState<string | null>(null)
 
   useEffect(() => {
     if (user) {
@@ -33,7 +35,13 @@ export function UserInfoForm() {
   }
 
   async function handleResetPassword() {
-    if (user?.email) await forgotPassword({ email: user.email })
+    if (!user?.email) return
+    setResetError(null)
+    try {
+      await forgotPassword({ email: user.email }).unwrap()
+    } catch (err) {
+      setResetError(extractErrorMessage(err, t('common.genericError')))
+    }
   }
 
   return (
@@ -97,6 +105,7 @@ export function UserInfoForm() {
         <p className="mb-3" style={{ fontSize: '0.85rem', color: colors.textSecondary }}>
           {t('profile.passwordResetInfo')}
         </p>
+        <FormError message={resetError} />
         {resetSent ? (
           <p style={{ fontSize: '0.85rem', color: colors.successText }}>
             {t('profile.resetSent')}

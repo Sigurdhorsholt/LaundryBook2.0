@@ -372,6 +372,8 @@
     "quickLinkBookings": "Bookinger"
   },
   "sysadmin": {
+    "confirmRemove": "Bekræft fjern",
+    "confirmActivate": "Bekræft aktivering",
     "manageAccess": "Administrer adgang",
     "currentProperties": "Nuværende ejendomme",
     "loading": "Indlæser…",
