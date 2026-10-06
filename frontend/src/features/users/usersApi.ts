@@ -43,7 +43,7 @@ export const usersApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
     getPropertyMembers: builder.query<PropertyMemberDto[], string>({
       query: (propertyId) => `/api/properties/${propertyId}/members`,
-      providesTags: (_result, _err, propertyId) => [{ type: 'Auth', id: `members-${propertyId}` }],
+      providesTags: (_result, _err, propertyId) => [{ type: 'Member', id: propertyId }],
     }),
 
     inviteByEmail: builder.mutation<{ email: string }, { propertyId: string } & InviteByEmailRequest>({
@@ -52,7 +52,10 @@ export const usersApi = baseApi.injectEndpoints({
         method: 'POST',
         body,
       }),
-      invalidatesTags: (_result, _err, { propertyId }) => [{ type: 'Auth', id: `members-${propertyId}` }],
+      invalidatesTags: (_result, _err, { propertyId }) => [
+        { type: 'Member', id: propertyId },
+        { type: 'PendingInvite', id: propertyId },
+      ],
     }),
 
     updateMember: builder.mutation<{ cancelledBookings: number }, { propertyId: string; userId: string } & UpdateMemberRequest>({
@@ -63,7 +66,7 @@ export const usersApi = baseApi.injectEndpoints({
       }),
       // Deactivation cancels the member's bookings, which can be in any room
       invalidatesTags: (_result, _err, { propertyId, userId }) => [
-        { type: 'Auth', id: `members-${propertyId}` },
+        { type: 'Member', id: propertyId },
         { type: 'User', id: userId },
         'Booking',
       ],
@@ -75,7 +78,7 @@ export const usersApi = baseApi.injectEndpoints({
         method: 'DELETE',
       }),
       invalidatesTags: (_result, _err, { propertyId, userId }) => [
-        { type: 'Auth', id: `members-${propertyId}` },
+        { type: 'Member', id: propertyId },
         { type: 'User', id: userId },
         { type: 'User', id: 'LIST' },
         'Booking',
@@ -99,7 +102,7 @@ export const usersApi = baseApi.injectEndpoints({
 
     getPendingInvites: builder.query<PendingInviteDto[], string>({
       query: (propertyId) => `/api/properties/${propertyId}/members/pending`,
-      providesTags: (_result, _err, propertyId) => [{ type: 'Auth', id: `pending-${propertyId}` }],
+      providesTags: (_result, _err, propertyId) => [{ type: 'PendingInvite', id: propertyId }],
     }),
 
     resendInvite: builder.mutation<void, { propertyId: string; inviteId: string }>({
@@ -107,7 +110,7 @@ export const usersApi = baseApi.injectEndpoints({
         url: `/api/properties/${propertyId}/members/pending/${inviteId}/resend`,
         method: 'POST',
       }),
-      invalidatesTags: (_result, _err, { propertyId }) => [{ type: 'Auth', id: `pending-${propertyId}` }],
+      invalidatesTags: (_result, _err, { propertyId }) => [{ type: 'PendingInvite', id: propertyId }],
     }),
 
     deleteInvite: builder.mutation<void, { propertyId: string; inviteId: string }>({
@@ -115,7 +118,7 @@ export const usersApi = baseApi.injectEndpoints({
         url: `/api/properties/${propertyId}/members/pending/${inviteId}`,
         method: 'DELETE',
       }),
-      invalidatesTags: (_result, _err, { propertyId }) => [{ type: 'Auth', id: `pending-${propertyId}` }],
+      invalidatesTags: (_result, _err, { propertyId }) => [{ type: 'PendingInvite', id: propertyId }],
     }),
   }),
 })
