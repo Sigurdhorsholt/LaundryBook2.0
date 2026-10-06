@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useId, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useParams } from 'react-router-dom'
 import {
@@ -15,7 +15,7 @@ import {
   useUpdateMachineMutation,
 } from '../../../features/laundry/laundryApi'
 import { ModalShell } from '../../../shared/modals/ModalShell'
-import { IconPlus } from '../../../shared/icons'
+import { IconPlus, IconChevronDown } from '../../../shared/icons'
 import { useMeQuery } from '../../../features/auth/authApi'
 import { PageHeader, EmptyState, Spinner, FormError, Notice } from '../../../shared/ui'
 import { extractErrorMessage } from '../../../shared/utils/errorUtils'
@@ -202,7 +202,9 @@ function RoomCard({
 
       {/* Clickable info row — tap anywhere to expand/collapse */}
       <button
+        type="button"
         onClick={onToggleExpand}
+        aria-expanded={isExpanded}
         style={{
           display: 'block',
           width: '100%',
@@ -224,8 +226,8 @@ function RoomCard({
               </div>
             )}
           </div>
-          <span style={{ fontSize: '0.75rem', color: colors.textMuted, flexShrink: 0, paddingTop: 3 }}>
-            {isExpanded ? '▲' : '▼'}
+          <span aria-hidden="true" style={{ flexShrink: 0, display: 'flex', paddingTop: 3, transition: 'transform 0.2s', transform: isExpanded ? 'rotate(180deg)' : 'none' }}>
+            <IconChevronDown size={16} color={colors.textMuted} />
           </span>
         </div>
         <div className="mt-2">
@@ -470,6 +472,7 @@ function MachineRow({
 
 function AddRoomModal({ propertyId, onClose }: { propertyId: string; onClose: () => void }) {
   const { t } = useTranslation()
+  const formId = useId()
   const [name, setName] = useState('')
   const [description, setDescription] = useState('')
   const [error, setError] = useState<string | null>(null)
@@ -490,8 +493,9 @@ function AddRoomModal({ propertyId, onClose }: { propertyId: string; onClose: ()
     <ModalShell title={t('adminProperties.laundryRooms.addRoom')} onClose={onClose} size="sm">
       <form onSubmit={handleSubmit}>
         <div className="mb-3">
-          <label className="form-label" style={labelStyle}>{t('adminProperties.laundryRooms.nameLabel')}</label>
+          <label className="form-label" style={labelStyle} htmlFor={`${formId}-name`}>{t('adminProperties.laundryRooms.nameLabel')}</label>
           <input
+            id={`${formId}-name`}
             className="form-control"
             value={name}
             onChange={(e) => setName(e.target.value)}
@@ -502,8 +506,9 @@ function AddRoomModal({ propertyId, onClose }: { propertyId: string; onClose: ()
           />
         </div>
         <div className="mb-3">
-          <label className="form-label" style={labelStyle}>{t('adminProperties.laundryRooms.descriptionLabel')}</label>
+          <label className="form-label" style={labelStyle} htmlFor={`${formId}-description`}>{t('adminProperties.laundryRooms.descriptionLabel')}</label>
           <input
+            id={`${formId}-description`}
             className="form-control"
             value={description}
             onChange={(e) => setDescription(e.target.value)}
@@ -533,6 +538,7 @@ function EditRoomModal({
   onClose: () => void
 }) {
   const { t } = useTranslation()
+  const formId = useId()
   const [name, setName] = useState(room.name)
   const [description, setDescription] = useState(room.description ?? '')
   const [error, setError] = useState<string | null>(null)
@@ -553,8 +559,9 @@ function EditRoomModal({
     <ModalShell title={t('adminProperties.laundryRooms.editRoom')} onClose={onClose} size="sm">
       <form onSubmit={handleSubmit}>
         <div className="mb-3">
-          <label className="form-label" style={labelStyle}>{t('adminProperties.laundryRooms.nameLabel')}</label>
+          <label className="form-label" style={labelStyle} htmlFor={`${formId}-name`}>{t('adminProperties.laundryRooms.nameLabel')}</label>
           <input
+            id={`${formId}-name`}
             className="form-control"
             value={name}
             onChange={(e) => setName(e.target.value)}
@@ -564,8 +571,9 @@ function EditRoomModal({
           />
         </div>
         <div className="mb-3">
-          <label className="form-label" style={labelStyle}>{t('adminProperties.laundryRooms.descriptionLabel')}</label>
+          <label className="form-label" style={labelStyle} htmlFor={`${formId}-description`}>{t('adminProperties.laundryRooms.descriptionLabel')}</label>
           <input
+            id={`${formId}-description`}
             className="form-control"
             value={description}
             onChange={(e) => setDescription(e.target.value)}
@@ -594,6 +602,7 @@ function AddMachineModal({
   onClose: () => void
 }) {
   const { t } = useTranslation()
+  const formId = useId()
   const machineTypeOptions = useMachineTypeOptions()
   const [name, setName] = useState('')
   const [machineType, setMachineType] = useState<MachineType>(MachineType.Washer)
@@ -615,8 +624,9 @@ function AddMachineModal({
     <ModalShell title={t('adminProperties.laundryRooms.addMachineTitle', { room: roomName })} onClose={onClose} size="sm">
       <form onSubmit={handleSubmit}>
         <div className="mb-3">
-          <label className="form-label" style={labelStyle}>{t('adminProperties.laundryRooms.nameLabel')}</label>
+          <label className="form-label" style={labelStyle} htmlFor={`${formId}-name`}>{t('adminProperties.laundryRooms.nameLabel')}</label>
           <input
+            id={`${formId}-name`}
             className="form-control"
             value={name}
             onChange={(e) => setName(e.target.value)}
@@ -627,8 +637,9 @@ function AddMachineModal({
           />
         </div>
         <div className="mb-3">
-          <label className="form-label" style={labelStyle}>{t('adminProperties.laundryRooms.typeLabel')}</label>
+          <label className="form-label" style={labelStyle} htmlFor={`${formId}-type`}>{t('adminProperties.laundryRooms.typeLabel')}</label>
           <select
+            id={`${formId}-type`}
             className="form-select"
             value={machineType}
             onChange={(e) => setMachineType(Number(e.target.value) as MachineType)}
@@ -660,6 +671,7 @@ function EditMachineModal({
   onClose: () => void
 }) {
   const { t } = useTranslation()
+  const formId = useId()
   const machineTypeOptions = useMachineTypeOptions()
   const [name, setName] = useState(machine.name)
   const [machineType, setMachineType] = useState<MachineType>(machine.machineType)
@@ -681,8 +693,9 @@ function EditMachineModal({
     <ModalShell title={t('adminProperties.laundryRooms.editMachine')} onClose={onClose} size="sm">
       <form onSubmit={handleSubmit}>
         <div className="mb-3">
-          <label className="form-label" style={labelStyle}>{t('adminProperties.laundryRooms.nameLabel')}</label>
+          <label className="form-label" style={labelStyle} htmlFor={`${formId}-name`}>{t('adminProperties.laundryRooms.nameLabel')}</label>
           <input
+            id={`${formId}-name`}
             className="form-control"
             value={name}
             onChange={(e) => setName(e.target.value)}
@@ -692,8 +705,9 @@ function EditMachineModal({
           />
         </div>
         <div className="mb-3">
-          <label className="form-label" style={labelStyle}>{t('adminProperties.laundryRooms.typeLabel')}</label>
+          <label className="form-label" style={labelStyle} htmlFor={`${formId}-type`}>{t('adminProperties.laundryRooms.typeLabel')}</label>
           <select
+            id={`${formId}-type`}
             className="form-select"
             value={machineType}
             onChange={(e) => setMachineType(Number(e.target.value) as MachineType)}

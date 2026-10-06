@@ -309,7 +309,9 @@ function RoomCard({
     >
       {/* Clickable header */}
       <button
+        type="button"
         onClick={onToggleExpand}
+        aria-expanded={isExpanded}
         style={{
           display: 'block',
           width: '100%',

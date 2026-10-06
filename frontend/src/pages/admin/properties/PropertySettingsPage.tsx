@@ -134,6 +134,7 @@ export function PropertySettingsPage() {
         >
           <div className="d-flex flex-column gap-2">
             <RadioCard
+              name="bookingMode"
               selected={form.bookingMode === BookingMode.BookSpecificMachine}
               label={t('adminProperties.settings.bookingType.specificMachine')}
               description={t('adminProperties.settings.bookingType.specificMachineDesc')}
@@ -141,6 +142,7 @@ export function PropertySettingsPage() {
               onChange={() => patch({ bookingMode: BookingMode.BookSpecificMachine })}
             />
             <RadioCard
+              name="bookingMode"
               selected={form.bookingMode === BookingMode.BookEntireRoom}
               label={t('adminProperties.settings.bookingType.entireRoom')}
               description={t('adminProperties.settings.bookingType.entireRoomDesc')}
@@ -162,18 +164,21 @@ export function PropertySettingsPage() {
         >
           <div className="d-flex flex-column gap-2">
             <RadioCard
+              name="bookingVisibility"
               selected={form.bookingVisibility === BookingVisibility.ApartmentOnly}
               label={t('adminProperties.settings.visibility.apartmentOnly')}
               description={t('adminProperties.settings.visibility.apartmentOnlyDesc')}
               onChange={() => patch({ bookingVisibility: BookingVisibility.ApartmentOnly })}
             />
             <RadioCard
+              name="bookingVisibility"
               selected={form.bookingVisibility === BookingVisibility.FullName}
               label={t('adminProperties.settings.visibility.fullName')}
               description={t('adminProperties.settings.visibility.fullNameDesc')}
               onChange={() => patch({ bookingVisibility: BookingVisibility.FullName })}
             />
             <RadioCard
+              name="bookingVisibility"
               selected={form.bookingVisibility === BookingVisibility.Anonymous}
               label={t('adminProperties.settings.visibility.anonymous')}
               description={t('adminProperties.settings.visibility.anonymousDesc')}
@@ -314,12 +319,15 @@ function SettingsSection({
 }
 
 function RadioCard({
+  name,
   selected,
   label,
   description,
   disabled = false,
   onChange,
 }: {
+  // Shared by the options of one group so arrow keys move between them
+  name: string
   selected: boolean
   label: string
   description: string
@@ -346,6 +354,7 @@ function RadioCard({
     >
       <input
         type="radio"
+        name={name}
         checked={selected}
         disabled={disabled}
         onChange={onChange}
