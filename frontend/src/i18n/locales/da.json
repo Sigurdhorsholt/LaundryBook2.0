@@ -84,7 +84,7 @@
         "title": "Fremtidshorisont",
         "description": "Hvor mange dage frem kan beboere oprette bookinger? (1-30)",
         "unit": "dage",
-        "rangeError": "Skal være mellem 1 og {{max}} dage."
+        "rangeError": "Skal være et helt tal mellem 1 og {{max}} dage."
       },
       "cancellation": {
         "title": "Aflysningsfrist",
@@ -97,7 +97,7 @@
         "title": "Maks. aktive bookinger pr. beboer",
         "description": "Hvor mange kommende bookinger en beboer må have på samme tid. (1-10)",
         "unit": "bookinger",
-        "rangeError": "Skal være mellem 1 og {{max}}."
+        "rangeError": "Skal være et helt tal mellem 1 og {{max}}."
       }
     },
     "bookings": {

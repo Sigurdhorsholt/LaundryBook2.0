@@ -99,8 +99,9 @@ export function PropertySettingsPage() {
   }
 
   const cancellationError = form.cancellationWindowHours < 0 || form.cancellationWindowHours > MAX_CANCELLATION_HOURS
-  const lookaheadError = form.bookingLookaheadDays < 1 || form.bookingLookaheadDays > MAX_LOOKAHEAD_DAYS
-  const maxBookingsError = form.maxConcurrentBookingsPerUser < 1 || form.maxConcurrentBookingsPerUser > MAX_CONCURRENT_BOOKINGS
+  // Days and booking counts are whole numbers on the backend; a decimal would fail model binding with a generic 400
+  const lookaheadError = !Number.isInteger(form.bookingLookaheadDays) || form.bookingLookaheadDays < 1 || form.bookingLookaheadDays > MAX_LOOKAHEAD_DAYS
+  const maxBookingsError = !Number.isInteger(form.maxConcurrentBookingsPerUser) || form.maxConcurrentBookingsPerUser < 1 || form.maxConcurrentBookingsPerUser > MAX_CONCURRENT_BOOKINGS
   const hasValidationError = cancellationError || lookaheadError || maxBookingsError
   const modeLocked = (property?.upcomingBookingCount ?? 0) > 0
 
@@ -193,6 +194,7 @@ export function PropertySettingsPage() {
               style={{ width: 90 }}
               min={1}
               max={MAX_LOOKAHEAD_DAYS}
+              step={1}
               value={form.bookingLookaheadDays}
               onChange={(e) => patch({ bookingLookaheadDays: Number(e.target.value) })}
             />
@@ -245,6 +247,7 @@ export function PropertySettingsPage() {
               style={{ width: 90 }}
               min={1}
               max={MAX_CONCURRENT_BOOKINGS}
+              step={1}
               value={form.maxConcurrentBookingsPerUser}
               onChange={(e) => patch({ maxConcurrentBookingsPerUser: Number(e.target.value) })}
             />

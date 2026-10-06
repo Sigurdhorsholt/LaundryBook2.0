@@ -79,6 +79,7 @@ export interface AdminRoomSummaryDto {
   name: string
   isActive: boolean
   activeSlotCount: number
+  capacityPerSlot: number
 }
 
 export interface PropertyBookingsDto {
