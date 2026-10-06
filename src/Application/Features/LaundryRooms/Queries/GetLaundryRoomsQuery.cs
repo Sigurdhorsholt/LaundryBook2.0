@@ -9,7 +9,7 @@ namespace Application.Features.LaundryRooms.Queries;
 
 public record GetLaundryRoomsQuery(Guid PropertyId) : IRequest<List<LaundryRoomDto>>;
 
-public record LaundryRoomDto(Guid Id, string Name, string? Description, bool IsActive, int MachineCount, int UpcomingBookingCount);
+public record LaundryRoomDto(Guid Id, string Name, string? Description, bool IsActive, int MachineCount, int TimeSlotCount, int UpcomingBookingCount);
 
 public class GetLaundryRoomsQueryHandler(
     IAppDbContext db,
@@ -29,6 +29,7 @@ public class GetLaundryRoomsQueryHandler(
                 r.Description,
                 r.IsActive,
                 r.Machines.Count(m => m.IsActive),
+                r.TimeSlotTemplates.Count(t => t.IsActive),
                 r.Bookings.Count(b => b.Date >= today && b.Status == BookingStatus.Active)))
             .ToListAsync(cancellationToken);
     }

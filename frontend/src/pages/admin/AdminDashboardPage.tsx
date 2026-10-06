@@ -4,6 +4,7 @@ import { useMeQuery, UserRole } from '../../features/auth/authApi'
 import { getHighestRole } from '../../shared/roleUtils'
 import { useRoleLabel } from '../../shared/constants'
 import { PropertyCard } from '../../features/properties/PropertyCard'
+import { SetupChecklist } from '../../features/properties/SetupChecklist'
 import { PageHeader } from '../../shared/ui'
 import { colors } from '../../shared/theme'
 
@@ -29,22 +30,9 @@ export function AdminDashboardPage() {
         }
       />
 
-      {/* Stats */}
-      <div className="row g-4 mb-5">
-        {[
-          { label: t('adminDashboard.statActiveBookingsLabel'), value: '—', sub: t('adminDashboard.statActiveBookingsSub') },
-          { label: t('adminDashboard.statResidentsLabel'), value: '—', sub: t('adminDashboard.statResidentsSub') },
-          { label: t('adminDashboard.statRoomsLabel'), value: '—', sub: t('adminDashboard.statRoomsSub') },
-        ].map((card) => (
-          <div key={card.label} className="col-12 col-sm-6 col-xl-4">
-            <div className="p-4 bg-white rounded-3 h-100" style={{ border: `1px solid ${colors.borderDefault}` }}>
-              <p className="mb-1" style={{ color: colors.textSecondary, fontSize: '0.85rem', fontWeight: 500 }}>{card.label}</p>
-              <p className="fw-bold mb-0" style={{ fontSize: '2rem', color: colors.textPrimary, lineHeight: 1.1 }}>{card.value}</p>
-              <p className="mb-0 mt-1" style={{ color: colors.textMuted, fontSize: '0.8rem' }}>{card.sub}</p>
-            </div>
-          </div>
-        ))}
-      </div>
+      {adminMemberships.slice(0, 6).map((m) => (
+        <SetupChecklist key={m.propertyId} propertyId={m.propertyId} propertyName={m.propertyName} />
+      ))}
 
       {/* Property cards */}
       {adminMemberships.length > 0 && (
