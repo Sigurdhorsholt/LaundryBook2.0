@@ -27,7 +27,11 @@ public class GetCurrentUserQueryHandler(
             user.Email,
             user.FirstName,
             user.LastName,
-            user.Memberships.Select(m => new UserComplexMembershipDto(
+            // Stable order: pages that need "the" property (resident booking, my page) use the first one
+            user.Memberships
+                .OrderBy(m => m.JoinedAt)
+                .ThenBy(m => m.Property.Name)
+                .Select(m => new UserComplexMembershipDto(
                 m.PropertyId,
                 m.Property.Name,
                 m.Role,
