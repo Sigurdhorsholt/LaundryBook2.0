@@ -280,6 +280,14 @@
     }
   },
   "auth": {
+    "errors": {
+      "emailInUse": "Der findes allerede en konto med denne e-mail. Log ind med din adgangskode, eller brug \"Glemt adgangskode\".",
+      "invalidCredential": "Forkert e-mail eller adgangskode.",
+      "weakPassword": "Adgangskoden skal være mindst 6 tegn.",
+      "invalidEmail": "Ugyldig e-mailadresse.",
+      "tooManyRequests": "For mange forsøg. Vent lidt, og prøv igen.",
+      "network": "Ingen forbindelse. Tjek dit internet, og prøv igen."
+    },
     "login": "Log ind",
     "loginSubtitle": "Velkommen tilbage til LaundryBook.",
     "loginFailed": "Login mislykkedes. Prøv igen.",
@@ -515,6 +523,12 @@
     "loggedInAs": "Logget ind som <s>{{email}}</s>"
   },
   "join": {
+    "acceptTitle": "Tilmeld dig {{property}}",
+    "acceptSubtitle": "Du er logget ind som {{email}}. Bekræft for at blive tilknyttet med din eksisterende konto.",
+    "emailMismatch": "Invitationen er sendt til {{inviteEmail}}, men du er logget ind som {{email}}. Log ud for at fortsætte.",
+    "acceptSubmit": "Tilmeld mig",
+    "accepting": "Tilmelder…",
+    "useOtherAccount": "Log ud og brug en anden konto",
     "invalidLinkTitle": "Ugyldigt eller udløbet invitationslink",
     "invalidLinkBody": "Bed din administrator om at sende et nyt link.",
     "genericError": "Noget gik galt. Prøv igen.",

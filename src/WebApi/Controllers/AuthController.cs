@@ -94,10 +94,20 @@ public class AuthController(IMediator mediator, IWebHostEnvironment env) : Contr
 
         return Ok(new { result.UserId });
     }
+
+    [Authorize]
+    [EnableRateLimiting("auth")]
+    [HttpPost("accept-invite")]
+    public async Task<IActionResult> AcceptInvite([FromBody] AcceptInviteRequest request, CancellationToken ct)
+    {
+        await mediator.Send(new AcceptInviteCommand(request.InviteToken, request.ApartmentNumber, request.AcceptedTerms), ct);
+        return NoContent();
+    }
 }
 
 public record LoginRequest(string IdToken);
 public record RegisterRequest(string IdToken, string FirstName, string LastName, string PropertyName, string PropertyAddress, bool AcceptedTerms);
 public record UpdateMeRequest(string FirstName, string LastName);
 public record ForgotPasswordRequest(string Email);
+public record AcceptInviteRequest(string InviteToken, string? ApartmentNumber, bool AcceptedTerms);
 public record RedeemInviteRequest(string IdToken, string InviteToken, string? ApartmentNumber, string FirstName, string LastName, bool AcceptedTerms);
