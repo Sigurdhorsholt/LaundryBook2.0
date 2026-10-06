@@ -1,4 +1,6 @@
+import { useId, useRef } from 'react'
 import { useTranslation, Trans } from 'react-i18next'
+import { useDialog } from '../../shared/modals/useDialog'
 import type { PendingAction } from './types'
 import { formatDateFull } from '../../shared/utils/dateUtils'
 import { colors } from '../../shared/theme'
@@ -13,6 +15,10 @@ interface Props {
 
 export function ConfirmBookingModal({ pending, error, loading, onConfirm, onClose }: Props) {
   const { t } = useTranslation()
+  const titleId = useId()
+  const dialogRef = useRef<HTMLDivElement>(null)
+  // Closing mid-request would drop the error the user needs to see
+  useDialog(dialogRef, onClose, !loading)
   const isBook   = pending.type === 'book'
   const dateText = formatDateFull(pending.date)
 
@@ -25,10 +31,15 @@ export function ConfirmBookingModal({ pending, error, loading, onConfirm, onClos
   return (
     <>
       <div
-        onClick={onClose}
+        onClick={loading ? undefined : onClose}
         style={{ position: 'fixed', inset: 0, backgroundColor: 'rgba(0,0,0,0.35)', zIndex: 1040, backdropFilter: 'blur(2px)' }}
       />
       <div
+        ref={dialogRef}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby={titleId}
+        tabIndex={-1}
         style={{
           position: 'fixed', top: '50%', left: '50%',
           transform: 'translate(-50%, -50%)',
@@ -37,7 +48,7 @@ export function ConfirmBookingModal({ pending, error, loading, onConfirm, onClos
           width: 'min(92vw, 380px)', padding: '24px',
         }}
       >
-        <h6 style={{ fontWeight: 700, marginBottom: 4, color: colors.textPrimary }}>
+        <h6 id={titleId} style={{ fontWeight: 700, marginBottom: 4, color: colors.textPrimary }}>
           {isBook ? t('laundry.confirmBooking.titleBook') : t('laundry.confirmBooking.titleCancel')}
         </h6>
 
