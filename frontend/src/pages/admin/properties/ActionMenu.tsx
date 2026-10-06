@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from 'react'
+import { useState, useRef, useEffect, useLayoutEffect, useId } from 'react'
 import { useTranslation } from 'react-i18next'
 import { createPortal } from 'react-dom'
 import { type PropertyMemberDto } from '../../../features/users/usersApi'
@@ -39,6 +39,7 @@ function MenuButton({ children, style, ...rest }: React.ButtonHTMLAttributes<HTM
   return (
     <button
       type="button"
+      role="menuitem"
       className="btn btn-link w-100 text-start px-3 py-2 text-decoration-none border-0 d-block"
       style={{ fontSize: '0.82rem', color: colors.textPrimary, whiteSpace: 'nowrap', ...style }}
       {...rest}
@@ -62,7 +63,7 @@ interface ConfirmPanelProps {
 function ConfirmPanel({ message, isLoading, onConfirm, onCancel }: ConfirmPanelProps) {
   const { t } = useTranslation()
   return (
-    <div className="px-3 py-2">
+    <div className="px-3 py-2" role="group" aria-label={message}>
       <div className="mb-2" style={{ fontSize: '0.78rem', color: colors.textSecondary }}>{message}</div>
       <div className="d-flex gap-2">
         <button type="button" className="btn btn-danger btn-sm w-100" style={{ fontSize: '0.75rem' }}
@@ -86,11 +87,14 @@ export function ActionMenu(props: ActionMenuProps) {
   const triggerRef = useRef<HTMLButtonElement>(null)
   const dropdownRef = useRef<HTMLDivElement>(null)
   const [dropdownPos, setDropdownPos] = useState<{ top: number; right: number } | null>(null)
+  const menuId = useId()
   const onMenuCloseRef = useRef(props.onMenuClose)
-  onMenuCloseRef.current = props.onMenuClose
-
-  // Calculate dropdown position from trigger rect when menu opens
   useEffect(() => {
+    onMenuCloseRef.current = props.onMenuClose
+  })
+
+  // Calculate dropdown position from trigger rect when menu opens (layout effect: measure before paint)
+  useLayoutEffect(() => {
     if (!props.isMenuOpen || !triggerRef.current) return
     if (triggerRef.current.offsetParent === null) return
     const rect = triggerRef.current.getBoundingClientRect()
@@ -100,13 +104,15 @@ export function ActionMenu(props: ActionMenuProps) {
     })
   }, [props.isMenuOpen])
 
-  // Reset confirm state and position when the menu closes
-  useEffect(() => {
+  // Reset confirm state and position when the menu closes (adjusted during render, not in an effect)
+  const [wasOpen, setWasOpen] = useState(props.isMenuOpen)
+  if (wasOpen !== props.isMenuOpen) {
+    setWasOpen(props.isMenuOpen)
     if (!props.isMenuOpen) {
       setConfirming(null)
       setDropdownPos(null)
     }
-  }, [props.isMenuOpen])
+  }
 
   // Click-outside closes the menu
   useEffect(() => {
@@ -123,7 +129,16 @@ export function ActionMenu(props: ActionMenuProps) {
         onMenuCloseRef.current()
       }
     }
-    const onScroll = () => onMenuCloseRef.current()
+    // Follow the trigger while scrolling (closing on every scroll was jumpy on touch screens);
+    // only close once the trigger has scrolled out of view
+    const onScroll = () => {
+      const rect = triggerRef.current?.getBoundingClientRect()
+      if (!rect || rect.bottom < 0 || rect.top > window.innerHeight) {
+        onMenuCloseRef.current()
+        return
+      }
+      setDropdownPos({ top: rect.bottom + 4, right: window.innerWidth - rect.right })
+    }
     document.addEventListener('mousedown', onMouseDown)
     window.addEventListener('scroll', onScroll, true)
     return () => {
@@ -131,6 +146,33 @@ export function ActionMenu(props: ActionMenuProps) {
       window.removeEventListener('scroll', onScroll, true)
     }
   }, [props.isMenuOpen])
+
+  // Keyboard: focus moves into the menu when it opens and back to the trigger when it closes
+  const menuShown = props.isMenuOpen && dropdownPos !== null
+  useEffect(() => {
+    if (!menuShown) return
+    const trigger = triggerRef.current
+    const dropdown = dropdownRef.current
+    dropdown?.querySelector<HTMLElement>('button:not([disabled])')?.focus()
+    return () => {
+      // Only reclaim focus if it was lost with the menu (not if the user clicked somewhere else)
+      if (document.activeElement === document.body || dropdown?.contains(document.activeElement)) trigger?.focus()
+    }
+  }, [menuShown])
+
+  function handleMenuKeyDown(e: React.KeyboardEvent<HTMLDivElement>) {
+    if (e.key === 'Escape' || e.key === 'Tab') {
+      if (e.key === 'Escape') e.preventDefault()
+      props.onMenuClose()
+      return
+    }
+    if (e.key !== 'ArrowDown' && e.key !== 'ArrowUp') return
+    e.preventDefault()
+    const items = [...(dropdownRef.current?.querySelectorAll<HTMLElement>('button:not([disabled])') ?? [])]
+    const index = items.indexOf(document.activeElement as HTMLElement)
+    const next = e.key === 'ArrowDown' ? (index + 1) % items.length : (index - 1 + items.length) % items.length
+    items[next]?.focus()
+  }
 
   // ── Menu content ─────────────────────────────────────────────────────────────
 
@@ -228,6 +270,9 @@ export function ActionMenu(props: ActionMenuProps) {
         className="btn btn-sm btn-outline-secondary d-flex align-items-center justify-content-center"
         style={{ width: 32, height: 32, borderRadius: '6px', padding: 0 }}
         aria-label={t('adminProperties.actionMenu.actions')}
+        aria-haspopup="menu"
+        aria-expanded={props.isMenuOpen}
+        aria-controls={props.isMenuOpen ? menuId : undefined}
         disabled={props.isActionLoading}
         onClick={props.onMenuToggle}
       >
@@ -239,6 +284,10 @@ export function ActionMenu(props: ActionMenuProps) {
       {props.isMenuOpen && root && dropdownPos && createPortal(
         <div
           ref={dropdownRef}
+          id={menuId}
+          role="menu"
+          aria-label={t('adminProperties.actionMenu.actions')}
+          onKeyDown={handleMenuKeyDown}
           className="bg-white shadow-lg rounded-3"
           style={{
             position: 'fixed',
