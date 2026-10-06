@@ -6,7 +6,6 @@
     "upcomingBookingsCancelled_one": "{{count}} kommende booking blev annulleret.",
     "upcomingBookingsCancelled_other": "{{count}} kommende bookinger blev annulleret.",
     "close": "Luk",
-    "back": "Tilbage",
     "save": "Gem",
     "cancel": "Annuller",
     "loading": "Indlæser…",
@@ -55,7 +54,7 @@
     "roomsAndMachines": "Lokaler & Maskiner",
     "timeslots": "Tidspladser",
     "bookings": "Bookinger",
-    "preview": "Forhåndsvisning"
+    "residentView": "Beboervisning"
   },
   "layout": {
     "pendingApproval": "Jeres forening afventer godkendelse. I kan opsætte vaskerum og indstillinger, men kan først invitere beboere, når foreningen er aktiveret."
@@ -253,52 +252,17 @@
       "removeOnly": "Fjern tidspladser",
       "hour": "Time",
       "minute": "Minut"
-    },
-    "preview": {
-      "title": "Forhåndsvisning",
-      "description": "Simulér beboernes bookingoplevelse med testbrugere",
-      "descriptionShort": "Simulér beboernes bookingoplevelse",
-      "noActiveRooms": "Ingen aktive vaskerum",
-      "noActiveRoomsDesc": "Opret et vaskerum under Lokaler & Maskiner for at se forhåndsvisningen.",
-      "adminSimSettings": "Admin · Simuleringsindstillinger",
-      "reset": "Nulstil",
-      "viewingAs": "Viser som:",
-      "room": "Vaskerum:",
-      "residentView": "Beboervisning",
-      "nextBookingLabel": "{{name}}s næste booking",
-      "cancel": "Aflys",
-      "book": "Book",
-      "previousWeek": "Forrige uge",
-      "nextWeek": "Næste uge",
-      "myBooking": "Min booking",
-      "resident": "Beboer",
-      "occupied": "Optaget",
-      "apartmentLabel": "Lejl. {{number}}",
-      "othersBookedToday_one": "1 anden beboer har booket denne dag",
-      "othersBookedToday_other": "{{count}} andre beboere har booket denne dag",
-      "visibilityFullName": "Navn synligt",
-      "visibilityApartment": "Lejl. nr.",
-      "visibilityAnonymous": "Anonymt",
-      "modeSpecificMachine": "Specifik maskine",
-      "modeEntireRoom": "Helt lokale",
-      "cancelWithinHours": "Aflys inden {{hours}}t",
-      "cancelWithinMinutes": "Aflys inden {{minutes}} min",
-      "maxBookings": "Max {{count}} booking",
-      "daysAhead": "{{count}} dage frem",
-      "confirmBookTitle": "Bekræft booking",
-      "confirmCancelTitle": "Bekræft aflysning",
-      "confirmBookQuestion": "Book <s>{{slotTime}}</s> den {{dateLabel}} som <s>{{userName}}</s>?",
-      "confirmCancelQuestion": "Aflys booking <s>{{slotTime}}</s> den {{dateLabel}}?",
-      "timeWarningMinutes": "Der er kun {{minutes}} minutter til bookingen starter.",
-      "timeWarningHours_one": "Der er {{count}} time til bookingen starter.",
-      "timeWarningHours_other": "Der er {{count}} timer til bookingen starter.",
-      "previewNotice": "Dette er en forhåndsvisning - ingen rigtige bookinger oprettes.",
-      "userActiveBookings_one": "{{name}} har {{count}} aktiv booking",
-      "userActiveBookings_other": "{{name}} har {{count}} aktive bookinger",
-      "maxLabel": "(maks. {{count}})"
     }
   },
   "auth": {
+    "errors": {
+      "emailInUse": "Der findes allerede en konto med denne e-mail. Log ind med din adgangskode, eller brug \"Glemt adgangskode\".",
+      "invalidCredential": "Forkert e-mail eller adgangskode.",
+      "weakPassword": "Adgangskoden skal være mindst 6 tegn.",
+      "invalidEmail": "Ugyldig e-mailadresse.",
+      "tooManyRequests": "For mange forsøg. Vent lidt, og prøv igen.",
+      "network": "Ingen forbindelse. Tjek dit internet, og prøv igen."
+    },
     "signInRequiredTitle": "Log ind for at fortsætte",
     "signInRequiredBody": "Din session er udløbet, eller du er ikke logget ind. Log ind, så kommer du tilbage til samme side.",
     "goHome": "Til forsiden",
@@ -364,6 +328,8 @@
     "quickLinkBookings": "Bookinger"
   },
   "sysadmin": {
+    "confirmRemove": "Bekræft fjern",
+    "confirmActivate": "Bekræft aktivering",
     "manageAccess": "Administrer adgang",
     "currentProperties": "Nuværende ejendomme",
     "loading": "Indlæser…",
@@ -423,6 +389,14 @@
     }
   },
   "users": {
+    "openLinkActive": "Aktivt fælles link",
+    "openLinkMeta": "Oprettet {{created}} · udløber {{expires}}",
+    "showQr": "Vis QR-kode",
+    "revokeLink": "Tilbagekald link",
+    "confirmRevoke": "Bekræft tilbagekald",
+    "revoking": "Tilbagekalder…",
+    "revokeWarning": "Den udskrevne QR-kode holder op med at virke med det samme. Beboere, der allerede er tilmeldt, beholder adgangen.",
+    "newLinkReplacesOld": "Et nyt fælles link gør den tidligere QR-kode ugyldig.",
     "editMember": "Rediger - {{name}}",
     "role": "Rolle",
     "apartment": "Lejlighed",
@@ -453,8 +427,18 @@
     "specificResident": "Specifik beboer"
   },
   "laundry": {
+    "availability": {
+      "free": "ledige tider",
+      "few": "få ledige tider",
+      "full": "fuldt booket",
+      "past": "kan ikke bookes"
+    },
     "noMachinesWarning": "Ingen maskiner endnu - beboerne kan ikke booke i dette vaskerum, før der er tilføjet mindst én.",
     "actions": {
+      "bookSlot": "Book {{time}}",
+      "cancelSlot": "Aflys booking {{time}}",
+      "bookMachine": "Book {{machine}}, {{time}}",
+      "cancelMachine": "Aflys {{machine}}, {{time}}",
       "book": "Book",
       "cancelBooking": "Aflys",
       "dismiss": "Fortryd",
@@ -544,6 +528,12 @@
     "loggedInAs": "Logget ind som <s>{{email}}</s>"
   },
   "join": {
+    "acceptTitle": "Tilmeld dig {{property}}",
+    "acceptSubtitle": "Du er logget ind som {{email}}. Bekræft for at blive tilknyttet med din eksisterende konto.",
+    "emailMismatch": "Invitationen er sendt til {{inviteEmail}}, men du er logget ind som {{email}}. Log ud for at fortsætte.",
+    "acceptSubmit": "Tilmeld mig",
+    "accepting": "Tilmelder…",
+    "useOtherAccount": "Log ud og brug en anden konto",
     "invalidLinkTitle": "Ugyldigt eller udløbet invitationslink",
     "invalidLinkBody": "Bed din administrator om at sende et nyt link.",
     "genericError": "Noget gik galt. Prøv igen.",

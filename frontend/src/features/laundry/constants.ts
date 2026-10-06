@@ -39,3 +39,6 @@ export const TIMELINE_START = 6 * 60
 export const TIMELINE_END   = 23 * 60
 export const TIMELINE_TOTAL = TIMELINE_END - TIMELINE_START
 export const TIMELINE_TICKS = ['06:00', '12:00', '18:00', '23:00']
+
+// Minimum touch target for grid actions; most residents book from a phone
+export const TAP_TARGET_PX = 40

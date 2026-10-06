@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useId, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { ModalShell } from '../../shared/modals/ModalShell'
 import { useCreatePropertyMutation } from './propertiesApi'
@@ -11,6 +11,7 @@ interface CreatePropertyModalProps {
 
 export function CreatePropertyModal({ onClose, onCreated }: CreatePropertyModalProps) {
   const { t } = useTranslation()
+  const formId = useId()
   const [name, setName] = useState('')
   const [address, setAddress] = useState('')
   const [error, setError] = useState<string | null>(null)
@@ -31,10 +32,11 @@ export function CreatePropertyModal({ onClose, onCreated }: CreatePropertyModalP
     <ModalShell title={t('properties.createProperty')} onClose={onClose}>
       <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
         <div>
-          <label className="form-label" style={{ fontSize: '0.85rem', fontWeight: 500, color: colors.textPrimary }}>
+          <label className="form-label" htmlFor={`${formId}-name`} style={{ fontSize: '0.85rem', fontWeight: 500, color: colors.textPrimary }}>
             {t('properties.name')}
           </label>
           <input
+            id={`${formId}-name`}
             className="form-control"
             type="text"
             placeholder={t('properties.namePlaceholder')}
@@ -46,10 +48,11 @@ export function CreatePropertyModal({ onClose, onCreated }: CreatePropertyModalP
           />
         </div>
         <div>
-          <label className="form-label" style={{ fontSize: '0.85rem', fontWeight: 500, color: colors.textPrimary }}>
+          <label className="form-label" htmlFor={`${formId}-address`} style={{ fontSize: '0.85rem', fontWeight: 500, color: colors.textPrimary }}>
             {t('properties.address')}
           </label>
           <input
+            id={`${formId}-address`}
             className="form-control"
             type="text"
             placeholder={t('properties.addressPlaceholder')}

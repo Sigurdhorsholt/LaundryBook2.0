@@ -1,11 +1,32 @@
+import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useGetPendingPropertiesQuery, useActivatePropertyMutation } from './sysAdminApi'
 import { colors } from '../../shared/theme'
+import { formatDateFull } from '../../shared/utils/dateUtils'
+import { extractErrorMessage } from '../../shared/utils/errorUtils'
+import { FormError } from '../../shared/ui'
 
 export function PendingPropertiesList() {
   const { t } = useTranslation()
   const { data: pending = [], isLoading } = useGetPendingPropertiesQuery()
-  const [activate, { isLoading: isActivating }] = useActivatePropertyMutation()
+  const [activate] = useActivatePropertyMutation()
+  // Per row: one shared isLoading used to show "Activating…" on every row at once
+  const [activatingId, setActivatingId] = useState<string | null>(null)
+  const [confirmingId, setConfirmingId] = useState<string | null>(null)
+  const [error, setError] = useState<string | null>(null)
+
+  async function handleActivate(id: string) {
+    setConfirmingId(null)
+    setActivatingId(id)
+    setError(null)
+    try {
+      await activate(id).unwrap()
+    } catch (err) {
+      setError(extractErrorMessage(err, t('common.genericError')))
+    } finally {
+      setActivatingId(null)
+    }
+  }
 
   return (
     <>
@@ -19,6 +40,8 @@ export function PendingPropertiesList() {
           </span>
         )}
       </div>
+
+      <FormError message={error} />
 
       {isLoading && <p style={{ color: colors.textSecondary, fontSize: '0.9rem' }}>{t('sysadmin.loading')}</p>}
 
@@ -40,16 +63,28 @@ export function PendingPropertiesList() {
                 <p className="fw-semibold mb-0" style={{ color: colors.textPrimary, fontSize: '0.9rem' }}>{p.name}</p>
                 <p className="mb-0" style={{ color: colors.textSecondary, fontSize: '0.8rem' }}>{p.address}</p>
                 <p className="mb-0 mt-1" style={{ color: colors.textMuted, fontSize: '0.78rem' }}>
-                  {p.adminName ?? t('sysadmin.unknown')}{p.adminEmail ? ` · ${p.adminEmail}` : ''} · {t('sysadmin.createdOn', { date: new Date(p.createdAt).toLocaleDateString('da-DK') })}
+                  {p.adminName ?? t('sysadmin.unknown')}{p.adminEmail ? ` · ${p.adminEmail}` : ''} · {t('sysadmin.createdOn', { date: formatDateFull(p.createdAt.slice(0, 10)) })}
                 </p>
               </div>
-              <button
-                className="btn btn-primary btn-sm"
-                disabled={isActivating}
-                onClick={() => activate(p.id)}
-              >
-                {isActivating ? t('sysadmin.activating') : t('sysadmin.activate')}
-              </button>
+              {confirmingId === p.id ? (
+                <span className="d-flex gap-2">
+                  <button type="button" className="btn btn-primary btn-sm" onClick={() => handleActivate(p.id)}>
+                    {t('sysadmin.confirmActivate')}
+                  </button>
+                  <button type="button" className="btn btn-outline-secondary btn-sm" onClick={() => setConfirmingId(null)}>
+                    {t('common.cancel')}
+                  </button>
+                </span>
+              ) : (
+                <button
+                  type="button"
+                  className="btn btn-primary btn-sm"
+                  disabled={activatingId === p.id}
+                  onClick={() => setConfirmingId(p.id)}
+                >
+                  {activatingId === p.id ? t('sysadmin.activating') : t('sysadmin.activate')}
+                </button>
+              )}
             </div>
           ))}
         </div>

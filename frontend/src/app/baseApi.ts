@@ -25,6 +25,6 @@ const baseQuery: BaseQueryFn<string | FetchArgs, unknown, FetchBaseQueryError> =
 export const baseApi = createApi({
   reducerPath: 'api',
   baseQuery,
-  tagTypes: ['Auth', 'Property', 'User', 'Member', 'PendingInvite', 'LaundryRoom', 'LaundryMachine', 'TimeSlot', 'Booking'],
+  tagTypes: ['Auth', 'Property', 'User', 'Member', 'PendingInvite', 'InviteLink', 'LaundryRoom', 'LaundryMachine', 'TimeSlot', 'Booking'],
   endpoints: () => ({}),
 })

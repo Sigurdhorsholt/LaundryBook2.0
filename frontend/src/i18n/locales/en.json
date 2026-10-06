@@ -6,7 +6,6 @@
     "upcomingBookingsCancelled_one": "{{count}} upcoming booking was cancelled.",
     "upcomingBookingsCancelled_other": "{{count}} upcoming bookings were cancelled.",
     "close": "Close",
-    "back": "Back",
     "save": "Save",
     "cancel": "Cancel",
     "loading": "Loading…",
@@ -55,7 +54,7 @@
     "roomsAndMachines": "Rooms & Machines",
     "timeslots": "Time slots",
     "bookings": "Bookings",
-    "preview": "Preview"
+    "residentView": "Resident view"
   },
   "layout": {
     "pendingApproval": "Your association is awaiting approval. You can set up laundry rooms and settings, but can only invite residents once the association is activated."
@@ -253,52 +252,17 @@
       "removeOnly": "Remove time slots",
       "hour": "Hour",
       "minute": "Minute"
-    },
-    "preview": {
-      "title": "Preview",
-      "description": "Simulate the residents' booking experience with test users",
-      "descriptionShort": "Simulate the residents' booking experience",
-      "noActiveRooms": "No active laundry rooms",
-      "noActiveRoomsDesc": "Create a laundry room under Rooms & Machines to see the preview.",
-      "adminSimSettings": "Admin · Simulation settings",
-      "reset": "Reset",
-      "viewingAs": "Viewing as:",
-      "room": "Laundry room:",
-      "residentView": "Resident view",
-      "nextBookingLabel": "{{name}}'s next booking",
-      "cancel": "Cancel",
-      "book": "Book",
-      "previousWeek": "Previous week",
-      "nextWeek": "Next week",
-      "myBooking": "My booking",
-      "resident": "Resident",
-      "occupied": "Occupied",
-      "apartmentLabel": "Apt. {{number}}",
-      "othersBookedToday_one": "1 other resident has booked this day",
-      "othersBookedToday_other": "{{count}} other residents have booked this day",
-      "visibilityFullName": "Name visible",
-      "visibilityApartment": "Apt. no.",
-      "visibilityAnonymous": "Anonymous",
-      "modeSpecificMachine": "Specific machine",
-      "modeEntireRoom": "Entire room",
-      "cancelWithinHours": "Cancel within {{hours}}h",
-      "cancelWithinMinutes": "Cancel within {{minutes}} min",
-      "maxBookings": "Max {{count}} booking",
-      "daysAhead": "{{count}} days ahead",
-      "confirmBookTitle": "Confirm booking",
-      "confirmCancelTitle": "Confirm cancellation",
-      "confirmBookQuestion": "Book <s>{{slotTime}}</s> on {{dateLabel}} as <s>{{userName}}</s>?",
-      "confirmCancelQuestion": "Cancel booking <s>{{slotTime}}</s> on {{dateLabel}}?",
-      "timeWarningMinutes": "There are only {{minutes}} minutes until the booking starts.",
-      "timeWarningHours_one": "There is {{count}} hour until the booking starts.",
-      "timeWarningHours_other": "There are {{count}} hours until the booking starts.",
-      "previewNotice": "This is a preview - no real bookings are created.",
-      "userActiveBookings_one": "{{name}} has {{count}} active booking",
-      "userActiveBookings_other": "{{name}} has {{count}} active bookings",
-      "maxLabel": "(max. {{count}})"
     }
   },
   "auth": {
+    "errors": {
+      "emailInUse": "An account with this email already exists. Log in with your password, or use \"Forgot password\".",
+      "invalidCredential": "Wrong email or password.",
+      "weakPassword": "The password must be at least 6 characters.",
+      "invalidEmail": "Invalid email address.",
+      "tooManyRequests": "Too many attempts. Wait a moment and try again.",
+      "network": "No connection. Check your internet and try again."
+    },
     "signInRequiredTitle": "Log in to continue",
     "signInRequiredBody": "Your session has expired, or you are not logged in. Log in and you will be taken back to this page.",
     "goHome": "Go to home page",
@@ -364,6 +328,8 @@
     "quickLinkBookings": "Bookings"
   },
   "sysadmin": {
+    "confirmRemove": "Confirm remove",
+    "confirmActivate": "Confirm activation",
     "manageAccess": "Manage access",
     "currentProperties": "Current properties",
     "loading": "Loading…",
@@ -423,6 +389,14 @@
     }
   },
   "users": {
+    "openLinkActive": "Active shared link",
+    "openLinkMeta": "Created {{created}} · expires {{expires}}",
+    "showQr": "Show QR code",
+    "revokeLink": "Revoke link",
+    "confirmRevoke": "Confirm revoke",
+    "revoking": "Revoking…",
+    "revokeWarning": "The printed QR code stops working immediately. Residents who already joined keep their access.",
+    "newLinkReplacesOld": "A new shared link makes the previous QR code invalid.",
     "editMember": "Edit - {{name}}",
     "role": "Role",
     "apartment": "Apartment",
@@ -453,8 +427,18 @@
     "specificResident": "Specific resident"
   },
   "laundry": {
+    "availability": {
+      "free": "free slots",
+      "few": "few free slots",
+      "full": "fully booked",
+      "past": "not bookable"
+    },
     "noMachinesWarning": "No machines yet - residents cannot book in this laundry room until at least one is added.",
     "actions": {
+      "bookSlot": "Book {{time}}",
+      "cancelSlot": "Cancel booking {{time}}",
+      "bookMachine": "Book {{machine}}, {{time}}",
+      "cancelMachine": "Cancel {{machine}}, {{time}}",
       "book": "Book",
       "cancelBooking": "Cancel",
       "dismiss": "Cancel",
@@ -544,6 +528,12 @@
     "loggedInAs": "Logged in as <s>{{email}}</s>"
   },
   "join": {
+    "acceptTitle": "Join {{property}}",
+    "acceptSubtitle": "You are logged in as {{email}}. Confirm to join with your existing account.",
+    "emailMismatch": "This invitation was sent to {{inviteEmail}}, but you are logged in as {{email}}. Log out to continue.",
+    "acceptSubmit": "Join",
+    "accepting": "Joining…",
+    "useOtherAccount": "Log out and use another account",
     "invalidLinkTitle": "Invalid or expired invitation link",
     "invalidLinkBody": "Ask your administrator to send a new link.",
     "genericError": "Something went wrong. Please try again.",

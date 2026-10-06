@@ -47,8 +47,9 @@ function buildPropertySubNav(propertyId: string): SubNavSection[] {
           icon: <IconCalendarCheck size={15} />,
         },
         {
-          path: `${base}/preview`,
-          label: 'nav.preview',
+          // The real resident page (what residents see), replacing the old simulated preview
+          path: '/laundry',
+          label: 'nav.residentView',
           feature: 'laundryBooking' as const,
           icon: <IconCalendar size={15} />,
         },

@@ -1,4 +1,4 @@
-import { useState, useMemo, useEffect } from 'react'
+import { useState, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import type { AdminBookingDto, AdminRoomSummaryDto } from './laundryApi'
 import { useGetTimeSlotsQuery } from './laundryApi'
@@ -20,9 +20,13 @@ export function AdminBookingsCalendar({ rooms, bookings, today, weekStart, maxWe
   const { t } = useTranslation()
   const [selectedRoomId, setSelectedRoomId] = useState<string>(rooms[0]?.id ?? '')
   const [viewWeekStart, setViewWeekStart] = useState<string>(weekStart)
-
-  // When the loaded period changes (batch paged), snap the week view back to its start.
-  useEffect(() => setViewWeekStart(weekStart), [weekStart])
+  // When the loaded period changes (batch paged), snap the week view back to its start. Adjusted during
+  // render rather than in an effect so the old week is never painted for the new period.
+  const [periodStart, setPeriodStart] = useState(weekStart)
+  if (periodStart !== weekStart) {
+    setPeriodStart(weekStart)
+    setViewWeekStart(weekStart)
+  }
 
   const roomId = rooms.some((r) => r.id === selectedRoomId) ? selectedRoomId : (rooms[0]?.id ?? '')
 

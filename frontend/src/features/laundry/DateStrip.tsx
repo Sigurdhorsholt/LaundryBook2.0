@@ -1,4 +1,5 @@
-import { dayShortLabel, dayNum } from '../../shared/utils/dateUtils'
+import { useTranslation } from 'react-i18next'
+import { dayShortLabel, dayNum, formatDateFull } from '../../shared/utils/dateUtils'
 import { DOT_COLOR } from './constants'
 import type { AvailabilityState } from './types'
 import { colors } from '../../shared/theme'
@@ -12,6 +13,7 @@ interface Props {
 }
 
 export function DateStrip({ weekDays, today, selectedDate, availabilityByDate, onSelectDate }: Props) {
+  const { t } = useTranslation()
   return (
     <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', borderBottom: `1px solid ${colors.borderRow}` }}>
       {weekDays.map(d => {
@@ -24,7 +26,10 @@ export function DateStrip({ weekDays, today, selectedDate, availabilityByDate, o
         return (
           <button
             key={d}
+            type="button"
             onClick={() => onSelectDate(d)}
+            aria-pressed={isSelected}
+            aria-label={`${formatDateFull(d)}, ${t(`laundry.availability.${dotState}`)}`}
             style={{
               border: 'none', background: 'none', padding: '8px 4px',
               cursor: 'pointer', display: 'flex', flexDirection: 'column',

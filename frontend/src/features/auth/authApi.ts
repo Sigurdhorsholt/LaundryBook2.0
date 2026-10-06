@@ -1,6 +1,5 @@
 import { baseApi } from '../../app/baseApi'
 
-// @ts-ignore
 export enum UserRole {
   Resident = 0,
   ComplexAdmin = 1,
@@ -29,6 +28,7 @@ export interface InviteInfoDto {
   isMultiUse: boolean
   apartmentNumber: string | null
   email: string | null
+  propertyName: string
 }
 
 export const authApi = baseApi.injectEndpoints({
@@ -62,6 +62,15 @@ export const authApi = baseApi.injectEndpoints({
     redeemInvite: builder.mutation<{ userId: string }, { idToken: string; inviteToken: string; apartmentNumber?: string; firstName: string; lastName: string; acceptedTerms: boolean }>({
       query: (body) => ({
         url: '/api/auth/redeem-invite',
+        method: 'POST',
+        body,
+      }),
+      invalidatesTags: ['Auth'],
+    }),
+
+    acceptInvite: builder.mutation<void, { inviteToken: string; apartmentNumber?: string; acceptedTerms: boolean }>({
+      query: (body) => ({
+        url: '/api/auth/accept-invite',
         method: 'POST',
         body,
       }),
@@ -102,6 +111,7 @@ export const {
   useMeQuery,
   useGetInviteInfoQuery,
   useRedeemInviteMutation,
+  useAcceptInviteMutation,
   useRegisterMutation,
   useForgotPasswordMutation,
   useUpdateCurrentUserMutation,

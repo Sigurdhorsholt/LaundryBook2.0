@@ -5,6 +5,7 @@ import { useUpdateMemberMutation, type PropertyMemberDto } from './usersApi'
 import { useRoleOptions } from '../../shared/constants'
 import type {UserRole} from "../auth/authApi.ts";
 import { colors } from '../../shared/theme'
+import { extractErrorMessage } from '../../shared/utils/errorUtils'
 import { FormLabel } from '../../shared/ui/FormLabel'
 
 interface EditMemberModalProps {
@@ -36,8 +37,9 @@ export function EditMemberModal({ propertyId, member, onClose }: EditMemberModal
         isActive: member.isActive,
       }).unwrap()
       onClose()
-    } catch {
-      setError(t('users.saveFailed'))
+    } catch (err) {
+      // e.g. "the property must keep at least one active admin"
+      setError(extractErrorMessage(err, t('users.saveFailed')))
     }
   }
 
