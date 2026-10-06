@@ -55,7 +55,7 @@
     "roomsAndMachines": "Rooms & Machines",
     "timeslots": "Time slots",
     "bookings": "Bookings",
-    "preview": "Preview"
+    "residentView": "Resident view"
   },
   "layout": {
     "pendingApproval": "Your association is awaiting approval. You can set up laundry rooms and settings, but can only invite residents once the association is activated."
@@ -253,49 +253,6 @@
       "removeOnly": "Remove time slots",
       "hour": "Hour",
       "minute": "Minute"
-    },
-    "preview": {
-      "title": "Preview",
-      "description": "Simulate the residents' booking experience with test users",
-      "descriptionShort": "Simulate the residents' booking experience",
-      "noActiveRooms": "No active laundry rooms",
-      "noActiveRoomsDesc": "Create a laundry room under Rooms & Machines to see the preview.",
-      "adminSimSettings": "Admin · Simulation settings",
-      "reset": "Reset",
-      "viewingAs": "Viewing as:",
-      "room": "Laundry room:",
-      "residentView": "Resident view",
-      "nextBookingLabel": "{{name}}'s next booking",
-      "cancel": "Cancel",
-      "book": "Book",
-      "previousWeek": "Previous week",
-      "nextWeek": "Next week",
-      "myBooking": "My booking",
-      "resident": "Resident",
-      "occupied": "Occupied",
-      "apartmentLabel": "Apt. {{number}}",
-      "othersBookedToday_one": "1 other resident has booked this day",
-      "othersBookedToday_other": "{{count}} other residents have booked this day",
-      "visibilityFullName": "Name visible",
-      "visibilityApartment": "Apt. no.",
-      "visibilityAnonymous": "Anonymous",
-      "modeSpecificMachine": "Specific machine",
-      "modeEntireRoom": "Entire room",
-      "cancelWithinHours": "Cancel within {{hours}}h",
-      "cancelWithinMinutes": "Cancel within {{minutes}} min",
-      "maxBookings": "Max {{count}} booking",
-      "daysAhead": "{{count}} days ahead",
-      "confirmBookTitle": "Confirm booking",
-      "confirmCancelTitle": "Confirm cancellation",
-      "confirmBookQuestion": "Book <s>{{slotTime}}</s> on {{dateLabel}} as <s>{{userName}}</s>?",
-      "confirmCancelQuestion": "Cancel booking <s>{{slotTime}}</s> on {{dateLabel}}?",
-      "timeWarningMinutes": "There are only {{minutes}} minutes until the booking starts.",
-      "timeWarningHours_one": "There is {{count}} hour until the booking starts.",
-      "timeWarningHours_other": "There are {{count}} hours until the booking starts.",
-      "previewNotice": "This is a preview - no real bookings are created.",
-      "userActiveBookings_one": "{{name}} has {{count}} active booking",
-      "userActiveBookings_other": "{{name}} has {{count}} active bookings",
-      "maxLabel": "(max. {{count}})"
     }
   },
   "auth": {

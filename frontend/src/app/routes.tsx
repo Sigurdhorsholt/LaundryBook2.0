@@ -26,7 +26,6 @@ const PropertySettingsPage = lazy(() => import('../pages/admin/properties/Proper
 const LaundryRoomsPage = lazy(() => import('../pages/admin/properties/LaundryRoomsPage').then((m) => ({ default: m.LaundryRoomsPage })))
 const PropertyTimeslotsPage = lazy(() => import('../pages/admin/properties/PropertyTimeslotsPage').then((m) => ({ default: m.PropertyTimeslotsPage })))
 const PropertyBookingsPage = lazy(() => import('../pages/admin/properties/PropertyBookingsPage').then((m) => ({ default: m.PropertyBookingsPage })))
-const BookingPreviewPage = lazy(() => import('../pages/admin/properties/BookingPreviewPage').then((m) => ({ default: m.BookingPreviewPage })))
 const SysAdminPage = lazy(() => import('../pages/admin/SysAdminPage').then((m) => ({ default: m.SysAdminPage })))
 
 export interface AppRoute {
@@ -151,14 +150,6 @@ export const routes: AppRoute[] = [
   {
     path: '/admin/properties/:propertyId/bookings',
     component: PropertyBookingsPage,
-    layout: 'admin',
-    protected: true,
-    minRole: UserRole.ComplexAdmin,
-    feature: 'laundryBooking',
-  },
-  {
-    path: '/admin/properties/:propertyId/preview',
-    component: BookingPreviewPage,
     layout: 'admin',
     protected: true,
     minRole: UserRole.ComplexAdmin,
