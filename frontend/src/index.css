@@ -2,30 +2,19 @@
 @import "bootstrap/dist/css/bootstrap.min.css";
 
 /* ── Color tokens (keep in sync with src/shared/theme.ts) ──────────────────── */
-/* To switch palette: change the four --color-primary-* variables here          */
-/* and the matching palette block in theme.ts.                                  */
 
 :root {
-  /* Active palette — Option A: Blue */
-  --color-primary:           #1565c0;
-  --color-primary-light:     #e8f0fe;
-  --color-primary-muted:     #dce8ff;
-  --color-primary-muted-text:#2c4f8c;
-
-  /* Option B — Fresh Teal (swap these four + change theme.ts) */
-  /* --color-primary:           #0f7ea6; */
-  /* --color-primary-light:     #e0f4fa; */
-  /* --color-primary-muted:     #d0eef8; */
-  /* --color-primary-muted-text:#0c5f7a; */
-
-  /* Option C — Warm Sage */
-  /* --color-primary:           #3d7a5c; */
-  /* --color-primary-light:     #e8f5ee; */
-  /* --color-primary-muted:     #d0ecdb; */
-  /* --color-primary-muted-text:#2a5c42; */
+  /* Brand — Warm Sage */
+  --color-primary:            #3d7a5c;
+  --color-primary-hover:      #336650;
+  --color-primary-active:     #2a5c42;
+  --color-primary-light:      #e8f5ee;
+  --color-primary-border:     #b8ddc9;
+  --color-primary-muted:      #d0ecdb;
+  --color-primary-muted-text: #2a5c42;
 
   /* Stable tokens */
-  --color-text-primary:   #0d1b2a;
+  --color-text-primary:   #1a2e24;
   --color-text-secondary: #5a6a7a;
   --color-text-muted:     #a0adb8;
   --color-bg-page:        #f8fafb;
@@ -35,6 +24,52 @@
   --color-success:        #2e7d32;
   --color-warning:        #b45309;
   --color-danger:         #c62828;
+
+  /* Bootstrap reads these for text-primary, links, bg-primary, badges, etc. */
+  --bs-primary:            #3d7a5c;
+  --bs-primary-rgb:        61, 122, 92;
+  --bs-link-color:         #3d7a5c;
+  --bs-link-color-rgb:     61, 122, 92;
+  --bs-link-hover-color:   #2a5c42;
+  --bs-link-hover-color-rgb: 42, 92, 66;
+  --bs-focus-ring-color:   rgba(61, 122, 92, 0.25);
+}
+
+/* Bootstrap compiles its blue into the button/form rules themselves, so the
+   :root variables above don't reach them; override those component variables. */
+.btn-primary {
+  --bs-btn-bg: var(--color-primary);
+  --bs-btn-border-color: var(--color-primary);
+  --bs-btn-hover-bg: var(--color-primary-hover);
+  --bs-btn-hover-border-color: var(--color-primary-hover);
+  --bs-btn-active-bg: var(--color-primary-active);
+  --bs-btn-active-border-color: var(--color-primary-active);
+  --bs-btn-disabled-bg: var(--color-primary);
+  --bs-btn-disabled-border-color: var(--color-primary);
+  --bs-btn-focus-shadow-rgb: 61, 122, 92;
+}
+.btn-outline-primary {
+  --bs-btn-color: var(--color-primary);
+  --bs-btn-border-color: var(--color-primary);
+  --bs-btn-hover-color: #fff;
+  --bs-btn-hover-bg: var(--color-primary);
+  --bs-btn-hover-border-color: var(--color-primary);
+  --bs-btn-active-color: #fff;
+  --bs-btn-active-bg: var(--color-primary-active);
+  --bs-btn-active-border-color: var(--color-primary-active);
+  --bs-btn-disabled-color: var(--color-primary);
+  --bs-btn-disabled-border-color: var(--color-primary);
+  --bs-btn-focus-shadow-rgb: 61, 122, 92;
+}
+.form-control:focus,
+.form-select:focus,
+.form-check-input:focus {
+  border-color: var(--color-primary-border);
+  box-shadow: 0 0 0 0.25rem rgba(61, 122, 92, 0.25);
+}
+.form-check-input:checked {
+  background-color: var(--color-primary);
+  border-color: var(--color-primary);
 }
 
 /* Global */

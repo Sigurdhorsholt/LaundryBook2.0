@@ -299,6 +299,14 @@
     }
   },
   "auth": {
+    "errors": {
+      "emailInUse": "An account with this email already exists. Log in with your password, or use \"Forgot password\".",
+      "invalidCredential": "Wrong email or password.",
+      "weakPassword": "The password must be at least 6 characters.",
+      "invalidEmail": "Invalid email address.",
+      "tooManyRequests": "Too many attempts. Wait a moment and try again.",
+      "network": "No connection. Check your internet and try again."
+    },
     "signInRequiredTitle": "Log in to continue",
     "signInRequiredBody": "Your session has expired, or you are not logged in. Log in and you will be taken back to this page.",
     "goHome": "Go to home page",
@@ -544,6 +552,12 @@
     "loggedInAs": "Logged in as <s>{{email}}</s>"
   },
   "join": {
+    "acceptTitle": "Join {{property}}",
+    "acceptSubtitle": "You are logged in as {{email}}. Confirm to join with your existing account.",
+    "emailMismatch": "This invitation was sent to {{inviteEmail}}, but you are logged in as {{email}}. Log out to continue.",
+    "acceptSubmit": "Join",
+    "accepting": "Joining…",
+    "useOtherAccount": "Log out and use another account",
     "invalidLinkTitle": "Invalid or expired invitation link",
     "invalidLinkBody": "Ask your administrator to send a new link.",
     "genericError": "Something went wrong. Please try again.",

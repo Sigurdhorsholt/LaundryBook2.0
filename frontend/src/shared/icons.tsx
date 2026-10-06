@@ -140,7 +140,7 @@ export function IconX({ size = defaults.size, color = defaults.color, strokeWidt
   </>)
 }
 
-export function IconBrand({ size = defaults.size, color = '#1565c0', strokeWidth = defaults.strokeWidth }: IconProps) {
+export function IconBrand({ size = defaults.size, color = 'currentColor', strokeWidth = defaults.strokeWidth }: IconProps) {
   return base(size, color, strokeWidth, <>
     <circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="4"/>
     <path d="M2 12h3M19 12h3M12 2v3M12 19v3"/>

@@ -1,9 +1,12 @@
-import { useState, useEffect } from 'react'
-import { Navigate, useNavigate, useSearchParams, Link } from 'react-router-dom'
+import { useState } from 'react'
+import { useNavigate, useSearchParams, Link } from 'react-router-dom'
 import { useTranslation, Trans } from 'react-i18next'
-import { createUserWithEmailAndPassword } from 'firebase/auth'
-import { firebaseAuth } from '../lib/firebase'
 import { useGetInviteInfoQuery, useRedeemInviteMutation, useMeQuery } from '../features/auth/authApi'
+import { AcceptInviteCard } from '../features/auth/AcceptInviteCard'
+import { createOrSignInFirebaseUser, authErrorMessage } from '../features/auth/utils'
+import { Spinner, FormError } from '../shared/ui'
+import { BrandLogo } from '../shared/BrandLogo'
+import { colors } from '../shared/theme'
 
 export function JoinPage() {
   const { t } = useTranslation()
@@ -19,36 +22,39 @@ export function JoinPage() {
 
   const [firstName, setFirstName] = useState('')
   const [lastName, setLastName] = useState('')
-  const [email, setEmail] = useState('')
-  useEffect(() => { if (invite?.email) setEmail(invite.email) }, [invite?.email])
+  const [typedEmail, setTypedEmail] = useState('')
+  const email = invite?.email ?? typedEmail
   const [password, setPassword] = useState('')
   const [apartment, setApartment] = useState('')
   const [consent, setConsent] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  // Covers the Firebase step too, not just the backend call, so the button can't be double-submitted
+  const [submitting, setSubmitting] = useState(false)
 
-  const [redeemInvite, { isLoading }] = useRedeemInviteMutation()
+  const [redeemInvite] = useRedeemInviteMutation()
 
-  if (isCheckingSession || isLoadingInvite) return null
-  if (session) return <Navigate to="/dashboard" replace />
+  if (isCheckingSession || isLoadingInvite) return <Spinner fullPage />
 
-  if (!inviteToken || isInvalidToken) {
+  if (!inviteToken || isInvalidToken || !invite) {
     return (
       <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
         <div className="text-center">
-          <p className="fw-semibold mb-2" style={{ color: '#0d1b2a' }}>{t('join.invalidLinkTitle')}</p>
-          <p style={{ color: '#5a6a7a', fontSize: '0.9rem' }}>{t('join.invalidLinkBody')}</p>
+          <p className="fw-semibold mb-2" style={{ color: colors.textPrimary }}>{t('join.invalidLinkTitle')}</p>
+          <p style={{ color: colors.textSecondary, fontSize: '0.9rem' }}>{t('join.invalidLinkBody')}</p>
         </div>
       </div>
     )
   }
 
+  if (session) return <AcceptInviteCard invite={invite} inviteToken={inviteToken} user={session} />
+
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
     setError(null)
+    setSubmitting(true)
 
     try {
-      const credential = await createUserWithEmailAndPassword(firebaseAuth, email, password)
-      const idToken = await credential.user.getIdToken()
+      const idToken = await createOrSignInFirebaseUser(email, password)
       await redeemInvite({
         idToken,
         inviteToken,
@@ -59,28 +65,26 @@ export function JoinPage() {
       }).unwrap()
       navigate('/dashboard', { replace: true })
     } catch (err: unknown) {
-      setError(err instanceof Error ? err.message : t('join.genericError'))
+      setError(authErrorMessage(err, t, t('join.genericError')))
+      setSubmitting(false)
     }
   }
 
-  const showApartmentField = invite?.isMultiUse || !invite?.apartmentNumber
+  const showApartmentField = invite.isMultiUse || !invite.apartmentNumber
 
   return (
-    <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '100vh', backgroundColor: '#f8fafb' }}>
-      <div className="bg-white rounded-3 p-4 p-md-5" style={{ width: '100%', maxWidth: 400, border: '1px solid #e8ecf0' }}>
+    <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '100vh', backgroundColor: colors.bgPage }}>
+      <div className="bg-white rounded-3 p-4 p-md-5" style={{ width: '100%', maxWidth: 400, border: `1px solid ${colors.borderDefault}` }}>
         <div className="text-center mb-4">
-          <svg className="mb-3" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#1565c0" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <circle cx="12" cy="12" r="10" /><circle cx="12" cy="12" r="4" />
-            <path d="M2 12h3M19 12h3M12 2v3M12 19v3" />
-          </svg>
-          <h1 className="fw-bold mb-1" style={{ fontSize: '1.4rem', color: '#0d1b2a' }}>{t('join.title')}</h1>
-          <p style={{ color: '#5a6a7a', fontSize: '0.9rem' }}>{t('join.subtitle')}</p>
+          <div className="mb-3"><BrandLogo size={32} /></div>
+          <h1 className="fw-bold mb-1" style={{ fontSize: '1.4rem', color: colors.textPrimary }}>{t('join.title')}</h1>
+          <p style={{ color: colors.textSecondary, fontSize: '0.9rem' }}>{t('join.subtitle')}</p>
         </div>
 
         <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
           <div className="d-flex gap-2">
             <div className="flex-grow-1">
-              <label className="form-label" style={{ fontSize: '0.85rem', fontWeight: 500, color: '#0d1b2a' }}>
+              <label className="form-label" style={{ fontSize: '0.85rem', fontWeight: 500, color: colors.textPrimary }}>
                 {t('join.firstName')}
               </label>
               <input
@@ -95,7 +99,7 @@ export function JoinPage() {
               />
             </div>
             <div className="flex-grow-1">
-              <label className="form-label" style={{ fontSize: '0.85rem', fontWeight: 500, color: '#0d1b2a' }}>
+              <label className="form-label" style={{ fontSize: '0.85rem', fontWeight: 500, color: colors.textPrimary }}>
                 {t('join.lastName')}
               </label>
               <input
@@ -111,7 +115,7 @@ export function JoinPage() {
           </div>
 
           <div>
-            <label className="form-label" style={{ fontSize: '0.85rem', fontWeight: 500, color: '#0d1b2a' }}>
+            <label className="form-label" style={{ fontSize: '0.85rem', fontWeight: 500, color: colors.textPrimary }}>
               {t('join.email')}
             </label>
             <input
@@ -119,16 +123,16 @@ export function JoinPage() {
               type="email"
               placeholder={t('join.emailPlaceholder')}
               value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              onChange={(e) => setTypedEmail(e.target.value)}
               required
               autoComplete="email"
-              readOnly={!!invite?.email}
-              style={invite?.email ? { backgroundColor: '#f8fafb', cursor: 'default' } : undefined}
+              readOnly={!!invite.email}
+              style={invite.email ? { backgroundColor: colors.bgPage, cursor: 'default' } : undefined}
             />
           </div>
 
           <div>
-            <label className="form-label" style={{ fontSize: '0.85rem', fontWeight: 500, color: '#0d1b2a' }}>
+            <label className="form-label" style={{ fontSize: '0.85rem', fontWeight: 500, color: colors.textPrimary }}>
               {t('join.password')}
             </label>
             <input
@@ -145,10 +149,10 @@ export function JoinPage() {
 
           {showApartmentField && (
             <div>
-              <label className="form-label" style={{ fontSize: '0.85rem', fontWeight: 500, color: '#0d1b2a' }}>
+              <label className="form-label" style={{ fontSize: '0.85rem', fontWeight: 500, color: colors.textPrimary }}>
                 {t('join.apartment')}
-                {invite?.isMultiUse && (
-                  <span style={{ color: '#a0adb8', fontWeight: 400 }}> {t('join.optional')}</span>
+                {invite.isMultiUse && (
+                  <span style={{ color: colors.textMuted, fontWeight: 400 }}> {t('join.optional')}</span>
                 )}
               </label>
               <input
@@ -162,23 +166,23 @@ export function JoinPage() {
             </div>
           )}
 
-          <label className="d-flex align-items-start gap-2" style={{ fontSize: '0.82rem', color: '#5a6a7a', lineHeight: 1.5 }}>
+          <label className="d-flex align-items-start gap-2" style={{ fontSize: '0.82rem', color: colors.textSecondary, lineHeight: 1.5 }}>
             <input type="checkbox" checked={consent} onChange={(e) => setConsent(e.target.checked)} required style={{ marginTop: 3 }} />
             <span>
               <Trans
                 i18nKey="common.acceptTerms"
                 components={{
-                  terms: <Link to="/vilkaar" target="_blank" style={{ color: '#1565c0', textDecoration: 'underline' }} />,
-                  privacy: <Link to="/privatliv" target="_blank" style={{ color: '#1565c0', textDecoration: 'underline' }} />,
+                  terms: <Link to="/vilkaar" target="_blank" style={{ color: colors.primary, textDecoration: 'underline' }} />,
+                  privacy: <Link to="/privatliv" target="_blank" style={{ color: colors.primary, textDecoration: 'underline' }} />,
                 }}
               />
             </span>
           </label>
 
-          {error && <p style={{ color: '#dc3545', margin: 0, fontSize: 14 }}>{error}</p>}
+          <FormError message={error} />
 
-          <button className="btn btn-primary fw-semibold" type="submit" disabled={isLoading || !consent}>
-            {isLoading ? t('join.creatingAccount') : t('join.submit')}
+          <button className="btn btn-primary fw-semibold" type="submit" disabled={submitting || !consent}>
+            {submitting ? t('join.creatingAccount') : t('join.submit')}
           </button>
         </form>
       </div>
