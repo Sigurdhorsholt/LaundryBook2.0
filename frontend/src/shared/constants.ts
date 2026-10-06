@@ -2,6 +2,9 @@ import { useTranslation } from 'react-i18next'
 import { UserRole } from '../features/auth/authApi'
 import { colors } from './theme'
 
+// laundrybook.dk redirects here, so canonical URLs must use this host
+export const SITE_ORIGIN = 'https://www.laundrybook.dk'
+
 export const ROLE_LABEL_KEY = {
   [UserRole.Resident]: 'roles.resident',
   [UserRole.ComplexAdmin]: 'roles.complexAdmin',

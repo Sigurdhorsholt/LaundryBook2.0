@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { PublicLayout } from './PublicLayout'
+import { PageMeta } from '../../shared/PageMeta'
 import { colors } from '../../shared/theme'
 import { IconCheck } from '../../shared/icons'
 
@@ -14,6 +15,7 @@ export function AboutPage() {
 
   return (
     <PublicLayout>
+      <PageMeta page="about" />
 
       {/* Hero */}
       <section style={{ backgroundColor: '#f7f3ea' }}>

@@ -7,6 +7,7 @@ import { ProtectedRoute } from './ProtectedRoute'
 import { AppLayout } from './AppLayout'
 import { AdminLayout } from './AdminLayout'
 import { NotFoundPage } from '../pages/NotFoundPage'
+import { PublicLayout } from '../pages/public/PublicLayout'
 import type { AppRoute } from '../app/routes'
 
 /**
@@ -96,7 +97,7 @@ export function AppRouter() {
       )}
 
       {/* 6. Catch-all — unknown paths get a 404, no redirect loop */}
-      <Route path="*" element={<NotFoundPage />} />
+      <Route path="*" element={<PublicLayout><NotFoundPage /></PublicLayout>} />
 
     </Routes>
   )

@@ -3,6 +3,7 @@ import { useTranslation, Trans } from 'react-i18next'
 import { useMeQuery } from '../features/auth/authApi'
 import { useModal } from '../shared/modals/useModal'
 import { PublicLayout } from './public/PublicLayout'
+import { PageMeta } from '../shared/PageMeta'
 import { PhotoPlaceholder } from './public/PhotoPlaceholder'
 import { colors } from '../shared/theme'
 import { IconCheck } from '../shared/icons'
@@ -18,6 +19,7 @@ export function LandingPage() {
 
   return (
     <PublicLayout>
+      <PageMeta page="home" />
 
       {/* ── WarmSage hero ── */}
       <section className="w-100 position-relative overflow-hidden" style={{ backgroundColor: '#f7f3ea' }}>
