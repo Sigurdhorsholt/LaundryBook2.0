@@ -1,8 +1,6 @@
 import {NavLink, useNavigate} from 'react-router-dom'
 import {useTranslation} from 'react-i18next'
 import {useDispatch} from 'react-redux'
-import {signOut} from 'firebase/auth'
-import {firebaseAuth} from '../lib/firebase'
 import {useMeQuery, useLogoutMutation} from '../features/auth/authApi'
 import {isAdmin as checkIsAdmin} from './roleUtils'
 import {colors} from './theme'
@@ -30,6 +28,8 @@ export function AppNavbar({isAdmin = false}: NavbarProps) {
 
     async function handleLogout() {
         await logout()
+        // Loaded on demand so Firebase stays out of the main bundle
+        const [{signOut}, {firebaseAuth}] = await Promise.all([import('firebase/auth'), import('../lib/firebase')])
         await signOut(firebaseAuth)
         dispatch(baseApi.util.resetApiState())
         navigate('/', {replace: true})
