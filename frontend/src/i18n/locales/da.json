@@ -440,7 +440,10 @@
     "noMachinesWarning": "Ingen maskiner endnu - beboerne kan ikke booke i dette vaskerum, før der er tilføjet mindst én.",
     "actions": {
       "book": "Book",
-      "cancelBooking": "Aflys"
+      "cancelBooking": "Aflys",
+      "dismiss": "Fortryd",
+      "confirmBook": "Bekræft booking",
+      "confirmCancel": "Bekræft aflysning"
     },
     "machineType": {
       "washer": "Vaskemaskine",
