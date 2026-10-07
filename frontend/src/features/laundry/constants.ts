@@ -10,11 +10,11 @@ export const DOT_COLOR: Record<string, string> = {
   past: 'transparent',
 }
 
-export const MACHINE_TYPE_LABEL: Record<MachineType, string> = {
+export const MACHINE_TYPE_LABEL = {
   [MachineType.Washer]:      'laundry.machineType.washer',
   [MachineType.Dryer]:       'laundry.machineType.dryer',
   [MachineType.WasherDryer]: 'laundry.machineType.washerDryer',
-}
+} as const satisfies Record<MachineType, string>
 
 // ── Slot generator ─────────────────────────────────────────────────────────────
 
@@ -42,3 +42,12 @@ export const TIMELINE_TICKS = ['06:00', '12:00', '18:00', '23:00']
 
 // Minimum touch target for grid actions; most residents book from a phone
 export const TAP_TARGET_PX = 40
+
+// ── Booking side panel ─────────────────────────────────────────────────────────
+
+export const SIDE_CARD: React.CSSProperties = {
+  backgroundColor: colors.bgCard,
+  border: `1px solid ${colors.borderDefault}`,
+  borderRadius: 14,
+  padding: '18px 20px',
+}

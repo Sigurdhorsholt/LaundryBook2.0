@@ -39,6 +39,10 @@ const pairs = [
   ['slotWarningText', 'slotWarningBg', TEXT],
   ['sidebarText', 'bgCard', TEXT],
   ['sidebarText', 'sidebarHoverBg', TEXT],
+  ['chromeText', 'chrome', TEXT],
+  ['chromeMuted', 'chrome', TEXT],
+  ['chromeText', 'chromeRaised', TEXT],
+  ['bgCard', 'chrome', TEXT],
   ['dotFree', 'bgCard', UI],
   ['dotFew', 'bgCard', UI],
 ]

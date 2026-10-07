@@ -65,6 +65,13 @@ export const colors = {
   dotFew:  '#c27c12',
   dotFull: '#aebbb1',
 
+  // ── Chrome (dark header, sidebar, highlight cards) ────────────────────────────
+  chrome:       '#17251f',
+  chromeRaised: '#22352c',
+  chromeBorder: '#4b6457',
+  chromeText:   '#e4ece6',
+  chromeMuted:  '#9fb3a8',
+
   // ── Footer ────────────────────────────────────────────────────────────────────
   footerBg: '#0a1929',
 
