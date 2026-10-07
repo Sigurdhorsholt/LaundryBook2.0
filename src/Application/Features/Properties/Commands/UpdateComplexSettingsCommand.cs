@@ -22,8 +22,9 @@ public class UpdateComplexSettingsCommandValidator : AbstractValidator<UpdateCom
     public UpdateComplexSettingsCommandValidator()
     {
         RuleFor(x => x.CancellationWindowMinutes).GreaterThanOrEqualTo(0).LessThanOrEqualTo(10080); // max 7 days
-        RuleFor(x => x.MaxConcurrentBookingsPerUser).GreaterThan(0).LessThanOrEqualTo(10);
-        RuleFor(x => x.BookingLookaheadDays).GreaterThan(0).LessThanOrEqualTo(30);
+        // High ceilings only catch typos (e.g. 3650 days); real associations stay far below them
+        RuleFor(x => x.MaxConcurrentBookingsPerUser).GreaterThan(0).LessThanOrEqualTo(100);
+        RuleFor(x => x.BookingLookaheadDays).GreaterThan(0).LessThanOrEqualTo(365);
         RuleFor(x => x.BookingVisibility).IsInEnum();
         RuleFor(x => x.BookingMode).IsInEnum();
     }

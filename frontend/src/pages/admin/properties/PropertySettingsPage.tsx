@@ -16,8 +16,8 @@ import { RadioCard } from '../../../features/properties/RadioCard'
 
 // Mirrors backend validation rules
 const MAX_CANCELLATION_HOURS = 168 // 7 days
-const MAX_LOOKAHEAD_DAYS = 30
-const MAX_CONCURRENT_BOOKINGS = 10
+const MAX_LOOKAHEAD_DAYS = 365
+const MAX_CONCURRENT_BOOKINGS = 100
 
 interface FormState {
   bookingMode: BookingMode
