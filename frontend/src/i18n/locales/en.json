@@ -765,22 +765,29 @@
     "role_grant_too_high": "You can't grant a higher role than your own.",
     "invite_email_mismatch": "This invite was sent to a different email address."
   },
+  "markdownEditor": {
+    "toolbar": "Formatting",
+    "heading": "Heading",
+    "subheading": "Subheading",
+    "bold": "Bold",
+    "bulletList": "Bullet list",
+    "numberedList": "Numbered list",
+    "undo": "Undo last change",
+    "redo": "Redo"
+  },
   "houseRules": {
     "title": "House and laundry rules",
     "updated": "Updated {{date}}",
     "adminDescription": "Write the rules residents need to know. They appear under Property, and the booking page links to them.",
     "editorTitle": "Text",
-    "formatHelp": "An empty line starts a new paragraph. Start a line with - for a bullet, 1. for a numbered list and # for a heading. Write **word** for bold.",
-    "placeholder": "Write your laundry rules, for example:\n\n- Clean the lint filter after use.\n- Empty the machine within 15 minutes of your time ending.",
+    "formatHelp": "Use the buttons above the field. You can also type - for a bullet list, 1. for a numbered list and # for a heading.",
+    "placeholder": "Write your laundry rules here, for example that the lint filter must be cleaned after use.",
     "lastUpdated": "Last updated {{date}}",
     "save": "Save",
     "saving": "Saving…",
-    "undo": "Undo",
+    "undo": "Discard changes",
     "saved": "Saved. Residents can see it now.",
-    "saveFailed": "The rules couldn't be saved. Try again.",
-    "previewTitle": "What residents see",
-    "previewHelp": "Updates as you type.",
-    "previewEmpty": "Residents see no rules until you write something."
+    "saveFailed": "The rules couldn't be saved. Try again."
   },
   "propertyInfo": {
     "description": "The practical side of your laundry: rules, machines and who to contact.",

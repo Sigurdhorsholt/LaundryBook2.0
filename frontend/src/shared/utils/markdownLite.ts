@@ -7,7 +7,7 @@ const BULLET = /^\s*[-*]\s+(.*)$/
 const NUMBERED = /^\s*\d+[.)]\s+(.*)$/
 const HEADING = /^\s*(#{1,2})\s+(.*)$/
 
-// Just enough structure for house rules written by a volunteer board: headings, paragraphs and
+// Just enough structure for house rules written by an admin: headings, paragraphs and
 // lists. It returns data, never HTML, so whatever is typed can't inject markup.
 export function parseMarkdownLite(text: string): MarkdownBlock[] {
   const blocks: MarkdownBlock[] = []
