@@ -56,6 +56,8 @@ export interface PropertyInfoDto {
   board: BoardMemberDto[]
   rooms: PropertyRoomInfoDto[]
   settings: ComplexSettingsDto
+  houseRules: string | null
+  houseRulesUpdatedAt: string | null   // ISO datetime (UTC)
 }
 
 export interface UpdateComplexSettingsRequest {
@@ -98,6 +100,15 @@ export const propertiesApi = baseApi.injectEndpoints({
       ],
     }),
 
+    updateHouseRules: build.mutation<void, { propertyId: string; text: string }>({
+      query: ({ propertyId, text }) => ({
+        url: `/api/properties/${propertyId}/house-rules`,
+        method: 'PUT',
+        body: { text },
+      }),
+      invalidatesTags: (_result, _err, { propertyId }) => [{ type: 'Property', id: propertyId }],
+    }),
+
     updateComplexSettings: build.mutation<void, { propertyId: string } & UpdateComplexSettingsRequest>({
       query: ({ propertyId, ...body }) => ({
         url: `/api/properties/${propertyId}/settings`,
@@ -116,5 +127,6 @@ export const {
   useCreatePropertyMutation,
   useGetPropertyQuery,
   useGetPropertyInfoQuery,
+  useUpdateHouseRulesMutation,
   useUpdateComplexSettingsMutation,
 } = propertiesApi

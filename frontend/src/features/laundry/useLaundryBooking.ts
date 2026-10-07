@@ -2,7 +2,8 @@ import { useState, useMemo, useEffect, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 import { skipToken } from '@reduxjs/toolkit/query/react'
 import { useMeQuery } from '../auth/authApi'
-import { useGetPropertyQuery, BookingMode } from '../properties/propertiesApi'
+import { useGetPropertyQuery, useGetPropertyInfoQuery, BookingMode } from '../properties/propertiesApi'
+import { houseRulesUnseen } from '../properties/utils'
 import {
   useGetLaundryRoomsQuery,
   useGetMachinesQuery,
@@ -52,6 +53,11 @@ export function useLaundryBooking() {
   const propertyId   = me?.memberships[0]?.propertyId ?? null
 
   const property = useGetPropertyQuery(propertyId ?? skipToken)
+  // Only to know whether to point at the house rules; the property page shares this cached request
+  const { data: info } = useGetPropertyInfoQuery(propertyId ?? skipToken)
+  const houseRules = propertyId && info?.houseRules && info.houseRulesUpdatedAt
+    ? { isNew: houseRulesUnseen(propertyId, info.houseRulesUpdatedAt) }
+    : null
   const settings = property.data?.settings
   const bookingMode = settings?.bookingMode ?? BookingMode.BookEntireRoom
   const machineMode = bookingMode === BookingMode.BookSpecificMachine
@@ -273,6 +279,7 @@ export function useLaundryBooking() {
     lookaheadDays,
     maxBookings,
     usedBookings,
+    houseRules,
     roomRules: settings
       ? { lookaheadDays, maxBookings, cancellationWindowMinutes: settings.cancellationWindowMinutes }
       : null,

@@ -31,7 +31,7 @@ export function BookingSidePanel({ booking: lb, layout }: Props) {
         onCancel={lb.handleCancelUpcoming}
       />
       {lb.selectedRoom && lb.roomRules && (
-        <RoomInfoCard room={lb.selectedRoom} machines={lb.machines} rules={lb.roomRules} />
+        <RoomInfoCard room={lb.selectedRoom} machines={lb.machines} rules={lb.roomRules} houseRules={lb.houseRules} />
       )}
     </aside>
   )

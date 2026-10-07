@@ -9,7 +9,7 @@ import { colors } from './theme'
 import { userInitials } from './utils/formatUtils'
 import { SidebarLink, SidebarSectionLabel } from './AdminSidebarLink'
 import {
-  IconUsers, IconSettings, IconBuilding, IconClock, IconCalendarCheck, IconCalendar, IconUser, IconGrid,
+  IconUsers, IconSettings, IconBuilding, IconClock, IconCalendarCheck, IconCalendar, IconUser, IconGrid, IconFileText,
   IconChevronLeft,
 } from './icons'
 
@@ -34,6 +34,7 @@ function buildPropertySubNav(propertyId: string): SubNavSection[] {
       title: 'nav.sectionAdministration',
       items: [
         { path: `${base}/users`, label: 'nav.users', icon: <IconUsers size={15} /> },
+        { path: `${base}/house-rules`, label: 'nav.houseRules', icon: <IconFileText size={15} /> },
         { path: `${base}/settings`, label: 'nav.settings', icon: <IconSettings size={15} /> },
       ],
     },

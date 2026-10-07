@@ -76,7 +76,7 @@ export function LaundryPage() {
           <DayBookingView booking={lb} showRoomName={rooms.length === 1} />
           {lb.selectedRoom && lb.roomRules && (
             <div className="mt-3">
-              <RoomInfoDisclosure room={lb.selectedRoom} machines={lb.machines} rules={lb.roomRules} />
+              <RoomInfoDisclosure room={lb.selectedRoom} machines={lb.machines} rules={lb.roomRules} houseRules={lb.houseRules} />
             </div>
           )}
         </>
