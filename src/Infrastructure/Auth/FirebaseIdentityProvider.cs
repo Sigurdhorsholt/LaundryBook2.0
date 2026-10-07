@@ -20,7 +20,16 @@ public class FirebaseIdentityProvider : IIdentityProvider
         => await FirebaseAuth.DefaultInstance.GeneratePasswordResetLinkAsync(email, null, cancellationToken);
 
     public async Task DeleteUserAsync(string externalId, CancellationToken cancellationToken = default)
-        => await FirebaseAuth.DefaultInstance.DeleteUserAsync(externalId, cancellationToken);
+    {
+        try
+        {
+            await FirebaseAuth.DefaultInstance.DeleteUserAsync(externalId, cancellationToken);
+        }
+        catch (FirebaseAuthException ex) when (ex.AuthErrorCode == AuthErrorCode.UserNotFound)
+        {
+            // Already gone: the goal (no Firebase account) is met, so a retried deletion can finish
+        }
+    }
 
     public async Task<ExternalAuthResult> VerifyTokenAsync(string idToken, CancellationToken cancellationToken = default)
     {

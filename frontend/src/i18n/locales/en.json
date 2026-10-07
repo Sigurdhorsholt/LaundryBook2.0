@@ -304,6 +304,28 @@
     "sendResetLink": "Send reset link"
   },
   "profile": {
+    "myData": {
+      "title": "Your data",
+      "description": "Get a copy of everything LaundryBook stores about you, or delete your account.",
+      "export": "Download my data",
+      "exporting": "Fetching…",
+      "exportFailed": "Your data couldn't be fetched. Try again.",
+      "delete": "Delete my account"
+    },
+    "deleteAccount": {
+      "title": "Delete your account",
+      "intro": "When you delete your account:",
+      "removedFrom": "You are removed from {{properties}}.",
+      "bookingsCancelled": "Your upcoming bookings are cancelled, so others can book the times.",
+      "historyDeleted": "Your profile and booking history are deleted.",
+      "downloadFirst": "If you want a copy, download your data first.",
+      "confirm": "I understand this can't be undone.",
+      "cancel": "Cancel",
+      "submit": "Delete my account",
+      "deleting": "Deleting…",
+      "failed": "The account couldn't be deleted. Try again.",
+      "lastAdminHint": "Make someone else an administrator under Admin → Users before you delete your account."
+    },
     "cancelBooking": "Cancel",
     "upcomingBookings": "Upcoming bookings",
     "noUpcomingBookings": "No upcoming bookings",

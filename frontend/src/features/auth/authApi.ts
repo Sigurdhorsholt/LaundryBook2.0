@@ -94,6 +94,16 @@ export const authApi = baseApi.injectEndpoints({
       }),
     }),
 
+    // A fresh copy on every click; nothing about it is worth caching
+    exportMyData: builder.query<unknown, void>({
+      query: () => '/api/auth/me/export',
+      keepUnusedDataFor: 0,
+    }),
+
+    deleteMyAccount: builder.mutation<void, void>({
+      query: () => ({ url: '/api/auth/me', method: 'DELETE' }),
+    }),
+
     updateCurrentUser: builder.mutation<void, { firstName: string; lastName: string }>({
       query: (body) => ({
         url: '/api/auth/me',
@@ -115,4 +125,6 @@ export const {
   useRegisterMutation,
   useForgotPasswordMutation,
   useUpdateCurrentUserMutation,
+  useLazyExportMyDataQuery,
+  useDeleteMyAccountMutation,
 } = authApi

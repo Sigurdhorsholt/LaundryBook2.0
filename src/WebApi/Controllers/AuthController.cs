@@ -76,6 +76,24 @@ public class AuthController(IMediator mediator, IWebHostEnvironment env) : Contr
     }
 
     [EnableRateLimiting("email")]
+    [Authorize]
+    [HttpGet("me/export")]
+    public async Task<IActionResult> ExportMyData(CancellationToken ct)
+    {
+        var data = await mediator.Send(new ExportMyDataQuery(), ct);
+        return Ok(data);
+    }
+
+    [Authorize]
+    [HttpDelete("me")]
+    public async Task<IActionResult> DeleteMe(CancellationToken ct)
+    {
+        await mediator.Send(new DeleteMyAccountCommand(), ct);
+        // Same options as when set, or the cross-site deletion is ignored in production
+        Response.Cookies.Delete("access_token", AuthCookieOptions());
+        return NoContent();
+    }
+
     [HttpPost("forgot-password")]
     public async Task<IActionResult> ForgotPassword([FromBody] ForgotPasswordRequest request, CancellationToken ct)
     {

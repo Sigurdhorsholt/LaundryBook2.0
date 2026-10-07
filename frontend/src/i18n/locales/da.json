@@ -304,6 +304,28 @@
     "sendResetLink": "Send nulstillingslink"
   },
   "profile": {
+    "myData": {
+      "title": "Dine data",
+      "description": "Hent en kopi af alt, LaundryBook har gemt om dig, eller slet din konto.",
+      "export": "Download mine data",
+      "exporting": "Henter…",
+      "exportFailed": "Dine data kunne ikke hentes. Prøv igen.",
+      "delete": "Slet min konto"
+    },
+    "deleteAccount": {
+      "title": "Slet din konto",
+      "intro": "Når du sletter din konto:",
+      "removedFrom": "Du bliver fjernet fra {{properties}}.",
+      "bookingsCancelled": "Dine kommende bookinger bliver aflyst, så andre kan booke tiderne.",
+      "historyDeleted": "Din profil og din bookinghistorik bliver slettet.",
+      "downloadFirst": "Vil du gemme en kopi, så download dine data først.",
+      "confirm": "Jeg forstår, at det ikke kan fortrydes.",
+      "cancel": "Fortryd",
+      "submit": "Slet min konto",
+      "deleting": "Sletter…",
+      "failed": "Kontoen kunne ikke slettes. Prøv igen.",
+      "lastAdminHint": "Gør en anden til administrator under Admin → Brugere, før du sletter din konto."
+    },
     "cancelBooking": "Aflys",
     "upcomingBookings": "Kommende bookinger",
     "noUpcomingBookings": "Ingen kommende bookinger",
