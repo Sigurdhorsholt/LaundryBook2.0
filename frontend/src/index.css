@@ -66,6 +66,19 @@
   --bs-btn-disabled-border-color: var(--color-primary);
   --bs-btn-focus-shadow-rgb: 44, 106, 77;
 }
+.btn-outline-danger {
+  --bs-btn-color: var(--color-danger);
+  --bs-btn-border-color: var(--color-danger);
+  --bs-btn-hover-color: #fff;
+  --bs-btn-hover-bg: var(--color-danger);
+  --bs-btn-hover-border-color: var(--color-danger);
+  --bs-btn-active-color: #fff;
+  --bs-btn-active-bg: var(--color-danger);
+  --bs-btn-active-border-color: var(--color-danger);
+  --bs-btn-disabled-color: var(--color-danger);
+  --bs-btn-disabled-border-color: var(--color-danger);
+  --bs-btn-focus-shadow-rgb: 168, 38, 31;
+}
 .form-control:focus,
 .form-select:focus,
 .form-check-input:focus {
@@ -153,6 +166,25 @@ body {
 @keyframes slot-cancelled {
   0%   { background-color: #f0c3bf; }
   100% { background-color: #ffffff; }
+}
+
+/* ── Week grid ──────────────────────────────────────────────────────────────── */
+
+.week-own-cell:hover:not(:disabled) {
+  filter: brightness(0.95);
+}
+
+.anchored-popover {
+  animation: popover-in 160ms ease-out;
+}
+
+@keyframes popover-in {
+  from { opacity: 0; transform: scale(0.97); }
+  to   { opacity: 1; transform: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .anchored-popover { animation: none; }
 }
 
 /* ── Skeleton loading pulse ─────────────────────────────────────────────────── */
