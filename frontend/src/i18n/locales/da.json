@@ -37,6 +37,7 @@
   "nav": {
     "laundry": "Vaskebooking",
     "myPage": "Min side",
+    "propertyInfo": "Ejendommen",
     "overview": "Oversigt",
     "properties": "Ejendomme",
     "system": "System",
@@ -574,6 +575,9 @@
       "cancelUntilStart": "Du kan aflyse, indtil tiden starter.",
       "cancelHours_one": "Du kan aflyse indtil {{count}} time før start.",
       "cancelHours_other": "Du kan aflyse indtil {{count}} timer før start.",
+      "modeMachine": "Du booker en bestemt maskine.",
+      "modeRoom": "Du booker hele vaskerummet.",
+      "moreAboutProperty": "Mere om ejendommen",
       "disclosureTitle": "Regler og maskiner"
     },
     "duration": {
@@ -707,6 +711,23 @@
     "role_too_high": "Du kan ikke administrere en bruger med en højere rolle end din egen.",
     "role_grant_too_high": "Du kan ikke tildele en højere rolle end din egen.",
     "invite_email_mismatch": "Invitationen er sendt til en anden e-mailadresse."
+  },
+  "propertyInfo": {
+    "description": "Det praktiske om jeres vaskerum: regler, maskiner og hvem I kan kontakte.",
+    "pick": "Ejendom",
+    "loadErrorTitle": "Kunne ikke hente oplysningerne",
+    "address": "Adresse",
+    "rules": {
+      "title": "Sådan booker I"
+    },
+    "rooms": {
+      "title": "Vaskerum",
+      "empty": "Der er ingen vaskerum endnu."
+    },
+    "board": {
+      "title": "Bestyrelsen",
+      "empty": "Der er ingen kontaktpersoner endnu."
+    }
   },
   "adminOverview": {
     "inviteResident": "Inviter beboer",

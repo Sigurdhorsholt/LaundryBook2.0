@@ -28,6 +28,13 @@ public class PropertiesController(IMediator mediator, IConfiguration configurati
         return Ok(result);
     }
 
+    [HttpGet("{id:guid}/info")]
+    public async Task<IActionResult> GetPropertyInfo(Guid id, CancellationToken ct)
+    {
+        var result = await mediator.Send(new GetPropertyInfoQuery(id), ct);
+        return Ok(result);
+    }
+
     [HttpPost]
     public async Task<IActionResult> CreateProperty([FromBody] CreatePropertyCommand command, CancellationToken ct)
     {

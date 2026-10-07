@@ -1,13 +1,10 @@
+import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import type { LaundryMachineDto, LaundryRoomDto } from './laundryApi'
 import { colors } from '../../shared/theme'
 import { MACHINE_TYPE_LABEL, SIDE_CARD } from './constants'
-
-export interface RoomRules {
-  lookaheadDays: number
-  maxBookings: number
-  cancellationWindowMinutes: number
-}
+import { BookingRulesList } from './BookingRulesList'
+import type { RoomRules } from './types'
 
 interface DetailsProps {
   machines: LaundryMachineDto[]
@@ -21,7 +18,6 @@ const subTitle: React.CSSProperties = {
 
 export function RoomInfoDetails({ machines, rules }: DetailsProps) {
   const { t } = useTranslation()
-  const cancelHours = Math.round(rules.cancellationWindowMinutes / 60)
 
   return (
     <>
@@ -40,11 +36,10 @@ export function RoomInfoDetails({ machines, rules }: DetailsProps) {
       )}
 
       <h3 style={subTitle}>{t('laundry.room.rulesTitle')}</h3>
-      <ul className="mb-0 ps-3 d-flex flex-column gap-1" style={{ fontSize: '0.85rem', color: colors.textSecondary }}>
-        <li>{t('laundry.room.lookahead', { count: rules.lookaheadDays })}</li>
-        <li>{t('laundry.room.maxBookings', { count: rules.maxBookings })}</li>
-        <li>{cancelHours > 0 ? t('laundry.room.cancelHours', { count: cancelHours }) : t('laundry.room.cancelUntilStart')}</li>
-      </ul>
+      <BookingRulesList rules={rules} />
+      <Link to="/property" className="d-inline-block mt-3" style={{ fontSize: '0.85rem', fontWeight: 600 }}>
+        {t('laundry.room.moreAboutProperty')}
+      </Link>
     </>
   )
 }

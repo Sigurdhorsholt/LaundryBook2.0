@@ -16,6 +16,7 @@ const PrivacyPage = lazy(() => import('../pages/public/PrivacyPage').then((m) =>
 const TermsPage = lazy(() => import('../pages/public/TermsPage').then((m) => ({ default: m.TermsPage })))
 const GetStartedPage = lazy(() => import('../pages/public/GetStartedPage').then((m) => ({ default: m.GetStartedPage })))
 const MyPage = lazy(() => import('../pages/MyPage').then((m) => ({ default: m.MyPage })))
+const PropertyInfoPage = lazy(() => import('../pages/PropertyInfoPage').then((m) => ({ default: m.PropertyInfoPage })))
 const JoinPage = lazy(() => import('../pages/JoinPage').then((m) => ({ default: m.JoinPage })))
 const SignupPage = lazy(() => import('../pages/SignupPage').then((m) => ({ default: m.SignupPage })))
 const AdminDashboardPage = lazy(() => import('../pages/admin/AdminDashboardPage').then((m) => ({ default: m.AdminDashboardPage })))
@@ -75,6 +76,14 @@ export const routes: AppRoute[] = [
     minRole: UserRole.Resident,
     label: 'nav.myPage',
     icon: <IconUsers />,
+  },
+
+  {
+    path: '/property',
+    component: PropertyInfoPage,
+    layout: 'app',
+    protected: true,
+    minRole: UserRole.Resident,
   },
 
   // ── Admin shell — top-level pages (appear in main sidebar nav) ──────────────
