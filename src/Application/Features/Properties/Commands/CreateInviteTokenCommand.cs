@@ -43,7 +43,7 @@ public class CreateInviteTokenCommandHandler(
             .FirstOrDefaultAsync(cancellationToken);
 
         if (!isActive)
-            throw new ConflictException("Foreningen afventer godkendelse og kan endnu ikke invitere beboere.");
+            throw new ConflictException("Foreningen afventer godkendelse og kan endnu ikke invitere beboere.", ErrorCodes.PropertyPendingApproval);
 
         // One shared link per property: a new one replaces (revokes) the previously printed QR code
         if (request.IsMultiUse)

@@ -20,7 +20,7 @@ internal static class InviteRedemption
     {
         if (!string.IsNullOrEmpty(invite.Email) &&
             !string.Equals(invite.Email, email, StringComparison.OrdinalIgnoreCase))
-            throw new ForbiddenException("Invitationen er sendt til en anden e-mailadresse.");
+            throw new ForbiddenException("Invitationen er sendt til en anden e-mailadresse.", ErrorCodes.InviteEmailMismatch);
     }
 
     public static async Task ApplyAsync(

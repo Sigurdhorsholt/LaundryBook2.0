@@ -1,4 +1,5 @@
-import type { BookingDto, LaundryMachineDto, MyBookingDto, TimeSlotTemplateDto } from './laundryApi'
+import i18n from '../../i18n'
+import { BookingLabelKind, type BookingDto, type LaundryMachineDto, type MyBookingDto, type TimeSlotTemplateDto } from './laundryApi'
 import type { WeekCell } from './types'
 import { isLocked, isPast, minutesUntilSlot } from '../../shared/utils/dateUtils'
 
@@ -8,6 +9,16 @@ export function incrementBookingCount(): number {
   const next = parseInt(localStorage.getItem(BOOKING_COUNT_KEY) ?? '0', 10) + 1
   localStorage.setItem(BOOKING_COUNT_KEY, String(next))
   return next
+}
+
+// Formatted here rather than on the server so the text follows the resident's chosen language
+export function bookingLabel(b: Pick<BookingDto, 'labelKind' | 'labelValue'>): string {
+  switch (b.labelKind) {
+    case BookingLabelKind.Own: return i18n.t('laundry.slot.myBooking')
+    case BookingLabelKind.Name: return b.labelValue ?? i18n.t('laundry.slot.taken')
+    case BookingLabelKind.Apartment: return i18n.t('laundry.apartmentShort', { number: b.labelValue ?? '' })
+    default: return i18n.t('laundry.slot.taken')
+  }
 }
 
 export interface WeekCellContext {
@@ -26,7 +37,7 @@ export function weekCell(slot: TimeSlotTemplateDto, date: string, ctx: WeekCellC
   if (isLocked(date, ctx.today, ctx.lookaheadDays)) return { kind: 'locked' }
   if (!ctx.machineMode) {
     const taken = here[0]
-    return taken ? { kind: 'taken', label: taken.label } : { kind: 'free', freeMachines: [] }
+    return taken ? { kind: 'taken', label: bookingLabel(taken) } : { kind: 'free', freeMachines: [] }
   }
   const freeMachines = ctx.machines.filter(m => !here.some(b => b.machineId === m.id))
   return freeMachines.length > 0 ? { kind: 'free', freeMachines } : { kind: 'full' }

@@ -24,7 +24,7 @@ public class AcceptInviteCommandHandler(
 {
     public async Task Handle(AcceptInviteCommand request, CancellationToken cancellationToken)
     {
-        var userId = currentUser.UserId ?? throw new ForbiddenException("Du skal være logget ind.");
+        var userId = currentUser.UserId ?? throw new ForbiddenException("Du skal være logget ind.", ErrorCodes.NotSignedIn);
         var user = await db.Users.FindAsync([userId], cancellationToken)
             ?? throw new NotFoundException(nameof(User), userId);
 

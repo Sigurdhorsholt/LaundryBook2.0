@@ -56,7 +56,9 @@ public class UpdateComplexSettingsCommandHandler(
 
             if (upcoming > 0)
                 throw new ConflictException(
-                    $"Bookingtypen kan ikke ændres, mens der er {upcoming} kommende bookinger. Vent til de er afviklet, eller aflys dem først.");
+                    $"Bookingtypen kan ikke ændres, mens der er {upcoming} kommende bookinger. Vent til de er afviklet, eller aflys dem først.",
+                    ErrorCodes.BookingModeLocked,
+                    new Dictionary<string, object> { ["count"] = upcoming });
         }
 
         settings.BookingMode = request.BookingMode;

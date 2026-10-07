@@ -22,7 +22,7 @@ public class RemoveMemberCommandHandler(
         await auth.RequireCanManageMemberAsync(request.PropertyId, request.UserId, cancellationToken);
 
         if (request.UserId == currentUser.UserId)
-            throw new InvalidOperationException("You cannot remove yourself from the property.");
+            throw new ConflictException("Du kan ikke fjerne dig selv fra foreningen.", ErrorCodes.CannotRemoveSelf);
 
         var membership = await db.UserComplexMemberships
             .FirstOrDefaultAsync(m => m.UserId == request.UserId && m.PropertyId == request.PropertyId, cancellationToken)

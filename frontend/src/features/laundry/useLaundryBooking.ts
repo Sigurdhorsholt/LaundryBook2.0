@@ -14,7 +14,7 @@ import {
 } from './laundryApi'
 import type { BookingDto, LaundryMachineDto, MyBookingDto } from './laundryApi'
 import type { PendingAction, GridBooking, AvailabilityState } from './types'
-import { incrementBookingCount, freeSlotCount, type WeekCellContext } from './utils'
+import { incrementBookingCount, freeSlotCount, bookingLabel, type WeekCellContext } from './utils'
 import { extractErrorMessage } from '../../shared/utils/errorUtils'
 import { todayStr, addDays, getWeekMonday, formatTimeRange, minutesUntilSlot } from '../../shared/utils/dateUtils'
 
@@ -93,7 +93,7 @@ export function useLaundryBooking() {
         bookingId: b.id,
         slotId: b.timeSlotTemplateId,
         isOwn: b.isOwn,
-        label: b.label,
+        label: bookingLabel(b),
         canCancel: b.canCancel,
         machineId: b.machineId,
         machineName: b.machineName,
