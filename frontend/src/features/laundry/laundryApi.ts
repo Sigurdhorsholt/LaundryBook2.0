@@ -12,6 +12,8 @@ export interface LaundryRoomDto {
   description: string | null
   isActive: boolean
   machineCount: number
+  timeSlotCount: number
+  upcomingBookingCount: number
 }
 
 export interface LaundryMachineDto {
@@ -19,6 +21,7 @@ export interface LaundryMachineDto {
   name: string
   machineType: MachineType
   isActive: boolean
+  upcomingBookingCount: number
 }
 
 export interface TimeSlotTemplateDto {
@@ -35,12 +38,21 @@ export interface TimeSlotScheduleEntry {
   endTime: string
 }
 
+// How another resident's booking is named, per the property's visibility setting
+export enum BookingLabelKind {
+  Own = 0,
+  Name = 1,
+  Apartment = 2,
+  Anonymous = 3,
+}
+
 export interface BookingDto {
   id: string
   timeSlotTemplateId: string
   date: string          // "YYYY-MM-DD"
   isOwn: boolean
-  label: string         // "Min booking" | "Anna Hansen" | "Lejl. 2B" | "Optaget"
+  labelKind: BookingLabelKind
+  labelValue: string | null   // the name or apartment number; null for Own and Anonymous
   canCancel: boolean
   machineId: string | null
   machineName: string | null
@@ -55,6 +67,16 @@ export interface MyBookingDto {
   endTime: string       // "HH:mm:ss"
   date: string          // "YYYY-MM-DD"
   canCancel: boolean
+  machineName: string | null
+}
+
+// A booking the board cancelled that the resident hasn't acknowledged yet
+export interface CancellationNoticeDto {
+  bookingId: string
+  date: string        // "YYYY-MM-DD"
+  startTime: string   // "HH:mm:ss"
+  endTime: string     // "HH:mm:ss"
+  roomName: string
   machineName: string | null
 }
 
@@ -77,6 +99,7 @@ export interface AdminRoomSummaryDto {
   name: string
   isActive: boolean
   activeSlotCount: number
+  capacityPerSlot: number
 }
 
 export interface PropertyBookingsDto {
@@ -112,12 +135,17 @@ export const laundryApi = baseApi.injectEndpoints({
       invalidatesTags: (_result, _err, { propertyId }) => [{ type: 'LaundryRoom', id: propertyId }],
     }),
 
-    deleteLaundryRoom: build.mutation<void, { propertyId: string; roomId: string }>({
+    deleteLaundryRoom: build.mutation<{ cancelledBookings: number }, { propertyId: string; roomId: string }>({
       query: ({ roomId }) => ({
         url: `/api/laundry-rooms/${roomId}`,
         method: 'DELETE',
       }),
-      invalidatesTags: (_result, _err, { propertyId }) => [{ type: 'LaundryRoom', id: propertyId }],
+      invalidatesTags: (_result, _err, { propertyId, roomId }) => [
+        { type: 'LaundryRoom', id: propertyId },
+        { type: 'Booking', id: roomId },
+        { type: 'Booking', id: `mine-${propertyId}` },
+        { type: 'Booking', id: `admin-${propertyId}` },
+      ],
     }),
 
     // ── Machines ─────────────────────────────────────────────────────────────
@@ -148,14 +176,17 @@ export const laundryApi = baseApi.injectEndpoints({
       invalidatesTags: (_result, _err, { roomId }) => [{ type: 'LaundryMachine', id: roomId }],
     }),
 
-    deleteMachine: build.mutation<void, { roomId: string; machineId: string; propertyId: string }>({
+    deleteMachine: build.mutation<{ cancelledBookings: number }, { roomId: string; machineId: string; propertyId: string }>({
       query: ({ roomId, machineId }) => ({
         url: `/api/laundry-rooms/${roomId}/machines/${machineId}`,
         method: 'DELETE',
       }),
       invalidatesTags: (_result, _err, { roomId, propertyId }) => [
         { type: 'LaundryMachine', id: roomId },
-        { type: 'LaundryRoom', id: propertyId },  // refresh machineCount
+        { type: 'LaundryRoom', id: propertyId },  // refresh machineCount + upcomingBookingCount
+        { type: 'Booking', id: roomId },
+        { type: 'Booking', id: `mine-${propertyId}` },
+        { type: 'Booking', id: `admin-${propertyId}` },
       ],
     }),
 
@@ -177,6 +208,7 @@ export const laundryApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: (_result, _err, { roomId, propertyId }) => [
         { type: 'TimeSlot', id: roomId },
+        { type: 'LaundryRoom', id: propertyId },  // refresh timeSlotCount
         { type: 'Booking', id: roomId },
         { type: 'Booking', id: `mine-${propertyId}` },
         { type: 'Booking', id: `admin-${propertyId}` },
@@ -189,6 +221,20 @@ export const laundryApi = baseApi.injectEndpoints({
       query: ({ roomId, from, to }) =>
         `/api/laundry-rooms/${roomId}/bookings?from=${from}&to=${to}`,
       providesTags: (_result, _err, { roomId }) => [{ type: 'Booking', id: roomId }],
+    }),
+
+    getCancellationNotices: build.query<CancellationNoticeDto[], void>({
+      query: () => '/api/bookings/cancellation-notices',
+      providesTags: [{ type: 'Booking', id: 'cancellation-notices' }],
+    }),
+
+    acknowledgeCancellationNotices: build.mutation<void, string[]>({
+      query: (bookingIds) => ({
+        url: '/api/bookings/cancellation-notices/acknowledge',
+        method: 'POST',
+        body: { bookingIds },
+      }),
+      invalidatesTags: [{ type: 'Booking', id: 'cancellation-notices' }],
     }),
 
     getMyBookings: build.query<MyBookingDto[], string>({
@@ -242,6 +288,8 @@ export const {
   useReplaceTimeSlotsMutation,
   useGetBookingsQuery,
   useGetMyBookingsQuery,
+  useGetCancellationNoticesQuery,
+  useAcknowledgeCancellationNoticesMutation,
   useGetPropertyBookingsQuery,
   useCreateBookingMutation,
   useCancelBookingMutation,

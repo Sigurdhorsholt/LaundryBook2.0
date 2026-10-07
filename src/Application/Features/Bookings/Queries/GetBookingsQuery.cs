@@ -1,6 +1,7 @@
 using Application.Common.Authorization;
 using Application.Common.Exceptions;
 using Application.Common.Interfaces;
+using Application.Common.Time;
 using Domain.Enums;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
@@ -9,12 +10,24 @@ namespace Application.Features.Bookings.Queries;
 
 public record GetBookingsQuery(Guid RoomId, DateOnly From, DateOnly To) : IRequest<List<BookingDto>>;
 
+// How the client should name a booking; the client formats it so the text follows the user's language
+public enum BookingLabelKind
+{
+    Own = 0,
+    Name = 1,
+    Apartment = 2,
+    Anonymous = 3,
+}
+
 public record BookingDto(
     Guid Id,
     Guid TimeSlotTemplateId,
     DateOnly Date,
     bool IsOwn,
+    // Danish text kept for frontend builds from before LabelKind; remove once those are gone
     string Label,
+    BookingLabelKind LabelKind,
+    string? LabelValue,
     bool CanCancel,
     Guid? MachineId,
     string? MachineName);
@@ -61,29 +74,28 @@ public class GetBookingsQueryHandler(
         {
             var isOwn = b.UserId == userId;
 
-            string label;
-            if (isOwn)
-            {
-                label = "Min booking";
-            }
-            else
-            {
-                label = settings.BookingVisibility switch
+            var apartment = membershipsByUser.TryGetValue(b.UserId, out var m) ? m.ApartmentNumber : null;
+            var (kind, value) = isOwn
+                ? (BookingLabelKind.Own, (string?)null)
+                : settings.BookingVisibility switch
                 {
-                    BookingVisibility.FullName => $"{b.User.FirstName} {b.User.LastName}".Trim(),
-                    BookingVisibility.ApartmentOnly =>
-                        membershipsByUser.TryGetValue(b.UserId, out var m) && m.ApartmentNumber is not null
-                            ? $"Lejl. {m.ApartmentNumber}"
-                            : "Optaget",
-                    _ => "Optaget",
+                    BookingVisibility.FullName => (BookingLabelKind.Name, $"{b.User.FirstName} {b.User.LastName}".Trim()),
+                    BookingVisibility.ApartmentOnly when apartment is not null => (BookingLabelKind.Apartment, apartment),
+                    _ => (BookingLabelKind.Anonymous, null),
                 };
-            }
+            var label = kind switch
+            {
+                BookingLabelKind.Own => "Min booking",
+                BookingLabelKind.Name => value!,
+                BookingLabelKind.Apartment => $"Lejl. {value}",
+                _ => "Optaget",
+            };
 
             // canCancel: only own bookings, only within cancellation window
-            var slotStartUtc = b.Date.ToDateTime(b.TimeSlotTemplate.StartTime, DateTimeKind.Unspecified);
+            var slotStartUtc = CopenhagenTime.ToUtc(b.Date, b.TimeSlotTemplate.StartTime);
             var canCancel = isOwn && (slotStartUtc - now).TotalMinutes > cancellationCutoffMinutes;
 
-            return new BookingDto(b.Id, b.TimeSlotTemplateId, b.Date, isOwn, label, canCancel, b.MachineId, b.Machine?.Name);
+            return new BookingDto(b.Id, b.TimeSlotTemplateId, b.Date, isOwn, label, kind, value, canCancel, b.MachineId, b.Machine?.Name);
         }).ToList();
     }
 }

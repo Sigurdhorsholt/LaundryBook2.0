@@ -1,0 +1,15 @@
+{
+  "name": "LaundryBook",
+  "short_name": "LaundryBook",
+  "description": "Vaskebooking til jeres forening",
+  "lang": "da",
+  "start_url": "/dashboard",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#f7f3ea",
+  "theme_color": "#3d7a5c",
+  "icons": [
+    { "src": "/washing-machine-fav-icon.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "/washing-machine-fav-icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" }
+  ]
+}

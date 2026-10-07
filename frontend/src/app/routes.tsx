@@ -1,31 +1,34 @@
-import type { ComponentType, ReactNode } from 'react'
+import { lazy, type ComponentType, type ReactNode } from 'react'
 import type { FeatureKey } from '../config/features'
 import { UserRole } from '../features/auth/authApi'
 import { IconGrid, IconBuilding, IconCalendar, IconShield, IconUsers } from '../shared/icons'
 
 import { LandingPage } from '../pages/LandingPage'
-import { FeaturesPage } from '../pages/public/FeaturesPage'
-import { DemoPage } from '../pages/public/DemoPage'
-import { FaqPage } from '../pages/public/FaqPage'
-import { AboutPage } from '../pages/public/AboutPage'
-import { PrivacyPage } from '../pages/public/PrivacyPage'
-import { TermsPage } from '../pages/public/TermsPage'
-import { GetStartedPage } from '../pages/public/GetStartedPage'
-import { MyPage } from '../pages/MyPage'
-import { JoinPage } from '../pages/JoinPage'
-import { SignupPage } from '../pages/SignupPage'
 import { SmartRedirectPage } from '../pages/SmartRedirectPage'
 import { LaundryPage } from '../pages/laundry/LaundryPage'
-import { AdminDashboardPage } from '../pages/admin/AdminDashboardPage'
-import { PropertiesPage } from '../pages/admin/properties/PropertiesPage'
-import { PropertyRedirectPage } from '../pages/admin/properties/PropertyRedirectPage'
-import { PropertyUsersPage } from '../pages/admin/properties/PropertyUsersPage'
-import { PropertySettingsPage } from '../pages/admin/properties/PropertySettingsPage'
-import { LaundryRoomsPage } from '../pages/admin/properties/LaundryRoomsPage'
-import { PropertyTimeslotsPage } from '../pages/admin/properties/PropertyTimeslotsPage'
-import { PropertyBookingsPage } from '../pages/admin/properties/PropertyBookingsPage'
-import { BookingPreviewPage } from '../pages/admin/properties/BookingPreviewPage'
-import { SysAdminPage } from '../pages/admin/SysAdminPage'
+
+// Split per page so residents and first-time visitors don't download the admin/sysadmin code
+const FeaturesPage = lazy(() => import('../pages/public/FeaturesPage').then((m) => ({ default: m.FeaturesPage })))
+const DemoPage = lazy(() => import('../pages/public/DemoPage').then((m) => ({ default: m.DemoPage })))
+const FaqPage = lazy(() => import('../pages/public/FaqPage').then((m) => ({ default: m.FaqPage })))
+const AboutPage = lazy(() => import('../pages/public/AboutPage').then((m) => ({ default: m.AboutPage })))
+const PrivacyPage = lazy(() => import('../pages/public/PrivacyPage').then((m) => ({ default: m.PrivacyPage })))
+const TermsPage = lazy(() => import('../pages/public/TermsPage').then((m) => ({ default: m.TermsPage })))
+const GetStartedPage = lazy(() => import('../pages/public/GetStartedPage').then((m) => ({ default: m.GetStartedPage })))
+const MyPage = lazy(() => import('../pages/MyPage').then((m) => ({ default: m.MyPage })))
+const PropertyInfoPage = lazy(() => import('../pages/PropertyInfoPage').then((m) => ({ default: m.PropertyInfoPage })))
+const JoinPage = lazy(() => import('../pages/JoinPage').then((m) => ({ default: m.JoinPage })))
+const SignupPage = lazy(() => import('../pages/SignupPage').then((m) => ({ default: m.SignupPage })))
+const AdminDashboardPage = lazy(() => import('../pages/admin/AdminDashboardPage').then((m) => ({ default: m.AdminDashboardPage })))
+const PropertiesPage = lazy(() => import('../pages/admin/properties/PropertiesPage').then((m) => ({ default: m.PropertiesPage })))
+const PropertyOverviewPage = lazy(() => import('../pages/admin/properties/PropertyOverviewPage').then((m) => ({ default: m.PropertyOverviewPage })))
+const PropertyUsersPage = lazy(() => import('../pages/admin/properties/PropertyUsersPage').then((m) => ({ default: m.PropertyUsersPage })))
+const PropertyHouseRulesPage = lazy(() => import('../pages/admin/properties/PropertyHouseRulesPage').then((m) => ({ default: m.PropertyHouseRulesPage })))
+const PropertySettingsPage = lazy(() => import('../pages/admin/properties/PropertySettingsPage').then((m) => ({ default: m.PropertySettingsPage })))
+const LaundryRoomsPage = lazy(() => import('../pages/admin/properties/LaundryRoomsPage').then((m) => ({ default: m.LaundryRoomsPage })))
+const PropertyTimeslotsPage = lazy(() => import('../pages/admin/properties/PropertyTimeslotsPage').then((m) => ({ default: m.PropertyTimeslotsPage })))
+const PropertyBookingsPage = lazy(() => import('../pages/admin/properties/PropertyBookingsPage').then((m) => ({ default: m.PropertyBookingsPage })))
+const SysAdminPage = lazy(() => import('../pages/admin/SysAdminPage').then((m) => ({ default: m.SysAdminPage })))
 
 export interface AppRoute {
   path: string
@@ -76,6 +79,14 @@ export const routes: AppRoute[] = [
     icon: <IconUsers />,
   },
 
+  {
+    path: '/property',
+    component: PropertyInfoPage,
+    layout: 'app',
+    protected: true,
+    minRole: UserRole.Resident,
+  },
+
   // ── Admin shell — top-level pages (appear in main sidebar nav) ──────────────
   {
     path: '/admin',
@@ -111,7 +122,7 @@ export const routes: AppRoute[] = [
   // These render inside AdminLayout but the sidebar switches to property context nav.
   {
     path: '/admin/properties/:propertyId',
-    component: PropertyRedirectPage,
+    component: PropertyOverviewPage,
     layout: 'admin',
     protected: true,
     minRole: UserRole.ComplexAdmin,
@@ -119,6 +130,13 @@ export const routes: AppRoute[] = [
   {
     path: '/admin/properties/:propertyId/users',
     component: PropertyUsersPage,
+    layout: 'admin',
+    protected: true,
+    minRole: UserRole.ComplexAdmin,
+  },
+  {
+    path: '/admin/properties/:propertyId/house-rules',
+    component: PropertyHouseRulesPage,
     layout: 'admin',
     protected: true,
     minRole: UserRole.ComplexAdmin,
@@ -149,14 +167,6 @@ export const routes: AppRoute[] = [
   {
     path: '/admin/properties/:propertyId/bookings',
     component: PropertyBookingsPage,
-    layout: 'admin',
-    protected: true,
-    minRole: UserRole.ComplexAdmin,
-    feature: 'laundryBooking',
-  },
-  {
-    path: '/admin/properties/:propertyId/preview',
-    component: BookingPreviewPage,
     layout: 'admin',
     protected: true,
     minRole: UserRole.ComplexAdmin,

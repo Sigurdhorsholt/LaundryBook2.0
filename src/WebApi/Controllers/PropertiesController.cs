@@ -28,6 +28,20 @@ public class PropertiesController(IMediator mediator, IConfiguration configurati
         return Ok(result);
     }
 
+    [HttpGet("{id:guid}/info")]
+    public async Task<IActionResult> GetPropertyInfo(Guid id, CancellationToken ct)
+    {
+        var result = await mediator.Send(new GetPropertyInfoQuery(id), ct);
+        return Ok(result);
+    }
+
+    [HttpPut("{id:guid}/house-rules")]
+    public async Task<IActionResult> UpdateHouseRules(Guid id, [FromBody] UpdateHouseRulesRequest request, CancellationToken ct)
+    {
+        await mediator.Send(new UpdateHouseRulesCommand(id, request.Text), ct);
+        return NoContent();
+    }
+
     [HttpPost]
     public async Task<IActionResult> CreateProperty([FromBody] CreatePropertyCommand command, CancellationToken ct)
     {
@@ -71,15 +85,15 @@ public class PropertiesController(IMediator mediator, IConfiguration configurati
     [HttpPut("{id:guid}/members/{userId:guid}")]
     public async Task<IActionResult> UpdateMember(Guid id, Guid userId, [FromBody] UpdateMemberRequest request, CancellationToken ct)
     {
-        await mediator.Send(new UpdateMemberCommand(id, userId, request.ApartmentNumber, request.Role, request.IsActive), ct);
-        return NoContent();
+        var cancelledBookings = await mediator.Send(new UpdateMemberCommand(id, userId, request.ApartmentNumber, request.Role, request.IsActive), ct);
+        return Ok(new { cancelledBookings });
     }
 
     [HttpDelete("{id:guid}/members/{userId:guid}")]
     public async Task<IActionResult> RemoveMember(Guid id, Guid userId, CancellationToken ct)
     {
-        await mediator.Send(new RemoveMemberCommand(id, userId), ct);
-        return NoContent();
+        var cancelledBookings = await mediator.Send(new RemoveMemberCommand(id, userId), ct);
+        return Ok(new { cancelledBookings });
     }
 
     [EnableRateLimiting("email")]
@@ -139,7 +153,23 @@ public class PropertiesController(IMediator mediator, IConfiguration configurati
 
         return Ok(new { token });
     }
+
+    [HttpGet("{id:guid}/members/invite-link")]
+    public async Task<IActionResult> GetOpenInviteLink(Guid id, CancellationToken ct)
+    {
+        var link = await mediator.Send(new GetOpenInviteLinkQuery(id), ct);
+        return link is null ? NoContent() : Ok(link);
+    }
+
+    [HttpDelete("{id:guid}/members/invite-link")]
+    public async Task<IActionResult> RevokeOpenInviteLinks(Guid id, CancellationToken ct)
+    {
+        var revoked = await mediator.Send(new RevokeOpenInviteLinksCommand(id), ct);
+        return Ok(new { revoked });
+    }
 }
+
+public record UpdateHouseRulesRequest(string? Text);
 
 public record UpdateSettingsRequest(
     BookingMode BookingMode,

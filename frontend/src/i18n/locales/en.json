@@ -1,12 +1,32 @@
 {
   "common": {
+    "retry": "Try again",
+    "upcomingBookingsWillBeCancelled_one": "{{count}} upcoming booking will be cancelled.",
+    "upcomingBookingsWillBeCancelled_other": "{{count}} upcoming bookings will be cancelled.",
+    "upcomingBookingsCancelled_one": "{{count}} upcoming booking was cancelled.",
+    "upcomingBookingsCancelled_other": "{{count}} upcoming bookings were cancelled.",
     "close": "Close",
-    "back": "Back",
     "save": "Save",
     "cancel": "Cancel",
     "loading": "Loading…",
     "genericError": "Something went wrong. Please try again.",
     "acceptTerms": "I accept the <terms>terms</terms> and <privacy>privacy policy</privacy>"
+  },
+  "errorBoundary": {
+    "title": "Something went wrong",
+    "body": "The page could not be displayed. Try reloading – the error has been logged so we can fix it.",
+    "reload": "Reload",
+    "home": "Go to home page"
+  },
+  "seo": {
+    "home": { "title": "LaundryBook - laundry booking for your association", "description": "Digital laundry booking for Danish homeowner and cooperative housing associations. Residents book from home, and the board has the overview." },
+    "features": { "title": "Features - LaundryBook", "description": "Laundry slot booking, room and time slot setup, invitations and an overview of utilisation - all in the browser." },
+    "demo": { "title": "Try the demo - LaundryBook", "description": "Try LaundryBook without logging in: book and cancel a laundry slot in a demo association, and see the admin panel." },
+    "faq": { "title": "Questions and answers - LaundryBook", "description": "Answers to the most common questions about LaundryBook: booking, mobile, price and how your association gets started." },
+    "about": { "title": "About LaundryBook", "description": "Who is behind LaundryBook, and why it exists." },
+    "getStarted": { "title": "Get started - LaundryBook", "description": "Set up your association on LaundryBook: account, laundry rooms, time slots and invitations for residents." },
+    "privacy": { "title": "Privacy policy - LaundryBook", "description": "How LaundryBook processes personal data." },
+    "terms": { "title": "Terms - LaundryBook", "description": "Terms of use for LaundryBook." }
   },
   "roles": {
     "resident": "Resident",
@@ -17,24 +37,28 @@
   "nav": {
     "laundry": "Laundry booking",
     "myPage": "My page",
+    "propertyInfo": "Property",
+    "houseRules": "House rules",
     "overview": "Overview",
     "properties": "Properties",
     "system": "System",
     "admin": "Admin",
     "logout": "Log out",
+    "mainMenu": "Main menu",
+    "profileMenu": "Your profile",
     "openSidebar": "Open sidebar",
     "openNavigation": "Open navigation",
     "menu": "Menu",
     "allProperties": "All properties",
     "property": "Property",
     "sectionAdministration": "Administration",
+    "sectionResident": "Resident",
     "users": "Users",
     "settings": "Settings",
     "sectionLaundry": "Laundry rooms",
     "roomsAndMachines": "Rooms & Machines",
     "timeslots": "Time slots",
-    "bookings": "Bookings",
-    "preview": "Preview"
+    "bookings": "Bookings"
   },
   "layout": {
     "pendingApproval": "Your association is awaiting approval. You can set up laundry rooms and settings, but can only invite residents once the association is activated."
@@ -62,7 +86,11 @@
         "specificMachine": "Specific machine",
         "specificMachineDesc": "The resident chooses exactly which washer or dryer they want to use.",
         "entireRoom": "Entire room",
-        "entireRoomDesc": "The resident books access to the whole laundry room for the selected time."
+        "entireRoomDesc": "The resident books access to the whole laundry room for the selected time.",
+        "locked_one": "The booking type can't be changed while there is {{count}} upcoming booking. Wait until it has passed, or cancel it under Bookings.",
+        "locked_other": "The booking type can't be changed while there are {{count}} upcoming bookings. Wait until they have passed, or cancel them under Bookings.",
+        "lockedTitle": "The booking type is locked for now",
+        "lockedAction": "Go to Bookings"
       },
       "visibility": {
         "title": "Visibility in the booking calendar",
@@ -76,9 +104,9 @@
       },
       "lookahead": {
         "title": "Booking horizon",
-        "description": "How many days ahead can residents create bookings? (1-30)",
+        "description": "How many days ahead can residents create bookings? (1-365)",
         "unit": "days",
-        "rangeError": "Must be between 1 and {{max}} days."
+        "rangeError": "Must be a whole number between 1 and {{max}} days."
       },
       "cancellation": {
         "title": "Cancellation deadline",
@@ -89,9 +117,9 @@
       },
       "maxConcurrent": {
         "title": "Max. active bookings per resident",
-        "description": "How many upcoming bookings a resident may have at the same time. (1-10)",
+        "description": "How many upcoming bookings a resident may have at the same time. (1-100)",
         "unit": "bookings",
-        "rangeError": "Must be between 1 and {{max}}."
+        "rangeError": "Must be a whole number between 1 and {{max}}."
       }
     },
     "bookings": {
@@ -100,12 +128,25 @@
       "loadError": "Could not load bookings. Try reloading the page.",
       "cancelError": "The booking could not be cancelled. Please try again.",
       "viewList": "List",
-      "viewCalendar": "Calendar"
+      "viewCalendar": "Calendar",
+      "selected": {
+        "title": "Selected booking",
+        "empty": "Choose a booking in the calendar to see it here.",
+        "resident": "Resident",
+        "apartment": "Apartment",
+        "cancel": "Cancel booking",
+        "started": "This time has started and can't be cancelled here.",
+        "machinesTitle": "Machines in {{room}}",
+        "machineCount_one": "{{count}} booking",
+        "machineCount_other": "{{count}} bookings"
+      }
     },
     "users": {
       "title": "Users",
       "invite": "Invite resident",
       "pendingApprovalTooltip": "The association must be approved before you can invite residents",
+      "pendingApprovalTitle": "Invites are on hold",
+      "pendingApprovalBody": "The association must be approved before you can invite residents.",
       "loadError": "Could not load users.",
       "empty": "No users yet. Invite the first resident.",
       "count_one": "{{count}} user",
@@ -130,6 +171,7 @@
       "no": "No",
       "actions": "Actions",
       "removeUserConfirm": "Remove user?",
+      "deactivateConfirm": "Deactivate access?",
       "editRole": "Edit role/apt.",
       "deactivateAccess": "Deactivate access",
       "activateAccess": "Activate access",
@@ -184,6 +226,8 @@
     },
     "timeslots": {
       "title": "Time slots",
+      "discardUnsavedConfirm": "You have unsaved time slot changes. Discard them?",
+      "goToRooms": "Go to Rooms & Machines",
       "description": "Time slot templates repeat daily and apply indefinitely.",
       "loadError": "Could not load rooms. Try reloading the page.",
       "emptyTitle": "No rooms yet",
@@ -227,52 +271,22 @@
       "removeOnly": "Remove time slots",
       "hour": "Hour",
       "minute": "Minute"
-    },
-    "preview": {
-      "title": "Preview",
-      "description": "Simulate the residents' booking experience with test users",
-      "descriptionShort": "Simulate the residents' booking experience",
-      "noActiveRooms": "No active laundry rooms",
-      "noActiveRoomsDesc": "Create a laundry room under Rooms & Machines to see the preview.",
-      "adminSimSettings": "Admin · Simulation settings",
-      "reset": "Reset",
-      "viewingAs": "Viewing as:",
-      "room": "Laundry room:",
-      "residentView": "Resident view",
-      "nextBookingLabel": "{{name}}'s next booking",
-      "cancel": "Cancel",
-      "book": "Book",
-      "previousWeek": "Previous week",
-      "nextWeek": "Next week",
-      "myBooking": "My booking",
-      "resident": "Resident",
-      "occupied": "Occupied",
-      "apartmentLabel": "Apt. {{number}}",
-      "othersBookedToday_one": "1 other resident has booked this day",
-      "othersBookedToday_other": "{{count}} other residents have booked this day",
-      "visibilityFullName": "Name visible",
-      "visibilityApartment": "Apt. no.",
-      "visibilityAnonymous": "Anonymous",
-      "modeSpecificMachine": "Specific machine",
-      "modeEntireRoom": "Entire room",
-      "cancelWithinHours": "Cancel within {{hours}}h",
-      "cancelWithinMinutes": "Cancel within {{minutes}} min",
-      "maxBookings": "Max {{count}} booking",
-      "daysAhead": "{{count}} days ahead",
-      "confirmBookTitle": "Confirm booking",
-      "confirmCancelTitle": "Confirm cancellation",
-      "confirmBookQuestion": "Book <s>{{slotTime}}</s> on {{dateLabel}} as <s>{{userName}}</s>?",
-      "confirmCancelQuestion": "Cancel booking <s>{{slotTime}}</s> on {{dateLabel}}?",
-      "timeWarningMinutes": "There are only {{minutes}} minutes until the booking starts.",
-      "timeWarningHours_one": "There is {{count}} hour until the booking starts.",
-      "timeWarningHours_other": "There are {{count}} hours until the booking starts.",
-      "previewNotice": "This is a preview - no real bookings are created.",
-      "userActiveBookings_one": "{{name}} has {{count}} active booking",
-      "userActiveBookings_other": "{{name}} has {{count}} active bookings",
-      "maxLabel": "(max. {{count}})"
     }
   },
   "auth": {
+    "errors": {
+      "emailInUse": "An account with this email already exists. Log in with your password, or use \"Forgot password\".",
+      "invalidCredential": "Wrong email or password.",
+      "weakPassword": "The password must be at least 6 characters.",
+      "invalidEmail": "Invalid email address.",
+      "tooManyRequests": "Too many attempts. Wait a moment and try again.",
+      "network": "No connection. Check your internet and try again."
+    },
+    "signInRequiredTitle": "Log in to continue",
+    "signInRequiredBody": "Your session has expired, or you are not logged in. Log in and you will be taken back to this page.",
+    "goHome": "Go to home page",
+    "sessionCheckFailedTitle": "Could not reach LaundryBook",
+    "sessionCheckFailedBody": "Check your internet connection and try again.",
     "login": "Log in",
     "loginSubtitle": "Welcome back to LaundryBook.",
     "loginFailed": "Login failed. Please try again.",
@@ -290,6 +304,28 @@
     "sendResetLink": "Send reset link"
   },
   "profile": {
+    "myData": {
+      "title": "Your data",
+      "description": "Get a copy of everything LaundryBook stores about you, or delete your account.",
+      "export": "Download my data",
+      "exporting": "Fetching…",
+      "exportFailed": "Your data couldn't be fetched. Try again.",
+      "delete": "Delete my account"
+    },
+    "deleteAccount": {
+      "title": "Delete your account",
+      "intro": "When you delete your account:",
+      "removedFrom": "You are removed from {{properties}}.",
+      "bookingsCancelled": "Your upcoming bookings are cancelled, so others can book the times.",
+      "historyDeleted": "Your profile and booking history are deleted.",
+      "downloadFirst": "If you want a copy, download your data first.",
+      "confirm": "I understand this can't be undone.",
+      "cancel": "Cancel",
+      "submit": "Delete my account",
+      "deleting": "Deleting…",
+      "failed": "The account couldn't be deleted. Try again.",
+      "lastAdminHint": "Make someone else an administrator under Admin → Users before you delete your account."
+    },
     "cancelBooking": "Cancel",
     "upcomingBookings": "Upcoming bookings",
     "noUpcomingBookings": "No upcoming bookings",
@@ -312,6 +348,7 @@
     "resetPassword": "Reset password"
   },
   "properties": {
+    "quickLinkTimeslots": "Time slots",
     "createProperty": "Create property",
     "creating": "Creating…",
     "createFailed": "Something went wrong. Please try again.",
@@ -332,6 +369,8 @@
     "quickLinkBookings": "Bookings"
   },
   "sysadmin": {
+    "confirmRemove": "Confirm remove",
+    "confirmActivate": "Confirm activation",
     "manageAccess": "Manage access",
     "currentProperties": "Current properties",
     "loading": "Loading…",
@@ -391,6 +430,14 @@
     }
   },
   "users": {
+    "openLinkActive": "Active shared link",
+    "openLinkMeta": "Created {{created}} · expires {{expires}}",
+    "showQr": "Show QR code",
+    "revokeLink": "Revoke link",
+    "confirmRevoke": "Confirm revoke",
+    "revoking": "Revoking…",
+    "revokeWarning": "The printed QR code stops working immediately. Residents who already joined keep their access.",
+    "newLinkReplacesOld": "A new shared link makes the previous QR code invalid.",
     "editMember": "Edit - {{name}}",
     "role": "Role",
     "apartment": "Apartment",
@@ -421,9 +468,25 @@
     "specificResident": "Specific resident"
   },
   "laundry": {
+    "availability": {
+      "free": "free slots",
+      "few": "few free slots",
+      "full": "fully booked",
+      "past": "not bookable"
+    },
+    "noMachinesWarning": "No machines yet - residents cannot book in this laundry room until at least one is added.",
     "actions": {
+      "bookSlot": "Book {{time}}",
+      "cancelSlot": "Cancel booking {{time}}",
+      "bookMachine": "Book {{machine}}, {{time}}",
+      "cancelMachine": "Cancel {{machine}}, {{time}}",
       "book": "Book",
-      "cancelBooking": "Cancel"
+      "cancelBooking": "Cancel",
+      "dismiss": "Cancel",
+      "confirmBook": "Confirm booking",
+      "confirmCancel": "Confirm cancellation",
+      "bookTime": "Book it",
+      "cancelTime": "Cancel it"
     },
     "machineType": {
       "washer": "Washer",
@@ -440,7 +503,9 @@
       "promptCancelWithMachine": "Do you want to cancel your booking at <s>{{slotTime}}</s> on <s>{{machineName}}</s> on <s>{{dateText}}</s>?",
       "warningMinutes": "There are only {{count}} minutes until your booking starts.",
       "warningHours_one": "There is {{count}} hour until your booking starts.",
-      "warningHours_other": "There are {{count}} hours until your booking starts."
+      "warningHours_other": "There are {{count}} hours until your booking starts.",
+      "pickMachine": "Choose a machine:",
+      "bookOn": "Book {{machine}}"
     },
     "stats": {
       "bookingsInPeriod": "Bookings in period",
@@ -456,7 +521,8 @@
       "prevWeek": "Previous week",
       "nextWeek": "Next week",
       "noSlots": "No time slots set up for this room.",
-      "bookingCellTitle": "{{name}} - click to cancel"
+      "bookingCellTitle": "{{name}} - click to cancel",
+      "bookingCellSelect": "{{name}} - show details"
     },
     "list": {
       "emptyTitle": "No bookings in period",
@@ -483,7 +549,11 @@
       "noMachinesDescription": "The administrator has not added machines to this room.",
       "limitReachedTitle": "You have reached your booking limit.",
       "limitReachedHint": "Cancel an active booking to free up a slot.",
-      "noAvailableToday": "No available times this day."
+      "noAvailableToday": "No available times this day.",
+      "pastCollapsed_one": "{{count}} time has passed",
+      "pastCollapsed_other": "{{count}} times have passed",
+      "showPast": "Show",
+      "hidePast": "Hide"
     },
     "slot": {
       "past": "Passed",
@@ -493,10 +563,59 @@
       "freeCount": "{{free}} of {{total}} available",
       "deadlinePassed": "Deadline passed",
       "limitReached": "Limit reached",
-      "cancelDeadlinePassed": "Cancel deadline passed"
+      "cancelDeadlinePassed": "Cancel deadline passed",
+      "taken": "Taken"
     },
-    "upcoming": {
-      "title": "My upcoming bookings"
+    "cancelNotice": {
+      "title_one": "The board cancelled one of your bookings",
+      "title_other": "The board cancelled {{count}} of your bookings",
+      "body": "You're welcome to book a new time.",
+      "item": "{{date}} at {{time}}",
+      "ok": "OK, got it"
+    },
+    "inlineConfirm": {
+      "usageAfter": "You will then have used {{used}} of {{max}} bookings."
+    },
+    "week": {
+      "caption": "This week's laundry times",
+      "time": "Time",
+      "freeCount_one": "{{count}} free",
+      "freeCount_other": "{{count}} free",
+      "notOpen": "Not open yet",
+      "yours": "Your booking"
+    },
+    "next": {
+      "title": "Your next booking",
+      "showAll": "See all ({{count}})",
+      "hideAll": "Hide"
+    },
+    "mine": {
+      "title": "My bookings",
+      "used": "{{used}} of {{max}} used",
+      "empty": "You have no upcoming bookings.",
+      "countsHint": "A booking counts until the end of the day it is on."
+    },
+    "room": {
+      "machinesTitle": "Machines",
+      "rulesTitle": "Booking",
+      "lookahead_one": "You can book up to {{count}} day ahead.",
+      "lookahead_other": "You can book up to {{count}} days ahead.",
+      "maxBookings_one": "You can have {{count}} booking at a time.",
+      "maxBookings_other": "You can have {{count}} bookings at a time.",
+      "cancelUntilStart": "You can cancel until the time starts.",
+      "cancelHours_one": "You can cancel up to {{count}} hour before the start.",
+      "cancelHours_other": "You can cancel up to {{count}} hours before the start.",
+      "modeMachine": "You book a specific machine.",
+      "modeRoom": "You book the whole laundry room.",
+      "moreAboutProperty": "More about the property",
+      "readHouseRules": "Read the laundry rules",
+      "newHouseRules": "New rules",
+      "disclosureTitle": "Rules and machines"
+    },
+    "duration": {
+      "minutes": "{{m}}m",
+      "hours": "{{h}}h",
+      "hoursMinutes": "{{h}}h{{m}}"
     },
     "template": {
       "standard": "Standard",
@@ -508,6 +627,12 @@
     "loggedInAs": "Logged in as <s>{{email}}</s>"
   },
   "join": {
+    "acceptTitle": "Join {{property}}",
+    "acceptSubtitle": "You are logged in as {{email}}. Confirm to join with your existing account.",
+    "emailMismatch": "This invitation was sent to {{inviteEmail}}, but you are logged in as {{email}}. Log out to continue.",
+    "acceptSubmit": "Join",
+    "accepting": "Joining…",
+    "useOtherAccount": "Log out and use another account",
     "invalidLinkTitle": "Invalid or expired invitation link",
     "invalidLinkBody": "Ask your administrator to send a new link.",
     "genericError": "Something went wrong. Please try again.",
@@ -527,8 +652,8 @@
   },
   "landing": {
     "heroBadge": "For Danish homeowner and cooperative housing associations",
-    "heroTitle": "A laundry room without <s>drama</s>.",
-    "heroSubtitle": "No more going down to the basement to see if there's a free laundry slot. With LaundryBook, residents book from home, and the board keeps track of the rest. No notes, no keys, no pointless trip down the stairs.",
+    "heroTitle": "Laundry times you can book <s>from home</s>.",
+    "heroSubtitle": "No more going down to the basement to see if there is a free laundry slot. With LaundryBook, residents book from home and the board has the overview. No notes and no wasted trips down the stairs.",
     "tryDemo": "Try demo",
     "login": "Log in",
     "heroNote": "Try the demo - no sign-up required.",
@@ -544,7 +669,7 @@
     "residentTitle": "Book a wash on your way home from work",
     "residentBody": "See which times are available today, tomorrow, or later in the week. Book with one tap.",
     "residentFeature1": "Available times shown with color codes",
-    "residentFeature2": "Cancel directly in the app if plans change",
+    "residentFeature2": "Cancel directly in the calendar if plans change",
     "residentFeature3": "Works on mobile, tablet and computer",
     "boardEyebrow": "For the board",
     "boardTitle": "Less hassle for the board",
@@ -581,6 +706,10 @@
     "backToHome": "← Back to home page"
   },
   "laundryPage": {
+    "loadErrorTitle": "Could not load laundry times",
+    "loadErrorDescription": "Check your internet connection and try again.",
+    "noRoomsTitle": "No laundry rooms yet",
+    "noRoomsDescription": "The administrator has not created a laundry room yet. Check back later.",
     "genericError": "An error occurred. Please try again.",
     "notLinkedDescription": "You're not linked to any property yet.",
     "description": "Book an available laundry time in your laundry room.",
@@ -590,14 +719,130 @@
     "milestone": "You've now booked {{count}} times - the laundry room is getting to know you.",
     "goToBooking": "Go to booking"
   },
+  "errors": {
+    "not_found": "This no longer exists. Reload the page and try again.",
+    "forbidden": "You don't have permission to do this.",
+    "unauthorized": "You need to be logged in.",
+    "not_signed_in": "You need to be logged in.",
+    "slot_taken": "Someone just booked this time. Choose another time.",
+    "machine_taken": "Someone just booked this machine for that time.",
+    "machine_required": "Choose a machine to book.",
+    "slot_passed": "This time has already passed.",
+    "outside_booking_window": "That date is outside the period you can book.",
+    "max_bookings_reached": "You have reached the limit of {{max}} bookings at a time.",
+    "booking_already_cancelled": "This booking has already been cancelled.",
+    "cancel_window_passed": "The deadline for cancelling has passed.",
+    "slot_overlap": "The time slot overlaps an existing one.",
+    "slot_duplicate": "The same time slot is included more than once.",
+    "booking_mode_locked_one": "The booking type can't be changed while there is {{count}} upcoming booking.",
+    "booking_mode_locked_other": "The booking type can't be changed while there are {{count}} upcoming bookings.",
+    "property_pending_approval": "The association is awaiting approval and can't invite residents yet.",
+    "last_admin": "The association must have at least one active administrator.",
+    "cannot_remove_self": "You can't remove yourself from the association.",
+    "cannot_demote_self": "You can't deactivate or demote your own account.",
+    "role_too_high": "You can't manage a user with a higher role than your own.",
+    "role_grant_too_high": "You can't grant a higher role than your own.",
+    "invite_email_mismatch": "This invite was sent to a different email address."
+  },
+  "houseRules": {
+    "title": "House and laundry rules",
+    "updated": "Updated {{date}}",
+    "adminDescription": "Write the rules residents need to know. They appear under Property, and the booking page links to them.",
+    "editorTitle": "Text",
+    "formatHelp": "An empty line starts a new paragraph. Start a line with - for a bullet, 1. for a numbered list and # for a heading. Write **word** for bold.",
+    "placeholder": "Write your laundry rules, for example:\n\n- Clean the lint filter after use.\n- Empty the machine within 15 minutes of your time ending.",
+    "lastUpdated": "Last updated {{date}}",
+    "save": "Save",
+    "saving": "Saving…",
+    "undo": "Undo",
+    "saved": "Saved. Residents can see it now.",
+    "saveFailed": "The rules couldn't be saved. Try again.",
+    "previewTitle": "What residents see",
+    "previewHelp": "Updates as you type.",
+    "previewEmpty": "Residents see no rules until you write something."
+  },
+  "propertyInfo": {
+    "description": "The practical side of your laundry: rules, machines and who to contact.",
+    "pick": "Property",
+    "loadErrorTitle": "Couldn't load the information",
+    "address": "Address",
+    "rules": {
+      "title": "How booking works"
+    },
+    "rooms": {
+      "title": "Laundry rooms",
+      "empty": "There are no laundry rooms yet."
+    },
+    "board": {
+      "title": "The board",
+      "empty": "There are no contacts yet."
+    }
+  },
+  "adminOverview": {
+    "inviteResident": "Invite resident",
+    "loadErrorTitle": "Couldn't load the overview",
+    "kpi": {
+      "weekBookings": "Bookings this week",
+      "moreThanLastWeek_one": "{{count}} more than last week",
+      "moreThanLastWeek_other": "{{count}} more than last week",
+      "fewerThanLastWeek_one": "{{count}} fewer than last week",
+      "fewerThanLastWeek_other": "{{count}} fewer than last week",
+      "sameAsLastWeek": "Same as last week",
+      "utilization": "Utilisation this week",
+      "busiest": "Busiest: {{day}}",
+      "noBookingsYet": "No bookings yet",
+      "residents": "Residents",
+      "invitesPending_one": "{{count}} invite pending",
+      "invitesPending_other": "{{count}} invites pending",
+      "noInvitesPending": "No pending invites",
+      "today": "Bookings today",
+      "laterToday_one": "{{count}} later today",
+      "laterToday_other": "{{count}} later today"
+    },
+    "today": {
+      "title": "Today",
+      "allBookings": "All bookings",
+      "empty": "No bookings today.",
+      "time": "Time",
+      "room": "Room",
+      "resident": "Resident",
+      "status": "Status",
+      "done": "Finished",
+      "now": "In progress",
+      "later": "Later today"
+    },
+    "attention": {
+      "title": "Needs attention",
+      "allGood": "Nothing needs attention right now.",
+      "pendingInvites_one": "{{count}} invite hasn't been used",
+      "pendingInvites_other": "{{count}} invites haven't been used",
+      "seeInvites": "See invites",
+      "noSlots": "{{room}} has no time slots",
+      "addSlots": "Set up times",
+      "noMachines": "{{room}} has no active machines",
+      "addMachines": "Add machines"
+    },
+    "occupancy": {
+      "title": "Utilisation per room",
+      "value_one": "{{pct}} % · {{count}} booking",
+      "value_other": "{{pct}} % · {{count}} bookings"
+    }
+  },
   "adminDashboard": {
+    "setup": {
+      "title": "Get started with {{property}}",
+      "progress": "{{done}} of {{total}} steps",
+      "stepDone": "(done)",
+      "rooms": "Create a laundry room",
+      "roomsDesc": "Start with the laundry room residents should be able to book.",
+      "machines": "Add machines",
+      "machinesDesc": "Residents book a specific machine, so each laundry room needs at least one.",
+      "timeslots": "Set up time slots",
+      "timeslotsDesc": "Decide which times can be booked. Time slots repeat every day.",
+      "invite": "Invite residents",
+      "inviteDesc": "Send an email invitation, or print a QR code for the notice board."
+    },
     "greeting": "Welcome back, {{name}}{{roleSuffix}}",
-    "statActiveBookingsLabel": "Active bookings",
-    "statActiveBookingsSub": "today",
-    "statResidentsLabel": "Residents",
-    "statResidentsSub": "registered",
-    "statRoomsLabel": "Laundry rooms",
-    "statRoomsSub": "active",
     "propertiesHeading": "Your properties",
     "seeAll": "See all →"
   },
@@ -626,7 +871,7 @@
         "product": "Product",
         "company": "Company",
         "contact": "Contact",
-        "tagline": "Digital laundry booking for Danish homeowner and cooperative housing associations. Made in Aarhus, in the evenings, by someone who was tired of stairs.",
+        "tagline": "Digital laundry booking for Danish homeowner and cooperative housing associations.",
         "legal": "Legal"
       }
     },
@@ -655,7 +900,7 @@
         },
         "property": {
           "title": "Create your property",
-          "body": "Name, address and number of apartments. We set up the rest for you."
+          "body": "Your association’s name and address. We then approve it."
         },
         "rooms": {
           "title": "Set up laundry rooms",
@@ -679,7 +924,7 @@
           "items": {
             "booking": {
               "q": "How do residents book a wash?",
-              "a": "They log in and choose a free time in the calendar for your laundry room. Available times are green, occupied ones are gray. Book with one click - and cancel again if plans change."
+              "a": "They log in and choose a free time in the calendar for your laundry room. Available times are green, occupied ones are gray. Book in a couple of clicks - and cancel again if plans change."
             },
             "join": {
               "q": "How does a resident get on board?",
@@ -691,7 +936,7 @@
             },
             "pricing": {
               "q": "How do we get our association on LaundryBook, and what does it cost?",
-              "a": "Write to us at {{email}}, and we'll set up your association and tell you the price."
+              "a": "Create your association under \"Get started\", and we will approve it. Write to us at {{email}} for a price - there is no payment in the app."
             }
           }
         }
@@ -705,7 +950,7 @@
         "booking": {
           "tag": "Booking",
           "title": "Like checking the weather forecast for the laundry room",
-          "body": "Available times are green, busy ones are yellow, occupied ones are gray. Pick a day of the week, find a time that suits you, book with one click. Done. Everyone in the association sees the same calendar at the same second."
+          "body": "Available times are green, busy ones are yellow, occupied ones are gray. Pick a day of the week, find a time that suits you, and book it. Everyone in the association sees the same calendar."
         },
         "administration": {
           "tag": "Administration",
@@ -715,7 +960,7 @@
         "overview": {
           "tag": "Overview",
           "title": "Figures for the general assembly",
-          "body": "How many washes per week? When's the rush? Is another laundry room needed? The numbers are there when you need them."
+          "body": "See the number of bookings and the utilisation per laundry room for a chosen period. The numbers are there when you need them."
         }
       },
       "smallSectionTitle": "More little things that make it easier",
@@ -726,7 +971,7 @@
         },
         "roles": {
           "title": "Multiple roles",
-          "body": "Resident, property admin and system admin. Everyone sees what they should."
+          "body": "Residents and administrators. Everyone sees what they should."
         },
         "rooms": {
           "title": "Multiple laundry rooms per property",
@@ -746,14 +991,14 @@
         "calendar": "A digital calendar all residents know",
         "bookFromSofa": "Book from the sofa, cancel when plans change",
         "noDoubleBooking": "No double bookings - the system doesn't allow it",
-        "boardInsight": "The board sees patterns and can plan maintenance"
+        "boardInsight": "The board can see how much the laundry rooms are used"
       },
       "ctaTitle": "The best way to see it is to try it",
       "ctaButton": "Try the demo"
     },
     "demo": {
       "eyebrow": "Try without login",
-      "title": "Book a wash. Now. Here.",
+      "title": "Try booking a laundry slot",
       "subtitle": "This is the real booking - just with a made-up association. Try booking a time, cancel again, switch day. This is what it looks like for your residents.",
       "browserBar": "laundrybook.dk/laundry · Mejlgade 42 (demo)",
       "noDataStored": "No data is stored. Refresh the page to reset the demo.",
@@ -778,7 +1023,7 @@
         "rooms": "Rooms"
       },
       "dashboard": {
-        "welcome": "Welcome back, Sigurd",
+        "welcome": "Welcome back",
         "yourProperties": "Your properties",
         "stats": {
           "bookings": {
@@ -923,7 +1168,7 @@
       "factLocation": "Made in Aarhus",
       "factBrowser": "Runs in the browser - no app to install",
       "factAudience": "For Danish homeowner and cooperative housing associations",
-      "factPrice": "Price by agreement - write and ask",
+      "factPrice": "Write to us for a price",
       "ctaTitle": "Want to try it?",
       "ctaBody": "Try the demo without creating anything, or set up your association. If you have questions, write to us - we're happy to answer.",
       "tryDemo": "Try demo",

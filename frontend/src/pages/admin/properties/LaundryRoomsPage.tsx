@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useId, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useParams } from 'react-router-dom'
 import {
@@ -15,9 +15,12 @@ import {
   useUpdateMachineMutation,
 } from '../../../features/laundry/laundryApi'
 import { ModalShell } from '../../../shared/modals/ModalShell'
-import { IconPlus } from '../../../shared/icons'
+import { IconPlus, IconChevronDown } from '../../../shared/icons'
 import { useMeQuery } from '../../../features/auth/authApi'
-import { PageHeader, EmptyState, Spinner, FormError } from '../../../shared/ui'
+import { PageHeader, EmptyState, Spinner, FormError, Notice } from '../../../shared/ui'
+import { extractErrorMessage } from '../../../shared/utils/errorUtils'
+import { BookingMode, useGetPropertyQuery } from '../../../features/properties/propertiesApi'
+import { NoMachinesWarning } from '../../../features/laundry/NoMachinesWarning'
 import { colors } from '../../../shared/theme'
 
 function useMachineTypeLabel(): Record<MachineType, string> {
@@ -53,9 +56,16 @@ export function LaundryRoomsPage() {
   const property = user?.memberships?.find((m) => m.propertyId === propertyId)
 
   const { data: rooms = [], isLoading, isError } = useGetLaundryRoomsQuery(propertyId!, { skip: !propertyId })
+  const { data: propertyDetail } = useGetPropertyQuery(propertyId!, { skip: !propertyId })
+  const needsMachines = propertyDetail?.settings.bookingMode === BookingMode.BookSpecificMachine
 
   const [expandedRoomId, setExpandedRoomId] = useState<string | null>(null)
   const [modal, setModal] = useState<ModalState>(null)
+  const [cancelledNotice, setCancelledNotice] = useState<number | null>(null)
+
+  function handleDeleted(cancelledBookings: number) {
+    setCancelledNotice(cancelledBookings > 0 ? cancelledBookings : null)
+  }
 
   function toggleExpand(roomId: string) {
     setExpandedRoomId((prev) => (prev === roomId ? null : roomId))
@@ -92,25 +102,40 @@ export function LaundryRoomsPage() {
         }
       />
 
+      {cancelledNotice != null && (
+        <Notice onDismiss={() => setCancelledNotice(null)}>
+          {t('common.upcomingBookingsCancelled', { count: cancelledNotice })}
+        </Notice>
+      )}
+
       {/* Room list */}
       {rooms.length === 0 ? (
         <EmptyState
           title={t('adminProperties.laundryRooms.emptyTitle')}
           description={t('adminProperties.laundryRooms.emptyDescription')}
+          action={
+            <button className="btn btn-primary btn-sm fw-semibold" onClick={() => setModal({ type: 'addRoom' })}>
+              {t('adminProperties.laundryRooms.addRoom')}
+            </button>
+          }
         />
       ) : (
-        <div className="d-flex flex-column gap-3">
+        // Two rooms side by side on wide screens; align-items-start so an expanded card doesn't stretch its neighbour
+        <div className="row g-3 align-items-start">
           {rooms.map((room) => (
-            <RoomCard
-              key={room.id}
-              room={room}
-              propertyId={propertyId!}
-              isExpanded={expandedRoomId === room.id}
-              onToggleExpand={() => toggleExpand(room.id)}
-              onEdit={() => setModal({ type: 'editRoom', room })}
-              onAddMachine={() => setModal({ type: 'addMachine', roomId: room.id, roomName: room.name })}
-              onEditMachine={(machine) => setModal({ type: 'editMachine', roomId: room.id, machine })}
-            />
+            <div key={room.id} className="col-12 col-xl-6">
+              <RoomCard
+                room={room}
+                propertyId={propertyId!}
+                isExpanded={expandedRoomId === room.id}
+                onToggleExpand={() => toggleExpand(room.id)}
+                onEdit={() => setModal({ type: 'editRoom', room })}
+                onAddMachine={() => setModal({ type: 'addMachine', roomId: room.id, roomName: room.name })}
+                onEditMachine={(machine) => setModal({ type: 'editMachine', roomId: room.id, machine })}
+                onDeleted={handleDeleted}
+                showNoMachinesWarning={needsMachines && room.machineCount === 0}
+              />
+            </div>
           ))}
         </div>
       )}
@@ -142,6 +167,8 @@ function RoomCard({
   onEdit,
   onAddMachine,
   onEditMachine,
+  onDeleted,
+  showNoMachinesWarning,
 }: {
   room: LaundryRoomDto
   propertyId: string
@@ -150,17 +177,23 @@ function RoomCard({
   onEdit: () => void
   onAddMachine: () => void
   onEditMachine: (machine: LaundryMachineDto) => void
+  onDeleted: (cancelledBookings: number) => void
+  showNoMachinesWarning: boolean
 }) {
   const { t } = useTranslation()
   const [deleteRoom] = useDeleteLaundryRoomMutation()
   const [isConfirmingDelete, setIsConfirmingDelete] = useState(false)
   const [isDeleting, setIsDeleting] = useState(false)
+  const [deleteError, setDeleteError] = useState<string | null>(null)
 
   async function handleDelete() {
     setIsDeleting(true)
+    setDeleteError(null)
     try {
-      await deleteRoom({ propertyId, roomId: room.id }).unwrap()
-    } catch {
+      const { cancelledBookings } = await deleteRoom({ propertyId, roomId: room.id }).unwrap()
+      onDeleted(cancelledBookings)
+    } catch (err) {
+      setDeleteError(extractErrorMessage(err, t('common.genericError')))
       setIsDeleting(false)
       setIsConfirmingDelete(false)
     }
@@ -171,7 +204,9 @@ function RoomCard({
 
       {/* Clickable info row — tap anywhere to expand/collapse */}
       <button
+        type="button"
         onClick={onToggleExpand}
+        aria-expanded={isExpanded}
         style={{
           display: 'block',
           width: '100%',
@@ -193,8 +228,8 @@ function RoomCard({
               </div>
             )}
           </div>
-          <span style={{ fontSize: '0.75rem', color: colors.textMuted, flexShrink: 0, paddingTop: 3 }}>
-            {isExpanded ? '▲' : '▼'}
+          <span aria-hidden="true" style={{ flexShrink: 0, display: 'flex', paddingTop: 3, transition: 'transform 0.2s', transform: isExpanded ? 'rotate(180deg)' : 'none' }}>
+            <IconChevronDown size={16} color={colors.textMuted} />
           </span>
         </div>
         <div className="mt-2">
@@ -214,6 +249,12 @@ function RoomCard({
         </div>
       </button>
 
+      {showNoMachinesWarning && (
+        <div className="px-4 pb-3">
+          <NoMachinesWarning />
+        </div>
+      )}
+
       {/* Action row */}
       <div
         className="d-flex align-items-center gap-2 px-4 pb-3 flex-wrap"
@@ -221,6 +262,11 @@ function RoomCard({
       >
         {isConfirmingDelete ? (
           <>
+            {room.upcomingBookingCount > 0 && (
+              <span className="w-100 pt-2" style={{ fontSize: '0.82rem', color: colors.dangerText }}>
+                {t('common.upcomingBookingsWillBeCancelled', { count: room.upcomingBookingCount })}
+              </span>
+            )}
             <button
               className="btn btn-danger btn-sm"
               disabled={isDeleting}
@@ -254,14 +300,17 @@ function RoomCard({
             >
               {t('adminProperties.laundryRooms.delete')}
             </button>
+            {deleteError != null && (
+              <span style={{ fontSize: '0.82rem', color: colors.dangerText }}>{deleteError}</span>
+            )}
           </>
         )}
       </div>
 
       {/* Machines section */}
       {isExpanded && (
-        <div style={{ borderTop: `1.5px solid ${colors.borderDefault}`, backgroundColor: colors.bgPage }}>
-          <MachineList roomId={room.id} propertyId={propertyId} onEdit={onEditMachine} />
+        <div style={{ borderTop: `1.5px solid ${colors.borderDefault}`, backgroundColor: colors.bgSubtle }}>
+          <MachineList roomId={room.id} propertyId={propertyId} onEdit={onEditMachine} onDeleted={onDeleted} />
           <div className="px-4 pb-3 pt-2">
             <button
               className="btn btn-sm d-flex align-items-center gap-1"
@@ -284,10 +333,12 @@ function MachineList({
   roomId,
   propertyId,
   onEdit,
+  onDeleted,
 }: {
   roomId: string
   propertyId: string
   onEdit: (machine: LaundryMachineDto) => void
+  onDeleted: (cancelledBookings: number) => void
 }) {
   const { t } = useTranslation()
   const { data: machines = [], isLoading } = useGetMachinesQuery(roomId)
@@ -314,7 +365,7 @@ function MachineList({
         </thead>
         <tbody>
           {machines.map((machine) => (
-            <MachineRow key={machine.id} machine={machine} roomId={roomId} propertyId={propertyId} onEdit={onEdit} />
+            <MachineRow key={machine.id} machine={machine} roomId={roomId} propertyId={propertyId} onEdit={onEdit} onDeleted={onDeleted} />
           ))}
         </tbody>
       </table>
@@ -329,23 +380,29 @@ function MachineRow({
   roomId,
   propertyId,
   onEdit,
+  onDeleted,
 }: {
   machine: LaundryMachineDto
   roomId: string
   propertyId: string
   onEdit: (machine: LaundryMachineDto) => void
+  onDeleted: (cancelledBookings: number) => void
 }) {
   const { t } = useTranslation()
   const machineTypeLabel = useMachineTypeLabel()
   const [deleteMachine] = useDeleteMachineMutation()
   const [isConfirmingDelete, setIsConfirmingDelete] = useState(false)
   const [isDeleting, setIsDeleting] = useState(false)
+  const [deleteError, setDeleteError] = useState<string | null>(null)
 
   async function handleDelete() {
     setIsDeleting(true)
+    setDeleteError(null)
     try {
-      await deleteMachine({ roomId, machineId: machine.id, propertyId }).unwrap()
-    } catch {
+      const { cancelledBookings } = await deleteMachine({ roomId, machineId: machine.id, propertyId }).unwrap()
+      onDeleted(cancelledBookings)
+    } catch (err) {
+      setDeleteError(extractErrorMessage(err, t('common.genericError')))
       setIsDeleting(false)
       setIsConfirmingDelete(false)
     }
@@ -358,6 +415,14 @@ function MachineRow({
         <div className="d-sm-none" style={{ fontSize: '0.78rem', color: colors.textMuted, marginTop: 1 }}>
           {machineTypeLabel[machine.machineType]}
         </div>
+        {isConfirmingDelete && machine.upcomingBookingCount > 0 && (
+          <div style={{ fontSize: '0.78rem', color: colors.dangerText, marginTop: 2 }}>
+            {t('common.upcomingBookingsWillBeCancelled', { count: machine.upcomingBookingCount })}
+          </div>
+        )}
+        {deleteError != null && (
+          <div style={{ fontSize: '0.78rem', color: colors.dangerText, marginTop: 2 }}>{deleteError}</div>
+        )}
       </td>
       <td className="px-4 py-2 align-middle d-none d-sm-table-cell" style={{ color: colors.textSecondary }}>
         {machineTypeLabel[machine.machineType]}
@@ -409,6 +474,7 @@ function MachineRow({
 
 function AddRoomModal({ propertyId, onClose }: { propertyId: string; onClose: () => void }) {
   const { t } = useTranslation()
+  const formId = useId()
   const [name, setName] = useState('')
   const [description, setDescription] = useState('')
   const [error, setError] = useState<string | null>(null)
@@ -429,8 +495,9 @@ function AddRoomModal({ propertyId, onClose }: { propertyId: string; onClose: ()
     <ModalShell title={t('adminProperties.laundryRooms.addRoom')} onClose={onClose} size="sm">
       <form onSubmit={handleSubmit}>
         <div className="mb-3">
-          <label className="form-label" style={labelStyle}>{t('adminProperties.laundryRooms.nameLabel')}</label>
+          <label className="form-label" style={labelStyle} htmlFor={`${formId}-name`}>{t('adminProperties.laundryRooms.nameLabel')}</label>
           <input
+            id={`${formId}-name`}
             className="form-control"
             value={name}
             onChange={(e) => setName(e.target.value)}
@@ -441,8 +508,9 @@ function AddRoomModal({ propertyId, onClose }: { propertyId: string; onClose: ()
           />
         </div>
         <div className="mb-3">
-          <label className="form-label" style={labelStyle}>{t('adminProperties.laundryRooms.descriptionLabel')}</label>
+          <label className="form-label" style={labelStyle} htmlFor={`${formId}-description`}>{t('adminProperties.laundryRooms.descriptionLabel')}</label>
           <input
+            id={`${formId}-description`}
             className="form-control"
             value={description}
             onChange={(e) => setDescription(e.target.value)}
@@ -472,6 +540,7 @@ function EditRoomModal({
   onClose: () => void
 }) {
   const { t } = useTranslation()
+  const formId = useId()
   const [name, setName] = useState(room.name)
   const [description, setDescription] = useState(room.description ?? '')
   const [error, setError] = useState<string | null>(null)
@@ -492,8 +561,9 @@ function EditRoomModal({
     <ModalShell title={t('adminProperties.laundryRooms.editRoom')} onClose={onClose} size="sm">
       <form onSubmit={handleSubmit}>
         <div className="mb-3">
-          <label className="form-label" style={labelStyle}>{t('adminProperties.laundryRooms.nameLabel')}</label>
+          <label className="form-label" style={labelStyle} htmlFor={`${formId}-name`}>{t('adminProperties.laundryRooms.nameLabel')}</label>
           <input
+            id={`${formId}-name`}
             className="form-control"
             value={name}
             onChange={(e) => setName(e.target.value)}
@@ -503,8 +573,9 @@ function EditRoomModal({
           />
         </div>
         <div className="mb-3">
-          <label className="form-label" style={labelStyle}>{t('adminProperties.laundryRooms.descriptionLabel')}</label>
+          <label className="form-label" style={labelStyle} htmlFor={`${formId}-description`}>{t('adminProperties.laundryRooms.descriptionLabel')}</label>
           <input
+            id={`${formId}-description`}
             className="form-control"
             value={description}
             onChange={(e) => setDescription(e.target.value)}
@@ -533,6 +604,7 @@ function AddMachineModal({
   onClose: () => void
 }) {
   const { t } = useTranslation()
+  const formId = useId()
   const machineTypeOptions = useMachineTypeOptions()
   const [name, setName] = useState('')
   const [machineType, setMachineType] = useState<MachineType>(MachineType.Washer)
@@ -554,8 +626,9 @@ function AddMachineModal({
     <ModalShell title={t('adminProperties.laundryRooms.addMachineTitle', { room: roomName })} onClose={onClose} size="sm">
       <form onSubmit={handleSubmit}>
         <div className="mb-3">
-          <label className="form-label" style={labelStyle}>{t('adminProperties.laundryRooms.nameLabel')}</label>
+          <label className="form-label" style={labelStyle} htmlFor={`${formId}-name`}>{t('adminProperties.laundryRooms.nameLabel')}</label>
           <input
+            id={`${formId}-name`}
             className="form-control"
             value={name}
             onChange={(e) => setName(e.target.value)}
@@ -566,8 +639,9 @@ function AddMachineModal({
           />
         </div>
         <div className="mb-3">
-          <label className="form-label" style={labelStyle}>{t('adminProperties.laundryRooms.typeLabel')}</label>
+          <label className="form-label" style={labelStyle} htmlFor={`${formId}-type`}>{t('adminProperties.laundryRooms.typeLabel')}</label>
           <select
+            id={`${formId}-type`}
             className="form-select"
             value={machineType}
             onChange={(e) => setMachineType(Number(e.target.value) as MachineType)}
@@ -599,6 +673,7 @@ function EditMachineModal({
   onClose: () => void
 }) {
   const { t } = useTranslation()
+  const formId = useId()
   const machineTypeOptions = useMachineTypeOptions()
   const [name, setName] = useState(machine.name)
   const [machineType, setMachineType] = useState<MachineType>(machine.machineType)
@@ -620,8 +695,9 @@ function EditMachineModal({
     <ModalShell title={t('adminProperties.laundryRooms.editMachine')} onClose={onClose} size="sm">
       <form onSubmit={handleSubmit}>
         <div className="mb-3">
-          <label className="form-label" style={labelStyle}>{t('adminProperties.laundryRooms.nameLabel')}</label>
+          <label className="form-label" style={labelStyle} htmlFor={`${formId}-name`}>{t('adminProperties.laundryRooms.nameLabel')}</label>
           <input
+            id={`${formId}-name`}
             className="form-control"
             value={name}
             onChange={(e) => setName(e.target.value)}
@@ -631,8 +707,9 @@ function EditMachineModal({
           />
         </div>
         <div className="mb-3">
-          <label className="form-label" style={labelStyle}>{t('adminProperties.laundryRooms.typeLabel')}</label>
+          <label className="form-label" style={labelStyle} htmlFor={`${formId}-type`}>{t('adminProperties.laundryRooms.typeLabel')}</label>
           <select
+            id={`${formId}-type`}
             className="form-select"
             value={machineType}
             onChange={(e) => setMachineType(Number(e.target.value) as MachineType)}

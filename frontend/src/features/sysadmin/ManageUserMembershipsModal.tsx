@@ -8,6 +8,8 @@ import { useGetMyPropertiesQuery } from '../properties/propertiesApi'
 import { useAllMemberRoleOptions } from '../../shared/constants'
 import { UserRole } from '../auth/authApi'
 import { colors } from '../../shared/theme'
+import { extractErrorMessage } from '../../shared/utils/errorUtils'
+import { FormError } from '../../shared/ui'
 
 interface ManageUserMembershipsModalProps {
   user: SysAdminUserDto
@@ -23,28 +25,44 @@ export function ManageUserMembershipsModal({ user, onClose }: ManageUserMembersh
   const [removeMember] = useRemoveMemberMutation()
   const [assignToProperty] = useAssignUserToPropertyMutation()
 
+  const [error, setError] = useState<string | null>(null)
+  const [confirmRemoveId, setConfirmRemoveId] = useState<string | null>(null)
   const [addPropertyId, setAddPropertyId] = useState('')
   const [addRole, setAddRole] = useState<UserRole>(UserRole.ComplexAdmin)
 
   const memberPropertyIds = new Set(detail?.memberships.map((m) => m.propertyId) ?? [])
   const availableProperties = allProperties.filter((p) => !memberPropertyIds.has(p.id))
 
+  // Every action here used to fire-and-forget: failures (e.g. last admin) were invisible
+  async function run(action: () => Promise<unknown>) {
+    setError(null)
+    try {
+      await action()
+      return true
+    } catch (err) {
+      setError(extractErrorMessage(err, t('common.genericError')))
+      return false
+    }
+  }
+
   async function handleRoleChange(propertyId: string, role: UserRole, apartmentNumber: string | null, isActive: boolean) {
-    await updateMember({ propertyId, userId: user.id, role, apartmentNumber, isActive })
+    await run(() => updateMember({ propertyId, userId: user.id, role, apartmentNumber, isActive }).unwrap())
   }
 
   async function handleToggleActive(propertyId: string, role: UserRole, apartmentNumber: string | null, isActive: boolean) {
-    await updateMember({ propertyId, userId: user.id, role, apartmentNumber, isActive: !isActive })
+    await run(() => updateMember({ propertyId, userId: user.id, role, apartmentNumber, isActive: !isActive }).unwrap())
   }
 
   async function handleRemove(propertyId: string) {
-    await removeMember({ propertyId, userId: user.id })
+    setConfirmRemoveId(null)
+    await run(() => removeMember({ propertyId, userId: user.id }).unwrap())
   }
 
   async function handleAdd(e: React.FormEvent) {
     e.preventDefault()
     if (!addPropertyId) return
-    await assignToProperty({ userId: user.id, propertyId: addPropertyId, role: addRole, apartmentNumber: null })
+    const ok = await run(() => assignToProperty({ userId: user.id, propertyId: addPropertyId, role: addRole, apartmentNumber: null }).unwrap())
+    if (!ok) return
     setAddPropertyId('')
     setAddRole(UserRole.ComplexAdmin)
   }
@@ -58,6 +76,8 @@ export function ManageUserMembershipsModal({ user, onClose }: ManageUserMembersh
       <p className="fw-semibold mb-2" style={{ fontSize: '0.8rem', color: colors.textMuted, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
         {t('sysadmin.currentProperties')}
       </p>
+
+      <FormError message={error} />
 
       {isLoading && <p style={{ color: colors.textSecondary, fontSize: '0.9rem' }}>{t('sysadmin.loading')}</p>}
 
@@ -98,13 +118,24 @@ export function ManageUserMembershipsModal({ user, onClose }: ManageUserMembersh
             {m.isActive ? t('sysadmin.active') : t('sysadmin.inactive')}
           </button>
 
-          <button
-            type="button"
-            className="btn btn-sm btn-outline-danger"
-            onClick={() => handleRemove(m.propertyId)}
-          >
-            {t('sysadmin.remove')}
-          </button>
+          {confirmRemoveId === m.propertyId ? (
+            <>
+              <button type="button" className="btn btn-sm btn-danger" onClick={() => handleRemove(m.propertyId)}>
+                {t('sysadmin.confirmRemove')}
+              </button>
+              <button type="button" className="btn btn-sm btn-outline-secondary" onClick={() => setConfirmRemoveId(null)}>
+                {t('common.cancel')}
+              </button>
+            </>
+          ) : (
+            <button
+              type="button"
+              className="btn btn-sm btn-outline-danger"
+              onClick={() => setConfirmRemoveId(m.propertyId)}
+            >
+              {t('sysadmin.remove')}
+            </button>
+          )}
         </div>
       ))}
 

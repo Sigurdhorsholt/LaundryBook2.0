@@ -16,7 +16,8 @@ import {
 } from '../../../features/users/usersApi'
 import { UserRow, UserCard } from './UserRow'
 import { IconPlus } from '../../../shared/icons'
-import { PageHeader, Spinner } from '../../../shared/ui'
+import { PageHeader, Spinner, Notice, Callout } from '../../../shared/ui'
+import { extractErrorMessage } from '../../../shared/utils/errorUtils'
 import { colors } from '../../../shared/theme'
 
 export function PropertyUsersPage() {
@@ -44,20 +45,27 @@ export function PropertyUsersPage() {
   const [actionLoadingId, setActionLoadingId] = useState<string | null>(null)
   const [resetSuccessId, setResetSuccessId] = useState<string | null>(null)
   const [resendSuccessId, setResendSuccessId] = useState<string | null>(null)
+  const [cancelledNotice, setCancelledNotice] = useState<number | null>(null)
+  // e.g. the backend refusing to remove/demote the last admin; these used to fail silently
+  const [actionError, setActionError] = useState<string | null>(null)
 
   const toggleMenu = (id: string) => setOpenMenuId((prev) => (prev === id ? null : id))
   const closeMenu = () => setOpenMenuId(null)
 
   async function handleToggleActive(member: PropertyMemberDto) {
     setActionLoadingId(member.userId)
+    setActionError(null)
     try {
-      await updateMember({
+      const { cancelledBookings } = await updateMember({
         propertyId: propertyId!,
         userId: member.userId,
         apartmentNumber: member.apartmentNumber,
         role: member.role,
         isActive: !member.isActive,
       }).unwrap()
+      setCancelledNotice(cancelledBookings > 0 ? cancelledBookings : null)
+    } catch (err) {
+      setActionError(extractErrorMessage(err, t('common.genericError')))
     } finally {
       setActionLoadingId(null)
     }
@@ -65,8 +73,12 @@ export function PropertyUsersPage() {
 
   async function handleDelete(userId: string) {
     setActionLoadingId(userId)
+    setActionError(null)
     try {
-      await removeMember({ propertyId: propertyId!, userId }).unwrap()
+      const { cancelledBookings } = await removeMember({ propertyId: propertyId!, userId }).unwrap()
+      setCancelledNotice(cancelledBookings > 0 ? cancelledBookings : null)
+    } catch (err) {
+      setActionError(extractErrorMessage(err, t('common.genericError')))
     } finally {
       setActionLoadingId(null)
     }
@@ -74,10 +86,13 @@ export function PropertyUsersPage() {
 
   async function handleForceReset(userId: string) {
     setActionLoadingId(userId)
+    setActionError(null)
     try {
       await forcePasswordReset({ propertyId: propertyId!, userId }).unwrap()
       setResetSuccessId(userId)
       setTimeout(() => setResetSuccessId(null), 3000)
+    } catch (err) {
+      setActionError(extractErrorMessage(err, t('common.genericError')))
     } finally {
       setActionLoadingId(null)
     }
@@ -85,10 +100,13 @@ export function PropertyUsersPage() {
 
   async function handleResendInvite(inviteId: string) {
     setActionLoadingId(inviteId)
+    setActionError(null)
     try {
       await resendInvite({ propertyId: propertyId!, inviteId }).unwrap()
       setResendSuccessId(inviteId)
       setTimeout(() => setResendSuccessId(null), 3000)
+    } catch (err) {
+      setActionError(extractErrorMessage(err, t('common.genericError')))
     } finally {
       setActionLoadingId(null)
     }
@@ -96,8 +114,11 @@ export function PropertyUsersPage() {
 
   async function handleDeleteInvite(inviteId: string) {
     setActionLoadingId(inviteId)
+    setActionError(null)
     try {
       await deleteInvite({ propertyId: propertyId!, inviteId }).unwrap()
+    } catch (err) {
+      setActionError(extractErrorMessage(err, t('common.genericError')))
     } finally {
       setActionLoadingId(null)
     }
@@ -165,7 +186,7 @@ export function PropertyUsersPage() {
         {/* ── Desktop: table (hidden below md) ── */}
         <div className="d-none d-md-block table-responsive">
           <table className="table table-hover mb-0" style={{ fontSize: '0.875rem' }}>
-            <thead style={{ backgroundColor: colors.bgPage }}>
+            <thead style={{ backgroundColor: colors.bgSubtle }}>
               <tr>
                 <th className="border-0 px-4 py-3 fw-semibold" style={{ ...thStyle, borderTopLeftRadius: '0.5rem' }}>{t('adminProperties.users.colName')}</th>
                 <th className="border-0 px-4 py-3 fw-semibold" style={thStyle}>{t('adminProperties.users.colEmail')}</th>
@@ -203,6 +224,24 @@ export function PropertyUsersPage() {
           </button>
         }
       />
+
+      {isPendingApproval && (
+        <div className="mb-3">
+          <Callout icon="lock" title={t('adminProperties.users.pendingApprovalTitle')}>
+            {t('adminProperties.users.pendingApprovalBody')}
+          </Callout>
+        </div>
+      )}
+
+      {actionError != null && (
+        <Notice tone="danger" onDismiss={() => setActionError(null)}>{actionError}</Notice>
+      )}
+
+      {cancelledNotice != null && (
+        <Notice onDismiss={() => setCancelledNotice(null)}>
+          {t('common.upcomingBookingsCancelled', { count: cancelledNotice })}
+        </Notice>
+      )}
 
       <div className="bg-white rounded-3" style={{ border: `1px solid ${colors.borderDefault}` }}>
         {tableContent}

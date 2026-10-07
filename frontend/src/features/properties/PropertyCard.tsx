@@ -1,4 +1,4 @@
-import { useNavigate } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import type { UserComplexMembershipDto } from '../auth/authApi'
 import { useRoleLabel } from '../../shared/constants'
@@ -6,10 +6,11 @@ import { IconBuilding, IconChevronRight } from '../../shared/icons'
 import { colors } from '../../shared/theme'
 
 const QUICK_LINKS = [
+  { labelKey: 'properties.quickLinkLaundry', path: 'laundry' },
+  { labelKey: 'properties.quickLinkTimeslots', path: 'timeslots' },
+  { labelKey: 'properties.quickLinkBookings', path: 'bookings' },
   { labelKey: 'properties.quickLinkUsers', path: 'users' },
   { labelKey: 'properties.quickLinkSettings', path: 'settings' },
-  { labelKey: 'properties.quickLinkLaundry', path: 'laundry' },
-  { labelKey: 'properties.quickLinkBookings', path: 'bookings' },
 ]
 
 interface PropertyCardProps {
@@ -24,10 +25,10 @@ export function PropertyCard({ membership: m, variant }: PropertyCardProps) {
 
   if (variant === 'compact') {
     return (
-      <div
-        className="property-card bg-white rounded-3 p-3 d-flex align-items-center gap-3"
+      <Link
+        to={`/admin/properties/${m.propertyId}`}
+        className="property-card bg-white rounded-3 p-3 d-flex align-items-center gap-3 text-decoration-none"
         style={{ border: `1px solid ${colors.borderDefault}` }}
-        onClick={() => navigate(`/admin/properties/${m.propertyId}/users`)}
       >
         <div
           className="rounded-2 d-flex align-items-center justify-content-center flex-shrink-0"
@@ -43,8 +44,8 @@ export function PropertyCard({ membership: m, variant }: PropertyCardProps) {
             {roleLabel(m.role)}{m.apartmentNumber ? ` · ${t('properties.apartmentShort', { number: m.apartmentNumber })}` : ''}
           </p>
         </div>
-        <span className="flex-shrink-0"><IconChevronRight size={16} color={colors.textMuted} /></span>
-      </div>
+        <span className="flex-shrink-0" aria-hidden="true"><IconChevronRight size={16} color={colors.textMuted} /></span>
+      </Link>
     )
   }
 
@@ -52,7 +53,7 @@ export function PropertyCard({ membership: m, variant }: PropertyCardProps) {
     <div
       className="property-card bg-white rounded-3 p-4 h-100 d-flex flex-column"
       style={{ border: `1px solid ${colors.borderDefault}` }}
-      onClick={() => navigate(`/admin/properties/${m.propertyId}/users`)}
+      onClick={() => navigate(`/admin/properties/${m.propertyId}`)}
     >
       <div className="d-flex align-items-center gap-3 mb-4">
         <div
@@ -62,9 +63,15 @@ export function PropertyCard({ membership: m, variant }: PropertyCardProps) {
           <IconBuilding size={20} color={colors.primary} />
         </div>
         <div style={{ minWidth: 0 }}>
-          <p className="fw-bold mb-0 text-truncate" style={{ color: colors.textPrimary }}>
+          {/* The card itself stays clickable for mouse users; the name is the keyboard-reachable link */}
+          <Link
+            to={`/admin/properties/${m.propertyId}`}
+            className="d-block fw-bold mb-0 text-truncate text-decoration-none"
+            style={{ color: colors.textPrimary }}
+            onClick={(e) => e.stopPropagation()}
+          >
             {m.propertyName}
-          </p>
+          </Link>
           <span
             className="badge"
             style={{ backgroundColor: colors.primaryLight, color: colors.primary, fontSize: '0.72rem', fontWeight: 500 }}
@@ -78,11 +85,12 @@ export function PropertyCard({ membership: m, variant }: PropertyCardProps) {
         {QUICK_LINKS.map((link) => (
           <div key={link.path} className="col-6">
             <button
+              type="button"
               className="btn w-100 text-start"
               style={{
                 fontSize: '0.82rem',
                 color: colors.textSecondary,
-                backgroundColor: colors.bgPage,
+                backgroundColor: colors.bgSubtle,
                 border: `1px solid ${colors.borderDefault}`,
                 borderRadius: '8px',
                 padding: '6px 10px',

@@ -40,7 +40,7 @@ public class CreateTimeSlotTemplateCommandHandler(
             cancellationToken);
 
         if (overlaps)
-            throw new ValidationException("Time slot overlaps with an existing slot.");
+            throw new ConflictException("Tidspladsen overlapper en eksisterende tidsplads.", ErrorCodes.SlotOverlap);
 
         var template = new TimeSlotTemplate
         {

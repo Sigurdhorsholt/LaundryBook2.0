@@ -1,9 +1,9 @@
 import { useState } from 'react'
 import { Navigate, useNavigate, Link } from 'react-router-dom'
 import { useTranslation, Trans } from 'react-i18next'
-import { createUserWithEmailAndPassword } from 'firebase/auth'
-import { firebaseAuth } from '../lib/firebase'
 import { useMeQuery, useRegisterMutation } from '../features/auth/authApi'
+import { createOrSignInFirebaseUser, authErrorMessage } from '../features/auth/utils'
+import { Spinner } from '../shared/ui'
 import { useModal } from '../shared/modals/useModal'
 import { BrandLogo } from '../shared/BrandLogo'
 import { colors } from '../shared/theme'
@@ -22,22 +22,25 @@ export function SignupPage() {
   const [propertyAddress, setPropertyAddress] = useState('')
   const [consent, setConsent] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  // Covers the Firebase step too, not just the backend call, so the button can't be double-submitted
+  const [submitting, setSubmitting] = useState(false)
 
-  const [register, { isLoading }] = useRegisterMutation()
+  const [register] = useRegisterMutation()
 
-  if (isCheckingSession) return null
+  if (isCheckingSession) return <Spinner fullPage />
   if (session) return <Navigate to="/dashboard" replace />
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
     setError(null)
+    setSubmitting(true)
     try {
-      const credential = await createUserWithEmailAndPassword(firebaseAuth, email, password)
-      const idToken = await credential.user.getIdToken()
+      const idToken = await createOrSignInFirebaseUser(email, password)
       await register({ idToken, firstName, lastName, propertyName, propertyAddress, acceptedTerms: consent }).unwrap()
       navigate('/dashboard', { replace: true })
     } catch (err: unknown) {
-      setError(err instanceof Error ? err.message : t('signup.genericError'))
+      setError(authErrorMessage(err, t, t('signup.genericError')))
+      setSubmitting(false)
     }
   }
 
@@ -101,8 +104,8 @@ export function SignupPage() {
 
           {error && <p style={{ color: colors.dangerText, margin: 0, fontSize: '0.84rem' }}>{error}</p>}
 
-          <button className="btn fw-semibold" type="submit" disabled={isLoading || !consent} style={{ backgroundColor: colors.primary, color: '#fff', border: 'none', borderRadius: 8, padding: '10px', marginTop: 2, opacity: consent ? 1 : 0.6 }}>
-            {isLoading ? t('signup.creating') : t('signup.submit')}
+          <button className="btn fw-semibold" type="submit" disabled={submitting || !consent} style={{ backgroundColor: colors.primary, color: '#fff', border: 'none', borderRadius: 8, padding: '10px', marginTop: 2, opacity: consent ? 1 : 0.6 }}>
+            {submitting ? t('signup.creating') : t('signup.submit')}
           </button>
         </form>
 

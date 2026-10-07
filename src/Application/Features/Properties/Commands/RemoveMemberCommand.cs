@@ -1,4 +1,5 @@
 using Application.Common.Authorization;
+using Application.Common.Bookings;
 using Application.Common.Exceptions;
 using Application.Common.Interfaces;
 using Domain.Enums;
@@ -7,21 +8,21 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Application.Features.Properties.Commands;
 
-public record RemoveMemberCommand(Guid PropertyId, Guid UserId) : IRequest;
+public record RemoveMemberCommand(Guid PropertyId, Guid UserId) : IRequest<int>;
 
 public class RemoveMemberCommandHandler(
     IAppDbContext db,
     ICurrentUserService currentUser,
     IIdentityProvider identityProvider,
-    PropertyAuthorizationService auth) : IRequestHandler<RemoveMemberCommand>
+    PropertyAuthorizationService auth) : IRequestHandler<RemoveMemberCommand, int>
 {
-    public async Task Handle(RemoveMemberCommand request, CancellationToken cancellationToken)
+    public async Task<int> Handle(RemoveMemberCommand request, CancellationToken cancellationToken)
     {
         await auth.RequireRoleAsync(request.PropertyId, UserRole.ComplexAdmin, cancellationToken);
         await auth.RequireCanManageMemberAsync(request.PropertyId, request.UserId, cancellationToken);
 
         if (request.UserId == currentUser.UserId)
-            throw new InvalidOperationException("You cannot remove yourself from the property.");
+            throw new ConflictException("Du kan ikke fjerne dig selv fra foreningen.", ErrorCodes.CannotRemoveSelf);
 
         var membership = await db.UserComplexMemberships
             .FirstOrDefaultAsync(m => m.UserId == request.UserId && m.PropertyId == request.PropertyId, cancellationToken)
@@ -29,6 +30,10 @@ public class RemoveMemberCommandHandler(
 
         if (membership.Role >= UserRole.ComplexAdmin)
             await auth.RequireNotLastAdminAsync(request.PropertyId, request.UserId, cancellationToken);
+
+        var cancelled = await db.Bookings
+            .Where(b => b.UserId == request.UserId && b.LaundryRoom.PropertyId == request.PropertyId)
+            .CancelUpcomingByAdminAsync(cancellationToken);
 
         db.UserComplexMemberships.Remove(membership);
         await db.SaveChangesAsync(cancellationToken);
@@ -47,5 +52,7 @@ public class RemoveMemberCommandHandler(
                 await identityProvider.DeleteUserAsync(user.ExternalId, cancellationToken);
             }
         }
+
+        return cancelled;
     }
 }

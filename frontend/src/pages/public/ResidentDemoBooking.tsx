@@ -5,6 +5,8 @@ import { BookingGrid, type GridBooking } from '../../features/laundry/BookingGri
 import type { TimeSlotTemplateDto } from '../../features/laundry/laundryApi'
 import { BookingMode } from '../../features/properties/propertiesApi'
 import { colors } from '../../shared/theme'
+import { todayStr as getTodayStr, addDays, getWeekMonday } from '../../shared/utils/dateUtils'
+import { DOT_COLOR } from '../../features/laundry/constants'
 import { IconChevronLeft, IconChevronRight } from '../../shared/icons'
 
 // ── Mock data ──────────────────────────────────────────────────────────────────
@@ -23,32 +25,10 @@ const SLOTS: TimeSlotTemplateDto[] = [
 const MAX_CONCURRENT = 2
 const LOOKAHEAD_DAYS = 14
 
-const DOT_COLOR: Record<string, string> = {
-  free: colors.dotFree, few: colors.dotFew, full: colors.dotFull, past: 'transparent',
-}
-
 const DAY_KEYS = ['sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat'] as const
 const MONTH_KEYS = ['jan','feb','mar','apr','may','jun','jul','aug','sep','oct','nov','dec'] as const
 
 // ── Helpers ────────────────────────────────────────────────────────────────────
-
-function getTodayStr(): string {
-  const d = new Date()
-  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`
-}
-
-function addDays(dateStr: string, n: number): string {
-  const parts = dateStr.split('-').map(Number)
-  const d = new Date(parts[0] ?? 2025, (parts[1] ?? 1) - 1, (parts[2] ?? 1) + n)
-  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`
-}
-
-function getWeekMonday(dateStr: string): string {
-  const parts = dateStr.split('-').map(Number)
-  const d = new Date(parts[0] ?? 2025, (parts[1] ?? 1) - 1, parts[2] ?? 1)
-  const dow = d.getDay()
-  return addDays(dateStr, dow === 0 ? -6 : 1 - dow)
-}
 
 function smartDayShort(dateStr: string, today: string, t: TFunction): string {
   if (dateStr === today) return t('public.residentDemo.today')
@@ -132,12 +112,10 @@ export function ResidentDemoBooking() {
 
   // Find the earliest upcoming own booking in slot-time order
   const nextOwn = useMemo(() => {
-    for (let i = 0; i <= LOOKAHEAD_DAYS; i++) {
-      const date = addDays(today, i)
-      const slot = SLOTS.find(s => ownBookings.has(`${s.id}_${date}`))
-      if (slot) return { date, slot }
-    }
-    return null
+    const dates = Array.from({ length: LOOKAHEAD_DAYS + 1 }, (_, i) => addDays(today, i))
+    const date = dates.find(d => SLOTS.some(s => ownBookings.has(`${s.id}_${d}`)))
+    const slot = date ? SLOTS.find(s => ownBookings.has(`${s.id}_${date}`)) : undefined
+    return date && slot ? { date, slot } : null
   }, [ownBookings, today])
 
   function shiftWeek(n: number) {
@@ -195,7 +173,7 @@ export function ResidentDemoBooking() {
 
       {/* Date strip with week navigation */}
       <div className="d-flex align-items-center gap-1 mb-3 p-2 rounded-3"
-        style={{ backgroundColor: colors.bgPage, border: `1px solid ${colors.borderDefault}` }}>
+        style={{ backgroundColor: colors.bgSubtle, border: `1px solid ${colors.borderDefault}` }}>
         <button
           className="btn btn-sm p-1 flex-shrink-0"
           style={{ color: canGoBack ? colors.textPrimary : colors.textDisabled, lineHeight: 1 }}

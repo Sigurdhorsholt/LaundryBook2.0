@@ -1,4 +1,5 @@
 using Application.Common.Authorization;
+using Application.Common.Time;
 using Application.Common.Exceptions;
 using Application.Common.Interfaces;
 using Domain.Enums;
@@ -9,7 +10,7 @@ namespace Application.Features.LaundryMachines.Queries;
 
 public record GetLaundryMachinesQuery(Guid RoomId) : IRequest<List<LaundryMachineDto>>;
 
-public record LaundryMachineDto(Guid Id, string Name, MachineType MachineType, bool IsActive);
+public record LaundryMachineDto(Guid Id, string Name, MachineType MachineType, bool IsActive, int UpcomingBookingCount);
 
 public class GetLaundryMachinesQueryHandler(
     IAppDbContext db,
@@ -23,9 +24,16 @@ public class GetLaundryMachinesQueryHandler(
 
         await auth.RequireRoleAsync(room.PropertyId, UserRole.Resident, cancellationToken);
 
+        var today = CopenhagenTime.Today;
+
         return await db.LaundryMachines
             .Where(m => m.LaundryRoomId == request.RoomId && m.IsActive)
-            .Select(m => new LaundryMachineDto(m.Id, m.Name, m.MachineType, m.IsActive))
+            .Select(m => new LaundryMachineDto(
+                m.Id,
+                m.Name,
+                m.MachineType,
+                m.IsActive,
+                m.Bookings.Count(b => b.Date >= today && b.Status == BookingStatus.Active)))
             .ToListAsync(cancellationToken);
     }
 }

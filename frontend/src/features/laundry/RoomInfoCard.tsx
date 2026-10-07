@@ -1,0 +1,70 @@
+import { Link } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
+import type { LaundryMachineDto, LaundryRoomDto } from './laundryApi'
+import { colors } from '../../shared/theme'
+import { MACHINE_TYPE_LABEL, SIDE_CARD } from './constants'
+import { BookingRulesList } from './BookingRulesList'
+import type { HouseRulesLink, RoomRules } from './types'
+import { HOUSE_RULES_ANCHOR } from '../properties/constants'
+
+interface DetailsProps {
+  machines: LaundryMachineDto[]
+  rules: RoomRules
+  houseRules: HouseRulesLink | null
+}
+
+const subTitle: React.CSSProperties = {
+  margin: '14px 0 6px', fontSize: '0.72rem', fontWeight: 700, letterSpacing: '0.06em',
+  textTransform: 'uppercase', color: colors.textMuted,
+}
+
+export function RoomInfoDetails({ machines, rules, houseRules }: DetailsProps) {
+  const { t } = useTranslation()
+
+  return (
+    <>
+      {machines.length > 0 && (
+        <>
+          <h3 style={subTitle}>{t('laundry.room.machinesTitle')}</h3>
+          <ul className="list-unstyled d-flex flex-column gap-1 mb-0" style={{ fontSize: '0.88rem', color: colors.textPrimary }}>
+            {machines.map(m => (
+              <li key={m.id} className="d-flex justify-content-between gap-2">
+                <span>{m.name}</span>
+                <span style={{ color: colors.textMuted }}>{t(MACHINE_TYPE_LABEL[m.machineType])}</span>
+              </li>
+            ))}
+          </ul>
+        </>
+      )}
+
+      <h3 style={subTitle}>{t('laundry.room.rulesTitle')}</h3>
+      <BookingRulesList rules={rules} />
+      <div className="d-flex align-items-center gap-2 mt-3">
+        <Link to={houseRules ? `/property#${HOUSE_RULES_ANCHOR}` : '/property'} style={{ fontSize: '0.85rem', fontWeight: 600 }}>
+          {houseRules ? t('laundry.room.readHouseRules') : t('laundry.room.moreAboutProperty')}
+        </Link>
+        {houseRules?.isNew && (
+          <span style={{ fontSize: '0.72rem', fontWeight: 700, borderRadius: 999, padding: '2px 8px', backgroundColor: colors.warningBg, color: colors.warningText }}>
+            {t('laundry.room.newHouseRules')}
+          </span>
+        )}
+      </div>
+    </>
+  )
+}
+
+interface Props extends DetailsProps {
+  room: LaundryRoomDto
+}
+
+export function RoomInfoCard({ room, machines, rules, houseRules }: Props) {
+  return (
+    <section style={SIDE_CARD}>
+      <h2 style={{ margin: 0, fontSize: '1rem', fontWeight: 700, color: colors.textPrimary }}>{room.name}</h2>
+      {room.description && (
+        <p style={{ margin: '2px 0 0', fontSize: '0.85rem', color: colors.textMuted }}>{room.description}</p>
+      )}
+      <RoomInfoDetails machines={machines} rules={rules} houseRules={houseRules} />
+    </section>
+  )
+}

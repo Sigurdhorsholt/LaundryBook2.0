@@ -1,44 +1,80 @@
 /* Bootstrap 5 */
 @import "bootstrap/dist/css/bootstrap.min.css";
 
-/* Tailwind v4 — utilities only, preflight skipped (Bootstrap Reboot handles reset) */
-@import "tailwindcss/theme" layer(theme);
-@import "tailwindcss/utilities" layer(utilities);
-
 /* ── Color tokens (keep in sync with src/shared/theme.ts) ──────────────────── */
-/* To switch palette: change the four --color-primary-* variables here          */
-/* and the matching palette block in theme.ts.                                  */
 
 :root {
-  /* Active palette — Option A: Blue */
-  --color-primary:           #1565c0;
-  --color-primary-light:     #e8f0fe;
-  --color-primary-muted:     #dce8ff;
-  --color-primary-muted-text:#2c4f8c;
-
-  /* Option B — Fresh Teal (swap these four + change theme.ts) */
-  /* --color-primary:           #0f7ea6; */
-  /* --color-primary-light:     #e0f4fa; */
-  /* --color-primary-muted:     #d0eef8; */
-  /* --color-primary-muted-text:#0c5f7a; */
-
-  /* Option C — Warm Sage */
-  /* --color-primary:           #3d7a5c; */
-  /* --color-primary-light:     #e8f5ee; */
-  /* --color-primary-muted:     #d0ecdb; */
-  /* --color-primary-muted-text:#2a5c42; */
+  /* Brand — Deep Sage */
+  --color-primary:            #2c6a4d;
+  --color-primary-hover:      #235a40;
+  --color-primary-active:     #1e4f38;
+  --color-primary-light:      #dcebe2;
+  --color-primary-border:     #a9cdb8;
+  --color-primary-muted:      #cfe8da;
+  --color-primary-muted-text: #1e4f38;
 
   /* Stable tokens */
-  --color-text-primary:   #0d1b2a;
-  --color-text-secondary: #5a6a7a;
-  --color-text-muted:     #a0adb8;
-  --color-bg-page:        #f8fafb;
+  --color-text-primary:   #12201a;
+  --color-text-secondary: #3f5048;
+  --color-text-muted:     #5a6b62;
+  --color-bg-page:        #e8ece6;
   --color-bg-card:        #ffffff;
-  --color-bg-subtle:      #f0f4f8;
-  --color-border:         #e8ecf0;
-  --color-success:        #2e7d32;
-  --color-warning:        #b45309;
-  --color-danger:         #c62828;
+  --color-bg-subtle:      #f3f5f1;
+  --color-border:         #cfd8d0;
+  --color-chrome:         #17251f;
+  --color-chrome-raised:  #22352c;
+  --color-chrome-text:    #e4ece6;
+  --color-chrome-accent:  #9fd4b6;
+  --color-success:        #22693a;
+  --color-warning:        #8a500c;
+  --color-danger:         #a8261f;
+
+  /* Bootstrap reads these for text-primary, links, bg-primary, badges, etc. */
+  --bs-primary:            #2c6a4d;
+  --bs-primary-rgb:        44, 106, 77;
+  --bs-link-color:         #2c6a4d;
+  --bs-link-color-rgb:     44, 106, 77;
+  --bs-link-hover-color:   #1e4f38;
+  --bs-link-hover-color-rgb: 30, 79, 56;
+  --bs-focus-ring-color:   rgba(44, 106, 77, 0.25);
+  --bs-border-color:       #cfd8d0;
+}
+
+/* Bootstrap compiles its blue into the button/form rules themselves, so the
+   :root variables above don't reach them; override those component variables. */
+.btn-primary {
+  --bs-btn-bg: var(--color-primary);
+  --bs-btn-border-color: var(--color-primary);
+  --bs-btn-hover-bg: var(--color-primary-hover);
+  --bs-btn-hover-border-color: var(--color-primary-hover);
+  --bs-btn-active-bg: var(--color-primary-active);
+  --bs-btn-active-border-color: var(--color-primary-active);
+  --bs-btn-disabled-bg: var(--color-primary);
+  --bs-btn-disabled-border-color: var(--color-primary);
+  --bs-btn-focus-shadow-rgb: 44, 106, 77;
+}
+.btn-outline-primary {
+  --bs-btn-color: var(--color-primary);
+  --bs-btn-border-color: var(--color-primary);
+  --bs-btn-hover-color: #fff;
+  --bs-btn-hover-bg: var(--color-primary);
+  --bs-btn-hover-border-color: var(--color-primary);
+  --bs-btn-active-color: #fff;
+  --bs-btn-active-bg: var(--color-primary-active);
+  --bs-btn-active-border-color: var(--color-primary-active);
+  --bs-btn-disabled-color: var(--color-primary);
+  --bs-btn-disabled-border-color: var(--color-primary);
+  --bs-btn-focus-shadow-rgb: 44, 106, 77;
+}
+.form-control:focus,
+.form-select:focus,
+.form-check-input:focus {
+  border-color: var(--color-primary-border);
+  box-shadow: 0 0 0 0.25rem rgba(44, 106, 77, 0.25);
+}
+.form-check-input:checked {
+  background-color: var(--color-primary);
+  border-color: var(--color-primary);
 }
 
 /* Global */
@@ -48,24 +84,52 @@ body {
   color: var(--color-text-primary);
 }
 
-/* Admin sidebar nav links */
+/* Resident shell: phones get a fixed tab bar, so content must end above it (64px = BOTTOM_TAB_HEIGHT_PX) */
+.resident-shell {
+  --bottom-bar-height: calc(64px + env(safe-area-inset-bottom));
+  padding-bottom: var(--bottom-bar-height);
+}
+@media (min-width: 768px) {
+  .resident-shell {
+    --bottom-bar-height: 0px;
+    padding-bottom: 0;
+  }
+}
+
+.chrome-link:hover {
+  background-color: var(--color-chrome-raised);
+  color: #ffffff !important;
+}
+
+/* Bootstrap's .offcanvas-lg forces a transparent background (!important) on wide screens */
+.admin-sidebar {
+  background-color: var(--color-chrome) !important;
+}
+
+/* Admin sidebar nav links (on the dark chrome sidebar) */
 .sidebar-link {
-  color: var(--color-text-secondary);
+  color: var(--color-chrome-text);
   background-color: transparent;
   transition: background-color 0.15s, color 0.15s;
 }
 .sidebar-link:hover {
-  background-color: var(--color-bg-subtle);
-  color: var(--color-text-secondary);
+  background-color: var(--color-chrome-raised);
+  color: #ffffff;
 }
 .sidebar-link--active,
 .sidebar-link--active:hover {
-  color: var(--color-primary);
-  background-color: var(--color-primary-light);
+  color: #ffffff;
+  background-color: var(--color-chrome-raised);
+  box-shadow: inset 3px 0 0 var(--color-chrome-accent);
 }
 
 .sidebar-back-btn:hover {
-  background-color: var(--color-bg-subtle) !important;
+  background-color: var(--color-chrome-raised) !important;
+}
+
+/* Admin settings: a rule between sections, not above the first */
+.settings-section + .settings-section {
+  border-top: 1px solid var(--color-border);
 }
 
 /* ── Property card hover ────────────────────────────────────────────────────── */
@@ -75,19 +139,19 @@ body {
   cursor: pointer;
 }
 .property-card:hover {
-  box-shadow: 0 4px 20px rgba(13, 59, 122, 0.09);
+  box-shadow: 0 4px 20px rgba(18, 32, 26, 0.10);
 }
 
 /* ── BookingGrid animations ─────────────────────────────────────────────────── */
 
 @keyframes slot-booked {
-  0%   { transform: scaleX(0.98); background-color: #c8e6c9; }
+  0%   { transform: scaleX(0.98); background-color: #a9cdb8; }
   60%  { transform: scaleX(1.005); }
-  100% { transform: scaleX(1);    background-color: #f0fdf4; }
+  100% { transform: scaleX(1);    background-color: #cfe8da; }
 }
 
 @keyframes slot-cancelled {
-  0%   { background-color: #ffcdd2; }
+  0%   { background-color: #f0c3bf; }
   100% { background-color: #ffffff; }
 }
 

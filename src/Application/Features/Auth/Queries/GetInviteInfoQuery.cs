@@ -8,18 +8,19 @@ namespace Application.Features.Auth.Queries;
 
 public record GetInviteInfoQuery(string Token) : IRequest<InviteInfoDto>;
 
-public record InviteInfoDto(UserRole Role, bool IsMultiUse, string? ApartmentNumber, string? Email);
+public record InviteInfoDto(UserRole Role, bool IsMultiUse, string? ApartmentNumber, string? Email, string PropertyName);
 
 public class GetInviteInfoQueryHandler(IAppDbContext db) : IRequestHandler<GetInviteInfoQuery, InviteInfoDto>
 {
     public async Task<InviteInfoDto> Handle(GetInviteInfoQuery request, CancellationToken cancellationToken)
     {
         var invite = await db.UserInvites
+            .Include(i => i.Property)
             .FirstOrDefaultAsync(
                 i => i.Token == request.Token && !i.IsUsed && i.ExpiresAt > DateTime.UtcNow,
                 cancellationToken)
             ?? throw new NotFoundException("UserInvite", request.Token);
 
-        return new InviteInfoDto(invite.Role, invite.IsMultiUse, invite.ApartmentNumber, invite.Email);
+        return new InviteInfoDto(invite.Role, invite.IsMultiUse, invite.ApartmentNumber, invite.Email, invite.Property.Name);
     }
 }

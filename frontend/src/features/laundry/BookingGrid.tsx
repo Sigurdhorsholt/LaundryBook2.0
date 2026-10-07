@@ -9,14 +9,17 @@
  * The grid only handles rendering and the date-based past/locked states.
  */
 
+import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import type { LaundryMachineDto, TimeSlotTemplateDto } from './laundryApi'
-import type { GridBooking } from './types'
+import type { GridBooking, PendingAction } from './types'
 import { BookingMode } from '../properties/propertiesApi'
 import { isPast, isLocked } from '../../shared/utils/dateUtils'
 import { colors } from '../../shared/theme'
 import { SlotRow } from './SlotRow'
 import { MachineSlotRow } from './MachineSlotRow'
+import { IconChevronDown } from '../../shared/icons'
+import { TAP_TARGET_PX } from './constants'
 
 export type { GridBooking }
 
@@ -32,6 +35,14 @@ interface BookingGridProps {
   onBook: (slotId: string, machineId?: string) => void
   onCancel: (slotId: string, machineId?: string) => void
   loading?: boolean            // shows skeleton rows while slots are fetched
+  // Optional inline confirm: when provided, the armed row shows a ✗/✓ pair instead
+  // of the parent opening a modal.
+  pending?: PendingAction | null
+  confirmLoading?: boolean
+  confirmError?: string | null
+  onConfirm?: () => void
+  onDismissConfirm?: () => void
+  usage?: { used: number; max: number }
 }
 
 // ── Skeleton row ───────────────────────────────────────────────────────────────
@@ -79,8 +90,15 @@ export function BookingGrid({
   onBook,
   onCancel,
   loading,
+  pending,
+  confirmLoading,
+  confirmError,
+  onConfirm,
+  onDismissConfirm,
+  usage,
 }: BookingGridProps) {
   const { t } = useTranslation()
+  const [showPast, setShowPast] = useState(false)
   if (loading) {
     return (
       <div>
@@ -118,6 +136,12 @@ export function BookingGrid({
   }
 
   const slotBookings = (slotId: string) => gridBookings.filter((b) => b.slotId === slotId)
+
+  // Today's finished slots fold into one row so the bookable ones show without scrolling on a phone
+  const firstOpen = date === today ? slots.findIndex((s) => !isPast(date, s.startTime, today)) : 0
+  const pastCount = firstOpen === -1 ? slots.length : firstOpen
+  const canCollapsePast = pastCount >= 2
+  const hidePast = canCollapsePast && !showPast
 
   const allUnavailable = slots.every((slot) => {
     const past = isPast(date, slot.startTime, today)
@@ -164,9 +188,32 @@ export function BookingGrid({
         </div>
       )}
 
-      {slots.map((slot) => {
+      {canCollapsePast && (
+        <button
+          type="button"
+          aria-expanded={showPast}
+          onClick={() => setShowPast((x) => !x)}
+          style={{
+            width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12,
+            minHeight: TAP_TARGET_PX + 4, padding: '0 20px', border: 'none', borderBottom: `1px solid ${colors.borderRow}`,
+            backgroundColor: colors.bgSubtle, color: colors.textMuted, fontSize: '0.85rem', textAlign: 'left', cursor: 'pointer',
+          }}
+        >
+          <span>{t('laundry.grid.pastCollapsed', { count: pastCount })}</span>
+          <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4, fontWeight: 600, color: colors.primary }}>
+            {showPast ? t('laundry.grid.hidePast') : t('laundry.grid.showPast')}
+            <span aria-hidden="true" style={{ display: 'inline-flex', transform: showPast ? 'rotate(180deg)' : 'none' }}>
+              <IconChevronDown size={14} color={colors.primary} strokeWidth={2} />
+            </span>
+          </span>
+        </button>
+      )}
+
+      {slots.map((slot, i) => {
+        if (hidePast && i < pastCount) return null
         const past = isPast(date, slot.startTime, today)
         const locked = isLocked(date, today, bookingLookaheadDays)
+        const slotPending = pending && pending.slotId === slot.id && pending.date === date ? pending : null
 
         if (machineMode) {
           return (
@@ -180,6 +227,12 @@ export function BookingGrid({
               maxReached={maxReached}
               onBook={(machineId) => onBook(slot.id, machineId)}
               onCancel={(machineId) => onCancel(slot.id, machineId)}
+              pending={slotPending}
+              confirmLoading={confirmLoading}
+              confirmError={confirmError}
+              onConfirm={onConfirm}
+              onDismissConfirm={onDismissConfirm}
+              usage={usage}
             />
           )
         }
@@ -197,6 +250,12 @@ export function BookingGrid({
             blocked={blocked}
             onBook={() => onBook(slot.id)}
             onCancel={() => onCancel(slot.id)}
+            pending={slotPending}
+            confirmLoading={confirmLoading}
+            confirmError={confirmError}
+            onConfirm={onConfirm}
+            onDismissConfirm={onDismissConfirm}
+            usage={usage}
           />
         )
       })}

@@ -1,4 +1,5 @@
 using Application.Common.Authorization;
+using Application.Common.Bookings;
 using Application.Common.Exceptions;
 using Application.Common.Interfaces;
 using Domain.Entities;
@@ -50,7 +51,7 @@ public class ReplaceTimeSlotScheduleCommandHandler(
                 if (!active.TryGetValue(id, out var existing))
                     throw new NotFoundException(nameof(TimeSlotTemplate), id);
                 if (!keepIds.Add(id))
-                    throw new ValidationException("The same time slot was submitted more than once.");
+                    throw new ConflictException("Den samme tidsplads er sendt mere end én gang.", ErrorCodes.SlotDuplicate);
                 desired.Add((existing.StartTime, existing.EndTime));
             }
             else
@@ -63,25 +64,15 @@ public class ReplaceTimeSlotScheduleCommandHandler(
         for (var i = 1; i < desired.Count; i++)
         {
             if (desired[i].Start < desired[i - 1].End)
-                throw new ValidationException("Time slot overlaps with an existing slot.");
+                throw new ConflictException("Tidspladsen overlapper en eksisterende tidsplads.", ErrorCodes.SlotOverlap);
         }
 
         var removeIds = active.Keys.Where(id => !keepIds.Contains(id)).ToList();
         var now = DateTime.UtcNow;
-        var today = DateOnly.FromDateTime(now);
 
-        var affected = await db.Bookings
-            .Where(b =>
-                removeIds.Contains(b.TimeSlotTemplateId) &&
-                b.Date >= today &&
-                b.Status == BookingStatus.Active)
-            .ToListAsync(cancellationToken);
-
-        foreach (var booking in affected)
-        {
-            booking.Status = BookingStatus.CancelledByAdmin;
-            booking.CancelledAt = now;
-        }
+        var cancelled = await db.Bookings
+            .Where(b => removeIds.Contains(b.TimeSlotTemplateId))
+            .CancelUpcomingByAdminAsync(cancellationToken);
 
         foreach (var id in removeIds)
         {
@@ -102,6 +93,6 @@ public class ReplaceTimeSlotScheduleCommandHandler(
         // Single SaveChanges so removals, booking cancellations and creations commit atomically.
         await db.SaveChangesAsync(cancellationToken);
 
-        return affected.Count;
+        return cancelled;
     }
 }

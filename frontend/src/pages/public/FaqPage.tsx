@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { PublicLayout } from './PublicLayout'
+import { PageMeta } from '../../shared/PageMeta'
 import { colors } from '../../shared/theme'
 import { IconPlus } from '../../shared/icons'
 
@@ -56,6 +57,7 @@ export function FaqPage() {
 
   return (
     <PublicLayout>
+      <PageMeta page="faq" />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }} />
 
       <section style={{ backgroundColor: '#f7f3ea' }}>

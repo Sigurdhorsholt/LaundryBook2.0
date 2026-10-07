@@ -2,6 +2,19 @@ import { useTranslation } from 'react-i18next'
 import { UserRole } from '../features/auth/authApi'
 import { colors } from './theme'
 
+// laundrybook.dk redirects here, so canonical URLs must use this host
+export const SITE_ORIGIN = 'https://www.laundrybook.dk'
+
+// Bootstrap's lg/xl breakpoints; inline styles can't hold media queries, so layout switches read these
+export const MEDIA_LG = '(min-width: 992px)'
+export const MEDIA_XL = '(min-width: 1200px)'
+
+// The app navbar is sticky; anything else that sticks to the top must sit below it
+export const NAVBAR_HEIGHT_PX = 56
+
+// Phone tab bar in the resident shell; .resident-shell in index.css reserves the same space
+export const BOTTOM_TAB_HEIGHT_PX = 64
+
 export const ROLE_LABEL_KEY = {
   [UserRole.Resident]: 'roles.resident',
   [UserRole.ComplexAdmin]: 'roles.complexAdmin',

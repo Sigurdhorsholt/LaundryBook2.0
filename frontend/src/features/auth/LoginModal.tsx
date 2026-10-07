@@ -1,55 +1,80 @@
-import { useState } from 'react'
+import { useRef, useState } from 'react'
+import { useDispatch } from 'react-redux'
 import { createPortal } from 'react-dom'
 import { useTranslation } from 'react-i18next'
 import { Link, useNavigate } from 'react-router-dom'
 import { signInWithEmailAndPassword } from 'firebase/auth'
 import { firebaseAuth } from '../../lib/firebase'
 import { useLoginMutation, useForgotPasswordMutation } from './authApi'
+import { authErrorMessage } from './utils'
+import { baseApi } from '../../app/baseApi'
 import { colors } from '../../shared/theme'
 import { BrandLogo } from '../../shared/BrandLogo'
+import { useDialog } from '../../shared/modals/useDialog'
 
 interface LoginModalProps {
   onClose: () => void
+  // Set when a protected page asked for login (e.g. expired session); otherwise go to the dashboard
+  redirectTo?: string
 }
 
-export function LoginModal({ onClose }: LoginModalProps) {
+export function LoginModal({ onClose, redirectTo }: LoginModalProps) {
   const { t } = useTranslation()
   const navigate = useNavigate()
+  const dispatch = useDispatch()
   const [email,    setEmail]    = useState('')
   const [password, setPassword] = useState('')
   const [error,    setError]    = useState<string | null>(null)
 
+  // Covers the Firebase sign-in too (the slow step), not just the backend call
+  const [submitting, setSubmitting] = useState(false)
+
   const [showForgot,  setShowForgot]  = useState(false)
   const [forgotEmail, setForgotEmail] = useState('')
   const [forgotSent,  setForgotSent]  = useState(false)
+  const [forgotError, setForgotError] = useState<string | null>(null)
 
-  const [login,          { isLoading }]           = useLoginMutation()
+  const dialogRef = useRef<HTMLDivElement>(null)
+  useDialog(dialogRef, onClose)
+
+  const [login]                                   = useLoginMutation()
   const [forgotPassword, { isLoading: isSending }] = useForgotPasswordMutation()
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
     setError(null)
+    setSubmitting(true)
     try {
       const credential = await signInWithEmailAndPassword(firebaseAuth, email, password)
       const idToken = await credential.user.getIdToken()
       await login({ idToken }).unwrap()
+      // Drop everything cached before this login: after an expired session a different person may be
+      // signing in on the same device, and they must not see the previous user's bookings
+      dispatch(baseApi.util.resetApiState())
       onClose()
-      navigate('/dashboard', { replace: true })
+      navigate(redirectTo ?? '/dashboard', { replace: true })
     } catch (err: unknown) {
-      setError(err instanceof Error ? err.message : t('auth.loginFailed'))
+      setError(authErrorMessage(err, t, t('auth.loginFailed')))
+      setSubmitting(false)
     }
   }
 
   async function handleForgotSubmit(e: React.FormEvent) {
     e.preventDefault()
-    await forgotPassword({ email: forgotEmail }).unwrap()
-    setForgotSent(true)
+    setForgotError(null)
+    try {
+      await forgotPassword({ email: forgotEmail }).unwrap()
+      setForgotSent(true)
+    } catch (err) {
+      setForgotError(authErrorMessage(err, t, t('common.genericError')))
+    }
   }
 
   function backToLogin() {
     setShowForgot(false)
     setForgotSent(false)
     setForgotEmail('')
+    setForgotError(null)
   }
 
   return createPortal(
@@ -62,6 +87,11 @@ export function LoginModal({ onClose }: LoginModalProps) {
 
       {/* Card */}
       <div
+        ref={dialogRef}
+        role="dialog"
+        aria-modal="true"
+        aria-label={showForgot ? t('auth.forgotPasswordTitle') : t('auth.login')}
+        tabIndex={-1}
         style={{
           position: 'fixed', top: '50%', left: '50%',
           transform: 'translate(-50%, -50%)',
@@ -97,6 +127,7 @@ export function LoginModal({ onClose }: LoginModalProps) {
               email={forgotEmail}
               onEmailChange={setForgotEmail}
               sent={forgotSent}
+              error={forgotError}
               loading={isSending}
               onSubmit={handleForgotSubmit}
               onBack={backToLogin}
@@ -106,7 +137,7 @@ export function LoginModal({ onClose }: LoginModalProps) {
               email={email}
               password={password}
               error={error}
-              loading={isLoading}
+              loading={submitting}
               onEmailChange={setEmail}
               onPasswordChange={setPassword}
               onSubmit={handleSubmit}
@@ -216,10 +247,10 @@ function LoginView({
 // ── Forgot-password view ───────────────────────────────────────────────────────
 
 function ForgotView({
-  email, onEmailChange, sent, loading, onSubmit, onBack,
+  email, onEmailChange, sent, error, loading, onSubmit, onBack,
 }: {
   email: string; onEmailChange: (v: string) => void
-  sent: boolean; loading: boolean
+  sent: boolean; error: string | null; loading: boolean
   onSubmit: (e: React.FormEvent) => void; onBack: () => void
 }) {
   const { t } = useTranslation()
@@ -261,6 +292,7 @@ function ForgotView({
               autoComplete="email"
               autoFocus
             />
+            {error && <p role="alert" style={{ color: colors.dangerText, fontSize: '0.85rem', margin: 0 }}>{error}</p>}
             <button
               className="btn fw-semibold"
               type="submit"

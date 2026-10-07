@@ -1,6 +1,5 @@
 import { baseApi } from '../../app/baseApi'
 
-// @ts-ignore
 export enum UserRole {
   Resident = 0,
   ComplexAdmin = 1,
@@ -29,6 +28,7 @@ export interface InviteInfoDto {
   isMultiUse: boolean
   apartmentNumber: string | null
   email: string | null
+  propertyName: string
 }
 
 export const authApi = baseApi.injectEndpoints({
@@ -68,6 +68,15 @@ export const authApi = baseApi.injectEndpoints({
       invalidatesTags: ['Auth'],
     }),
 
+    acceptInvite: builder.mutation<void, { inviteToken: string; apartmentNumber?: string; acceptedTerms: boolean }>({
+      query: (body) => ({
+        url: '/api/auth/accept-invite',
+        method: 'POST',
+        body,
+      }),
+      invalidatesTags: ['Auth'],
+    }),
+
     register: builder.mutation<{ userId: string; propertyId: string }, { idToken: string; firstName: string; lastName: string; propertyName: string; propertyAddress: string; acceptedTerms: boolean }>({
       query: (body) => ({
         url: '/api/auth/register',
@@ -83,6 +92,16 @@ export const authApi = baseApi.injectEndpoints({
         method: 'POST',
         body,
       }),
+    }),
+
+    // A fresh copy on every click; nothing about it is worth caching
+    exportMyData: builder.query<unknown, void>({
+      query: () => '/api/auth/me/export',
+      keepUnusedDataFor: 0,
+    }),
+
+    deleteMyAccount: builder.mutation<void, void>({
+      query: () => ({ url: '/api/auth/me', method: 'DELETE' }),
     }),
 
     updateCurrentUser: builder.mutation<void, { firstName: string; lastName: string }>({
@@ -102,7 +121,10 @@ export const {
   useMeQuery,
   useGetInviteInfoQuery,
   useRedeemInviteMutation,
+  useAcceptInviteMutation,
   useRegisterMutation,
   useForgotPasswordMutation,
   useUpdateCurrentUserMutation,
+  useLazyExportMyDataQuery,
+  useDeleteMyAccountMutation,
 } = authApi

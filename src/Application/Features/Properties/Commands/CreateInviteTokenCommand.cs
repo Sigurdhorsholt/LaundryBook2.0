@@ -22,6 +22,9 @@ public class CreateInviteTokenCommandValidator : AbstractValidator<CreateInviteT
         RuleFor(x => x.Role).IsInEnum()
             .NotEqual(UserRole.SysAdmin).WithMessage("Cannot create a SysAdmin invite.");
         RuleFor(x => x.ApartmentNumber).MaximumLength(20).When(x => x.ApartmentNumber is not null);
+        // A shared link is effectively public once printed; it must never hand out admin rights
+        RuleFor(x => x.Role).Equal(UserRole.Resident).When(x => x.IsMultiUse)
+            .WithMessage("Et fælles invitationslink kan kun give beboeradgang.");
     }
 }
 
@@ -40,7 +43,11 @@ public class CreateInviteTokenCommandHandler(
             .FirstOrDefaultAsync(cancellationToken);
 
         if (!isActive)
-            throw new ConflictException("Foreningen afventer godkendelse og kan endnu ikke invitere beboere.");
+            throw new ConflictException("Foreningen afventer godkendelse og kan endnu ikke invitere beboere.", ErrorCodes.PropertyPendingApproval);
+
+        // One shared link per property: a new one replaces (revokes) the previously printed QR code
+        if (request.IsMultiUse)
+            await OpenInviteLinks.RevokeAsync(db, request.PropertyId, cancellationToken);
 
         var token = Guid.NewGuid().ToString("N"); // 32-char hex, URL-safe
 

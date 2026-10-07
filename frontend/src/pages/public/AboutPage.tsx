@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { PublicLayout } from './PublicLayout'
+import { PageMeta } from '../../shared/PageMeta'
 import { colors } from '../../shared/theme'
 import { IconCheck } from '../../shared/icons'
 
@@ -14,6 +15,7 @@ export function AboutPage() {
 
   return (
     <PublicLayout>
+      <PageMeta page="about" />
 
       {/* Hero */}
       <section style={{ backgroundColor: '#f7f3ea' }}>
@@ -47,7 +49,7 @@ export function AboutPage() {
               ))}
             </div>
             <div className="col-12 col-lg-4">
-              <div className="rounded-3 p-4" style={{ backgroundColor: colors.bgPage, border: `1px solid ${colors.borderDefault}` }}>
+              <div className="rounded-3 p-4" style={{ backgroundColor: colors.bgSubtle, border: `1px solid ${colors.borderDefault}` }}>
                 <h3 className="fw-semibold mb-3" style={{ fontSize: '0.8rem', color: colors.textMuted, letterSpacing: '0.09em', textTransform: 'uppercase' }}>
                   {t('public.about.factsTitle')}
                 </h3>

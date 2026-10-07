@@ -3,7 +3,11 @@ import i18n from '../../i18n'
 // ── Date string helpers ────────────────────────────────────────────────────────
 
 export function todayStr(): string {
-  const d = new Date()
+  return localDateStr(new Date())
+}
+
+// "YYYY-MM-DD" in the browser's time zone, e.g. for a server timestamp shown as a date
+export function localDateStr(d: Date): string {
   return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`
 }
 
@@ -102,6 +106,13 @@ export function formatDateFull(dateStr: string): string {
   const dayName = DAY_FULL[lang]?.[dow === 0 ? 6 : dow - 1] ?? ''
   const sep = lang === 'en' ? '' : '.'
   return `${dayName} ${d.getDate()}${sep} ${MONTH_SHORT[lang]?.[d.getMonth()] ?? ''}`
+}
+
+export function formatDayMonth(dateStr: string): string {
+  const parts = dateStr.split('-').map(Number)
+  const lang = activeLang()
+  const sep = lang === 'en' ? '' : '.'
+  return `${parts[2] ?? 1}${sep} ${MONTH_SHORT[lang]?.[(parts[1] ?? 1) - 1] ?? ''}`
 }
 
 /** "Uge 22" / "Week 22" */

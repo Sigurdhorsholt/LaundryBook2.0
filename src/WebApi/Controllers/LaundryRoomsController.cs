@@ -41,8 +41,8 @@ public class LaundryRoomsController(IMediator mediator) : ControllerBase
     [HttpDelete("api/laundry-rooms/{roomId:guid}")]
     public async Task<IActionResult> DeactivateLaundryRoom(Guid roomId, CancellationToken ct)
     {
-        await mediator.Send(new DeactivateLaundryRoomCommand(roomId), ct);
-        return NoContent();
+        var cancelledBookings = await mediator.Send(new DeactivateLaundryRoomCommand(roomId), ct);
+        return Ok(new { cancelledBookings });
     }
 
     // ── Machines ──────────────────────────────────────────────────────────────
@@ -71,8 +71,8 @@ public class LaundryRoomsController(IMediator mediator) : ControllerBase
     [HttpDelete("api/laundry-rooms/{roomId:guid}/machines/{machineId:guid}")]
     public async Task<IActionResult> DeactivateMachine(Guid roomId, Guid machineId, CancellationToken ct)
     {
-        await mediator.Send(new DeactivateLaundryMachineCommand(roomId, machineId), ct);
-        return NoContent();
+        var cancelledBookings = await mediator.Send(new DeactivateLaundryMachineCommand(roomId, machineId), ct);
+        return Ok(new { cancelledBookings });
     }
 
     // ── Time slot templates ───────────────────────────────────────────────────

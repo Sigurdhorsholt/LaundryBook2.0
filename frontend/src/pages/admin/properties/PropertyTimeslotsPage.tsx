@@ -1,6 +1,6 @@
-import { useState, useMemo, useEffect, useRef } from 'react'
+import { useState, useMemo, useEffect, useRef, useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
-import { useParams } from 'react-router-dom'
+import { Link, useParams } from 'react-router-dom'
 import {
   type LaundryRoomDto,
   type TimeSlotTemplateDto,
@@ -13,11 +13,14 @@ import {
   DURATION_OPTIONS, TEMPLATES,
   TIMELINE_START, TIMELINE_END, TIMELINE_TOTAL, TIMELINE_TICKS,
 } from '../../../features/laundry/constants'
+import { durationLabel } from '../../../shared/utils/formatUtils'
 import { toMinutes, toHHmmss, toHHmm, formatTime } from '../../../shared/utils/dateUtils'
 import { ModalShell } from '../../../shared/modals/ModalShell'
 import { IconPlus, IconChevronDown, IconX } from '../../../shared/icons'
 import { useMeQuery } from '../../../features/auth/authApi'
 import { PageHeader, EmptyState, Spinner } from '../../../shared/ui'
+import { BookingMode, useGetPropertyQuery } from '../../../features/properties/propertiesApi'
+import { NoMachinesWarning } from '../../../features/laundry/NoMachinesWarning'
 import { colors } from '../../../shared/theme'
 
 // ── Helpers ────────────────────────────────────────────────────────────────────
@@ -61,10 +64,24 @@ export function PropertyTimeslotsPage() {
   const { data: rooms = [], isLoading, isError } = useGetLaundryRoomsQuery(propertyId!, {
     skip: !propertyId,
   })
+  const { data: propertyDetail } = useGetPropertyQuery(propertyId!, { skip: !propertyId })
+  const needsMachines = propertyDetail?.settings.bookingMode === BookingMode.BookSpecificMachine
 
   const [expandedRoomId, setExpandedRoomId] = useState<string | null>(null)
+  // Ref, not state: cards report dirtiness from effects and the page only reads it when toggling
+  const dirtyRoomIds = useRef(new Set<string>())
+  const reportDirty = useCallback((roomId: string, dirty: boolean) => {
+    if (dirty) dirtyRoomIds.current.add(roomId)
+    else dirtyRoomIds.current.delete(roomId)
+  }, [])
 
   function toggleExpand(roomId: string) {
+    // Collapsing the open card (directly or by opening another) drops its unsaved sandbox
+    if (
+      expandedRoomId !== null &&
+      dirtyRoomIds.current.has(expandedRoomId) &&
+      !window.confirm(t('adminProperties.timeslots.discardUnsavedConfirm'))
+    ) return
     setExpandedRoomId((prev) => (prev === roomId ? null : roomId))
   }
 
@@ -92,6 +109,11 @@ export function PropertyTimeslotsPage() {
         <EmptyState
           title={t('adminProperties.timeslots.emptyTitle')}
           description={t('adminProperties.timeslots.emptyDescription')}
+          action={
+            <Link to={`/admin/properties/${propertyId}/laundry`} className="btn btn-primary btn-sm fw-semibold">
+              {t('adminProperties.timeslots.goToRooms')}
+            </Link>
+          }
         />
       ) : (
         <div className="d-flex flex-column gap-3">
@@ -100,8 +122,10 @@ export function PropertyTimeslotsPage() {
               key={room.id}
               room={room}
               propertyId={propertyId!}
+              showNoMachinesWarning={needsMachines && room.machineCount === 0}
               isExpanded={expandedRoomId === room.id}
               onToggleExpand={() => toggleExpand(room.id)}
+              onDirtyChange={reportDirty}
             />
           ))}
         </div>
@@ -116,13 +140,17 @@ export function PropertyTimeslotsPage() {
 function RoomCard({
   room,
   propertyId,
+  showNoMachinesWarning,
   isExpanded,
   onToggleExpand,
+  onDirtyChange,
 }: {
   room: LaundryRoomDto
   propertyId: string
+  showNoMachinesWarning: boolean
   isExpanded: boolean
   onToggleExpand: () => void
+  onDirtyChange: (roomId: string, dirty: boolean) => void
 }) {
   const { t } = useTranslation()
   const { data: apiSlots = [], isLoading, isFetching } = useGetTimeSlotsQuery(room.id, {
@@ -184,6 +212,22 @@ function RoomCard({
     if (apiSlots.some((a) => !pendingSlots.some((p) => p.id === a.id))) return true
     return false
   }, [pendingSlots, apiSlots, synced])
+
+  useEffect(() => {
+    onDirtyChange(room.id, isDirty)
+    return () => onDirtyChange(room.id, false)
+  }, [room.id, isDirty, onDirtyChange])
+
+  // Reloading or closing the tab would silently drop the sandbox
+  useEffect(() => {
+    if (!isDirty) return
+    const warn = (e: BeforeUnloadEvent) => {
+      e.preventDefault()
+      e.returnValue = ''
+    }
+    window.addEventListener('beforeunload', warn)
+    return () => window.removeEventListener('beforeunload', warn)
+  }, [isDirty])
 
   // ── Handlers ───────────────────────────────────────────────────────────────
 
@@ -266,7 +310,9 @@ function RoomCard({
     >
       {/* Clickable header */}
       <button
+        type="button"
         onClick={onToggleExpand}
+        aria-expanded={isExpanded}
         style={{
           display: 'block',
           width: '100%',
@@ -294,49 +340,62 @@ function RoomCard({
         </div>
       </button>
 
+      {showNoMachinesWarning && (
+        <div className="px-4 pb-3">
+          <NoMachinesWarning />
+        </div>
+      )}
+
       {/* Expanded content */}
       {isExpanded && (
-        <div style={{ borderTop: `1.5px solid ${colors.borderDefault}`, backgroundColor: colors.bgPage }}>
+        <div style={{ borderTop: `1.5px solid ${colors.borderDefault}`, backgroundColor: colors.bgSubtle }}>
           {isLoading ? (
             <Spinner />
           ) : (
             <>
-              {/* Templates — only when no saved slots exist yet */}
-              {apiSlots.length === 0 && <TemplateChips onApply={handleApplyTemplate} />}
+              {/* Wide screens: set up the times on the left, see the result on the right */}
+              <div className="row g-0">
+                <div className="col-12 col-xl-5">
+                  {/* Templates — only when no saved slots exist yet */}
+                  {apiSlots.length === 0 && <TemplateChips onApply={handleApplyTemplate} />}
 
-              {/* Timeline: live preview of pending state */}
-              <DayTimeline pendingSlots={pendingSlots} />
+                  {/* Generator: replaces pending state, no direct API calls */}
+                  <SlotGenerator
+                    from={genFrom}
+                    to={genTo}
+                    durationMinutes={genDuration}
+                    onFromChange={setGenFrom}
+                    onToChange={setGenTo}
+                    onDurationChange={setGenDuration}
+                    onGenerate={handleGenerate}
+                  />
 
-              {/* Generator: replaces pending state, no direct API calls */}
-              <SlotGenerator
-                from={genFrom}
-                to={genTo}
-                durationMinutes={genDuration}
-                onFromChange={setGenFrom}
-                onToChange={setGenTo}
-                onDurationChange={setGenDuration}
-                onGenerate={handleGenerate}
-              />
-
-              {/* Pending slot list */}
-              {pendingSlots.length > 0 ? (
-                <PendingSlotList slots={pendingSlots} onDelete={handleDeletePending} />
-              ) : (
-                <div className="px-4 py-2" style={{ fontSize: '0.85rem', color: colors.textMuted }}>
-                  {t('adminProperties.timeslots.noSlots')}
+                  {/* Manual single-slot add */}
+                  <div className="px-4 pb-3 pt-2">
+                    <button
+                      className="btn btn-sm d-flex align-items-center gap-1"
+                      style={{ fontSize: '0.82rem', color: colors.primary, fontWeight: 500, minHeight: 40 }}
+                      onClick={() => setShowAddModal(true)}
+                    >
+                      <IconPlus size={13} color={colors.primary} />
+                      {t('adminProperties.timeslots.addSingleSlot')}
+                    </button>
+                  </div>
                 </div>
-              )}
 
-              {/* Manual single-slot add */}
-              <div className="px-4 pb-3 pt-2">
-                <button
-                  className="btn btn-sm d-flex align-items-center gap-1"
-                  style={{ fontSize: '0.82rem', color: colors.primary, fontWeight: 500 }}
-                  onClick={() => setShowAddModal(true)}
-                >
-                  <IconPlus size={13} color={colors.primary} />
-                  {t('adminProperties.timeslots.addSingleSlot')}
-                </button>
+                <div className="col-12 col-xl-7">
+                  {/* Timeline: live preview of pending state */}
+                  <DayTimeline pendingSlots={pendingSlots} />
+
+                  {/* Pending slot list */}
+                  {pendingSlots.length > 0 ? (
+                    <PendingSlotList slots={pendingSlots} onDelete={handleDeletePending} />
+                  ) : (
+                    <div className="px-4 py-2" style={{ fontSize: '0.85rem', color: colors.textMuted }}>
+                      {t('adminProperties.timeslots.noSlots')}
+                    </div>
+                  )}
+                </div>
               </div>
 
               {/* Save bar — shown when there are pending changes, a save error, or a post-save notice */}
@@ -416,7 +475,7 @@ function TemplateChips({
           >
             {(t as (k: string) => string)(tpl.labelKey)}
             <span style={{ color: colors.textMuted, marginLeft: 6, fontSize: '0.75rem' }}>
-              {tpl.sublabel}
+              {`${tpl.from.slice(0, 2)}–${tpl.to.slice(0, 2)} · ${durationLabel(tpl.durationMinutes)}`}
             </span>
           </button>
         ))}
@@ -549,15 +608,15 @@ function SlotGenerator({
       <div className="mb-3">
         <div style={genLabelStyle}>{t('adminProperties.timeslots.durationPerSlot')}</div>
         <div className="d-flex flex-wrap gap-2 mt-1">
-          {DURATION_OPTIONS.map((opt) => {
-            const selected = durationMinutes === opt.minutes
+          {DURATION_OPTIONS.map((minutes) => {
+            const selected = durationMinutes === minutes
             return (
               <button
-                key={opt.minutes}
-                onClick={() => onDurationChange(opt.minutes)}
+                key={minutes}
+                onClick={() => onDurationChange(minutes)}
                 style={chipStyle(selected)}
               >
-                {opt.label}
+                {durationLabel(minutes)}
               </button>
             )
           })}
@@ -764,16 +823,16 @@ function AddSlotModal({
         <div className="mb-3">
           <label className="form-label" style={labelStyle}>{t('adminProperties.timeslots.duration')}</label>
           <div className="d-flex flex-wrap gap-2 mt-1">
-            {DURATION_OPTIONS.map((opt) => {
-              const selected = durationMinutes === opt.minutes
+            {DURATION_OPTIONS.map((minutes) => {
+              const selected = durationMinutes === minutes
               return (
                 <button
-                  key={opt.minutes}
+                  key={minutes}
                   type="button"
-                  onClick={() => setDurationMinutes(opt.minutes)}
+                  onClick={() => setDurationMinutes(minutes)}
                   style={chipStyle(selected)}
                 >
-                  {opt.label}
+                  {durationLabel(minutes)}
                 </button>
               )
             })}

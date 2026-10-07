@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { colors } from '../../shared/theme'
 import { useGetAuditLogsQuery } from './sysAdminApi'
+import { useDebouncedValue } from '../../shared/utils/useDebouncedValue'
 
 const PAGE_SIZE = 25
 const ACTIONS = ['Created', 'Updated', 'Deleted'] as const
@@ -26,9 +27,11 @@ export function AuditLogTable() {
   const [page, setPage] = useState(1)
   const [entityType, setEntityType] = useState('')
   const [action, setAction] = useState('')
+  // Free-text filter: wait for a pause in typing instead of querying on every keystroke
+  const debouncedEntityType = useDebouncedValue(entityType, 400)
 
   const { data, isLoading, isError } = useGetAuditLogsQuery({
-    entityType: entityType || undefined,
+    entityType: debouncedEntityType || undefined,
     action: action || undefined,
     page,
     pageSize: PAGE_SIZE,

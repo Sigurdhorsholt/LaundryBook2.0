@@ -10,6 +10,7 @@ export interface PropertyMemberDto {
   role: UserRole
   isActive: boolean
   joinedAt: string
+  upcomingBookingCount: number
 }
 
 export interface InviteByEmailRequest {
@@ -32,6 +33,12 @@ export interface PendingInviteDto {
   expiresAt: string
 }
 
+export interface OpenInviteLinkDto {
+  token: string
+  createdAt: string   // ISO datetime (UTC)
+  expiresAt: string   // ISO datetime (UTC)
+}
+
 export interface UpdateMemberRequest {
   apartmentNumber: string | null
   role: UserRole
@@ -42,7 +49,7 @@ export const usersApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
     getPropertyMembers: builder.query<PropertyMemberDto[], string>({
       query: (propertyId) => `/api/properties/${propertyId}/members`,
-      providesTags: (_result, _err, propertyId) => [{ type: 'Auth', id: `members-${propertyId}` }],
+      providesTags: (_result, _err, propertyId) => [{ type: 'Member', id: propertyId }],
     }),
 
     inviteByEmail: builder.mutation<{ email: string }, { propertyId: string } & InviteByEmailRequest>({
@@ -51,30 +58,36 @@ export const usersApi = baseApi.injectEndpoints({
         method: 'POST',
         body,
       }),
-      invalidatesTags: (_result, _err, { propertyId }) => [{ type: 'Auth', id: `members-${propertyId}` }],
+      invalidatesTags: (_result, _err, { propertyId }) => [
+        { type: 'Member', id: propertyId },
+        { type: 'PendingInvite', id: propertyId },
+      ],
     }),
 
-    updateMember: builder.mutation<void, { propertyId: string; userId: string } & UpdateMemberRequest>({
+    updateMember: builder.mutation<{ cancelledBookings: number }, { propertyId: string; userId: string } & UpdateMemberRequest>({
       query: ({ propertyId, userId, ...body }) => ({
         url: `/api/properties/${propertyId}/members/${userId}`,
         method: 'PUT',
         body,
       }),
+      // Deactivation cancels the member's bookings, which can be in any room
       invalidatesTags: (_result, _err, { propertyId, userId }) => [
-        { type: 'Auth', id: `members-${propertyId}` },
+        { type: 'Member', id: propertyId },
         { type: 'User', id: userId },
+        'Booking',
       ],
     }),
 
-    removeMember: builder.mutation<void, { propertyId: string; userId: string }>({
+    removeMember: builder.mutation<{ cancelledBookings: number }, { propertyId: string; userId: string }>({
       query: ({ propertyId, userId }) => ({
         url: `/api/properties/${propertyId}/members/${userId}`,
         method: 'DELETE',
       }),
       invalidatesTags: (_result, _err, { propertyId, userId }) => [
-        { type: 'Auth', id: `members-${propertyId}` },
+        { type: 'Member', id: propertyId },
         { type: 'User', id: userId },
         { type: 'User', id: 'LIST' },
+        'Booking',
       ],
     }),
 
@@ -91,11 +104,27 @@ export const usersApi = baseApi.injectEndpoints({
         method: 'POST',
         body,
       }),
+      // A new shared link revokes the previous one server-side
+      invalidatesTags: (_result, _err, { propertyId, isMultiUse }) =>
+        isMultiUse ? [{ type: 'InviteLink', id: propertyId }] : [],
+    }),
+
+    getOpenInviteLink: builder.query<OpenInviteLinkDto | null, string>({
+      query: (propertyId) => `/api/properties/${propertyId}/members/invite-link`,
+      providesTags: (_result, _err, propertyId) => [{ type: 'InviteLink', id: propertyId }],
+    }),
+
+    revokeOpenInviteLink: builder.mutation<{ revoked: number }, string>({
+      query: (propertyId) => ({
+        url: `/api/properties/${propertyId}/members/invite-link`,
+        method: 'DELETE',
+      }),
+      invalidatesTags: (_result, _err, propertyId) => [{ type: 'InviteLink', id: propertyId }],
     }),
 
     getPendingInvites: builder.query<PendingInviteDto[], string>({
       query: (propertyId) => `/api/properties/${propertyId}/members/pending`,
-      providesTags: (_result, _err, propertyId) => [{ type: 'Auth', id: `pending-${propertyId}` }],
+      providesTags: (_result, _err, propertyId) => [{ type: 'PendingInvite', id: propertyId }],
     }),
 
     resendInvite: builder.mutation<void, { propertyId: string; inviteId: string }>({
@@ -103,7 +132,7 @@ export const usersApi = baseApi.injectEndpoints({
         url: `/api/properties/${propertyId}/members/pending/${inviteId}/resend`,
         method: 'POST',
       }),
-      invalidatesTags: (_result, _err, { propertyId }) => [{ type: 'Auth', id: `pending-${propertyId}` }],
+      invalidatesTags: (_result, _err, { propertyId }) => [{ type: 'PendingInvite', id: propertyId }],
     }),
 
     deleteInvite: builder.mutation<void, { propertyId: string; inviteId: string }>({
@@ -111,7 +140,7 @@ export const usersApi = baseApi.injectEndpoints({
         url: `/api/properties/${propertyId}/members/pending/${inviteId}`,
         method: 'DELETE',
       }),
-      invalidatesTags: (_result, _err, { propertyId }) => [{ type: 'Auth', id: `pending-${propertyId}` }],
+      invalidatesTags: (_result, _err, { propertyId }) => [{ type: 'PendingInvite', id: propertyId }],
     }),
   }),
 })
@@ -123,6 +152,8 @@ export const {
   useRemoveMemberMutation,
   useForcePasswordResetMutation,
   useCreateInviteTokenMutation,
+  useGetOpenInviteLinkQuery,
+  useRevokeOpenInviteLinkMutation,
   useGetPendingInvitesQuery,
   useResendInviteMutation,
   useDeleteInviteMutation,

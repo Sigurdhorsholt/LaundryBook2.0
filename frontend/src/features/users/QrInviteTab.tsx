@@ -2,7 +2,8 @@ import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { QRCodeSVG } from 'qrcode.react'
 import { UserRole } from '../auth/authApi'
-import { useCreateInviteTokenMutation } from './usersApi'
+import { useCreateInviteTokenMutation, useGetOpenInviteLinkQuery } from './usersApi'
+import { OpenInviteLinkStatus } from './OpenInviteLinkStatus'
 import { useRoleOptions } from '../../shared/constants'
 import { colors } from '../../shared/theme'
 import { extractErrorMessage } from '../../shared/utils/errorUtils'
@@ -28,6 +29,7 @@ export function QrInviteTab({ propertyId, roleOptions }: QrInviteTabProps) {
   const [error, setError] = useState<string | null>(null)
 
   const [createToken, { isLoading }] = useCreateInviteTokenMutation()
+  const { data: openLink } = useGetOpenInviteLinkQuery(propertyId, { skip: mode !== 'mass' })
 
   const joinUrl = token ? `${window.location.origin}/join?token=${token}` : null
 
@@ -45,7 +47,8 @@ export function QrInviteTab({ propertyId, roleOptions }: QrInviteTabProps) {
     try {
       const result = await createToken({
         propertyId,
-        role,
+        // A shared link is public once printed, so it only ever grants resident access (enforced server-side)
+        role: mode === 'mass' ? UserRole.Resident : role,
         apartmentNumber: mode === 'specific' ? (apartment || null) : null,
         isMultiUse,
       }).unwrap()
@@ -108,19 +111,25 @@ export function QrInviteTab({ propertyId, roleOptions }: QrInviteTabProps) {
 
       <p style={{ color: colors.textSecondary, fontSize: '0.85rem', margin: 0 }}>{modeDescription}</p>
 
+      {mode === 'mass' && openLink && (
+        <OpenInviteLinkStatus propertyId={propertyId} link={openLink} onShowQr={setToken} />
+      )}
+
       <div className="d-flex gap-3">
-        <div style={{ flex: 1 }}>
-          <FormLabel>{t('users.role')}</FormLabel>
-          <select
-            className="form-select"
-            value={role}
-            onChange={(e) => setRole(Number(e.target.value) as UserRole)}
-          >
-            {options.map((o) => (
-              <option key={o.value} value={o.value}>{o.label}</option>
-            ))}
-          </select>
-        </div>
+        {mode === 'specific' && (
+          <div style={{ flex: 1 }}>
+            <FormLabel>{t('users.role')}</FormLabel>
+            <select
+              className="form-select"
+              value={role}
+              onChange={(e) => setRole(Number(e.target.value) as UserRole)}
+            >
+              {options.map((o) => (
+                <option key={o.value} value={o.value}>{o.label}</option>
+              ))}
+            </select>
+          </div>
+        )}
 
         {mode === 'specific' && (
           <div style={{ flex: 1 }}>
@@ -136,6 +145,10 @@ export function QrInviteTab({ propertyId, roleOptions }: QrInviteTabProps) {
           </div>
         )}
       </div>
+
+      {mode === 'mass' && openLink && (
+        <p style={{ color: colors.textMuted, fontSize: '0.8rem', margin: 0 }}>{t('users.newLinkReplacesOld')}</p>
+      )}
 
       {error && <p style={{ color: colors.dangerText, margin: 0, fontSize: '0.85rem' }}>{error}</p>}
 

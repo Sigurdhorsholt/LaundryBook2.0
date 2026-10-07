@@ -47,7 +47,9 @@ public class AuthController(IMediator mediator, IWebHostEnvironment env) : Contr
     [HttpPost("logout")]
     public IActionResult Logout()
     {
-        Response.Cookies.Delete("access_token");
+        // Must match how the cookie was set: a deletion without SameSite=None is blocked on the
+        // cross-site response in production, and the session would survive "Log ud"
+        Response.Cookies.Delete("access_token", AuthCookieOptions());
         return NoContent();
     }
 
@@ -76,6 +78,24 @@ public class AuthController(IMediator mediator, IWebHostEnvironment env) : Contr
     }
 
     [EnableRateLimiting("email")]
+    [Authorize]
+    [HttpGet("me/export")]
+    public async Task<IActionResult> ExportMyData(CancellationToken ct)
+    {
+        var data = await mediator.Send(new ExportMyDataQuery(), ct);
+        return Ok(data);
+    }
+
+    [Authorize]
+    [HttpDelete("me")]
+    public async Task<IActionResult> DeleteMe(CancellationToken ct)
+    {
+        await mediator.Send(new DeleteMyAccountCommand(), ct);
+        // Same options as when set, or the cross-site deletion is ignored in production
+        Response.Cookies.Delete("access_token", AuthCookieOptions());
+        return NoContent();
+    }
+
     [HttpPost("forgot-password")]
     public async Task<IActionResult> ForgotPassword([FromBody] ForgotPasswordRequest request, CancellationToken ct)
     {
@@ -94,10 +114,20 @@ public class AuthController(IMediator mediator, IWebHostEnvironment env) : Contr
 
         return Ok(new { result.UserId });
     }
+
+    [Authorize]
+    [EnableRateLimiting("auth")]
+    [HttpPost("accept-invite")]
+    public async Task<IActionResult> AcceptInvite([FromBody] AcceptInviteRequest request, CancellationToken ct)
+    {
+        await mediator.Send(new AcceptInviteCommand(request.InviteToken, request.ApartmentNumber, request.AcceptedTerms), ct);
+        return NoContent();
+    }
 }
 
 public record LoginRequest(string IdToken);
 public record RegisterRequest(string IdToken, string FirstName, string LastName, string PropertyName, string PropertyAddress, bool AcceptedTerms);
 public record UpdateMeRequest(string FirstName, string LastName);
 public record ForgotPasswordRequest(string Email);
+public record AcceptInviteRequest(string InviteToken, string? ApartmentNumber, bool AcceptedTerms);
 public record RedeemInviteRequest(string IdToken, string InviteToken, string? ApartmentNumber, string FirstName, string LastName, bool AcceptedTerms);

@@ -14,19 +14,17 @@ public record PropertyDetailDto(
     string Name,
     string Address,
     ComplexSettingsDto Settings,
-    IReadOnlyList<MemberDto> Members);
+    int UpcomingBookingCount);
 
 public record ComplexSettingsDto(
     BookingMode BookingMode,
     int CancellationWindowMinutes,
     int MaxConcurrentBookingsPerUser,
     int BookingLookaheadDays,
-    BookingVisibility BookingVisibility);
-
-public record MemberDto(
-    Guid UserId,
-    string Email,
-    string FirstName,
-    string LastName,
-    UserRole Role,
-    string? ApartmentNumber);
+    BookingVisibility BookingVisibility)
+{
+    // A property created before settings existed has none; these are the defaults it books with
+    public static ComplexSettingsDto From(Domain.Entities.ComplexSettings? s) => s is null
+        ? new ComplexSettingsDto(BookingMode.BookSpecificMachine, 60, 2, 14, BookingVisibility.ApartmentOnly)
+        : new ComplexSettingsDto(s.BookingMode, s.CancellationWindowMinutes, s.MaxConcurrentBookingsPerUser, s.BookingLookaheadDays, s.BookingVisibility);
+}

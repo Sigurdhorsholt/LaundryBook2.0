@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { PublicLayout } from './PublicLayout'
+import { PageMeta } from '../../shared/PageMeta'
 import { PhotoPlaceholder } from './PhotoPlaceholder'
 import { colors } from '../../shared/theme'
 import { IconCheck, IconClock, IconUsers, IconSettings } from '../../shared/icons'
@@ -25,6 +26,7 @@ export function FeaturesPage() {
   const tx = t as (key: string) => string
   return (
     <PublicLayout>
+      <PageMeta page="features" />
 
       <section style={{ backgroundColor: '#f7f3ea' }}>
         <div className="container-xl px-4" style={{ paddingTop: '4rem', paddingBottom: '4rem' }}>
@@ -69,7 +71,7 @@ export function FeaturesPage() {
         </div>
       </section>
 
-      <section style={{ backgroundColor: colors.bgPage }}>
+      <section style={{ backgroundColor: colors.bgSubtle }}>
         <div className="container-xl px-4" style={{ paddingTop: '4rem', paddingBottom: '4rem' }}>
           <h2 className="fw-bold mb-5 text-center" style={{ fontSize: 'clamp(1.6rem, 3vw, 2rem)', color: colors.textPrimary, letterSpacing: '-0.3px' }}>
             {t('public.features.smallSectionTitle')}

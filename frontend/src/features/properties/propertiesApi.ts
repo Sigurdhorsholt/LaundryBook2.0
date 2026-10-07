@@ -1,4 +1,5 @@
 import { baseApi } from '../../app/baseApi'
+import type { MachineType } from '../laundry/laundryApi'
 
 export enum BookingMode {
   BookEntireRoom = 0,
@@ -32,7 +33,31 @@ export interface PropertyDetailDto {
   name: string
   address: string
   settings: ComplexSettingsDto
-  members: unknown[]
+  upcomingBookingCount: number
+}
+
+export interface BoardMemberDto {
+  name: string
+  email: string
+}
+
+export interface PropertyRoomInfoDto {
+  id: string
+  name: string
+  description: string | null
+  machines: { name: string; machineType: MachineType }[]
+}
+
+// Everything a resident needs to know about their building, from one request
+export interface PropertyInfoDto {
+  id: string
+  name: string
+  address: string
+  board: BoardMemberDto[]
+  rooms: PropertyRoomInfoDto[]
+  settings: ComplexSettingsDto
+  houseRules: string | null
+  houseRulesUpdatedAt: string | null   // ISO datetime (UTC)
 }
 
 export interface UpdateComplexSettingsRequest {
@@ -64,6 +89,26 @@ export const propertiesApi = baseApi.injectEndpoints({
       providesTags: (_result, _err, id) => [{ type: 'Property', id }],
     }),
 
+    getPropertyInfo: build.query<PropertyInfoDto, string>({
+      query: (id) => `/api/properties/${id}/info`,
+      // Admin edits to rooms, machines and settings invalidate these, so residents never see stale info
+      providesTags: (result, _err, id) => [
+        { type: 'Property', id },
+        { type: 'LaundryRoom', id },
+        { type: 'Member', id },
+        ...(result?.rooms.map((r) => ({ type: 'LaundryMachine' as const, id: r.id })) ?? []),
+      ],
+    }),
+
+    updateHouseRules: build.mutation<void, { propertyId: string; text: string }>({
+      query: ({ propertyId, text }) => ({
+        url: `/api/properties/${propertyId}/house-rules`,
+        method: 'PUT',
+        body: { text },
+      }),
+      invalidatesTags: (_result, _err, { propertyId }) => [{ type: 'Property', id: propertyId }],
+    }),
+
     updateComplexSettings: build.mutation<void, { propertyId: string } & UpdateComplexSettingsRequest>({
       query: ({ propertyId, ...body }) => ({
         url: `/api/properties/${propertyId}/settings`,
@@ -81,5 +126,7 @@ export const {
   useGetMyPropertiesQuery,
   useCreatePropertyMutation,
   useGetPropertyQuery,
+  useGetPropertyInfoQuery,
+  useUpdateHouseRulesMutation,
   useUpdateComplexSettingsMutation,
 } = propertiesApi

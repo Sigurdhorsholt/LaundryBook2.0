@@ -1,4 +1,4 @@
-import { useState, useMemo, useEffect } from 'react'
+import { useState, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import type { AdminBookingDto, AdminRoomSummaryDto } from './laundryApi'
 import { useGetTimeSlotsQuery } from './laundryApi'
@@ -13,18 +13,23 @@ interface Props {
   today: string
   weekStart: string       // earliest selectable week (current week Monday)
   maxWeekStart: string    // latest selectable week Monday
-  onCancel: (booking: AdminBookingDto) => void
+  roomId: string
+  onSelectRoom: (roomId: string) => void
+  // Set on wide screens, where a click selects the booking for the side panel instead of opening the cancel dialog
+  selectedBookingId?: string | null
+  onPick: (booking: AdminBookingDto) => void
 }
 
-export function AdminBookingsCalendar({ rooms, bookings, today, weekStart, maxWeekStart, onCancel }: Props) {
+export function AdminBookingsCalendar({ rooms, bookings, today, weekStart, maxWeekStart, roomId, onSelectRoom, selectedBookingId, onPick }: Props) {
   const { t } = useTranslation()
-  const [selectedRoomId, setSelectedRoomId] = useState<string>(rooms[0]?.id ?? '')
   const [viewWeekStart, setViewWeekStart] = useState<string>(weekStart)
-
-  // When the loaded period changes (batch paged), snap the week view back to its start.
-  useEffect(() => setViewWeekStart(weekStart), [weekStart])
-
-  const roomId = rooms.some((r) => r.id === selectedRoomId) ? selectedRoomId : (rooms[0]?.id ?? '')
+  // When the loaded period changes (batch paged), snap the week view back to its start. Adjusted during
+  // render rather than in an effect so the old week is never painted for the new period.
+  const [periodStart, setPeriodStart] = useState(weekStart)
+  if (periodStart !== weekStart) {
+    setPeriodStart(weekStart)
+    setViewWeekStart(weekStart)
+  }
 
   const { data: slots = [], isLoading } = useGetTimeSlotsQuery(roomId, { skip: !roomId })
   const activeSlots = useMemo(
@@ -77,7 +82,8 @@ export function AdminBookingsCalendar({ rooms, bookings, today, weekStart, maxWe
                   color: active ? '#ffffff' : colors.textSecondary,
                   border: `1px solid ${active ? colors.primary : colors.borderStrong}`,
                 }}
-                onClick={() => setSelectedRoomId(room.id)}
+                aria-pressed={active}
+                onClick={() => onSelectRoom(room.id)}
               >
                 {room.name}
               </button>
@@ -137,7 +143,8 @@ export function AdminBookingsCalendar({ rooms, bookings, today, weekStart, maxWe
                     key={date}
                     bookings={bookingsByCell.get(`${date}|${slot.id}`) ?? []}
                     past={isPast(date, slot.startTime, today)}
-                    onCancel={onCancel}
+                    selectedBookingId={selectedBookingId}
+                    onPick={onPick}
                   />
                 ))}
               </div>
@@ -175,7 +182,12 @@ function CalendarHeader({ days, today }: { days: string[]; today: string }) {
   )
 }
 
-function Cell({ bookings, past, onCancel }: { bookings: AdminBookingDto[]; past: boolean; onCancel: (b: AdminBookingDto) => void }) {
+function Cell({ bookings, past, selectedBookingId, onPick }: {
+  bookings: AdminBookingDto[]
+  past: boolean
+  selectedBookingId?: string | null
+  onPick: (b: AdminBookingDto) => void
+}) {
   const { t } = useTranslation()
   const base: React.CSSProperties = {
     padding: '6px 4px',
@@ -193,18 +205,20 @@ function Cell({ bookings, past, onCancel }: { bookings: AdminBookingDto[]; past:
       <div style={{ ...base, opacity: past ? 0.5 : 1 }}>
         {bookings.map((booking) => {
           const label = booking.apartmentNumber ? t('laundry.apartmentShort', { number: booking.apartmentNumber }) : booking.residentName
+          const selected = booking.id === selectedBookingId
           const chipStyle: React.CSSProperties = {
             display: 'block', width: '100%',
             fontSize: '0.72rem', fontWeight: 600, lineHeight: 1.2,
-            color: colors.primary, backgroundColor: colors.primaryLight,
-            border: `1px solid ${colors.primaryBorder}`, borderRadius: 6,
+            color: selected ? colors.bgCard : colors.primaryMutedText,
+            backgroundColor: selected ? colors.primary : colors.primaryLight,
+            border: `1px solid ${selected ? colors.primary : colors.primaryBorder}`, borderRadius: 6,
             padding: '4px 6px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis',
           }
           const content = (
             <>
               {label}
               {booking.machineName && (
-                <span style={{ display: 'block', fontWeight: 400, fontSize: '0.66rem', color: colors.textSecondary, overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                <span style={{ display: 'block', fontWeight: 400, fontSize: '0.66rem', color: selected ? colors.bgCard : colors.textSecondary, overflow: 'hidden', textOverflow: 'ellipsis' }}>
                   {booking.machineName}
                 </span>
               )}
@@ -221,8 +235,11 @@ function Cell({ bookings, past, onCancel }: { bookings: AdminBookingDto[]; past:
             <button
               key={booking.id}
               className="btn p-0"
-              title={t('laundry.calendar.bookingCellTitle', { name: booking.residentName })}
-              onClick={() => onCancel(booking)}
+              title={selectedBookingId === undefined
+                ? t('laundry.calendar.bookingCellTitle', { name: booking.residentName })
+                : t('laundry.calendar.bookingCellSelect', { name: booking.residentName })}
+              aria-pressed={selectedBookingId === undefined ? undefined : selected}
+              onClick={() => onPick(booking)}
               style={chipStyle}
             >
               {content}

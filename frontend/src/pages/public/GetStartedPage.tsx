@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { PublicLayout } from './PublicLayout'
+import { PageMeta } from '../../shared/PageMeta'
 import { GetStartedSteps } from './GetStartedSteps'
 import { useModal } from '../../shared/modals/useModal'
 import { colors } from '../../shared/theme'
@@ -14,6 +15,7 @@ export function GetStartedPage() {
 
   return (
     <PublicLayout>
+      <PageMeta page="getStarted" />
 
       {/* Hero */}
       <section style={{ backgroundColor: '#f7f3ea' }}>

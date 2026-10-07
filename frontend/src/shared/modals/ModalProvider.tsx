@@ -1,16 +1,19 @@
-import { useEffect } from 'react'
+import { lazy, Suspense, useEffect } from 'react'
 import { useLocation } from 'react-router-dom'
 import { useAppSelector } from '../../app/hooks'
 import { useModal } from './useModal'
-import { LoginModal } from '../../features/auth/LoginModal'
-import { InviteUserModal } from '../../features/users/InviteUserModal'
-import { EditMemberModal } from '../../features/users/EditMemberModal'
+
+// Lazy: the login modal pulls in Firebase and the admin modals pull in QR code generation;
+// neither belongs in the bundle every visitor downloads
+const LoginModal = lazy(() => import('../../features/auth/LoginModal').then((m) => ({ default: m.LoginModal })))
+const InviteUserModal = lazy(() => import('../../features/users/InviteUserModal').then((m) => ({ default: m.InviteUserModal })))
+const EditMemberModal = lazy(() => import('../../features/users/EditMemberModal').then((m) => ({ default: m.EditMemberModal })))
 import type { PropertyMemberDto } from '../../features/users/usersApi'
 
 // ── Modal registry — add new modals here ─────────────────────────────────────
 
 type ModalRegistry = {
-  login: React.ComponentType<{ onClose: () => void }>
+  login: React.ComponentType<{ onClose: () => void; redirectTo?: string }>
   inviteUser: React.ComponentType<{ propertyId: string; onClose: () => void }>
   editMember: React.ComponentType<{ propertyId: string; member: PropertyMemberDto; onClose: () => void }>
 }
@@ -41,5 +44,9 @@ export function ModalProvider() {
   const Component = MODALS[name] as React.ComponentType<{ onClose: () => void } & Record<string, unknown>>
   if (!Component) return null
 
-  return <Component onClose={closeModal} {...(modal.props as Record<string, unknown>)} />
+  return (
+    <Suspense fallback={null}>
+      <Component onClose={closeModal} {...(modal.props as Record<string, unknown>)} />
+    </Suspense>
+  )
 }

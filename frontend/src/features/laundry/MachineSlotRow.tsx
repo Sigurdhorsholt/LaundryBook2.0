@@ -1,12 +1,13 @@
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { MachineType, type LaundryMachineDto, type TimeSlotTemplateDto } from './laundryApi'
-import type { GridBooking } from './types'
+import type { GridBooking, PendingAction } from './types'
 import { formatTime } from '../../shared/utils/dateUtils'
 import { colors } from '../../shared/theme'
 import { badge } from './slotBadge'
-import { MACHINE_TYPE_LABEL } from './constants'
+import { MACHINE_TYPE_LABEL, TAP_TARGET_PX } from './constants'
 import { IconClock, IconChevronDown, IconWasher, IconDryer } from '../../shared/icons'
+import { InlineConfirmPanel } from './InlineConfirm'
 
 interface Props {
   slot: TimeSlotTemplateDto
@@ -17,6 +18,12 @@ interface Props {
   maxReached: boolean
   onBook: (machineId: string) => void
   onCancel: (machineId: string) => void
+  pending?: PendingAction | null   // armed inline confirm for this slot, matched by the grid
+  confirmLoading?: boolean
+  confirmError?: string | null
+  onConfirm?: () => void
+  onDismissConfirm?: () => void
+  usage?: { used: number; max: number }
 }
 
 function MachineIcon({ type, color }: { type: MachineType; color: string }) {
@@ -25,7 +32,10 @@ function MachineIcon({ type, color }: { type: MachineType; color: string }) {
     : <IconWasher size={18} color={color} strokeWidth={1.8} />
 }
 
-export function MachineSlotRow({ slot, machines, bookings, past, locked, maxReached, onBook, onCancel }: Props) {
+export function MachineSlotRow({
+  slot, machines, bookings, past, locked, maxReached, onBook, onCancel,
+  pending, confirmLoading, confirmError, onConfirm, onDismissConfirm, usage,
+}: Props) {
   const { t } = useTranslation()
   const [expanded, setExpanded] = useState(false)
 
@@ -36,14 +46,20 @@ export function MachineSlotRow({ slot, machines, bookings, past, locked, maxReac
   const freeCount = machines.filter((m) => bookingFor(m.id) === null).length
   const ownCount = bookings.filter((b) => b.isOwn).length
   const canExpand = !past && !locked
+  const panelId = `machines-${slot.id}`
 
   return (
     <div style={{ borderBottom: `1px solid ${colors.borderRow}` }}>
-      <div
+      <button
+        type="button"
         onClick={canExpand ? () => setExpanded((x) => !x) : undefined}
+        disabled={!canExpand}
+        aria-expanded={canExpand ? expanded : undefined}
+        aria-controls={canExpand ? panelId : undefined}
         style={{
-          display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-          gap: 12, padding: '11px 20px', backgroundColor: colors.bgCard,
+          display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%',
+          gap: 12, padding: '11px 20px', minHeight: TAP_TARGET_PX + 8, backgroundColor: colors.bgCard,
+          border: 'none', textAlign: 'left',
           opacity: dimmed ? 0.45 : 1, cursor: canExpand ? 'pointer' : 'default', userSelect: 'none',
         }}
       >
@@ -61,29 +77,39 @@ export function MachineSlotRow({ slot, machines, bookings, past, locked, maxReac
               <span style={badge(freeCount === 0 ? colors.slotTakenBg : colors.slotFreeBg, freeCount === 0 ? colors.slotTakenText : colors.slotFreeText)}>
                 {freeCount === 0 ? t('laundry.slot.fullyBooked') : t('laundry.slot.freeCount', { free: freeCount, total: machines.length })}
               </span>
-              <span style={{ display: 'inline-flex', transform: expanded ? 'rotate(180deg)' : 'none', transition: 'transform 0.15s' }}>
+              <span aria-hidden="true" style={{ display: 'inline-flex', transform: expanded ? 'rotate(180deg)' : 'none', transition: 'transform 0.15s' }}>
                 <IconChevronDown size={14} color={colors.textMuted} strokeWidth={1.8} />
               </span>
             </>
           )}
         </span>
-      </div>
+      </button>
 
       {expanded && canExpand && (
-        <div style={{ backgroundColor: colors.bgPage, padding: '8px 12px 10px' }}>
+        <div id={panelId} style={{ backgroundColor: colors.bgSubtle, padding: '8px 12px 10px' }}>
           {machines.map((machine) => {
             const booking = bookingFor(machine.id)
             const blocked = maxReached && booking === null
             const chipBg = booking?.isOwn ? colors.successBg : booking ? colors.slotTakenBg : colors.primaryLight
             const chipColor = booking?.isOwn ? colors.successText : booking ? colors.slotTakenText : colors.primary
 
+            const machinePending = pending?.machineId === machine.id && onConfirm && onDismissConfirm ? pending : null
+
             let action: React.ReactNode
             if (booking?.isOwn) {
               action = (
                 <span className="d-flex align-items-center" style={{ gap: 8 }}>
                   <span style={badge(colors.successBg, colors.successText)}>{t('laundry.slot.myBooking')}</span>
-                  {booking.canCancel ? (
-                    <button className="btn btn-sm btn-outline-secondary" style={{ fontSize: '0.75rem', padding: '2px 12px', borderRadius: 20 }} onClick={() => onCancel(machine.id)}>{t('laundry.actions.cancelBooking')}</button>
+                  {machinePending?.type === 'cancel' ? null : booking.canCancel ? (
+                    <button
+                      type="button"
+                      className="btn btn-sm btn-outline-secondary"
+                      style={{ fontSize: '0.78rem', padding: '0 14px', borderRadius: 20, minHeight: TAP_TARGET_PX }}
+                      aria-label={t('laundry.actions.cancelMachine', { machine: machine.name, time: timeLabel })}
+                      onClick={() => onCancel(machine.id)}
+                    >
+                      {t('laundry.actions.cancelBooking')}
+                    </button>
                   ) : (
                     <span style={{ fontSize: '0.72rem', color: colors.textMuted }}>{t('laundry.slot.deadlinePassed')}</span>
                   )}
@@ -93,34 +119,57 @@ export function MachineSlotRow({ slot, machines, bookings, past, locked, maxReac
               action = <span style={badge(colors.slotTakenBg, colors.slotTakenText)}>{booking.label}</span>
             } else if (blocked) {
               action = <span style={badge(colors.slotWarningBg, colors.slotWarningText)}>{t('laundry.slot.limitReached')}</span>
+            } else if (machinePending?.type === 'book') {
+              action = null
             } else {
               action = (
-                <button className="btn btn-sm btn-primary fw-semibold" style={{ fontSize: '0.78rem', borderRadius: 20, padding: '4px 18px' }} onClick={() => onBook(machine.id)}>{t('laundry.actions.book')}</button>
+                <button
+                  type="button"
+                  className="btn btn-sm btn-primary fw-semibold"
+                  style={{ fontSize: '0.8rem', borderRadius: 20, padding: '0 18px', minHeight: TAP_TARGET_PX }}
+                  aria-label={t('laundry.actions.bookMachine', { machine: machine.name, time: timeLabel })}
+                  onClick={() => onBook(machine.id)}
+                >
+                  {t('laundry.actions.book')}
+                </button>
               )
             }
 
             return (
               <div
                 key={machine.id}
-                className="d-flex align-items-center justify-content-between"
                 style={{
-                  gap: 12, padding: '9px 12px', marginTop: 6, borderRadius: 10,
-                  backgroundColor: colors.bgCard, border: `1px solid ${colors.borderDefault}`,
+                  marginTop: 6, borderRadius: 10,
+                  backgroundColor: machinePending?.type === 'book' ? colors.primaryLighter : colors.bgCard,
+                  border: `1px solid ${machinePending?.type === 'book' ? colors.primaryBorder : colors.borderDefault}`,
                 }}
               >
-                <span className="d-flex align-items-center" style={{ gap: 10, minWidth: 0 }}>
-                  <span style={{
-                    display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
-                    width: 34, height: 34, borderRadius: 9, backgroundColor: chipBg, flexShrink: 0,
-                  }}>
-                    <MachineIcon type={machine.machineType} color={chipColor} />
+                <div className="d-flex align-items-center justify-content-between" style={{ gap: 12, padding: '9px 12px' }}>
+                  <span className="d-flex align-items-center" style={{ gap: 10, minWidth: 0 }}>
+                    <span aria-hidden="true" style={{
+                      display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
+                      width: 34, height: 34, borderRadius: 9, backgroundColor: chipBg, flexShrink: 0,
+                    }}>
+                      <MachineIcon type={machine.machineType} color={chipColor} />
+                    </span>
+                    <span style={{ display: 'flex', flexDirection: 'column', minWidth: 0 }}>
+                      <span style={{ fontSize: '0.88rem', fontWeight: 600, color: colors.textPrimary, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{machine.name}</span>
+                      <span style={{ fontSize: '0.72rem', color: colors.textMuted }}>{(t as (k: string) => string)(MACHINE_TYPE_LABEL[machine.machineType])}</span>
+                    </span>
                   </span>
-                  <span style={{ display: 'flex', flexDirection: 'column', minWidth: 0 }}>
-                    <span style={{ fontSize: '0.88rem', fontWeight: 600, color: colors.textPrimary, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{machine.name}</span>
-                    <span style={{ fontSize: '0.72rem', color: colors.textMuted }}>{(t as (k: string) => string)(MACHINE_TYPE_LABEL[machine.machineType])}</span>
-                  </span>
-                </span>
-                {action}
+                  {action}
+                </div>
+                {machinePending && (
+                  <InlineConfirmPanel
+                    pending={machinePending}
+                    loading={!!confirmLoading}
+                    error={confirmError ?? null}
+                    usage={usage}
+                    onConfirm={onConfirm!}
+                    onDismiss={onDismissConfirm!}
+                    style={{ padding: '0 12px 12px' }}
+                  />
+                )}
               </div>
             )
           })}

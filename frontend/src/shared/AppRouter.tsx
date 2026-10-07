@@ -1,12 +1,13 @@
-import { Routes, Route } from 'react-router-dom'
+import { Routes, Route, useParams } from 'react-router-dom'
 import { routes } from '../app/routes'
 import { isEnabled } from '../config/features'
 import { useMeQuery } from '../features/auth/authApi'
-import { getHighestRole } from './roleUtils'
+import { hasRoleFor } from './roleUtils'
 import { ProtectedRoute } from './ProtectedRoute'
 import { AppLayout } from './AppLayout'
 import { AdminLayout } from './AdminLayout'
 import { NotFoundPage } from '../pages/NotFoundPage'
+import { PublicLayout } from '../pages/public/PublicLayout'
 import type { AppRoute } from '../app/routes'
 
 /**
@@ -15,15 +16,14 @@ import type { AppRoute } from '../app/routes'
  */
 function RouteGuard({ route }: { route: AppRoute }) {
   const { data: user } = useMeQuery()
+  const { propertyId } = useParams()
 
   if (route.feature && !isEnabled(route.feature)) {
     return <NotFoundPage />
   }
 
-  if (route.minRole !== undefined && user) {
-    if (getHighestRole(user) < route.minRole) {
-      return <NotFoundPage />
-    }
+  if (route.minRole !== undefined && user && !hasRoleFor(user, route.minRole, propertyId)) {
+    return <NotFoundPage />
   }
 
   return <route.component />
@@ -96,7 +96,7 @@ export function AppRouter() {
       )}
 
       {/* 6. Catch-all — unknown paths get a 404, no redirect loop */}
-      <Route path="*" element={<NotFoundPage />} />
+      <Route path="*" element={<PublicLayout><NotFoundPage /></PublicLayout>} />
 
     </Routes>
   )
