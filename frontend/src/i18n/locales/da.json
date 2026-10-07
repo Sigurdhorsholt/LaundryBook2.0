@@ -460,7 +460,9 @@
       "promptCancelWithMachine": "Vil du aflyse din booking kl. <s>{{slotTime}}</s> på <s>{{machineName}}</s> den <s>{{dateText}}</s>?",
       "warningMinutes": "Der er kun {{count}} minutter til din booking starter.",
       "warningHours_one": "Der er {{count}} time til din booking starter.",
-      "warningHours_other": "Der er {{count}} timer til din booking starter."
+      "warningHours_other": "Der er {{count}} timer til din booking starter.",
+      "pickMachine": "Vælg en maskine:",
+      "bookOn": "Book {{machine}}"
     },
     "stats": {
       "bookingsInPeriod": "Bookinger i perioden",
@@ -517,6 +519,34 @@
     },
     "upcoming": {
       "title": "Mine kommende bookinger"
+    },
+    "week": {
+      "caption": "Ugens vasketider",
+      "time": "Tid",
+      "freeCount_one": "{{count}} ledig",
+      "freeCount_other": "{{count}} ledige",
+      "notOpen": "Ikke åben endnu",
+      "yours": "Din booking"
+    },
+    "next": {
+      "title": "Din næste booking"
+    },
+    "mine": {
+      "title": "Mine bookinger",
+      "used": "{{used}} af {{max}} brugt",
+      "empty": "Du har ingen kommende bookinger.",
+      "countsHint": "En booking tæller med til og med den dag, den ligger på."
+    },
+    "room": {
+      "machinesTitle": "Maskiner",
+      "rulesTitle": "Booking",
+      "lookahead_one": "Du kan booke op til {{count}} dag frem.",
+      "lookahead_other": "Du kan booke op til {{count}} dage frem.",
+      "maxBookings_one": "Du kan have {{count}} booking ad gangen.",
+      "maxBookings_other": "Du kan have {{count}} bookinger ad gangen.",
+      "cancelUntilStart": "Du kan aflyse, indtil tiden starter.",
+      "cancelHours_one": "Du kan aflyse indtil {{count}} time før start.",
+      "cancelHours_other": "Du kan aflyse indtil {{count}} timer før start."
     },
     "template": {
       "standard": "Standard",

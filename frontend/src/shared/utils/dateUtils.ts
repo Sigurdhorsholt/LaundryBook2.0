@@ -104,6 +104,13 @@ export function formatDateFull(dateStr: string): string {
   return `${dayName} ${d.getDate()}${sep} ${MONTH_SHORT[lang]?.[d.getMonth()] ?? ''}`
 }
 
+export function formatDayMonth(dateStr: string): string {
+  const parts = dateStr.split('-').map(Number)
+  const lang = activeLang()
+  const sep = lang === 'en' ? '' : '.'
+  return `${parts[2] ?? 1}${sep} ${MONTH_SHORT[lang]?.[(parts[1] ?? 1) - 1] ?? ''}`
+}
+
 /** "Uge 22" / "Week 22" */
 export function weekLabel(weekStart: string): string {
   const parts = weekStart.split('-').map(Number)

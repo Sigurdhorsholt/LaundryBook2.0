@@ -460,7 +460,9 @@
       "promptCancelWithMachine": "Do you want to cancel your booking at <s>{{slotTime}}</s> on <s>{{machineName}}</s> on <s>{{dateText}}</s>?",
       "warningMinutes": "There are only {{count}} minutes until your booking starts.",
       "warningHours_one": "There is {{count}} hour until your booking starts.",
-      "warningHours_other": "There are {{count}} hours until your booking starts."
+      "warningHours_other": "There are {{count}} hours until your booking starts.",
+      "pickMachine": "Choose a machine:",
+      "bookOn": "Book {{machine}}"
     },
     "stats": {
       "bookingsInPeriod": "Bookings in period",
@@ -517,6 +519,34 @@
     },
     "upcoming": {
       "title": "My upcoming bookings"
+    },
+    "week": {
+      "caption": "This week's laundry times",
+      "time": "Time",
+      "freeCount_one": "{{count}} free",
+      "freeCount_other": "{{count}} free",
+      "notOpen": "Not open yet",
+      "yours": "Your booking"
+    },
+    "next": {
+      "title": "Your next booking"
+    },
+    "mine": {
+      "title": "My bookings",
+      "used": "{{used}} of {{max}} used",
+      "empty": "You have no upcoming bookings.",
+      "countsHint": "A booking counts until the end of the day it is on."
+    },
+    "room": {
+      "machinesTitle": "Machines",
+      "rulesTitle": "Booking",
+      "lookahead_one": "You can book up to {{count}} day ahead.",
+      "lookahead_other": "You can book up to {{count}} days ahead.",
+      "maxBookings_one": "You can have {{count}} booking at a time.",
+      "maxBookings_other": "You can have {{count}} bookings at a time.",
+      "cancelUntilStart": "You can cancel until the time starts.",
+      "cancelHours_one": "You can cancel up to {{count}} hour before the start.",
+      "cancelHours_other": "You can cancel up to {{count}} hours before the start."
     },
     "template": {
       "standard": "Standard",

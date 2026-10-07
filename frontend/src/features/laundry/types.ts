@@ -1,9 +1,11 @@
+import type { BookingDto, LaundryMachineDto } from './laundryApi'
+
 export type AvailabilityState = 'free' | 'few' | 'full' | 'past'
 
 export type PendingAction = {
   type: 'book' | 'cancel'
-  // 'grid' actions confirm inline in the row; 'upcoming' actions use the modal
-  source: 'grid' | 'upcoming'
+  // 'grid' actions confirm inline in the row; 'week' and 'upcoming' actions use the modal
+  source: 'grid' | 'week' | 'upcoming'
   slotId: string
   date: string
   slotTime: string
@@ -11,6 +13,8 @@ export type PendingAction = {
   minutesUntil?: number
   machineId?: string
   machineName?: string
+  // Machine mode in the week grid: the modal lets the resident pick one of these
+  machineOptions?: { id: string; name: string }[]
 }
 
 /** A booking as seen from the active user's perspective, pre-computed by the parent. */
@@ -23,6 +27,14 @@ export interface GridBooking {
   machineId: string | null
   machineName: string | null
 }
+
+export type WeekCell =
+  | { kind: 'own'; booking: BookingDto }
+  | { kind: 'taken'; label: string }
+  | { kind: 'full' }
+  | { kind: 'past' }
+  | { kind: 'locked' }
+  | { kind: 'free'; freeMachines: LaundryMachineDto[] }
 
 export interface PendingSlot {
   id: string | null  // null = new, not yet persisted

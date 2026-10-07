@@ -5,6 +5,10 @@ import { colors } from './theme'
 // laundrybook.dk redirects here, so canonical URLs must use this host
 export const SITE_ORIGIN = 'https://www.laundrybook.dk'
 
+// Bootstrap's lg/xl breakpoints; inline styles can't hold media queries, so layout switches read these
+export const MEDIA_LG = '(min-width: 992px)'
+export const MEDIA_XL = '(min-width: 1200px)'
+
 export const ROLE_LABEL_KEY = {
   [UserRole.Resident]: 'roles.resident',
   [UserRole.ComplexAdmin]: 'roles.complexAdmin',

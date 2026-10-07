@@ -9,7 +9,7 @@ interface Props {
   pending: PendingAction
   error: string | null
   loading: boolean
-  onConfirm: () => void
+  onConfirm: (machineId?: string) => void
   onClose: () => void
 }
 
@@ -20,6 +20,7 @@ export function ConfirmBookingModal({ pending, error, loading, onConfirm, onClos
   // Closing mid-request would drop the error the user needs to see
   useDialog(dialogRef, onClose, !loading)
   const isBook   = pending.type === 'book'
+  const machineOptions = isBook ? pending.machineOptions : undefined
   const dateText = formatDateFull(pending.date)
 
   const showTimeWarning =
@@ -82,6 +83,28 @@ export function ConfirmBookingModal({ pending, error, loading, onConfirm, onClos
           </div>
         )}
 
+        {machineOptions && (
+          <div style={{ marginBottom: 16 }}>
+            <p style={{ fontSize: '0.85rem', fontWeight: 600, color: colors.textPrimary, marginBottom: 8 }}>
+              {t('laundry.confirmBooking.pickMachine')}
+            </p>
+            <div className="d-flex flex-column gap-2">
+              {machineOptions.map(m => (
+                <button
+                  key={m.id}
+                  type="button"
+                  className="btn btn-outline-primary fw-semibold"
+                  style={{ minHeight: 44, borderRadius: 10 }}
+                  onClick={() => onConfirm(m.id)}
+                  disabled={loading}
+                >
+                  {t('laundry.confirmBooking.bookOn', { machine: m.name })}
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
+
         <div style={{ display: 'flex', gap: 8, justifyContent: 'flex-end' }}>
           <button
             className="btn btn-sm btn-outline-secondary"
@@ -91,14 +114,16 @@ export function ConfirmBookingModal({ pending, error, loading, onConfirm, onClos
           >
             {t('common.close')}
           </button>
-          <button
-            className={`btn btn-sm ${isBook ? 'btn-primary' : 'btn-danger'}`}
-            style={{ borderRadius: 20, padding: '5px 20px', minWidth: 80 }}
-            onClick={onConfirm}
-            disabled={loading}
-          >
-            {loading ? <span className="spinner-border spinner-border-sm" /> : isBook ? t('laundry.actions.book') : t('laundry.actions.cancelBooking')}
-          </button>
+          {!machineOptions && (
+            <button
+              className={`btn btn-sm ${isBook ? 'btn-primary' : 'btn-danger'}`}
+              style={{ borderRadius: 20, padding: '5px 20px', minWidth: 80 }}
+              onClick={() => onConfirm()}
+              disabled={loading}
+            >
+              {loading ? <span className="spinner-border spinner-border-sm" /> : isBook ? t('laundry.actions.book') : t('laundry.actions.cancelBooking')}
+            </button>
+          )}
         </div>
       </div>
     </>
