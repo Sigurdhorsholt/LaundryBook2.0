@@ -42,6 +42,8 @@
     "system": "System",
     "admin": "Admin",
     "logout": "Log out",
+    "mainMenu": "Main menu",
+    "profileMenu": "Your profile",
     "openSidebar": "Open sidebar",
     "openNavigation": "Open navigation",
     "menu": "Menu",

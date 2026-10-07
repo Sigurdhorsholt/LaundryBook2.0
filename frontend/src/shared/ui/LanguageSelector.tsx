@@ -8,7 +8,8 @@ const LANGUAGE_LABELS: Record<SupportedLanguage, { short: string; full: string }
   en: { short: 'EN', full: 'English' },
 }
 
-export function LanguageSelector() {
+// 'dark' sits on the chrome header, where the default grey would disappear
+export function LanguageSelector({ tone = 'light' }: { tone?: 'light' | 'dark' }) {
   const { i18n } = useTranslation()
   const current = (SUPPORTED_LANGUAGES as readonly string[]).includes(i18n.language)
     ? (i18n.language as SupportedLanguage)
@@ -21,7 +22,7 @@ export function LanguageSelector() {
         type="button"
         data-bs-toggle="dropdown"
         aria-expanded="false"
-        style={{ borderRadius: 7, fontSize: '0.85rem', color: colors.textSecondary }}
+        style={{ borderRadius: 7, fontSize: '0.85rem', minHeight: 40, color: tone === 'dark' ? colors.chromeText : colors.textSecondary }}
       >
         <IconGlobe size={16} />
         <span className="fw-semibold">{LANGUAGE_LABELS[current].short}</span>

@@ -1,10 +1,9 @@
-import {NavLink, useNavigate} from 'react-router-dom'
+import {NavLink} from 'react-router-dom'
 import {useTranslation} from 'react-i18next'
-import {useDispatch} from 'react-redux'
-import {useMeQuery, useLogoutMutation} from '../features/auth/authApi'
+import {useMeQuery} from '../features/auth/authApi'
+import {useLogout} from '../features/auth/useLogout'
 import {isAdmin as checkIsAdmin} from './roleUtils'
 import {colors} from './theme'
-import {baseApi} from '../app/baseApi'
 import {BrandLogo} from './BrandLogo'
 import {IconMenu} from './icons'
 import {LanguageSelector} from './ui'
@@ -18,23 +17,12 @@ interface NavbarProps {
 }
 
 export function AppNavbar({isAdmin = false}: NavbarProps) {
-    const navigate = useNavigate()
     const {t} = useTranslation()
     const {data: user} = useMeQuery()
-    const [logout] = useLogoutMutation()
-    const dispatch = useDispatch()
+    const handleLogout = useLogout()
     useOffcanvasAutoClose(NAV_OFFCANVAS_ID)
 
     const showAdminLink = !isAdmin && user && checkIsAdmin(user)
-
-    async function handleLogout() {
-        await logout()
-        // Loaded on demand so Firebase stays out of the main bundle
-        const [{signOut}, {firebaseAuth}] = await Promise.all([import('firebase/auth'), import('../lib/firebase')])
-        await signOut(firebaseAuth)
-        dispatch(baseApi.util.resetApiState())
-        navigate('/', {replace: true})
-    }
 
     return (
         <>
