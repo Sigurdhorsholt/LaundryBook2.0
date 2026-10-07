@@ -123,7 +123,7 @@ export function DayBookingView({ booking: lb, showRoomName }: Props) {
           aria-label={t('laundryPage.goToBooking')}
           onClick={() => gridEl?.scrollIntoView({ behavior: 'smooth', block: 'start' })}
           style={{
-            position: 'fixed', bottom: 24, right: 20, zIndex: 900,
+            position: 'fixed', bottom: 'calc(var(--bottom-bar-height, 0px) + 24px)', right: 20, zIndex: 900,
             width: 38, height: 38, borderRadius: '50%',
             border: `1px solid ${colors.primaryBorder}`,
             backgroundColor: 'rgba(255,255,255,0.92)', color: colors.primary,

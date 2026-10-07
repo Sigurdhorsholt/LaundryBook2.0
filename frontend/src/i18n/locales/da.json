@@ -42,6 +42,8 @@
     "system": "System",
     "admin": "Admin",
     "logout": "Log ud",
+    "mainMenu": "Hovedmenu",
+    "profileMenu": "Din profil",
     "openSidebar": "Åbn sidepanel",
     "openNavigation": "Åbn navigation",
     "menu": "Menu",

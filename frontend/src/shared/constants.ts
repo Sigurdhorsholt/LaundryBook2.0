@@ -12,6 +12,9 @@ export const MEDIA_XL = '(min-width: 1200px)'
 // The app navbar is sticky; anything else that sticks to the top must sit below it
 export const NAVBAR_HEIGHT_PX = 56
 
+// Phone tab bar in the resident shell; .resident-shell in index.css reserves the same space
+export const BOTTOM_TAB_HEIGHT_PX = 64
+
 export const ROLE_LABEL_KEY = {
   [UserRole.Resident]: 'roles.resident',
   [UserRole.ComplexAdmin]: 'roles.complexAdmin',

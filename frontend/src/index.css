@@ -21,6 +21,7 @@
   --color-bg-card:        #ffffff;
   --color-bg-subtle:      #f3f5f1;
   --color-border:         #cfd8d0;
+  --color-chrome-raised:  #22352c;
   --color-success:        #22693a;
   --color-warning:        #8a500c;
   --color-danger:         #a8261f;
@@ -78,6 +79,23 @@ body {
   font-family: 'Inter', system-ui, sans-serif;
   background-color: #ffffff;
   color: var(--color-text-primary);
+}
+
+/* Resident shell: phones get a fixed tab bar, so content must end above it (64px = BOTTOM_TAB_HEIGHT_PX) */
+.resident-shell {
+  --bottom-bar-height: calc(64px + env(safe-area-inset-bottom));
+  padding-bottom: var(--bottom-bar-height);
+}
+@media (min-width: 768px) {
+  .resident-shell {
+    --bottom-bar-height: 0px;
+    padding-bottom: 0;
+  }
+}
+
+.chrome-link:hover {
+  background-color: var(--color-chrome-raised);
+  color: #ffffff !important;
 }
 
 /* Admin sidebar nav links */
