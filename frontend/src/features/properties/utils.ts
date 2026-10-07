@@ -1,5 +1,5 @@
 // Per device: which version of the house rules this browser has shown, so the booking page can say
-// "Nye regler" once after the board changes them
+// "Nye regler" once after the admin changes them
 const seenKey = (propertyId: string) => `lb-house-rules-seen:${propertyId}`
 
 export function markHouseRulesSeen(propertyId: string, updatedAt: string) {

@@ -568,8 +568,8 @@
       "taken": "Optaget"
     },
     "cancelNotice": {
-      "title_one": "Bestyrelsen har aflyst en af dine bookinger",
-      "title_other": "Bestyrelsen har aflyst {{count}} af dine bookinger",
+      "title_one": "Administratoren har aflyst en af dine bookinger",
+      "title_other": "Administratoren har aflyst {{count}} af dine bookinger",
       "body": "Book gerne en ny tid.",
       "item": "{{date}} kl. {{time}}",
       "ok": "OK, forstået"
@@ -795,7 +795,7 @@
       "empty": "Der er ingen vaskerum endnu."
     },
     "board": {
-      "title": "Bestyrelsen",
+      "title": "Administrator",
       "empty": "Der er ingen kontaktpersoner endnu."
     }
   },
