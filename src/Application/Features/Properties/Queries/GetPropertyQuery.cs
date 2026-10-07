@@ -19,10 +19,10 @@ public class GetPropertyQueryHandler(
         // At minimum must be a Resident of this property
         await auth.RequireRoleAsync(request.PropertyId, Domain.Enums.UserRole.Resident, cancellationToken);
 
+        // Residents can read this, so it must not carry other members' contact details;
+        // admins get those from the members endpoint
         var property = await db.Properties
             .Include(p => p.Settings)
-            .Include(p => p.Memberships)
-                .ThenInclude(m => m.User)
             .FirstOrDefaultAsync(p => p.Id == request.PropertyId, cancellationToken)
             ?? throw new NotFoundException(nameof(Domain.Entities.Property), request.PropertyId);
 
@@ -45,13 +45,6 @@ public class GetPropertyQueryHandler(
                     property.Settings.MaxConcurrentBookingsPerUser,
                     property.Settings.BookingLookaheadDays,
                     property.Settings.BookingVisibility),
-            property.Memberships.Select(m => new MemberDto(
-                m.UserId,
-                m.User.Email,
-                m.User.FirstName,
-                m.User.LastName,
-                m.Role,
-                m.ApartmentNumber)).ToList(),
             upcomingBookingCount);
     }
 }
