@@ -661,6 +661,56 @@
     "milestone": "You've now booked {{count}} times - the laundry room is getting to know you.",
     "goToBooking": "Go to booking"
   },
+  "adminOverview": {
+    "inviteResident": "Invite resident",
+    "loadErrorTitle": "Couldn't load the overview",
+    "kpi": {
+      "weekBookings": "Bookings this week",
+      "moreThanLastWeek_one": "{{count}} more than last week",
+      "moreThanLastWeek_other": "{{count}} more than last week",
+      "fewerThanLastWeek_one": "{{count}} fewer than last week",
+      "fewerThanLastWeek_other": "{{count}} fewer than last week",
+      "sameAsLastWeek": "Same as last week",
+      "utilization": "Utilisation this week",
+      "busiest": "Busiest: {{day}}",
+      "noBookingsYet": "No bookings yet",
+      "residents": "Residents",
+      "invitesPending_one": "{{count}} invite pending",
+      "invitesPending_other": "{{count}} invites pending",
+      "noInvitesPending": "No pending invites",
+      "today": "Bookings today",
+      "laterToday_one": "{{count}} later today",
+      "laterToday_other": "{{count}} later today"
+    },
+    "today": {
+      "title": "Today",
+      "allBookings": "All bookings",
+      "empty": "No bookings today.",
+      "time": "Time",
+      "room": "Room",
+      "resident": "Resident",
+      "status": "Status",
+      "done": "Finished",
+      "now": "In progress",
+      "later": "Later today"
+    },
+    "attention": {
+      "title": "Needs attention",
+      "allGood": "Nothing needs attention right now.",
+      "pendingInvites_one": "{{count}} invite hasn't been used",
+      "pendingInvites_other": "{{count}} invites haven't been used",
+      "seeInvites": "See invites",
+      "noSlots": "{{room}} has no time slots",
+      "addSlots": "Set up times",
+      "noMachines": "{{room}} has no active machines",
+      "addMachines": "Add machines"
+    },
+    "occupancy": {
+      "title": "Utilisation per room",
+      "value_one": "{{pct}} % · {{count}} booking",
+      "value_other": "{{pct}} % · {{count}} bookings"
+    }
+  },
   "adminDashboard": {
     "setup": {
       "title": "Get started with {{property}}",

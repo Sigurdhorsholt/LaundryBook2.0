@@ -1,4 +1,4 @@
-import { useNavigate } from 'react-router-dom'
+import { Navigate, useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { useMeQuery, UserRole } from '../../features/auth/authApi'
 import { getHighestRole } from '../../shared/roleUtils'
@@ -15,6 +15,10 @@ export function AdminDashboardPage() {
   const { data: user } = useMeQuery()
   const role = user ? getHighestRole(user) : null
   const adminMemberships = user?.memberships.filter((m) => m.role >= UserRole.ComplexAdmin) ?? [];
+
+  // Most boards run one building; send them straight to its overview instead of a list of one
+  const only = adminMemberships.length === 1 ? adminMemberships[0] : undefined
+  if (only) return <Navigate to={`/admin/properties/${only.propertyId}`} replace />
 
   return (
     <div className="p-4 p-lg-5">

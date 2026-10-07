@@ -661,6 +661,56 @@
     "milestone": "Du har nu booket {{count}} gange - vaskerummet kender dig efterhånden.",
     "goToBooking": "Gå til booking"
   },
+  "adminOverview": {
+    "inviteResident": "Inviter beboer",
+    "loadErrorTitle": "Kunne ikke hente oversigten",
+    "kpi": {
+      "weekBookings": "Bookinger denne uge",
+      "moreThanLastWeek_one": "{{count}} flere end sidste uge",
+      "moreThanLastWeek_other": "{{count}} flere end sidste uge",
+      "fewerThanLastWeek_one": "{{count}} færre end sidste uge",
+      "fewerThanLastWeek_other": "{{count}} færre end sidste uge",
+      "sameAsLastWeek": "Samme som sidste uge",
+      "utilization": "Belægning denne uge",
+      "busiest": "Mest travlt: {{day}}",
+      "noBookingsYet": "Ingen bookinger endnu",
+      "residents": "Beboere",
+      "invitesPending_one": "{{count}} invitation venter",
+      "invitesPending_other": "{{count}} invitationer venter",
+      "noInvitesPending": "Ingen ventende invitationer",
+      "today": "Bookinger i dag",
+      "laterToday_one": "{{count}} senere i dag",
+      "laterToday_other": "{{count}} senere i dag"
+    },
+    "today": {
+      "title": "I dag",
+      "allBookings": "Alle bookinger",
+      "empty": "Ingen bookinger i dag.",
+      "time": "Tid",
+      "room": "Vaskerum",
+      "resident": "Beboer",
+      "status": "Status",
+      "done": "Afsluttet",
+      "now": "I gang",
+      "later": "Senere i dag"
+    },
+    "attention": {
+      "title": "Kræver handling",
+      "allGood": "Intet kræver handling lige nu.",
+      "pendingInvites_one": "{{count}} invitation er ikke taget i brug",
+      "pendingInvites_other": "{{count}} invitationer er ikke taget i brug",
+      "seeInvites": "Se invitationer",
+      "noSlots": "{{room}} har ingen tidspladser",
+      "addSlots": "Opsæt tider",
+      "noMachines": "{{room}} har ingen aktive maskiner",
+      "addMachines": "Tilføj maskiner"
+    },
+    "occupancy": {
+      "title": "Belægning pr. vaskerum",
+      "value_one": "{{pct}} % · {{count}} booking",
+      "value_other": "{{pct}} % · {{count}} bookinger"
+    }
+  },
   "adminDashboard": {
     "setup": {
       "title": "Kom godt i gang med {{property}}",

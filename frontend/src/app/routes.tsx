@@ -20,7 +20,7 @@ const JoinPage = lazy(() => import('../pages/JoinPage').then((m) => ({ default: 
 const SignupPage = lazy(() => import('../pages/SignupPage').then((m) => ({ default: m.SignupPage })))
 const AdminDashboardPage = lazy(() => import('../pages/admin/AdminDashboardPage').then((m) => ({ default: m.AdminDashboardPage })))
 const PropertiesPage = lazy(() => import('../pages/admin/properties/PropertiesPage').then((m) => ({ default: m.PropertiesPage })))
-const PropertyRedirectPage = lazy(() => import('../pages/admin/properties/PropertyRedirectPage').then((m) => ({ default: m.PropertyRedirectPage })))
+const PropertyOverviewPage = lazy(() => import('../pages/admin/properties/PropertyOverviewPage').then((m) => ({ default: m.PropertyOverviewPage })))
 const PropertyUsersPage = lazy(() => import('../pages/admin/properties/PropertyUsersPage').then((m) => ({ default: m.PropertyUsersPage })))
 const PropertySettingsPage = lazy(() => import('../pages/admin/properties/PropertySettingsPage').then((m) => ({ default: m.PropertySettingsPage })))
 const LaundryRoomsPage = lazy(() => import('../pages/admin/properties/LaundryRoomsPage').then((m) => ({ default: m.LaundryRoomsPage })))
@@ -112,7 +112,7 @@ export const routes: AppRoute[] = [
   // These render inside AdminLayout but the sidebar switches to property context nav.
   {
     path: '/admin/properties/:propertyId',
-    component: PropertyRedirectPage,
+    component: PropertyOverviewPage,
     layout: 'admin',
     protected: true,
     minRole: UserRole.ComplexAdmin,
