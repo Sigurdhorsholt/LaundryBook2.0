@@ -23,7 +23,7 @@ function BookingRow({
     >
       <div>
         <div style={{ fontWeight: 600, fontSize: '0.88rem', color: colors.textPrimary }}>
-          {booking.roomName}
+          {[booking.roomName, booking.machineName].filter(Boolean).join(' · ')}
         </div>
         <div style={{ fontSize: '0.8rem', color: colors.textSecondary }}>
           {formatDateFull(booking.date)} · {formatTimeRange(booking.startTime, booking.endTime)}

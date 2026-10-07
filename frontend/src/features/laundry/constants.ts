@@ -18,19 +18,13 @@ export const MACHINE_TYPE_LABEL = {
 
 // ── Slot generator ─────────────────────────────────────────────────────────────
 
-export const DURATION_OPTIONS = [
-  { label: '30m',  minutes: 30  },
-  { label: '1t',   minutes: 60  },
-  { label: '1t30', minutes: 90  },
-  { label: '2t',   minutes: 120 },
-  { label: '2t30', minutes: 150 },
-  { label: '3t',   minutes: 180 },
-]
+// Minutes; shown through durationLabel() so the "1t30" / "1h30" shorthand follows the language
+export const DURATION_OPTIONS = [30, 60, 90, 120, 150, 180]
 
 export const TEMPLATES = [
-  { labelKey: 'laundry.template.standard', sublabel: '07–22 · 1t30', from: '07:00', to: '22:00', durationMinutes: 90  },
-  { labelKey: 'laundry.template.compact',  sublabel: '07–22 · 1t',   from: '07:00', to: '22:00', durationMinutes: 60  },
-  { labelKey: 'laundry.template.halfDay',  sublabel: '07–13 · 2t',   from: '07:00', to: '13:00', durationMinutes: 120 },
+  { labelKey: 'laundry.template.standard', from: '07:00', to: '22:00', durationMinutes: 90  },
+  { labelKey: 'laundry.template.compact',  from: '07:00', to: '22:00', durationMinutes: 60  },
+  { labelKey: 'laundry.template.halfDay',  from: '07:00', to: '13:00', durationMinutes: 120 },
 ]
 
 // ── Day timeline ───────────────────────────────────────────────────────────────

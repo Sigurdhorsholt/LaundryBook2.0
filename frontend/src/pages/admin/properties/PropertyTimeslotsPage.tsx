@@ -13,6 +13,7 @@ import {
   DURATION_OPTIONS, TEMPLATES,
   TIMELINE_START, TIMELINE_END, TIMELINE_TOTAL, TIMELINE_TICKS,
 } from '../../../features/laundry/constants'
+import { durationLabel } from '../../../shared/utils/formatUtils'
 import { toMinutes, toHHmmss, toHHmm, formatTime } from '../../../shared/utils/dateUtils'
 import { ModalShell } from '../../../shared/modals/ModalShell'
 import { IconPlus, IconChevronDown, IconX } from '../../../shared/icons'
@@ -474,7 +475,7 @@ function TemplateChips({
           >
             {(t as (k: string) => string)(tpl.labelKey)}
             <span style={{ color: colors.textMuted, marginLeft: 6, fontSize: '0.75rem' }}>
-              {tpl.sublabel}
+              {`${tpl.from.slice(0, 2)}–${tpl.to.slice(0, 2)} · ${durationLabel(tpl.durationMinutes)}`}
             </span>
           </button>
         ))}
@@ -607,15 +608,15 @@ function SlotGenerator({
       <div className="mb-3">
         <div style={genLabelStyle}>{t('adminProperties.timeslots.durationPerSlot')}</div>
         <div className="d-flex flex-wrap gap-2 mt-1">
-          {DURATION_OPTIONS.map((opt) => {
-            const selected = durationMinutes === opt.minutes
+          {DURATION_OPTIONS.map((minutes) => {
+            const selected = durationMinutes === minutes
             return (
               <button
-                key={opt.minutes}
-                onClick={() => onDurationChange(opt.minutes)}
+                key={minutes}
+                onClick={() => onDurationChange(minutes)}
                 style={chipStyle(selected)}
               >
-                {opt.label}
+                {durationLabel(minutes)}
               </button>
             )
           })}
@@ -822,16 +823,16 @@ function AddSlotModal({
         <div className="mb-3">
           <label className="form-label" style={labelStyle}>{t('adminProperties.timeslots.duration')}</label>
           <div className="d-flex flex-wrap gap-2 mt-1">
-            {DURATION_OPTIONS.map((opt) => {
-              const selected = durationMinutes === opt.minutes
+            {DURATION_OPTIONS.map((minutes) => {
+              const selected = durationMinutes === minutes
               return (
                 <button
-                  key={opt.minutes}
+                  key={minutes}
                   type="button"
-                  onClick={() => setDurationMinutes(opt.minutes)}
+                  onClick={() => setDurationMinutes(minutes)}
                   style={chipStyle(selected)}
                 >
-                  {opt.label}
+                  {durationLabel(minutes)}
                 </button>
               )
             })}
