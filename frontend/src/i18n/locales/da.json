@@ -102,7 +102,7 @@
       },
       "lookahead": {
         "title": "Fremtidshorisont",
-        "description": "Hvor mange dage frem kan beboere oprette bookinger? (1-30)",
+        "description": "Hvor mange dage frem kan beboere oprette bookinger? (1-365)",
         "unit": "dage",
         "rangeError": "Skal være et helt tal mellem 1 og {{max}} dage."
       },
@@ -115,7 +115,7 @@
       },
       "maxConcurrent": {
         "title": "Maks. aktive bookinger pr. beboer",
-        "description": "Hvor mange kommende bookinger en beboer må have på samme tid. (1-10)",
+        "description": "Hvor mange kommende bookinger en beboer må have på samme tid. (1-100)",
         "unit": "bookinger",
         "rangeError": "Skal være et helt tal mellem 1 og {{max}}."
       }
