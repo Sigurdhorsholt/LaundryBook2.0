@@ -582,7 +582,8 @@
       "freeCount_one": "{{count}} free",
       "freeCount_other": "{{count}} free",
       "notOpen": "Not open yet",
-      "yours": "Your booking"
+      "yours": "Your booking",
+      "bookAnother": "+ Book another"
     },
     "next": {
       "title": "Your next booking",

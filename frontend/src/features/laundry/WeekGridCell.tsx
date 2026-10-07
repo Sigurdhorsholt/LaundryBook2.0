@@ -25,19 +25,41 @@ export function WeekGridCell({ cell, slotLabel, totalMachines, maxReached, onBoo
   switch (cell.kind) {
     case 'own':
       return (
-        <div style={{ ...box, backgroundColor: colors.slotOwnBg, color: colors.slotOwnText }}>
-          <span style={{ fontWeight: 700 }}>{cell.booking.machineName ?? t('laundry.week.yours')}</span>
-          {cell.booking.canCancel ? (
+        <div className="d-flex flex-column gap-1" style={{ width: '100%' }}>
+          <div style={{ ...box, backgroundColor: colors.slotOwnBg, color: colors.slotOwnText }}>
+            {cell.bookings.map(b => (
+              <span key={b.id} className="d-flex flex-column align-items-center">
+                <span style={{ fontWeight: 700 }}>{b.machineName ?? t('laundry.week.yours')}</span>
+                {b.canCancel ? (
+                  <button
+                    type="button"
+                    aria-label={t('laundry.actions.cancelSlot', { time: [slotLabel, b.machineName].filter(Boolean).join(' · ') })}
+                    onClick={() => onCancel(b)}
+                    style={{ background: 'none', border: 'none', padding: '2px 6px', color: colors.slotOwnText, fontSize: '0.76rem', textDecoration: 'underline', cursor: 'pointer' }}
+                  >
+                    {t('laundry.actions.cancelBooking')}
+                  </button>
+                ) : (
+                  <span style={{ fontSize: '0.72rem' }}>{t('laundry.slot.cancelDeadlinePassed')}</span>
+                )}
+              </span>
+            ))}
+          </div>
+          {cell.freeMachines.length > 0 && (
             <button
               type="button"
-              aria-label={t('laundry.actions.cancelSlot', { time: slotLabel })}
-              onClick={() => onCancel(cell.booking)}
-              style={{ background: 'none', border: 'none', padding: '2px 6px', color: colors.slotOwnText, fontSize: '0.76rem', textDecoration: 'underline', cursor: 'pointer' }}
+              className="btn btn-outline-primary fw-semibold"
+              disabled={maxReached}
+              title={maxReached ? t('laundry.grid.limitReachedHint') : undefined}
+              aria-label={t('laundry.actions.bookSlot', { time: slotLabel })}
+              onClick={() => onBook(cell.freeMachines)}
+              style={{ ...box, minHeight: 36, borderWidth: 1.5, fontSize: '0.76rem', padding: '2px 6px' }}
             >
-              {t('laundry.actions.cancelBooking')}
+              {t('laundry.week.bookAnother')}
+              <span style={{ fontWeight: 500, fontSize: '0.68rem' }}>
+                {t('laundry.slot.freeCount', { free: cell.freeMachines.length, total: totalMachines })}
+              </span>
             </button>
-          ) : (
-            <span style={{ fontSize: '0.72rem' }}>{t('laundry.slot.cancelDeadlinePassed')}</span>
           )}
         </div>
       )

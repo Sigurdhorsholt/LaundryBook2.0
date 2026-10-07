@@ -31,20 +31,27 @@ export interface WeekCellContext {
 
 export function weekCell(slot: TimeSlotTemplateDto, date: string, ctx: WeekCellContext): WeekCell {
   const here = ctx.bookings.filter(b => b.date === date && b.timeSlotTemplateId === slot.id)
-  const own = here.find(b => b.isOwn)
-  if (own) return { kind: 'own', booking: own }
-  if (isPast(date, slot.startTime, ctx.today)) return { kind: 'past' }
+  const past = isPast(date, slot.startTime, ctx.today)
+  // Machines nobody has booked in this slot; only machine mode has more than one bookable unit
+  const freeMachines = ctx.machineMode && !past
+    ? ctx.machines.filter(m => !here.some(b => b.machineId === m.id))
+    : []
+  const own = here.filter(b => b.isOwn)
+  if (own.length > 0) return { kind: 'own', bookings: own, freeMachines }
+  if (past) return { kind: 'past' }
   if (isLocked(date, ctx.today, ctx.lookaheadDays)) return { kind: 'locked' }
   if (!ctx.machineMode) {
     const taken = here[0]
     return taken ? { kind: 'taken', label: bookingLabel(taken) } : { kind: 'free', freeMachines: [] }
   }
-  const freeMachines = ctx.machines.filter(m => !here.some(b => b.machineId === m.id))
   return freeMachines.length > 0 ? { kind: 'free', freeMachines } : { kind: 'full' }
 }
 
 export function freeSlotCount(slots: TimeSlotTemplateDto[], date: string, ctx: WeekCellContext): number {
-  return slots.filter(s => weekCell(s, date, ctx).kind === 'free').length
+  return slots.filter(s => {
+    const cell = weekCell(s, date, ctx)
+    return cell.kind === 'free' || (cell.kind === 'own' && cell.freeMachines.length > 0)
+  }).length
 }
 
 export function nextBooking(myBookings: MyBookingDto[]): MyBookingDto | null {
