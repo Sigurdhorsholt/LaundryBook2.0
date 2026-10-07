@@ -86,7 +86,9 @@
         "entireRoom": "Entire room",
         "entireRoomDesc": "The resident books access to the whole laundry room for the selected time.",
         "locked_one": "The booking type can't be changed while there is {{count}} upcoming booking. Wait until it has passed, or cancel it under Bookings.",
-        "locked_other": "The booking type can't be changed while there are {{count}} upcoming bookings. Wait until they have passed, or cancel them under Bookings."
+        "locked_other": "The booking type can't be changed while there are {{count}} upcoming bookings. Wait until they have passed, or cancel them under Bookings.",
+        "lockedTitle": "The booking type is locked for now",
+        "lockedAction": "Go to Bookings"
       },
       "visibility": {
         "title": "Visibility in the booking calendar",
@@ -141,6 +143,8 @@
       "title": "Users",
       "invite": "Invite resident",
       "pendingApprovalTooltip": "The association must be approved before you can invite residents",
+      "pendingApprovalTitle": "Invites are on hold",
+      "pendingApprovalBody": "The association must be approved before you can invite residents.",
       "loadError": "Could not load users.",
       "empty": "No users yet. Invite the first resident.",
       "count_one": "{{count}} user",

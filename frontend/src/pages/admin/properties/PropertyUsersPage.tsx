@@ -16,7 +16,7 @@ import {
 } from '../../../features/users/usersApi'
 import { UserRow, UserCard } from './UserRow'
 import { IconPlus } from '../../../shared/icons'
-import { PageHeader, Spinner, Notice } from '../../../shared/ui'
+import { PageHeader, Spinner, Notice, Callout } from '../../../shared/ui'
 import { extractErrorMessage } from '../../../shared/utils/errorUtils'
 import { colors } from '../../../shared/theme'
 
@@ -224,6 +224,14 @@ export function PropertyUsersPage() {
           </button>
         }
       />
+
+      {isPendingApproval && (
+        <div className="mb-3">
+          <Callout icon="lock" title={t('adminProperties.users.pendingApprovalTitle')}>
+            {t('adminProperties.users.pendingApprovalBody')}
+          </Callout>
+        </div>
+      )}
 
       {actionError != null && (
         <Notice tone="danger" onDismiss={() => setActionError(null)}>{actionError}</Notice>

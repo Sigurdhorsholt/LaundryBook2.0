@@ -86,7 +86,9 @@
         "entireRoom": "Helt lokale",
         "entireRoomDesc": "Beboeren booker adgang til hele vaskerummet i det valgte tidsrum.",
         "locked_one": "Bookingtypen kan ikke ændres, mens der er {{count}} kommende booking. Vent til den er afviklet, eller aflys den under Bookinger.",
-        "locked_other": "Bookingtypen kan ikke ændres, mens der er {{count}} kommende bookinger. Vent til de er afviklet, eller aflys dem under Bookinger."
+        "locked_other": "Bookingtypen kan ikke ændres, mens der er {{count}} kommende bookinger. Vent til de er afviklet, eller aflys dem under Bookinger.",
+        "lockedTitle": "Bookingtypen er låst lige nu",
+        "lockedAction": "Gå til Bookinger"
       },
       "visibility": {
         "title": "Synlighed i bookingkalenderen",
@@ -141,6 +143,8 @@
       "title": "Brugere",
       "invite": "Inviter beboer",
       "pendingApprovalTooltip": "Foreningen skal godkendes, før I kan invitere beboere",
+      "pendingApprovalTitle": "Invitationer er sat på pause",
+      "pendingApprovalBody": "Foreningen skal godkendes, før I kan invitere beboere.",
       "loadError": "Kunne ikke indlæse brugere.",
       "empty": "Ingen brugere endnu. Inviter den første beboer.",
       "count_one": "{{count}} bruger",
