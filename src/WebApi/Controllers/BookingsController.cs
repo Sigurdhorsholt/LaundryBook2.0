@@ -30,6 +30,14 @@ public class BookingsController(IMediator mediator) : ControllerBase
         return Ok(result);
     }
 
+    // GET /api/properties/{propertyId}/bookings/mine/history: the caller's bookings from the last 90 days
+    [HttpGet("api/properties/{propertyId:guid}/bookings/mine/history")]
+    public async Task<IActionResult> GetMyBookingHistory(Guid propertyId, CancellationToken ct)
+    {
+        var result = await mediator.Send(new GetMyBookingHistoryQuery(propertyId), ct);
+        return Ok(result);
+    }
+
     // GET /api/properties/{propertyId}/bookings?from=YYYY-MM-DD&to=YYYY-MM-DD
     [HttpGet("api/properties/{propertyId:guid}/bookings")]
     public async Task<IActionResult> GetPropertyBookings(
