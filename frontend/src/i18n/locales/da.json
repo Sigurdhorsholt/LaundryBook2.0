@@ -331,6 +331,9 @@
     "noUpcomingBookings": "Ingen kommende bookinger",
     "pastBookings": "Tidligere bookinger",
     "noPastBookings": "Ingen tidligere bookinger",
+    "pastBookingsPeriod": "De seneste {{days}} dage",
+    "showAllPast": "Vis alle {{count}}",
+    "showFewerPast": "Vis færre",
     "yourInfo": "Dine oplysninger",
     "firstName": "Fornavn",
     "lastName": "Efternavn",
@@ -503,9 +506,7 @@
       "promptCancelWithMachine": "Vil du aflyse din booking kl. <s>{{slotTime}}</s> på <s>{{machineName}}</s> den <s>{{dateText}}</s>?",
       "warningMinutes": "Der er kun {{count}} minutter til din booking starter.",
       "warningHours_one": "Der er {{count}} time til din booking starter.",
-      "warningHours_other": "Der er {{count}} timer til din booking starter.",
-      "pickMachine": "Vælg en maskine:",
-      "bookOn": "Book {{machine}}"
+      "warningHours_other": "Der er {{count}} timer til din booking starter."
     },
     "stats": {
       "bookingsInPeriod": "Bookinger i perioden",
@@ -567,8 +568,8 @@
       "taken": "Optaget"
     },
     "cancelNotice": {
-      "title_one": "Bestyrelsen har aflyst en af dine bookinger",
-      "title_other": "Bestyrelsen har aflyst {{count}} af dine bookinger",
+      "title_one": "Administratoren har aflyst en af dine bookinger",
+      "title_other": "Administratoren har aflyst {{count}} af dine bookinger",
       "body": "Book gerne en ny tid.",
       "item": "{{date}} kl. {{time}}",
       "ok": "OK, forstået"
@@ -582,7 +583,20 @@
       "freeCount_one": "{{count}} ledig",
       "freeCount_other": "{{count}} ledige",
       "notOpen": "Ikke åben endnu",
-      "yours": "Din booking"
+      "yours": "Din tid",
+      "machinesCount_one": "{{count}} maskine",
+      "machinesCount_other": "{{count}} maskiner",
+      "moreFree_one": "+{{count}} ledig",
+      "moreFree_other": "+{{count}} ledige",
+      "ownSlotAria": "Din tid {{time}}. Vis muligheder",
+      "popover": {
+        "titleBook": "Book denne tid?",
+        "titleOwn": "Din tid",
+        "titlePick": "Vælg maskine",
+        "keep": "Behold tiden",
+        "machineFree": "Ledig",
+        "machineYours": "Din tid"
+      }
     },
     "next": {
       "title": "Din næste booking",
@@ -594,6 +608,13 @@
       "used": "{{used}} af {{max}} brugt",
       "empty": "Du har ingen kommende bookinger.",
       "countsHint": "En booking tæller med til og med den dag, den ligger på."
+    },
+    "calendarFile": {
+      "add": "Tilføj til kalender",
+      "addShort": "Kalender",
+      "addAria": "Tilføj {{time}} til din kalender",
+      "summary": "Vasketid: {{where}}",
+      "description": "Booket i LaundryBook. Kan du ikke bruge tiden, så aflys den i LaundryBook, så andre kan få den."
     },
     "room": {
       "machinesTitle": "Maskiner",
@@ -744,22 +765,29 @@
     "role_grant_too_high": "Du kan ikke tildele en højere rolle end din egen.",
     "invite_email_mismatch": "Invitationen er sendt til en anden e-mailadresse."
   },
+  "markdownEditor": {
+    "toolbar": "Formatering",
+    "heading": "Overskrift",
+    "subheading": "Underoverskrift",
+    "bold": "Fed",
+    "bulletList": "Punktliste",
+    "numberedList": "Nummereret liste",
+    "undo": "Fortryd sidste ændring",
+    "redo": "Gentag"
+  },
   "houseRules": {
     "title": "Husorden og vaskeregler",
     "updated": "Opdateret {{date}}",
     "adminDescription": "Skriv de regler, beboerne skal kende. De vises under Ejendommen, og bookingsiden linker til dem.",
     "editorTitle": "Tekst",
-    "formatHelp": "En tom linje giver et nyt afsnit. Start en linje med - for et punkt, 1. for en nummereret liste og # for en overskrift. Skriv **ord** for fed.",
-    "placeholder": "Skriv jeres vaskeregler, fx:\n\n- Rens fnugfilteret efter brug.\n- Tøm maskinen senest 15 minutter efter din tid.",
+    "formatHelp": "Brug knapperne over feltet. Du kan også skrive - for en punktliste, 1. for en nummereret liste og # for en overskrift.",
+    "placeholder": "Skriv jeres vaskeregler her, fx at fnugfilteret skal renses efter brug.",
     "lastUpdated": "Sidst opdateret {{date}}",
     "save": "Gem",
     "saving": "Gemmer…",
-    "undo": "Fortryd",
+    "undo": "Kassér ændringer",
     "saved": "Gemt. Beboerne kan se det nu.",
-    "saveFailed": "Reglerne kunne ikke gemmes. Prøv igen.",
-    "previewTitle": "Sådan ser beboerne det",
-    "previewHelp": "Opdateres, mens du skriver.",
-    "previewEmpty": "Beboerne ser ingen regler, før I skriver noget."
+    "saveFailed": "Reglerne kunne ikke gemmes. Prøv igen."
   },
   "propertyInfo": {
     "description": "Det praktiske om jeres vaskerum: regler, maskiner og hvem I kan kontakte.",
@@ -774,7 +802,7 @@
       "empty": "Der er ingen vaskerum endnu."
     },
     "board": {
-      "title": "Bestyrelsen",
+      "title": "Administrator",
       "empty": "Der er ingen kontaktpersoner endnu."
     }
   },

@@ -45,3 +45,28 @@ export const SIDE_CARD: React.CSSProperties = {
   borderRadius: 14,
   padding: '18px 20px',
 }
+
+// ── Calendar file (.ics) ───────────────────────────────────────────────────────
+
+// Slot times are Copenhagen wall-clock times; the zone's rules let any calendar app place them correctly
+export const COPENHAGEN_VTIMEZONE = [
+  'BEGIN:VTIMEZONE',
+  'TZID:Europe/Copenhagen',
+  'BEGIN:DAYLIGHT',
+  'TZOFFSETFROM:+0100',
+  'TZOFFSETTO:+0200',
+  'TZNAME:CEST',
+  'DTSTART:19700329T020000',
+  'RRULE:FREQ=YEARLY;BYMONTH=3;BYDAY=-1SU',
+  'END:DAYLIGHT',
+  'BEGIN:STANDARD',
+  'TZOFFSETFROM:+0200',
+  'TZOFFSETTO:+0100',
+  'TZNAME:CET',
+  'DTSTART:19701025T030000',
+  'RRULE:FREQ=YEARLY;BYMONTH=10;BYDAY=-1SU',
+  'END:STANDARD',
+  'END:VTIMEZONE',
+]
+
+export const CALENDAR_REMINDER_MINUTES = 30

@@ -70,7 +70,7 @@ export interface MyBookingDto {
   machineName: string | null
 }
 
-// A booking the board cancelled that the resident hasn't acknowledged yet
+// A booking an admin cancelled that the resident hasn't acknowledged yet
 export interface CancellationNoticeDto {
   bookingId: string
   date: string        // "YYYY-MM-DD"
@@ -242,6 +242,11 @@ export const laundryApi = baseApi.injectEndpoints({
       providesTags: (_result, _err, propertyId) => [{ type: 'Booking', id: `mine-${propertyId}` }],
     }),
 
+    // Bookings before today, newest first. Nothing the resident does changes the past, so no tag invalidates it.
+    getMyBookingHistory: build.query<MyBookingDto[], string>({
+      query: (propertyId) => `/api/properties/${propertyId}/bookings/mine/history`,
+    }),
+
     getPropertyBookings: build.query<PropertyBookingsDto, { propertyId: string; from: string; to: string }>({
       query: ({ propertyId, from, to }) =>
         `/api/properties/${propertyId}/bookings?from=${from}&to=${to}`,
@@ -288,6 +293,7 @@ export const {
   useReplaceTimeSlotsMutation,
   useGetBookingsQuery,
   useGetMyBookingsQuery,
+  useGetMyBookingHistoryQuery,
   useGetCancellationNoticesQuery,
   useAcknowledgeCancellationNoticesMutation,
   useGetPropertyBookingsQuery,

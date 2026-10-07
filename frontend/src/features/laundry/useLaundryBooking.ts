@@ -13,8 +13,8 @@ import {
   useCreateBookingMutation,
   useCancelBookingMutation,
 } from './laundryApi'
-import type { BookingDto, LaundryMachineDto, MyBookingDto } from './laundryApi'
-import type { PendingAction, GridBooking, AvailabilityState } from './types'
+import type { BookingDto, MyBookingDto } from './laundryApi'
+import type { PendingAction, BookingAction, OpenWeekSlot, GridBooking, AvailabilityState } from './types'
 import { incrementBookingCount, freeSlotCount, bookingLabel, type WeekCellContext } from './utils'
 import { extractErrorMessage } from '../../shared/utils/errorUtils'
 import { todayStr, addDays, getWeekMonday, formatTimeRange, minutesUntilSlot } from '../../shared/utils/dateUtils'
@@ -27,6 +27,7 @@ export function useLaundryBooking() {
   const [selectedDate, setSelectedDate]     = useState(today)
   const [pickedRoomId, setPickedRoomId]     = useState<string | null>(null)
   const [pending, setPending]               = useState<PendingAction | null>(null)
+  const [weekSlot, setWeekSlot]             = useState<OpenWeekSlot | null>(null)
   const [confirmError, setConfirmError]     = useState<string | null>(null)
   const [milestoneCount, setMilestoneCount] = useState<number | null>(null)
 
@@ -145,9 +146,10 @@ export function useLaundryBooking() {
   // Weeks entirely beyond the booking window would only show "not available" slots
   const canGoForward    = !settings || addDays(weekStart, 7) <= addDays(today, settings.bookingLookaheadDays)
 
-  // An armed inline confirm belongs to one row; leaving the day or room must not leave it armed
+  // An armed inline confirm or an open week popover belongs to one slot; leaving the day, week or room closes it
   function disarmGridConfirm() {
     setPending(p => (p?.source === 'grid' ? null : p))
+    setWeekSlot(null)
     setConfirmError(null)
   }
 
@@ -205,27 +207,24 @@ export function useLaundryBooking() {
     })
   }
 
-  function handleWeekBook(slotId: string, date: string, freeMachines: LaundryMachineDto[]) {
-    const slot = slots?.find(s => s.id === slotId)
-    if (!slot) return
-    arm({
-      type: 'book', source: 'week', slotId, date,
-      slotTime: formatTimeRange(slot.startTime, slot.endTime),
-      machineOptions: machineMode ? freeMachines.map(m => ({ id: m.id, name: m.name })) : undefined,
-    })
+  function openWeekSlot(slotId: string, date: string) {
+    setWeekSlot({ slotId, date })
+    setConfirmError(null)
   }
 
-  function handleWeekCancel(booking: BookingDto) {
-    const slot = slots?.find(s => s.id === booking.timeSlotTemplateId)
-    if (!slot) return
-    arm({
-      type: 'cancel', source: 'week', slotId: slot.id, date: booking.date,
-      slotTime: formatTimeRange(slot.startTime, slot.endTime),
-      bookingId: booking.id,
-      minutesUntil: minutesUntilSlot(booking.date, slot.startTime),
-      machineId: booking.machineId ?? undefined,
-      machineName: booking.machineName ?? undefined,
-    })
+  function closeWeekSlot() {
+    setWeekSlot(null)
+    setConfirmError(null)
+  }
+
+  // The popover is the confirm step itself, so its buttons act straight away
+  async function bookWeekSlot(machineId?: string) {
+    if (weekSlot && await perform({ type: 'book', ...weekSlot, machineId })) setWeekSlot(null)
+  }
+
+  async function cancelWeekBooking(booking: BookingDto) {
+    const action: BookingAction = { type: 'cancel', slotId: booking.timeSlotTemplateId, date: booking.date, bookingId: booking.id }
+    if (await perform(action)) setWeekSlot(null)
   }
 
   function handleCancelUpcoming(b: MyBookingDto) {
@@ -243,15 +242,15 @@ export function useLaundryBooking() {
     setConfirmError(null)
   }
 
-  async function handleConfirm(machineId?: string) {
-    if (!pending || !propertyId) return
+  async function perform(action: BookingAction): Promise<boolean> {
+    if (!propertyId) return false
     try {
-      if (pending.type === 'book') {
-        if (!selectedRoomId) return
+      if (action.type === 'book') {
+        if (!selectedRoomId) return false
         await createBooking({
           roomId: selectedRoomId, propertyId,
-          timeSlotTemplateId: pending.slotId, date: pending.date,
-          machineId: machineId ?? pending.machineId ?? null,
+          timeSlotTemplateId: action.slotId, date: action.date,
+          machineId: action.machineId ?? null,
         }).unwrap()
         const newCount = incrementBookingCount()
         if (newCount % 5 === 0) {
@@ -259,16 +258,21 @@ export function useLaundryBooking() {
           setTimeout(() => setMilestoneCount(null), 4000)
         }
       } else {
-        if (!pending.bookingId) return
+        if (!action.bookingId) return false
         // Prefer the booking's own room: cancelling from the upcoming card can target another room
-        const roomId = myBookings?.find(m => m.id === pending.bookingId)?.roomId ?? selectedRoomId
-        if (!roomId) return
-        await cancelBooking({ bookingId: pending.bookingId, roomId, propertyId }).unwrap()
+        const roomId = myBookings?.find(m => m.id === action.bookingId)?.roomId ?? selectedRoomId
+        if (!roomId) return false
+        await cancelBooking({ bookingId: action.bookingId, roomId, propertyId }).unwrap()
       }
-      setPending(null)
+      return true
     } catch (err) {
       setConfirmError(extractErrorMessage(err, t('laundryPage.genericError')))
+      return false
     }
+  }
+
+  async function handleConfirm() {
+    if (pending && await perform(pending)) setPending(null)
   }
 
   return {
@@ -316,8 +320,11 @@ export function useLaundryBooking() {
     milestoneCount,
     handleBook,
     handleCancel,
-    handleWeekBook,
-    handleWeekCancel,
+    weekSlot,
+    openWeekSlot,
+    closeWeekSlot,
+    bookWeekSlot,
+    cancelWeekBooking,
     handleCancelUpcoming,
     dismissConfirm,
     handleConfirm,

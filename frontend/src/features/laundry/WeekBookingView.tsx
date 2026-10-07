@@ -1,7 +1,9 @@
+import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import type { LaundryBooking } from './useLaundryBooking'
 import { WeekNavigator } from './WeekNavigator'
 import { WeekGrid } from './WeekGrid'
+import { WeekSlotPopover } from './WeekSlotPopover'
 import { ErrorState } from '../../shared/ui'
 import { colors } from '../../shared/theme'
 
@@ -16,7 +18,18 @@ const card: React.CSSProperties = {
 
 export function WeekBookingView({ booking: lb }: Props) {
   const { t } = useTranslation()
+  const [anchor, setAnchor] = useState<HTMLElement | null>(null)
   const failed = lb.slotsQuery.isError || lb.bookingsQuery.isError
+  const openSlot = lb.weekSlot ? lb.slots.find(s => s.id === lb.weekSlot?.slotId) : undefined
+
+  function toggleSlot(slotId: string, date: string, el: HTMLElement) {
+    if (lb.weekSlot?.slotId === slotId && lb.weekSlot.date === date) {
+      lb.closeWeekSlot()
+      return
+    }
+    setAnchor(el)
+    lb.openWeekSlot(slotId, date)
+  }
 
   function body() {
     if (failed) {
@@ -54,8 +67,8 @@ export function WeekBookingView({ booking: lb }: Props) {
         context={lb.cellContext}
         freeCountByDate={lb.freeCountByDate}
         maxReached={lb.maxReached}
-        onBook={lb.handleWeekBook}
-        onCancel={lb.handleWeekCancel}
+        openSlot={lb.weekSlot}
+        onOpen={toggleSlot}
       />
     )
   }
@@ -87,6 +100,22 @@ export function WeekBookingView({ booking: lb }: Props) {
         <p style={{ margin: 0, padding: '8px 20px', borderTop: `1px solid ${colors.borderRow}`, fontSize: '0.78rem', color: colors.textSecondary, textAlign: 'center' }}>
           {t('laundryPage.milestone', { count: lb.milestoneCount })}
         </p>
+      )}
+      {lb.weekSlot && openSlot && anchor && (
+        <WeekSlotPopover
+          key={`${lb.weekSlot.slotId}|${lb.weekSlot.date}`}
+          anchor={anchor}
+          slot={openSlot}
+          date={lb.weekSlot.date}
+          context={lb.cellContext}
+          roomName={lb.selectedRoom?.name ?? null}
+          maxReached={lb.maxReached}
+          loading={lb.confirmLoading}
+          error={lb.confirmError}
+          onBook={lb.bookWeekSlot}
+          onCancel={lb.cancelWeekBooking}
+          onClose={lb.closeWeekSlot}
+        />
       )}
     </section>
   )

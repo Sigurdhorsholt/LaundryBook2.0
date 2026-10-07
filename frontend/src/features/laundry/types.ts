@@ -4,8 +4,8 @@ export type AvailabilityState = 'free' | 'few' | 'full' | 'past'
 
 export type PendingAction = {
   type: 'book' | 'cancel'
-  // 'grid' actions confirm inline in the row; 'week' and 'upcoming' actions use the modal
-  source: 'grid' | 'week' | 'upcoming'
+  // 'grid' actions confirm inline in the row; 'upcoming' actions use the modal
+  source: 'grid' | 'upcoming'
   slotId: string
   date: string
   slotTime: string
@@ -13,8 +13,15 @@ export type PendingAction = {
   minutesUntil?: number
   machineId?: string
   machineName?: string
-  // Machine mode in the week grid: the modal lets the resident pick one of these
-  machineOptions?: { id: string; name: string }[]
+}
+
+// What booking or cancelling needs, whether it was confirmed in a row or straight from the week popover
+export type BookingAction = Pick<PendingAction, 'type' | 'slotId' | 'date' | 'bookingId' | 'machineId'>
+
+// The week-grid slot whose popover is open
+export interface OpenWeekSlot {
+  slotId: string
+  date: string
 }
 
 /** A booking as seen from the active user's perspective, pre-computed by the parent. */
@@ -29,7 +36,8 @@ export interface GridBooking {
 }
 
 export type WeekCell =
-  | { kind: 'own'; booking: BookingDto }
+  // freeMachines: in machine mode the resident can book more machines in a slot they're already in
+  | { kind: 'own'; bookings: BookingDto[]; freeMachines: LaundryMachineDto[] }
   | { kind: 'taken'; label: string }
   | { kind: 'full' }
   | { kind: 'past' }

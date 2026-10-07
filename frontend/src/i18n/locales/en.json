@@ -331,6 +331,9 @@
     "noUpcomingBookings": "No upcoming bookings",
     "pastBookings": "Past bookings",
     "noPastBookings": "No past bookings",
+    "pastBookingsPeriod": "The last {{days}} days",
+    "showAllPast": "Show all {{count}}",
+    "showFewerPast": "Show fewer",
     "yourInfo": "Your information",
     "firstName": "First name",
     "lastName": "Last name",
@@ -503,9 +506,7 @@
       "promptCancelWithMachine": "Do you want to cancel your booking at <s>{{slotTime}}</s> on <s>{{machineName}}</s> on <s>{{dateText}}</s>?",
       "warningMinutes": "There are only {{count}} minutes until your booking starts.",
       "warningHours_one": "There is {{count}} hour until your booking starts.",
-      "warningHours_other": "There are {{count}} hours until your booking starts.",
-      "pickMachine": "Choose a machine:",
-      "bookOn": "Book {{machine}}"
+      "warningHours_other": "There are {{count}} hours until your booking starts."
     },
     "stats": {
       "bookingsInPeriod": "Bookings in period",
@@ -567,8 +568,8 @@
       "taken": "Taken"
     },
     "cancelNotice": {
-      "title_one": "The board cancelled one of your bookings",
-      "title_other": "The board cancelled {{count}} of your bookings",
+      "title_one": "The admin cancelled one of your bookings",
+      "title_other": "The admin cancelled {{count}} of your bookings",
       "body": "You're welcome to book a new time.",
       "item": "{{date}} at {{time}}",
       "ok": "OK, got it"
@@ -582,7 +583,20 @@
       "freeCount_one": "{{count}} free",
       "freeCount_other": "{{count}} free",
       "notOpen": "Not open yet",
-      "yours": "Your booking"
+      "yours": "Your slot",
+      "machinesCount_one": "{{count}} machine",
+      "machinesCount_other": "{{count}} machines",
+      "moreFree_one": "+{{count}} free",
+      "moreFree_other": "+{{count}} free",
+      "ownSlotAria": "Your slot {{time}}. Show options",
+      "popover": {
+        "titleBook": "Book this slot?",
+        "titleOwn": "Your slot",
+        "titlePick": "Choose a machine",
+        "keep": "Keep it",
+        "machineFree": "Free",
+        "machineYours": "Yours"
+      }
     },
     "next": {
       "title": "Your next booking",
@@ -594,6 +608,13 @@
       "used": "{{used}} of {{max}} used",
       "empty": "You have no upcoming bookings.",
       "countsHint": "A booking counts until the end of the day it is on."
+    },
+    "calendarFile": {
+      "add": "Add to calendar",
+      "addShort": "Calendar",
+      "addAria": "Add {{time}} to your calendar",
+      "summary": "Laundry: {{where}}",
+      "description": "Booked in LaundryBook. If you can't use the slot, cancel it in LaundryBook so someone else can have it."
     },
     "room": {
       "machinesTitle": "Machines",
@@ -744,22 +765,29 @@
     "role_grant_too_high": "You can't grant a higher role than your own.",
     "invite_email_mismatch": "This invite was sent to a different email address."
   },
+  "markdownEditor": {
+    "toolbar": "Formatting",
+    "heading": "Heading",
+    "subheading": "Subheading",
+    "bold": "Bold",
+    "bulletList": "Bullet list",
+    "numberedList": "Numbered list",
+    "undo": "Undo last change",
+    "redo": "Redo"
+  },
   "houseRules": {
     "title": "House and laundry rules",
     "updated": "Updated {{date}}",
     "adminDescription": "Write the rules residents need to know. They appear under Property, and the booking page links to them.",
     "editorTitle": "Text",
-    "formatHelp": "An empty line starts a new paragraph. Start a line with - for a bullet, 1. for a numbered list and # for a heading. Write **word** for bold.",
-    "placeholder": "Write your laundry rules, for example:\n\n- Clean the lint filter after use.\n- Empty the machine within 15 minutes of your time ending.",
+    "formatHelp": "Use the buttons above the field. You can also type - for a bullet list, 1. for a numbered list and # for a heading.",
+    "placeholder": "Write your laundry rules here, for example that the lint filter must be cleaned after use.",
     "lastUpdated": "Last updated {{date}}",
     "save": "Save",
     "saving": "Saving…",
-    "undo": "Undo",
+    "undo": "Discard changes",
     "saved": "Saved. Residents can see it now.",
-    "saveFailed": "The rules couldn't be saved. Try again.",
-    "previewTitle": "What residents see",
-    "previewHelp": "Updates as you type.",
-    "previewEmpty": "Residents see no rules until you write something."
+    "saveFailed": "The rules couldn't be saved. Try again."
   },
   "propertyInfo": {
     "description": "The practical side of your laundry: rules, machines and who to contact.",
@@ -774,7 +802,7 @@
       "empty": "There are no laundry rooms yet."
     },
     "board": {
-      "title": "The board",
+      "title": "Admin",
       "empty": "There are no contacts yet."
     }
   },

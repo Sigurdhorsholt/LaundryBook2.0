@@ -3,6 +3,7 @@ import type { MyBookingDto } from './laundryApi'
 import { dayShortLabel, formatDayMonth, formatDateFull, formatTimeRange } from '../../shared/utils/dateUtils'
 import { colors } from '../../shared/theme'
 import { SIDE_CARD } from './constants'
+import { useAddToCalendar } from './useAddToCalendar'
 
 interface Props {
   bookings: MyBookingDto[]
@@ -15,6 +16,7 @@ interface Props {
 export function MyBookingsCard({ bookings, used, max, today, onCancel }: Props) {
   const { t } = useTranslation()
   const pct = max > 0 ? Math.min(100, Math.round((used / max) * 100)) : 0
+  const addToCalendar = useAddToCalendar()
 
   return (
     <section style={SIDE_CARD}>
@@ -45,17 +47,28 @@ export function MyBookingsCard({ bookings, used, max, today, onCancel }: Props) 
                   {[b.roomName, b.machineName].filter(Boolean).join(' · ')}
                 </span>
               </span>
-              {b.canCancel && (
+              <span className="d-flex flex-shrink-0">
                 <button
                   type="button"
                   className="btn btn-sm btn-link p-1"
-                  style={{ fontSize: '0.8rem', color: colors.dangerText }}
-                  aria-label={t('laundry.actions.cancelSlot', { time: `${formatDateFull(b.date)} ${formatTimeRange(b.startTime, b.endTime)}` })}
-                  onClick={() => onCancel(b)}
+                  style={{ fontSize: '0.8rem', color: colors.primary }}
+                  aria-label={t('laundry.calendarFile.addAria', { time: `${formatDateFull(b.date)} ${formatTimeRange(b.startTime, b.endTime)}` })}
+                  onClick={() => addToCalendar(b)}
                 >
-                  {t('laundry.actions.cancelBooking')}
+                  {t('laundry.calendarFile.addShort')}
                 </button>
-              )}
+                {b.canCancel && (
+                  <button
+                    type="button"
+                    className="btn btn-sm btn-link p-1"
+                    style={{ fontSize: '0.8rem', color: colors.dangerText }}
+                    aria-label={t('laundry.actions.cancelSlot', { time: `${formatDateFull(b.date)} ${formatTimeRange(b.startTime, b.endTime)}` })}
+                    onClick={() => onCancel(b)}
+                  >
+                    {t('laundry.actions.cancelBooking')}
+                  </button>
+                )}
+              </span>
             </li>
           ))}
         </ul>
