@@ -85,7 +85,7 @@ export function MachineSlotRow({
       </button>
 
       {expanded && canExpand && (
-        <div id={panelId} style={{ backgroundColor: colors.bgPage, padding: '8px 12px 10px' }}>
+        <div id={panelId} style={{ backgroundColor: colors.bgSubtle, padding: '8px 12px 10px' }}>
           {machines.map((machine) => {
             const booking = bookingFor(machine.id)
             const blocked = maxReached && booking === null

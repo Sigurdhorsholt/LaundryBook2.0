@@ -4,35 +4,36 @@
 /* ── Color tokens (keep in sync with src/shared/theme.ts) ──────────────────── */
 
 :root {
-  /* Brand — Warm Sage */
-  --color-primary:            #3d7a5c;
-  --color-primary-hover:      #336650;
-  --color-primary-active:     #2a5c42;
-  --color-primary-light:      #e8f5ee;
-  --color-primary-border:     #b8ddc9;
-  --color-primary-muted:      #d0ecdb;
-  --color-primary-muted-text: #2a5c42;
+  /* Brand — Deep Sage */
+  --color-primary:            #2c6a4d;
+  --color-primary-hover:      #235a40;
+  --color-primary-active:     #1e4f38;
+  --color-primary-light:      #dcebe2;
+  --color-primary-border:     #a9cdb8;
+  --color-primary-muted:      #cfe8da;
+  --color-primary-muted-text: #1e4f38;
 
   /* Stable tokens */
-  --color-text-primary:   #1a2e24;
-  --color-text-secondary: #5a6a7a;
-  --color-text-muted:     #a0adb8;
-  --color-bg-page:        #f8fafb;
+  --color-text-primary:   #12201a;
+  --color-text-secondary: #3f5048;
+  --color-text-muted:     #5a6b62;
+  --color-bg-page:        #e8ece6;
   --color-bg-card:        #ffffff;
-  --color-bg-subtle:      #f0f4f8;
-  --color-border:         #e8ecf0;
-  --color-success:        #2e7d32;
-  --color-warning:        #b45309;
-  --color-danger:         #c62828;
+  --color-bg-subtle:      #f3f5f1;
+  --color-border:         #cfd8d0;
+  --color-success:        #22693a;
+  --color-warning:        #8a500c;
+  --color-danger:         #a8261f;
 
   /* Bootstrap reads these for text-primary, links, bg-primary, badges, etc. */
-  --bs-primary:            #3d7a5c;
-  --bs-primary-rgb:        61, 122, 92;
-  --bs-link-color:         #3d7a5c;
-  --bs-link-color-rgb:     61, 122, 92;
-  --bs-link-hover-color:   #2a5c42;
-  --bs-link-hover-color-rgb: 42, 92, 66;
-  --bs-focus-ring-color:   rgba(61, 122, 92, 0.25);
+  --bs-primary:            #2c6a4d;
+  --bs-primary-rgb:        44, 106, 77;
+  --bs-link-color:         #2c6a4d;
+  --bs-link-color-rgb:     44, 106, 77;
+  --bs-link-hover-color:   #1e4f38;
+  --bs-link-hover-color-rgb: 30, 79, 56;
+  --bs-focus-ring-color:   rgba(44, 106, 77, 0.25);
+  --bs-border-color:       #cfd8d0;
 }
 
 /* Bootstrap compiles its blue into the button/form rules themselves, so the
@@ -46,7 +47,7 @@
   --bs-btn-active-border-color: var(--color-primary-active);
   --bs-btn-disabled-bg: var(--color-primary);
   --bs-btn-disabled-border-color: var(--color-primary);
-  --bs-btn-focus-shadow-rgb: 61, 122, 92;
+  --bs-btn-focus-shadow-rgb: 44, 106, 77;
 }
 .btn-outline-primary {
   --bs-btn-color: var(--color-primary);
@@ -59,13 +60,13 @@
   --bs-btn-active-border-color: var(--color-primary-active);
   --bs-btn-disabled-color: var(--color-primary);
   --bs-btn-disabled-border-color: var(--color-primary);
-  --bs-btn-focus-shadow-rgb: 61, 122, 92;
+  --bs-btn-focus-shadow-rgb: 44, 106, 77;
 }
 .form-control:focus,
 .form-select:focus,
 .form-check-input:focus {
   border-color: var(--color-primary-border);
-  box-shadow: 0 0 0 0.25rem rgba(61, 122, 92, 0.25);
+  box-shadow: 0 0 0 0.25rem rgba(44, 106, 77, 0.25);
 }
 .form-check-input:checked {
   background-color: var(--color-primary);
@@ -106,19 +107,19 @@ body {
   cursor: pointer;
 }
 .property-card:hover {
-  box-shadow: 0 4px 20px rgba(13, 59, 122, 0.09);
+  box-shadow: 0 4px 20px rgba(18, 32, 26, 0.10);
 }
 
 /* ── BookingGrid animations ─────────────────────────────────────────────────── */
 
 @keyframes slot-booked {
-  0%   { transform: scaleX(0.98); background-color: #c8e6c9; }
+  0%   { transform: scaleX(0.98); background-color: #a9cdb8; }
   60%  { transform: scaleX(1.005); }
-  100% { transform: scaleX(1);    background-color: #f0fdf4; }
+  100% { transform: scaleX(1);    background-color: #cfe8da; }
 }
 
 @keyframes slot-cancelled {
-  0%   { background-color: #ffcdd2; }
+  0%   { background-color: #f0c3bf; }
   100% { background-color: #ffffff; }
 }
 

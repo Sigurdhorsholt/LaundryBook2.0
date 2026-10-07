@@ -351,7 +351,7 @@ export function LaundryPage() {
           onSelectDate={selectDate}
         />
 
-        <div style={{ padding: '8px 20px', borderBottom: `1px solid ${colors.borderRow}`, backgroundColor: colors.bgPage }}>
+        <div style={{ padding: '8px 20px', borderBottom: `1px solid ${colors.borderRow}`, backgroundColor: colors.bgSubtle }}>
           <span style={{ fontSize: '0.82rem', fontWeight: 500, color: colors.textSecondary }}>
             {formatDateFull(selectedDate)}
             {selectedRoomId && rooms && rooms.length === 1 && (

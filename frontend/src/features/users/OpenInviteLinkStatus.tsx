@@ -28,7 +28,7 @@ export function OpenInviteLinkStatus({ propertyId, link, onShowQr }: Props) {
   }
 
   return (
-    <div className="rounded-3 p-3" style={{ border: `1px solid ${colors.borderDefault}`, backgroundColor: colors.bgPage }}>
+    <div className="rounded-3 p-3" style={{ border: `1px solid ${colors.borderDefault}`, backgroundColor: colors.bgSubtle }}>
       <p className="mb-1 fw-semibold" style={{ fontSize: '0.88rem', color: colors.textPrimary }}>{t('users.openLinkActive')}</p>
       <p className="mb-2" style={{ fontSize: '0.8rem', color: colors.textSecondary }}>
         {t('users.openLinkMeta', {

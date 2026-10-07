@@ -55,7 +55,7 @@ export function AdminDemoSection() {
 
               {/* Tab bar */}
               <div className="d-flex align-items-end px-2 pt-1"
-                style={{ borderBottom: `1px solid ${colors.borderDefault}`, backgroundColor: colors.bgPage, overflowX: 'auto' }}>
+                style={{ borderBottom: `1px solid ${colors.borderDefault}`, backgroundColor: colors.bgSubtle, overflowX: 'auto' }}>
                 {TABS.map(tab => {
                   const isActive = tab.id === active
                   return (
@@ -242,7 +242,7 @@ function RoomsTab() {
         {rooms.map(room => (
           <div key={room.name} className="rounded-3 overflow-hidden" style={{ border: `1px solid ${colors.borderDefault}` }}>
             <div className="d-flex align-items-center justify-content-between px-3 py-2"
-              style={{ backgroundColor: colors.bgPage, borderBottom: `1px solid ${colors.borderDefault}` }}>
+              style={{ backgroundColor: colors.bgSubtle, borderBottom: `1px solid ${colors.borderDefault}` }}>
               <span className="fw-semibold" style={{ fontSize: '0.9rem', color: colors.textPrimary }}>{room.name}</span>
               <span className="badge" style={{ backgroundColor: colors.primaryLight, color: colors.primary, fontWeight: 500, fontSize: '0.72rem' }}>
                 {t('public.adminDemo.rooms.active')}
@@ -287,7 +287,7 @@ function SettingsTab() {
             { label: t('public.adminDemo.settings.cancelDeadline.label'), value: t('public.adminDemo.settings.cancelDeadline.value') },
             { label: t('public.adminDemo.settings.maxBookings.label'), value: t('public.adminDemo.settings.maxBookings.value') },
           ].map(s => (
-            <div key={s.label} className="rounded-3 px-3 py-2" style={{ border: `1px solid ${colors.borderDefault}`, backgroundColor: colors.bgPage }}>
+            <div key={s.label} className="rounded-3 px-3 py-2" style={{ border: `1px solid ${colors.borderDefault}`, backgroundColor: colors.bgSubtle }}>
               <p className="mb-0" style={{ fontSize: '0.75rem', color: colors.textSecondary }}>{s.label}</p>
               <p className="fw-semibold mb-0" style={{ fontSize: '0.92rem', color: colors.textPrimary }}>{s.value}</p>
             </div>

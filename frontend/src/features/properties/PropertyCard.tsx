@@ -90,7 +90,7 @@ export function PropertyCard({ membership: m, variant }: PropertyCardProps) {
               style={{
                 fontSize: '0.82rem',
                 color: colors.textSecondary,
-                backgroundColor: colors.bgPage,
+                backgroundColor: colors.bgSubtle,
                 border: `1px solid ${colors.borderDefault}`,
                 borderRadius: '8px',
                 padding: '6px 10px',
