@@ -21,4 +21,7 @@ public class Booking : BaseEntity
     public DateOnly Date { get; set; }
     public BookingStatus Status { get; set; } = BookingStatus.Active;
     public DateTime? CancelledAt { get; set; }
+
+    // When the resident dismissed the "cancelled by the board" notice; null means not yet shown/acknowledged
+    public DateTime? CancellationSeenAt { get; set; }
 }

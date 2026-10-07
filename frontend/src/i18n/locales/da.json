@@ -544,6 +544,13 @@
       "cancelDeadlinePassed": "Aflysfrist udløbet",
       "taken": "Optaget"
     },
+    "cancelNotice": {
+      "title_one": "Bestyrelsen har aflyst en af dine bookinger",
+      "title_other": "Bestyrelsen har aflyst {{count}} af dine bookinger",
+      "body": "Book gerne en ny tid.",
+      "item": "{{date}} kl. {{time}}",
+      "ok": "OK, forstået"
+    },
     "inlineConfirm": {
       "usageAfter": "Du har så brugt {{used}} af {{max}} bookinger."
     },
