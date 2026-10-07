@@ -56,3 +56,10 @@ export interface AdminCancelTarget {
   dateLabel: string
   slotTime: string
 }
+
+// Booking rules from the property's settings, as shown to residents
+export interface RoomRules {
+  lookaheadDays: number
+  maxBookings: number
+  cancellationWindowMinutes: number
+}

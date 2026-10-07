@@ -37,14 +37,7 @@ public class GetPropertyQueryHandler(
             property.Id,
             property.Name,
             property.Address,
-            property.Settings is null
-                ? new ComplexSettingsDto(Domain.Enums.BookingMode.BookSpecificMachine, 60, 2, 14, Domain.Enums.BookingVisibility.ApartmentOnly)
-                : new ComplexSettingsDto(
-                    property.Settings.BookingMode,
-                    property.Settings.CancellationWindowMinutes,
-                    property.Settings.MaxConcurrentBookingsPerUser,
-                    property.Settings.BookingLookaheadDays,
-                    property.Settings.BookingVisibility),
+            ComplexSettingsDto.From(property.Settings),
             upcomingBookingCount);
     }
 }

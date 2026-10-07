@@ -21,4 +21,10 @@ public record ComplexSettingsDto(
     int CancellationWindowMinutes,
     int MaxConcurrentBookingsPerUser,
     int BookingLookaheadDays,
-    BookingVisibility BookingVisibility);
+    BookingVisibility BookingVisibility)
+{
+    // A property created before settings existed has none; these are the defaults it books with
+    public static ComplexSettingsDto From(Domain.Entities.ComplexSettings? s) => s is null
+        ? new ComplexSettingsDto(BookingMode.BookSpecificMachine, 60, 2, 14, BookingVisibility.ApartmentOnly)
+        : new ComplexSettingsDto(s.BookingMode, s.CancellationWindowMinutes, s.MaxConcurrentBookingsPerUser, s.BookingLookaheadDays, s.BookingVisibility);
+}

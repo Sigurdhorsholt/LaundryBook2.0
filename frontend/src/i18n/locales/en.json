@@ -37,6 +37,7 @@
   "nav": {
     "laundry": "Laundry booking",
     "myPage": "My page",
+    "propertyInfo": "Property",
     "overview": "Overview",
     "properties": "Properties",
     "system": "System",
@@ -574,6 +575,9 @@
       "cancelUntilStart": "You can cancel until the time starts.",
       "cancelHours_one": "You can cancel up to {{count}} hour before the start.",
       "cancelHours_other": "You can cancel up to {{count}} hours before the start.",
+      "modeMachine": "You book a specific machine.",
+      "modeRoom": "You book the whole laundry room.",
+      "moreAboutProperty": "More about the property",
       "disclosureTitle": "Rules and machines"
     },
     "duration": {
@@ -707,6 +711,23 @@
     "role_too_high": "You can't manage a user with a higher role than your own.",
     "role_grant_too_high": "You can't grant a higher role than your own.",
     "invite_email_mismatch": "This invite was sent to a different email address."
+  },
+  "propertyInfo": {
+    "description": "The practical side of your laundry: rules, machines and who to contact.",
+    "pick": "Property",
+    "loadErrorTitle": "Couldn't load the information",
+    "address": "Address",
+    "rules": {
+      "title": "How booking works"
+    },
+    "rooms": {
+      "title": "Laundry rooms",
+      "empty": "There are no laundry rooms yet."
+    },
+    "board": {
+      "title": "The board",
+      "empty": "There are no contacts yet."
+    }
   },
   "adminOverview": {
     "inviteResident": "Invite resident",
