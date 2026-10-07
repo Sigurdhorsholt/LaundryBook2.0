@@ -147,6 +147,19 @@ export function IconLogOut({ size = defaults.size, color = defaults.color, strok
   </>)
 }
 
+export function IconLock({ size = defaults.size, color = defaults.color, strokeWidth = defaults.strokeWidth }: IconProps) {
+  return base(size, color, strokeWidth, <>
+    <rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/>
+  </>)
+}
+
+export function IconAlertTriangle({ size = defaults.size, color = defaults.color, strokeWidth = defaults.strokeWidth }: IconProps) {
+  return base(size, color, strokeWidth, <>
+    <path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/>
+    <line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/>
+  </>)
+}
+
 export function IconX({ size = defaults.size, color = defaults.color, strokeWidth = defaults.strokeWidth }: IconProps) {
   return base(size, color, strokeWidth, <>
     <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>

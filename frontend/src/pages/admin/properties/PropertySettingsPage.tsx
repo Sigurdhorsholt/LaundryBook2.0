@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
-import { useParams } from 'react-router-dom'
+import { Link, useParams } from 'react-router-dom'
 import {
   BookingMode,
   BookingVisibility,
@@ -8,7 +8,7 @@ import {
   useUpdateComplexSettingsMutation,
 } from '../../../features/properties/propertiesApi'
 import type { ComplexSettingsDto } from '../../../features/properties/propertiesApi'
-import { PageHeader, Spinner } from '../../../shared/ui'
+import { PageHeader, Spinner, Callout } from '../../../shared/ui'
 import { extractErrorMessage } from '../../../shared/utils/errorUtils'
 import { colors } from '../../../shared/theme'
 import { SettingsSection } from '../../../features/properties/SettingsSection'
@@ -138,6 +138,16 @@ export function PropertySettingsPage() {
           description={t('adminProperties.settings.bookingType.description')}
         >
           <div className="d-flex flex-column gap-2">
+            {/* Above the options so the admin learns why they're disabled before trying them */}
+            {modeLocked && (
+              <Callout
+                icon="lock"
+                title={t('adminProperties.settings.bookingType.lockedTitle')}
+                action={<Link to={`/admin/properties/${propertyId}/bookings`}>{t('adminProperties.settings.bookingType.lockedAction')}</Link>}
+              >
+                {t('adminProperties.settings.bookingType.locked', { count: property.upcomingBookingCount })}
+              </Callout>
+            )}
             <RadioCard
               name="bookingMode"
               selected={form.bookingMode === BookingMode.BookSpecificMachine}
@@ -154,11 +164,6 @@ export function PropertySettingsPage() {
               disabled={modeLocked}
               onChange={() => patch({ bookingMode: BookingMode.BookEntireRoom })}
             />
-            {modeLocked && (
-              <p style={{ fontSize: '0.82rem', color: colors.textSecondary, margin: '4px 0 0' }}>
-                {t('adminProperties.settings.bookingType.locked', { count: property.upcomingBookingCount })}
-              </p>
-            )}
           </div>
         </SettingsSection>
 

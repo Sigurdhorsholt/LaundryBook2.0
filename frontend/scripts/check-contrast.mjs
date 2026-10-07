@@ -29,6 +29,7 @@ const pairs = [
   ['successText', 'bgCard', TEXT],
   ['warningText', 'warningBg', TEXT],
   ['warningText', 'bgCard', TEXT],
+  ['primary', 'warningBg', TEXT],
   ['dangerText', 'dangerBg', TEXT],
   ['dangerText', 'bgCard', TEXT],
   ['bgCard', 'dangerText', TEXT],
