@@ -3,6 +3,8 @@ import type { MyBookingDto } from './laundryApi'
 import { dayShortLabel, formatDayMonth, formatDateFull, formatTimeRange } from '../../shared/utils/dateUtils'
 import { colors } from '../../shared/theme'
 import { TAP_TARGET_PX } from './constants'
+import { useAddToCalendar } from './useAddToCalendar'
+import { IconCalendar } from '../../shared/icons'
 
 interface Props {
   booking: MyBookingDto
@@ -20,6 +22,7 @@ interface Props {
 export function NextBookingCompact({ booking: b, today, used, max, totalCount, showAll, listId, onToggleAll, onCancel }: Props) {
   const { t } = useTranslation()
   const time = formatTimeRange(b.startTime, b.endTime)
+  const addToCalendar = useAddToCalendar()
 
   return (
     <section
@@ -50,6 +53,19 @@ export function NextBookingCompact({ booking: b, today, used, max, totalCount, s
         <span style={{ flex: 1, minWidth: 0, fontSize: '0.85rem' }}>
           {[b.roomName, b.machineName].filter(Boolean).join(' · ')} · {t('laundry.mine.used', { used, max })}
         </span>
+        <button
+          type="button"
+          onClick={() => addToCalendar(b)}
+          aria-label={t('laundry.calendarFile.addAria', { time: `${formatDateFull(b.date)} ${time}` })}
+          title={t('laundry.calendarFile.add')}
+          style={{
+            width: TAP_TARGET_PX, height: TAP_TARGET_PX, borderRadius: 10, cursor: 'pointer', flexShrink: 0,
+            display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
+            border: `1px solid ${colors.chromeBorder}`, background: 'transparent', color: colors.chromeText,
+          }}
+        >
+          <IconCalendar size={18} />
+        </button>
         {b.canCancel && (
           <button
             type="button"

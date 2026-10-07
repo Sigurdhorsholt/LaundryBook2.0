@@ -609,6 +609,13 @@
       "empty": "Du har ingen kommende bookinger.",
       "countsHint": "En booking tæller med til og med den dag, den ligger på."
     },
+    "calendarFile": {
+      "add": "Tilføj til kalender",
+      "addShort": "Kalender",
+      "addAria": "Tilføj {{time}} til din kalender",
+      "summary": "Vasketid: {{where}}",
+      "description": "Booket i LaundryBook. Kan du ikke bruge tiden, så aflys den i LaundryBook, så andre kan få den."
+    },
     "room": {
       "machinesTitle": "Maskiner",
       "rulesTitle": "Booking",

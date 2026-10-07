@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next'
 import { useGetMyBookingsQuery, useCancelBookingMutation, type MyBookingDto } from '../laundry/laundryApi'
 import { BookingRow } from './BookingRow'
 import { PastBookingsCard } from './PastBookingsCard'
+import { useAddToCalendar } from '../laundry/useAddToCalendar'
 import { EmptyState, Spinner } from '../../shared/ui'
 import { colors } from '../../shared/theme'
 import { formatTimeRange, minutesUntilSlot } from '../../shared/utils/dateUtils'
@@ -19,6 +20,7 @@ export function BookingsOverview({ propertyId }: Props) {
   // Only today onwards; the past comes from the history endpoint
   const { data: upcoming = [], isLoading } = useGetMyBookingsQuery(propertyId)
   const [cancelBooking, { isLoading: cancelling }] = useCancelBookingMutation()
+  const addToCalendar = useAddToCalendar()
   const [pendingCancel, setPendingCancel] = useState<{ action: PendingAction; booking: MyBookingDto } | null>(null)
   const [cancelError, setCancelError] = useState<string | null>(null)
 
@@ -62,6 +64,7 @@ export function BookingsOverview({ propertyId }: Props) {
                   key={b.id}
                   booking={b}
                   onCancel={() => askCancel(b)}
+                  onAddToCalendar={() => addToCalendar(b)}
                   cancelling={cancelling && pendingCancel?.booking.id === b.id}
                 />
               ))

@@ -609,6 +609,13 @@
       "empty": "You have no upcoming bookings.",
       "countsHint": "A booking counts until the end of the day it is on."
     },
+    "calendarFile": {
+      "add": "Add to calendar",
+      "addShort": "Calendar",
+      "addAria": "Add {{time}} to your calendar",
+      "summary": "Laundry: {{where}}",
+      "description": "Booked in LaundryBook. If you can't use the slot, cancel it in LaundryBook so someone else can have it."
+    },
     "room": {
       "machinesTitle": "Machines",
       "rulesTitle": "Booking",

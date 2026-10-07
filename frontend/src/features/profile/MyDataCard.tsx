@@ -4,6 +4,7 @@ import { useLazyExportMyDataQuery, useMeQuery } from '../auth/authApi'
 import { DeleteAccountModal } from './DeleteAccountModal'
 import { FormError } from '../../shared/ui'
 import { todayStr } from '../../shared/utils/dateUtils'
+import { downloadTextFile } from '../../shared/utils/fileUtils'
 import { colors } from '../../shared/theme'
 
 export function MyDataCard() {
@@ -17,12 +18,7 @@ export function MyDataCard() {
     setExportError(null)
     try {
       const data = await exportMyData().unwrap()
-      const url = URL.createObjectURL(new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' }))
-      const a = document.createElement('a')
-      a.href = url
-      a.download = `laundrybook-mine-data-${todayStr()}.json`
-      a.click()
-      URL.revokeObjectURL(url)
+      downloadTextFile(`laundrybook-mine-data-${todayStr()}.json`, JSON.stringify(data, null, 2), 'application/json')
     } catch {
       setExportError(t('profile.myData.exportFailed'))
     }
