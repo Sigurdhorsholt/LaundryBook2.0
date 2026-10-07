@@ -3,11 +3,11 @@ import type { CurrentUserDto } from '../features/auth/authApi'
 import { useLogout } from '../features/auth/useLogout'
 import { IconLogOut } from './icons'
 import { colors } from './theme'
+import { userInitials } from './utils/formatUtils'
 
 export function ProfileMenu({ user }: { user: CurrentUserDto }) {
   const { t } = useTranslation()
   const handleLogout = useLogout()
-  const initials = `${user.firstName.charAt(0)}${user.lastName.charAt(0)}`.toUpperCase() || user.email.charAt(0).toUpperCase()
 
   return (
     <div className="dropdown">
@@ -21,7 +21,7 @@ export function ProfileMenu({ user }: { user: CurrentUserDto }) {
           backgroundColor: colors.chromeAccent, color: colors.chrome, fontWeight: 700, fontSize: '0.8rem',
         }}
       >
-        {initials}
+        {userInitials(user)}
       </button>
       <ul className="dropdown-menu dropdown-menu-end" style={{ minWidth: 220 }}>
         <li className="px-3 py-2">
