@@ -51,7 +51,7 @@ public class ReplaceTimeSlotScheduleCommandHandler(
                 if (!active.TryGetValue(id, out var existing))
                     throw new NotFoundException(nameof(TimeSlotTemplate), id);
                 if (!keepIds.Add(id))
-                    throw new ValidationException("The same time slot was submitted more than once.");
+                    throw new ConflictException("Den samme tidsplads er sendt mere end én gang.", ErrorCodes.SlotDuplicate);
                 desired.Add((existing.StartTime, existing.EndTime));
             }
             else
@@ -64,7 +64,7 @@ public class ReplaceTimeSlotScheduleCommandHandler(
         for (var i = 1; i < desired.Count; i++)
         {
             if (desired[i].Start < desired[i - 1].End)
-                throw new ValidationException("Time slot overlaps with an existing slot.");
+                throw new ConflictException("Tidspladsen overlapper en eksisterende tidsplads.", ErrorCodes.SlotOverlap);
         }
 
         var removeIds = active.Keys.Where(id => !keepIds.Contains(id)).ToList();

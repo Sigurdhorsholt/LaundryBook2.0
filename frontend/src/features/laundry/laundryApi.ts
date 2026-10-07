@@ -38,12 +38,21 @@ export interface TimeSlotScheduleEntry {
   endTime: string
 }
 
+// How another resident's booking is named, per the property's visibility setting
+export enum BookingLabelKind {
+  Own = 0,
+  Name = 1,
+  Apartment = 2,
+  Anonymous = 3,
+}
+
 export interface BookingDto {
   id: string
   timeSlotTemplateId: string
   date: string          // "YYYY-MM-DD"
   isOwn: boolean
-  label: string         // "Min booking" | "Anna Hansen" | "Lejl. 2B" | "Optaget"
+  labelKind: BookingLabelKind
+  labelValue: string | null   // the name or apartment number; null for Own and Anonymous
   canCancel: boolean
   machineId: string | null
   machineName: string | null

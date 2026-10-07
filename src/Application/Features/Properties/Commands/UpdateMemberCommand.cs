@@ -43,7 +43,7 @@ public class UpdateMemberCommandHandler(
 
         // Prevent an admin from disabling or demoting themselves
         if (request.UserId == currentUser.UserId && (!request.IsActive || request.Role < UserRole.ComplexAdmin))
-            throw new InvalidOperationException("You cannot disable or demote your own account.");
+            throw new ConflictException("Du kan ikke deaktivere eller nedgradere din egen konto.", ErrorCodes.CannotDemoteSelf);
 
         // Don't let the property lose its last active admin through demotion/deactivation
         var remainsAdmin = request.IsActive && request.Role >= UserRole.ComplexAdmin;

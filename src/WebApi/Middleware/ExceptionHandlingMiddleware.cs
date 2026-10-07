@@ -23,6 +23,7 @@ public class ExceptionHandlingMiddleware(RequestDelegate next, ILogger<Exception
                 // Handlers throw ValidationException(message) without field errors; keep that message
                 title = ex.Errors.Any() ? "Validation failed" : ex.Message,
                 status = 422,
+                code = ErrorCodes.ValidationFailed,
                 errors = ex.Errors
                     .GroupBy(e => e.PropertyName)
                     .ToDictionary(g => g.Key, g => g.Select(e => e.ErrorMessage).ToArray())
@@ -30,42 +31,33 @@ public class ExceptionHandlingMiddleware(RequestDelegate next, ILogger<Exception
         }
         catch (NotFoundException ex)
         {
-            await WriteJson(context, (int)HttpStatusCode.NotFound, new
-            {
-                title = ex.Message,
-                status = 404
-            });
+            await WriteApp(context, HttpStatusCode.NotFound, ex);
         }
         catch (ConflictException ex)
         {
-            await WriteJson(context, (int)HttpStatusCode.Conflict, new
-            {
-                title = ex.Message,
-                status = 409
-            });
+            await WriteApp(context, HttpStatusCode.Conflict, ex);
         }
         catch (ForbiddenException ex)
         {
-            await WriteJson(context, (int)HttpStatusCode.Forbidden, new
-            {
-                title = ex.Message,
-                status = 403
-            });
+            await WriteApp(context, HttpStatusCode.Forbidden, ex);
         }
         catch (UnauthorizedAccessException ex)
         {
             await WriteJson(context, (int)HttpStatusCode.Unauthorized, new
             {
                 title = ex.Message,
-                status = 401
+                status = 401,
+                code = ErrorCodes.Unauthorized
             });
         }
         catch (DbUpdateException ex) when (ex.InnerException is PostgresException { SqlState: PostgresErrorCodes.UniqueViolation })
         {
             await WriteJson(context, (int)HttpStatusCode.Conflict, new
             {
-                title = "The resource was just taken. Please try again.",
-                status = 409
+                // The unique index caught two people booking the same slot at the same moment
+                title = "Tiden er lige blevet booket af en anden. Prøv en anden tid.",
+                status = 409,
+                code = ErrorCodes.SlotTaken
             });
         }
         catch (Exception ex)
@@ -75,10 +67,20 @@ public class ExceptionHandlingMiddleware(RequestDelegate next, ILogger<Exception
             await WriteJson(context, (int)HttpStatusCode.InternalServerError, new
             {
                 title = "An unexpected error occurred",
-                status = 500
+                status = 500,
+                code = ErrorCodes.Unexpected
             });
         }
     }
+
+    private static Task WriteApp(HttpContext context, HttpStatusCode status, AppException ex) =>
+        WriteJson(context, (int)status, new
+        {
+            title = ex.Message,
+            status = (int)status,
+            code = ex.Code,
+            @params = ex.Parameters,
+        });
 
     private static Task WriteJson(HttpContext context, int statusCode, object body)
     {

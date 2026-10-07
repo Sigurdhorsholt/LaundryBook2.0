@@ -22,7 +22,7 @@ export interface GridBooking {
   bookingId: string
   slotId: string
   isOwn: boolean      // true = belongs to the current/viewing user
-  label: string       // display text: "Min booking" | "Anna Hansen" | "Lejl. 2B" | "Optaget"
+  label: string       // display text, already translated: "Min booking" | "Anna Hansen" | "Lejl. 2B" | "Optaget"
   canCancel: boolean  // only meaningful when isOwn=true
   machineId: string | null
   machineName: string | null

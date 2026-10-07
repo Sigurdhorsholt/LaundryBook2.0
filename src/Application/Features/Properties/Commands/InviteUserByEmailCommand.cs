@@ -43,7 +43,7 @@ public class InviteUserByEmailCommandHandler(
             ?? throw new NotFoundException("Property", request.PropertyId);
 
         if (!property.IsActive)
-            throw new ConflictException("Foreningen afventer godkendelse og kan endnu ikke invitere beboere.");
+            throw new ConflictException("Foreningen afventer godkendelse og kan endnu ikke invitere beboere.", ErrorCodes.PropertyPendingApproval);
 
         var adminId = currentUser.UserId!.Value;
         var admin = await db.Users.FirstOrDefaultAsync(u => u.Id == adminId, cancellationToken);

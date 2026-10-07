@@ -33,7 +33,7 @@ public class CancelBookingCommandHandler(
         }
 
         if (booking.Status != BookingStatus.Active)
-            throw new ConflictException("Bookingen er allerede aflyst.");
+            throw new ConflictException("Bookingen er allerede aflyst.", ErrorCodes.BookingAlreadyCancelled);
 
         // Enforce cancellation window (admins bypass this)
         if (isOwner)
@@ -44,7 +44,7 @@ public class CancelBookingCommandHandler(
             var windowMinutes = settings?.CancellationWindowMinutes ?? 60;
             var slotStartUtc = CopenhagenTime.ToUtc(booking.Date, booking.TimeSlotTemplate.StartTime);
             if ((slotStartUtc - DateTime.UtcNow).TotalMinutes <= windowMinutes)
-                throw new ConflictException("Aflysningstiden er udløbet.");
+                throw new ConflictException("Aflysningstiden er udløbet.", ErrorCodes.CancelWindowPassed);
         }
 
         booking.Status = isOwner ? BookingStatus.CancelledByUser : BookingStatus.CancelledByAdmin;

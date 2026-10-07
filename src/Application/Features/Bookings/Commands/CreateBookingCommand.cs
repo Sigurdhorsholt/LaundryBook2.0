@@ -43,18 +43,18 @@ public class CreateBookingCommandHandler(
         var today = CopenhagenTime.Today;
         var latestAllowed = today.AddDays(settings.BookingLookaheadDays);
         if (request.Date < today || request.Date > latestAllowed)
-            throw new ConflictException("Datoen er uden for den tilladte bookingperiode.");
+            throw new ConflictException("Datoen er uden for den tilladte bookingperiode.", ErrorCodes.OutsideBookingWindow);
 
         // Slot must not be in the past
         if (CopenhagenTime.ToUtc(request.Date, template.StartTime) <= DateTime.UtcNow)
-            throw new ConflictException("Tidspladsen er allerede passeret.");
+            throw new ConflictException("Tidspladsen er allerede passeret.", ErrorCodes.SlotPassed);
 
         Guid? machineId = null;
 
         if (settings.BookingMode == BookingMode.BookSpecificMachine)
         {
             if (request.MachineId is null)
-                throw new ConflictException("Vælg en maskine for at booke.");
+                throw new ConflictException("Vælg en maskine for at booke.", ErrorCodes.MachineRequired);
 
             var machine = await db.LaundryMachines
                 .FirstOrDefaultAsync(m =>
@@ -77,7 +77,7 @@ public class CreateBookingCommandHandler(
                     cancellationToken);
 
             if (machineTaken)
-                throw new ConflictException("Maskinen er allerede optaget på dette tidspunkt.");
+                throw new ConflictException("Maskinen er allerede optaget på dette tidspunkt.", ErrorCodes.MachineTaken);
         }
         else
         {
@@ -91,7 +91,7 @@ public class CreateBookingCommandHandler(
                     cancellationToken);
 
             if (slotTaken)
-                throw new ConflictException("Tidspladsen er allerede optaget.");
+                throw new ConflictException("Tidspladsen er allerede optaget.", ErrorCodes.SlotTaken);
         }
 
         // Enforce max concurrent bookings per user
@@ -104,7 +104,10 @@ public class CreateBookingCommandHandler(
                 cancellationToken);
 
         if (activeCount >= settings.MaxConcurrentBookingsPerUser)
-            throw new ConflictException($"Du har nået grænsen på {settings.MaxConcurrentBookingsPerUser} samtidige bookinger.");
+            throw new ConflictException(
+                $"Du har nået grænsen på {settings.MaxConcurrentBookingsPerUser} samtidige bookinger.",
+                ErrorCodes.MaxBookingsReached,
+                new Dictionary<string, object> { ["max"] = settings.MaxConcurrentBookingsPerUser });
 
         var booking = new Booking
         {

@@ -539,7 +539,8 @@
       "freeCount": "{{free}} of {{total}} available",
       "deadlinePassed": "Deadline passed",
       "limitReached": "Limit reached",
-      "cancelDeadlinePassed": "Cancel deadline passed"
+      "cancelDeadlinePassed": "Cancel deadline passed",
+      "taken": "Taken"
     },
     "inlineConfirm": {
       "usageAfter": "You will then have used {{used}} of {{max}} bookings."
@@ -676,6 +677,31 @@
     "othersBooked_other": "{{count}} other residents have booked this day",
     "milestone": "You've now booked {{count}} times - the laundry room is getting to know you.",
     "goToBooking": "Go to booking"
+  },
+  "errors": {
+    "not_found": "This no longer exists. Reload the page and try again.",
+    "forbidden": "You don't have permission to do this.",
+    "unauthorized": "You need to be logged in.",
+    "not_signed_in": "You need to be logged in.",
+    "slot_taken": "Someone just booked this time. Choose another time.",
+    "machine_taken": "Someone just booked this machine for that time.",
+    "machine_required": "Choose a machine to book.",
+    "slot_passed": "This time has already passed.",
+    "outside_booking_window": "That date is outside the period you can book.",
+    "max_bookings_reached": "You have reached the limit of {{max}} bookings at a time.",
+    "booking_already_cancelled": "This booking has already been cancelled.",
+    "cancel_window_passed": "The deadline for cancelling has passed.",
+    "slot_overlap": "The time slot overlaps an existing one.",
+    "slot_duplicate": "The same time slot is included more than once.",
+    "booking_mode_locked_one": "The booking type can't be changed while there is {{count}} upcoming booking.",
+    "booking_mode_locked_other": "The booking type can't be changed while there are {{count}} upcoming bookings.",
+    "property_pending_approval": "The association is awaiting approval and can't invite residents yet.",
+    "last_admin": "The association must have at least one active administrator.",
+    "cannot_remove_self": "You can't remove yourself from the association.",
+    "cannot_demote_self": "You can't deactivate or demote your own account.",
+    "role_too_high": "You can't manage a user with a higher role than your own.",
+    "role_grant_too_high": "You can't grant a higher role than your own.",
+    "invite_email_mismatch": "This invite was sent to a different email address."
   },
   "adminOverview": {
     "inviteResident": "Invite resident",

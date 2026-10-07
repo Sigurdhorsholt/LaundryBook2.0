@@ -72,7 +72,7 @@ public class PropertyAuthorizationService(IAppDbContext db, ICurrentUserService 
             ?? throw new ForbiddenException();
 
         if (roleToGrant > effectiveRole)
-            throw new ForbiddenException("You cannot grant a role higher than your own.");
+            throw new ForbiddenException("Du kan ikke tildele en højere rolle end din egen.", ErrorCodes.RoleGrantTooHigh);
     }
 
     /// <summary>
@@ -92,7 +92,7 @@ public class PropertyAuthorizationService(IAppDbContext db, ICurrentUserService 
             .FirstOrDefaultAsync(ct);
 
         if (targetRole > effectiveRole)
-            throw new ForbiddenException("You cannot manage a member with a higher role than your own.");
+            throw new ForbiddenException("Du kan ikke administrere en bruger med en højere rolle end din egen.", ErrorCodes.RoleTooHigh);
     }
 
     /// <summary>
@@ -108,6 +108,6 @@ public class PropertyAuthorizationService(IAppDbContext db, ICurrentUserService 
                 && m.Role >= UserRole.ComplexAdmin, ct);
 
         if (otherActiveAdmins == 0)
-            throw new ConflictException("Foreningen skal have mindst én aktiv administrator.");
+            throw new ConflictException("Foreningen skal have mindst én aktiv administrator.", ErrorCodes.LastAdmin);
     }
 }

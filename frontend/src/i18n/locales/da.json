@@ -539,7 +539,8 @@
       "freeCount": "{{free}} af {{total}} ledige",
       "deadlinePassed": "Frist udløbet",
       "limitReached": "Grænse nået",
-      "cancelDeadlinePassed": "Aflysfrist udløbet"
+      "cancelDeadlinePassed": "Aflysfrist udløbet",
+      "taken": "Optaget"
     },
     "inlineConfirm": {
       "usageAfter": "Du har så brugt {{used}} af {{max}} bookinger."
@@ -676,6 +677,31 @@
     "othersBooked_other": "{{count}} andre beboere har booket denne dag",
     "milestone": "Du har nu booket {{count}} gange - vaskerummet kender dig efterhånden.",
     "goToBooking": "Gå til booking"
+  },
+  "errors": {
+    "not_found": "Det findes ikke længere. Genindlæs siden og prøv igen.",
+    "forbidden": "Du har ikke adgang til at gøre dette.",
+    "unauthorized": "Du skal være logget ind.",
+    "not_signed_in": "Du skal være logget ind.",
+    "slot_taken": "Tiden er lige blevet booket af en anden. Vælg en anden tid.",
+    "machine_taken": "Maskinen er lige blevet booket af en anden på det tidspunkt.",
+    "machine_required": "Vælg en maskine for at booke.",
+    "slot_passed": "Tiden er allerede passeret.",
+    "outside_booking_window": "Datoen ligger uden for den periode, der kan bookes.",
+    "max_bookings_reached": "Du har nået grænsen på {{max}} bookinger ad gangen.",
+    "booking_already_cancelled": "Bookingen er allerede aflyst.",
+    "cancel_window_passed": "Fristen for at aflyse er udløbet.",
+    "slot_overlap": "Tidspladsen overlapper en eksisterende tidsplads.",
+    "slot_duplicate": "Den samme tidsplads er med mere end én gang.",
+    "booking_mode_locked_one": "Bookingtypen kan ikke ændres, mens der er {{count}} kommende booking.",
+    "booking_mode_locked_other": "Bookingtypen kan ikke ændres, mens der er {{count}} kommende bookinger.",
+    "property_pending_approval": "Foreningen afventer godkendelse og kan endnu ikke invitere beboere.",
+    "last_admin": "Foreningen skal have mindst én aktiv administrator.",
+    "cannot_remove_self": "Du kan ikke fjerne dig selv fra foreningen.",
+    "cannot_demote_self": "Du kan ikke deaktivere eller nedgradere din egen konto.",
+    "role_too_high": "Du kan ikke administrere en bruger med en højere rolle end din egen.",
+    "role_grant_too_high": "Du kan ikke tildele en højere rolle end din egen.",
+    "invite_email_mismatch": "Invitationen er sendt til en anden e-mailadresse."
   },
   "adminOverview": {
     "inviteResident": "Inviter beboer",
