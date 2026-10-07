@@ -11,6 +11,8 @@ import type { ComplexSettingsDto } from '../../../features/properties/properties
 import { PageHeader, Spinner } from '../../../shared/ui'
 import { extractErrorMessage } from '../../../shared/utils/errorUtils'
 import { colors } from '../../../shared/theme'
+import { SettingsSection } from '../../../features/properties/SettingsSection'
+import { RadioCard } from '../../../features/properties/RadioCard'
 
 // Mirrors backend validation rules
 const MAX_CANCELLATION_HOURS = 168 // 7 days
@@ -125,7 +127,10 @@ export function PropertySettingsPage() {
         description={t('adminProperties.settings.description')}
       />
 
-      <form onSubmit={handleSubmit} style={{ maxWidth: 640 }}>
+      <form
+        onSubmit={handleSubmit}
+        style={{ maxWidth: 1100, backgroundColor: colors.bgCard, border: `1px solid ${colors.borderDefault}`, borderRadius: 14, padding: '4px 24px 24px' }}
+      >
 
         {/* ── Booking type ──────────────────────────────────────────────── */}
         <SettingsSection
@@ -266,7 +271,7 @@ export function PropertySettingsPage() {
         </SettingsSection>
 
         {/* ── Actions ───────────────────────────────────────────────────── */}
-        <div className="d-flex align-items-center gap-3 pt-2">
+        <div className="d-flex align-items-center gap-3 pt-4" style={{ borderTop: `1px solid ${colors.borderRow}` }}>
           <button
             type="submit"
             className="btn btn-primary fw-semibold"
@@ -295,75 +300,5 @@ export function PropertySettingsPage() {
         </div>
       </form>
     </div>
-  )
-}
-
-// ── Sub-components ────────────────────────────────────────────────────────────
-
-function SettingsSection({
-  title,
-  description,
-  children,
-}: {
-  title: string
-  description: string
-  children: React.ReactNode
-}) {
-  return (
-    <section className="mb-5">
-      <h2 className="fw-semibold mb-1" style={{ fontSize: '1rem', color: colors.textPrimary }}>{title}</h2>
-      <p className="mb-3" style={{ fontSize: '0.85rem', color: colors.textSecondary }}>{description}</p>
-      {children}
-    </section>
-  )
-}
-
-function RadioCard({
-  name,
-  selected,
-  label,
-  description,
-  disabled = false,
-  onChange,
-}: {
-  // Shared by the options of one group so arrow keys move between them
-  name: string
-  selected: boolean
-  label: string
-  description: string
-  disabled?: boolean
-  onChange: () => void
-}) {
-  const borderColor = selected ? colors.primary : colors.borderDefault
-  const bg = selected ? colors.primaryLighter : colors.bgCard
-
-  return (
-    <label
-      style={{
-        display: 'flex',
-        alignItems: 'flex-start',
-        gap: 12,
-        padding: '12px 16px',
-        borderRadius: 10,
-        border: `1.5px solid ${borderColor}`,
-        backgroundColor: bg,
-        cursor: disabled ? 'not-allowed' : 'pointer',
-        opacity: disabled && !selected ? 0.6 : 1,
-        transition: 'border-color 0.15s, background-color 0.15s',
-      }}
-    >
-      <input
-        type="radio"
-        name={name}
-        checked={selected}
-        disabled={disabled}
-        onChange={onChange}
-        style={{ marginTop: 3, accentColor: colors.primary, flexShrink: 0 }}
-      />
-      <div>
-        <div className="fw-semibold" style={{ fontSize: '0.88rem', color: colors.textPrimary }}>{label}</div>
-        <div style={{ fontSize: '0.82rem', color: colors.textSecondary, marginTop: 2 }}>{description}</div>
-      </div>
-    </label>
   )
 }

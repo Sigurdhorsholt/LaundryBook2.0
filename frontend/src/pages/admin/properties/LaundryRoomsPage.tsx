@@ -120,20 +120,22 @@ export function LaundryRoomsPage() {
           }
         />
       ) : (
-        <div className="d-flex flex-column gap-3">
+        // Two rooms side by side on wide screens; align-items-start so an expanded card doesn't stretch its neighbour
+        <div className="row g-3 align-items-start">
           {rooms.map((room) => (
-            <RoomCard
-              key={room.id}
-              room={room}
-              propertyId={propertyId!}
-              isExpanded={expandedRoomId === room.id}
-              onToggleExpand={() => toggleExpand(room.id)}
-              onEdit={() => setModal({ type: 'editRoom', room })}
-              onAddMachine={() => setModal({ type: 'addMachine', roomId: room.id, roomName: room.name })}
-              onEditMachine={(machine) => setModal({ type: 'editMachine', roomId: room.id, machine })}
-              onDeleted={handleDeleted}
-              showNoMachinesWarning={needsMachines && room.machineCount === 0}
-            />
+            <div key={room.id} className="col-12 col-xl-6">
+              <RoomCard
+                room={room}
+                propertyId={propertyId!}
+                isExpanded={expandedRoomId === room.id}
+                onToggleExpand={() => toggleExpand(room.id)}
+                onEdit={() => setModal({ type: 'editRoom', room })}
+                onAddMachine={() => setModal({ type: 'addMachine', roomId: room.id, roomName: room.name })}
+                onEditMachine={(machine) => setModal({ type: 'editMachine', roomId: room.id, machine })}
+                onDeleted={handleDeleted}
+                showNoMachinesWarning={needsMachines && room.machineCount === 0}
+              />
+            </div>
           ))}
         </div>
       )}

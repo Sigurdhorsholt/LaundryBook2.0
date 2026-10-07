@@ -352,42 +352,49 @@ function RoomCard({
             <Spinner />
           ) : (
             <>
-              {/* Templates — only when no saved slots exist yet */}
-              {apiSlots.length === 0 && <TemplateChips onApply={handleApplyTemplate} />}
+              {/* Wide screens: set up the times on the left, see the result on the right */}
+              <div className="row g-0">
+                <div className="col-12 col-xl-5">
+                  {/* Templates — only when no saved slots exist yet */}
+                  {apiSlots.length === 0 && <TemplateChips onApply={handleApplyTemplate} />}
 
-              {/* Timeline: live preview of pending state */}
-              <DayTimeline pendingSlots={pendingSlots} />
+                  {/* Generator: replaces pending state, no direct API calls */}
+                  <SlotGenerator
+                    from={genFrom}
+                    to={genTo}
+                    durationMinutes={genDuration}
+                    onFromChange={setGenFrom}
+                    onToChange={setGenTo}
+                    onDurationChange={setGenDuration}
+                    onGenerate={handleGenerate}
+                  />
 
-              {/* Generator: replaces pending state, no direct API calls */}
-              <SlotGenerator
-                from={genFrom}
-                to={genTo}
-                durationMinutes={genDuration}
-                onFromChange={setGenFrom}
-                onToChange={setGenTo}
-                onDurationChange={setGenDuration}
-                onGenerate={handleGenerate}
-              />
-
-              {/* Pending slot list */}
-              {pendingSlots.length > 0 ? (
-                <PendingSlotList slots={pendingSlots} onDelete={handleDeletePending} />
-              ) : (
-                <div className="px-4 py-2" style={{ fontSize: '0.85rem', color: colors.textMuted }}>
-                  {t('adminProperties.timeslots.noSlots')}
+                  {/* Manual single-slot add */}
+                  <div className="px-4 pb-3 pt-2">
+                    <button
+                      className="btn btn-sm d-flex align-items-center gap-1"
+                      style={{ fontSize: '0.82rem', color: colors.primary, fontWeight: 500, minHeight: 40 }}
+                      onClick={() => setShowAddModal(true)}
+                    >
+                      <IconPlus size={13} color={colors.primary} />
+                      {t('adminProperties.timeslots.addSingleSlot')}
+                    </button>
+                  </div>
                 </div>
-              )}
 
-              {/* Manual single-slot add */}
-              <div className="px-4 pb-3 pt-2">
-                <button
-                  className="btn btn-sm d-flex align-items-center gap-1"
-                  style={{ fontSize: '0.82rem', color: colors.primary, fontWeight: 500 }}
-                  onClick={() => setShowAddModal(true)}
-                >
-                  <IconPlus size={13} color={colors.primary} />
-                  {t('adminProperties.timeslots.addSingleSlot')}
-                </button>
+                <div className="col-12 col-xl-7">
+                  {/* Timeline: live preview of pending state */}
+                  <DayTimeline pendingSlots={pendingSlots} />
+
+                  {/* Pending slot list */}
+                  {pendingSlots.length > 0 ? (
+                    <PendingSlotList slots={pendingSlots} onDelete={handleDeletePending} />
+                  ) : (
+                    <div className="px-4 py-2" style={{ fontSize: '0.85rem', color: colors.textMuted }}>
+                      {t('adminProperties.timeslots.noSlots')}
+                    </div>
+                  )}
+                </div>
               </div>
 
               {/* Save bar — shown when there are pending changes, a save error, or a post-save notice */}
