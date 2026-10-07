@@ -4,7 +4,9 @@ import { useMeQuery } from '../features/auth/authApi'
 import { useModal } from '../shared/modals/useModal'
 import { PublicLayout } from './public/PublicLayout'
 import { PageMeta } from '../shared/PageMeta'
-import { PhotoPlaceholder } from './public/PhotoPlaceholder'
+import { WeekGridPreview } from './public/previews/WeekGridPreview'
+import { PhonePreview } from './public/previews/PhonePreview'
+import { AdminPreview } from './public/previews/AdminPreview'
 import { colors } from '../shared/theme'
 import { IconCheck } from '../shared/icons'
 
@@ -57,10 +59,7 @@ export function LandingPage() {
             </div>
             <div className="col-12 col-lg-6">
               <div className="position-relative">
-                <div className="rounded-4 overflow-hidden"
-                  style={{ border: `1px solid ${colors.borderDefault}`, boxShadow: '0 24px 60px rgba(10,25,41,0.18)' }}>
-                  <PhotoPlaceholder scene="building" aspect="5/4" />
-                </div>
+                <WeekGridPreview />
                 <div className="position-absolute bg-white rounded-3 p-3 d-none d-md-block"
                   style={{ bottom: -22, left: -22, boxShadow: '0 14px 40px rgba(10,25,41,0.16)', border: `1px solid ${colors.borderDefault}`, width: 220 }}>
                   <p className="mb-1" style={{ fontSize: '0.7rem', fontWeight: 700, color: colors.successText, textTransform: 'uppercase', letterSpacing: '0.06em' }}>
@@ -103,9 +102,7 @@ export function LandingPage() {
 
           <div className="row g-4 g-lg-5 align-items-center mb-5 pb-3">
             <div className="col-12 col-lg-6">
-              <div className="rounded-4 overflow-hidden" style={{ border: `1px solid ${colors.borderDefault}`, boxShadow: '0 8px 28px rgba(13,59,122,0.08)' }}>
-                <PhotoPlaceholder scene="laundry" aspect="4/3" />
-              </div>
+              <PhonePreview width={300} />
             </div>
             <div className="col-12 col-lg-6">
               <p className="fw-semibold mb-2" style={{ color: colors.primary, fontSize: '0.85rem', letterSpacing: '0.04em', textTransform: 'uppercase' }}>{t('landing.residentEyebrow')}</p>
@@ -128,9 +125,7 @@ export function LandingPage() {
 
           <div className="row g-4 g-lg-5 align-items-center flex-lg-row-reverse">
             <div className="col-12 col-lg-6">
-              <div className="rounded-4 overflow-hidden" style={{ border: `1px solid ${colors.borderDefault}`, boxShadow: '0 8px 28px rgba(13,59,122,0.08)' }}>
-                <PhotoPlaceholder scene="hallway" aspect="4/3" />
-              </div>
+              <AdminPreview focus="today" />
             </div>
             <div className="col-12 col-lg-6">
               <p className="fw-semibold mb-2" style={{ color: colors.primary, fontSize: '0.85rem', letterSpacing: '0.04em', textTransform: 'uppercase' }}>{t('landing.boardEyebrow')}</p>

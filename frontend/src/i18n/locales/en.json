@@ -883,6 +883,12 @@
     "week": "Week {{n}}"
   },
   "public": {
+    "previews": {
+      "weekAlt": "The week view in LaundryBook with free times, taken times and your own bookings",
+      "phoneAlt": "LaundryBook on a phone: your next booking, the week's days and the day's laundry times",
+      "adminAlt": "The admin's overview: this week's bookings, occupancy and today's bookings",
+      "usageAlt": "The admin's overview of how much each laundry room is used"
+    },
     "layout": {
       "nav": {
         "features": "Why LaundryBook",

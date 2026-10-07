@@ -883,6 +883,12 @@
     "week": "Uge {{n}}"
   },
   "public": {
+    "previews": {
+      "weekAlt": "Ugevisningen i LaundryBook med ledige tider, optagede tider og dine egne bookinger",
+      "phoneAlt": "LaundryBook på en telefon: din næste booking, ugens dage og dagens vasketider",
+      "adminAlt": "Administratorens overblik: ugens bookinger, belægning og dagens bookinger",
+      "usageAlt": "Administratorens overblik over, hvor meget hvert vaskerum bliver brugt"
+    },
     "layout": {
       "nav": {
         "features": "Hvorfor LaundryBook",
