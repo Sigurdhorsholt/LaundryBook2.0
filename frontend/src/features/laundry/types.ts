@@ -29,7 +29,8 @@ export interface GridBooking {
 }
 
 export type WeekCell =
-  | { kind: 'own'; booking: BookingDto }
+  // freeMachines: in machine mode the resident can book more machines in a slot they're already in
+  | { kind: 'own'; bookings: BookingDto[]; freeMachines: LaundryMachineDto[] }
   | { kind: 'taken'; label: string }
   | { kind: 'full' }
   | { kind: 'past' }
