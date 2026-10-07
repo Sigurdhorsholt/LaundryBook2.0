@@ -124,7 +124,18 @@
       "loadError": "Could not load bookings. Try reloading the page.",
       "cancelError": "The booking could not be cancelled. Please try again.",
       "viewList": "List",
-      "viewCalendar": "Calendar"
+      "viewCalendar": "Calendar",
+      "selected": {
+        "title": "Selected booking",
+        "empty": "Choose a booking in the calendar to see it here.",
+        "resident": "Resident",
+        "apartment": "Apartment",
+        "cancel": "Cancel booking",
+        "started": "This time has started and can't be cancelled here.",
+        "machinesTitle": "Machines in {{room}}",
+        "machineCount_one": "{{count}} booking",
+        "machineCount_other": "{{count}} bookings"
+      }
     },
     "users": {
       "title": "Users",
@@ -482,7 +493,8 @@
       "prevWeek": "Previous week",
       "nextWeek": "Next week",
       "noSlots": "No time slots set up for this room.",
-      "bookingCellTitle": "{{name}} - click to cancel"
+      "bookingCellTitle": "{{name}} - click to cancel",
+      "bookingCellSelect": "{{name}} - show details"
     },
     "list": {
       "emptyTitle": "No bookings in period",
