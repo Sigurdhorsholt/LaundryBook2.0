@@ -3,6 +3,7 @@ import { useMeQuery } from '../features/auth/authApi'
 import { PageHeader, Spinner } from '../shared/ui'
 import { UserInfoForm } from '../features/profile/UserInfoForm'
 import { BookingsOverview } from '../features/profile/BookingsOverview'
+import { MyDataCard } from '../features/profile/MyDataCard'
 
 export function MyPage() {
   const { t } = useTranslation()
@@ -15,8 +16,9 @@ export function MyPage() {
     <div className="container-fluid px-3 px-lg-4 py-4" style={{ maxWidth: 1100 }}>
       <PageHeader title={t('nav.myPage')} />
       <div className="row g-4">
-        <div className="col-lg-5">
+        <div className="col-lg-5 d-flex flex-column gap-4">
           <UserInfoForm />
+          <MyDataCard />
         </div>
         <div className="col-lg-7">
           {propertyId && <BookingsOverview propertyId={propertyId} />}
