@@ -14,7 +14,6 @@ public record PropertyDetailDto(
     string Name,
     string Address,
     ComplexSettingsDto Settings,
-    IReadOnlyList<MemberDto> Members,
     int UpcomingBookingCount);
 
 public record ComplexSettingsDto(
@@ -23,11 +22,3 @@ public record ComplexSettingsDto(
     int MaxConcurrentBookingsPerUser,
     int BookingLookaheadDays,
     BookingVisibility BookingVisibility);
-
-public record MemberDto(
-    Guid UserId,
-    string Email,
-    string FirstName,
-    string LastName,
-    UserRole Role,
-    string? ApartmentNumber);
