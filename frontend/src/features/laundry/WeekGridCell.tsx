@@ -1,68 +1,72 @@
 import { useTranslation } from 'react-i18next'
-import type { BookingDto, LaundryMachineDto } from './laundryApi'
 import type { WeekCell } from './types'
+import { IconCheck } from '../../shared/icons'
 import { colors } from '../../shared/theme'
 
 interface Props {
   cell: WeekCell
   // "Torsdag 8. okt 16:00–17:30": names the cell for screen readers, since a button only says "Book"
   slotLabel: string
-  totalMachines: number
+  machineMode: boolean
   maxReached: boolean
-  onBook: (freeMachines: LaundryMachineDto[]) => void
-  onCancel: (booking: BookingDto) => void
+  expanded: boolean
+  onOpen: (anchor: HTMLElement) => void
 }
 
 const box: React.CSSProperties = {
-  width: '100%', minHeight: 48, boxSizing: 'border-box', borderRadius: 9,
+  width: '100%', minHeight: 44, boxSizing: 'border-box', borderRadius: 9,
   display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
-  padding: '4px 6px', fontSize: '0.78rem', textAlign: 'center', lineHeight: 1.25,
+  padding: '4px 6px', fontSize: '0.78rem', textAlign: 'center', lineHeight: 1.2,
 }
 
-export function WeekGridCell({ cell, slotLabel, totalMachines, maxReached, onBook, onCancel }: Props) {
+const subLine: React.CSSProperties = {
+  fontSize: '0.7rem', maxWidth: '100%', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
+}
+
+export function WeekGridCell({ cell, slotLabel, machineMode, maxReached, expanded, onOpen }: Props) {
   const { t } = useTranslation()
+  const ring = expanded ? `0 0 0 2px ${colors.bgCard}, 0 0 0 4px ${colors.primary}` : undefined
 
   switch (cell.kind) {
-    case 'own':
-      return (
-        <div className="d-flex flex-column gap-1" style={{ width: '100%' }}>
-          <div style={{ ...box, backgroundColor: colors.slotOwnBg, color: colors.slotOwnText }}>
-            {cell.bookings.map(b => (
-              <span key={b.id} className="d-flex flex-column align-items-center">
-                <span style={{ fontWeight: 700 }}>{b.machineName ?? t('laundry.week.yours')}</span>
-                {b.canCancel ? (
-                  <button
-                    type="button"
-                    aria-label={t('laundry.actions.cancelSlot', { time: [slotLabel, b.machineName].filter(Boolean).join(' · ') })}
-                    onClick={() => onCancel(b)}
-                    style={{ background: 'none', border: 'none', padding: '2px 6px', color: colors.slotOwnText, fontSize: '0.76rem', textDecoration: 'underline', cursor: 'pointer' }}
-                  >
-                    {t('laundry.actions.cancelBooking')}
-                  </button>
-                ) : (
-                  <span style={{ fontSize: '0.72rem' }}>{t('laundry.slot.cancelDeadlinePassed')}</span>
-                )}
-              </span>
-            ))}
-          </div>
-          {cell.freeMachines.length > 0 && (
-            <button
-              type="button"
-              className="btn btn-outline-primary fw-semibold"
-              disabled={maxReached}
-              title={maxReached ? t('laundry.grid.limitReachedHint') : undefined}
-              aria-label={t('laundry.actions.bookSlot', { time: slotLabel })}
-              onClick={() => onBook(cell.freeMachines)}
-              style={{ ...box, minHeight: 36, borderWidth: 1.5, fontSize: '0.76rem', padding: '2px 6px' }}
-            >
-              {t('laundry.week.bookAnother')}
-              <span style={{ fontWeight: 500, fontSize: '0.68rem' }}>
-                {t('laundry.slot.freeCount', { free: cell.freeMachines.length, total: totalMachines })}
-              </span>
-            </button>
-          )}
-        </div>
+    case 'own': {
+      // Machine names come from the admin and can be any length, so the cell only names one and the popover lists them
+      const sub = !machineMode ? null
+        : cell.bookings.length === 1 ? cell.bookings[0].machineName
+        : t('laundry.week.machinesCount', { count: cell.bookings.length })
+      const canAct = cell.bookings.some(b => b.canCancel) || cell.freeMachines.length > 0
+      const content = (
+        <>
+          <span className="d-inline-flex align-items-center gap-1" style={{ fontWeight: 700 }}>
+            <IconCheck size={12} strokeWidth={3} />
+            {t('laundry.week.yours')}
+          </span>
+          {sub && <span style={subLine}>{sub}</span>}
+          {canAct
+            ? cell.freeMachines.length > 0 && (
+                <span style={{ ...subLine, fontWeight: 700, color: colors.primaryMutedText }}>
+                  {t('laundry.week.moreFree', { count: cell.freeMachines.length })}
+                </span>
+              )
+            : <span style={{ ...subLine, whiteSpace: 'normal' }}>{t('laundry.slot.cancelDeadlinePassed')}</span>}
+        </>
       )
+      if (!canAct) {
+        return <div style={{ ...box, backgroundColor: colors.slotOwnBg, color: colors.slotOwnText }}>{content}</div>
+      }
+      return (
+        <button
+          type="button"
+          className="week-own-cell"
+          aria-haspopup="dialog"
+          aria-expanded={expanded}
+          aria-label={t('laundry.week.ownSlotAria', { time: slotLabel })}
+          onClick={e => onOpen(e.currentTarget)}
+          style={{ ...box, border: 'none', backgroundColor: colors.slotOwnBg, color: colors.slotOwnText, cursor: 'pointer', boxShadow: ring }}
+        >
+          {content}
+        </button>
+      )
+    }
     case 'taken':
     case 'full':
       return (
@@ -86,17 +90,19 @@ export function WeekGridCell({ cell, slotLabel, totalMachines, maxReached, onBoo
       return (
         <button
           type="button"
-          className="btn btn-outline-primary fw-semibold"
+          className={`btn btn-outline-primary fw-semibold${expanded ? ' active' : ''}`}
           disabled={maxReached}
           title={maxReached ? t('laundry.grid.limitReachedHint') : undefined}
+          aria-haspopup="dialog"
+          aria-expanded={expanded}
           aria-label={t('laundry.actions.bookSlot', { time: slotLabel })}
-          onClick={() => onBook(cell.freeMachines)}
-          style={{ ...box, borderWidth: 1.5, fontSize: '0.82rem' }}
+          onClick={e => onOpen(e.currentTarget)}
+          style={{ ...box, borderWidth: 1.5, fontSize: '0.82rem', boxShadow: ring }}
         >
           {t('laundry.actions.book')}
-          {totalMachines > 0 && (
+          {machineMode && (
             <span style={{ fontWeight: 500, fontSize: '0.7rem' }}>
-              {t('laundry.slot.freeCount', { free: cell.freeMachines.length, total: totalMachines })}
+              {t('laundry.week.freeCount', { count: cell.freeMachines.length })}
             </span>
           )}
         </button>

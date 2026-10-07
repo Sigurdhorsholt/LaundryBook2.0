@@ -1,5 +1,6 @@
 import { useTranslation } from 'react-i18next'
-import type { BookingDto, LaundryMachineDto, TimeSlotTemplateDto } from './laundryApi'
+import type { TimeSlotTemplateDto } from './laundryApi'
+import type { OpenWeekSlot } from './types'
 import { weekCell, type WeekCellContext } from './utils'
 import { WeekGridCell } from './WeekGridCell'
 import { dayShortLabel, formatDayMonth, formatDateFull, formatTimeRange, isLocked } from '../../shared/utils/dateUtils'
@@ -11,15 +12,15 @@ interface Props {
   context: WeekCellContext
   freeCountByDate: Record<string, number>
   maxReached: boolean
-  onBook: (slotId: string, date: string, freeMachines: LaundryMachineDto[]) => void
-  onCancel: (booking: BookingDto) => void
+  openSlot: OpenWeekSlot | null
+  onOpen: (slotId: string, date: string, anchor: HTMLElement) => void
 }
 
 const cellPad: React.CSSProperties = { padding: 5, borderTop: `1px solid ${colors.borderRow}`, verticalAlign: 'middle' }
 
-export function WeekGrid({ weekDays, slots, context, freeCountByDate, maxReached, onBook, onCancel }: Props) {
+export function WeekGrid({ weekDays, slots, context, freeCountByDate, maxReached, openSlot, onOpen }: Props) {
   const { t } = useTranslation()
-  const { today, lookaheadDays, machineMode, machines } = context
+  const { today, lookaheadDays, machineMode } = context
 
   function dayStatus(date: string): string {
     if (date < today) return t('laundry.slot.past')
@@ -73,10 +74,10 @@ export function WeekGrid({ weekDays, slots, context, freeCountByDate, maxReached
                     <WeekGridCell
                       cell={weekCell(slot, d, context)}
                       slotLabel={`${formatDateFull(d)} ${time}`}
-                      totalMachines={machineMode ? machines.length : 0}
+                      machineMode={machineMode}
                       maxReached={maxReached}
-                      onBook={(free) => onBook(slot.id, d, free)}
-                      onCancel={onCancel}
+                      expanded={openSlot?.slotId === slot.id && openSlot.date === d}
+                      onOpen={anchor => onOpen(slot.id, d, anchor)}
                     />
                   </td>
                 ))}

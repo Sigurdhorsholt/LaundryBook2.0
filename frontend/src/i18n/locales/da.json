@@ -503,9 +503,7 @@
       "promptCancelWithMachine": "Vil du aflyse din booking kl. <s>{{slotTime}}</s> på <s>{{machineName}}</s> den <s>{{dateText}}</s>?",
       "warningMinutes": "Der er kun {{count}} minutter til din booking starter.",
       "warningHours_one": "Der er {{count}} time til din booking starter.",
-      "warningHours_other": "Der er {{count}} timer til din booking starter.",
-      "pickMachine": "Vælg en maskine:",
-      "bookOn": "Book {{machine}}"
+      "warningHours_other": "Der er {{count}} timer til din booking starter."
     },
     "stats": {
       "bookingsInPeriod": "Bookinger i perioden",
@@ -582,8 +580,20 @@
       "freeCount_one": "{{count}} ledig",
       "freeCount_other": "{{count}} ledige",
       "notOpen": "Ikke åben endnu",
-      "yours": "Din booking",
-      "bookAnother": "+ Book en til"
+      "yours": "Din tid",
+      "machinesCount_one": "{{count}} maskine",
+      "machinesCount_other": "{{count}} maskiner",
+      "moreFree_one": "+{{count}} ledig",
+      "moreFree_other": "+{{count}} ledige",
+      "ownSlotAria": "Din tid {{time}}. Vis muligheder",
+      "popover": {
+        "titleBook": "Book denne tid?",
+        "titleOwn": "Din tid",
+        "titlePick": "Vælg maskine",
+        "keep": "Behold tiden",
+        "machineFree": "Ledig",
+        "machineYours": "Din tid"
+      }
     },
     "next": {
       "title": "Din næste booking",

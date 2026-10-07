@@ -503,9 +503,7 @@
       "promptCancelWithMachine": "Do you want to cancel your booking at <s>{{slotTime}}</s> on <s>{{machineName}}</s> on <s>{{dateText}}</s>?",
       "warningMinutes": "There are only {{count}} minutes until your booking starts.",
       "warningHours_one": "There is {{count}} hour until your booking starts.",
-      "warningHours_other": "There are {{count}} hours until your booking starts.",
-      "pickMachine": "Choose a machine:",
-      "bookOn": "Book {{machine}}"
+      "warningHours_other": "There are {{count}} hours until your booking starts."
     },
     "stats": {
       "bookingsInPeriod": "Bookings in period",
@@ -582,8 +580,20 @@
       "freeCount_one": "{{count}} free",
       "freeCount_other": "{{count}} free",
       "notOpen": "Not open yet",
-      "yours": "Your booking",
-      "bookAnother": "+ Book another"
+      "yours": "Your slot",
+      "machinesCount_one": "{{count}} machine",
+      "machinesCount_other": "{{count}} machines",
+      "moreFree_one": "+{{count}} free",
+      "moreFree_other": "+{{count}} free",
+      "ownSlotAria": "Your slot {{time}}. Show options",
+      "popover": {
+        "titleBook": "Book this slot?",
+        "titleOwn": "Your slot",
+        "titlePick": "Choose a machine",
+        "keep": "Keep it",
+        "machineFree": "Free",
+        "machineYours": "Yours"
+      }
     },
     "next": {
       "title": "Your next booking",
