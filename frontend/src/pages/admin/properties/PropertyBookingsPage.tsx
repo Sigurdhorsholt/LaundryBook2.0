@@ -2,19 +2,21 @@ import { useState, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useParams } from 'react-router-dom'
 import { useMeQuery } from '../../../features/auth/authApi'
-import {
-  useGetPropertyBookingsQuery,
-  useCancelBookingMutation,
-  type AdminBookingDto,
-} from '../../../features/laundry/laundryApi'
-import type { AdminBookingsView, AdminCancelTarget } from '../../../features/laundry/types'
+import { useGetPropertyBookingsQuery } from '../../../features/laundry/laundryApi'
+import type { AdminBookingsView } from '../../../features/laundry/types'
+import { useAdminCancelBooking } from '../../../features/laundry/useAdminCancelBooking'
 import { AdminBookingStats } from '../../../features/laundry/AdminBookingStats'
 import { AdminBookingsList } from '../../../features/laundry/AdminBookingsList'
 import { AdminBookingsCalendar } from '../../../features/laundry/AdminBookingsCalendar'
 import { AdminCancelBookingModal } from '../../../features/laundry/AdminCancelBookingModal'
 import { AdminPeriodNavigator } from '../../../features/laundry/AdminPeriodNavigator'
+import { AdminBookingDetailPanel } from '../../../features/laundry/AdminBookingDetailPanel'
+import { AdminRoomMachinesCard } from '../../../features/laundry/AdminRoomMachinesCard'
+import { useGetPropertyQuery, BookingMode } from '../../../features/properties/propertiesApi'
+import { useMediaQuery } from '../../../shared/utils/useMediaQuery'
+import { MEDIA_XL } from '../../../shared/constants'
 import { PageHeader, Spinner, SegmentedControl } from '../../../shared/ui'
-import { todayStr, getWeekMonday, addDays, formatDateFull, formatTimeRange } from '../../../shared/utils/dateUtils'
+import { todayStr, getWeekMonday, addDays } from '../../../shared/utils/dateUtils'
 import { colors } from '../../../shared/theme'
 
 // The overview always loads one bounded window at a time (never the full history),
@@ -37,8 +39,11 @@ export function PropertyBookingsPage() {
 
   const [windowStart, setWindowStart] = useState<string>(currentWindowStart)
   const [view, setView] = useState<AdminBookingsView>('list')
-  const [cancelTarget, setCancelTarget] = useState<AdminCancelTarget | null>(null)
-  const [cancelError, setCancelError] = useState<string | null>(null)
+  const [pickedRoomId, setPickedRoomId] = useState<string | null>(null)
+  const [selectedId, setSelectedId] = useState<string | null>(null)
+  const wide = useMediaQuery(MEDIA_XL)
+  const { data: propertyDetail } = useGetPropertyQuery(propertyId!, { skip: !propertyId })
+  const machineMode = propertyDetail?.settings.bookingMode === BookingMode.BookSpecificMachine
 
   const from = windowStart
   const to = useMemo(() => addDays(windowStart, WINDOW_DAYS - 1), [windowStart])
@@ -50,37 +55,16 @@ export function PropertyBookingsPage() {
     { skip: !propertyId },
   )
 
-  const [cancelBooking, { isLoading: cancelling }] = useCancelBookingMutation()
+  const cancel = useAdminCancelBooking(propertyId)
 
   const bookings = data?.bookings ?? []
   const rooms = useMemo(() => data?.rooms ?? [], [data?.rooms])
   const activeRooms = useMemo(() => rooms.filter((r) => r.isActive), [rooms])
-
-  function openCancel(b: AdminBookingDto) {
-    setCancelError(null)
-    setCancelTarget({
-      bookingId: b.id,
-      roomId: b.roomId,
-      roomName: b.machineName ? `${b.roomName} · ${b.machineName}` : b.roomName,
-      residentName: b.residentName,
-      dateLabel: formatDateFull(b.date),
-      slotTime: formatTimeRange(b.startTime, b.endTime),
-    })
-  }
-
-  async function confirmCancel() {
-    if (!cancelTarget || !propertyId) return
-    try {
-      await cancelBooking({
-        bookingId: cancelTarget.bookingId,
-        roomId: cancelTarget.roomId,
-        propertyId,
-      }).unwrap()
-      setCancelTarget(null)
-    } catch {
-      setCancelError(t('adminProperties.bookings.cancelError'))
-    }
-  }
+  const roomId = activeRooms.some((r) => r.id === pickedRoomId) ? pickedRoomId! : (activeRooms[0]?.id ?? '')
+  const room = activeRooms.find((r) => r.id === roomId)
+  // Derived from the loaded bookings, so a cancelled or paged-away booking simply drops out of the panel
+  const selected = bookings.find((b) => b.id === selectedId) ?? null
+  const panelBeside = wide && view === 'calendar' && activeRooms.length > 0
 
   if (isLoading) return <Spinner fullPage />
 
@@ -115,27 +99,40 @@ export function PropertyBookingsPage() {
           </div>
 
           {view === 'list' ? (
-            <AdminBookingsList bookings={bookings} today={today} onCancel={openCancel} />
+            <AdminBookingsList bookings={bookings} today={today} onCancel={cancel.open} />
           ) : (
-            <AdminBookingsCalendar
-              rooms={activeRooms}
-              bookings={bookings}
-              today={today}
-              weekStart={windowStart}
-              maxWeekStart={maxWeekStart}
-              onCancel={openCancel}
-            />
+            <div className="d-flex gap-4 align-items-start">
+              <div className="flex-grow-1" style={{ minWidth: 0 }}>
+                <AdminBookingsCalendar
+                  rooms={activeRooms}
+                  bookings={bookings}
+                  today={today}
+                  weekStart={windowStart}
+                  maxWeekStart={maxWeekStart}
+                  roomId={roomId}
+                  onSelectRoom={setPickedRoomId}
+                  selectedBookingId={panelBeside ? selectedId : undefined}
+                  onPick={panelBeside ? (b) => setSelectedId(b.id) : cancel.open}
+                />
+              </div>
+              {panelBeside && (
+                <aside className="d-flex flex-column gap-3 flex-shrink-0" style={{ width: 320 }}>
+                  <AdminBookingDetailPanel booking={selected} today={today} onCancel={cancel.open} />
+                  {room && <AdminRoomMachinesCard roomId={room.id} roomName={room.name} bookings={bookings} machineMode={machineMode} />}
+                </aside>
+              )}
+            </div>
           )}
         </>
       )}
 
-      {cancelTarget && (
+      {cancel.target && (
         <AdminCancelBookingModal
-          target={cancelTarget}
-          cancelling={cancelling}
-          error={cancelError}
-          onConfirm={confirmCancel}
-          onClose={() => setCancelTarget(null)}
+          target={cancel.target}
+          cancelling={cancel.cancelling}
+          error={cancel.error}
+          onConfirm={cancel.confirm}
+          onClose={cancel.close}
         />
       )}
     </div>

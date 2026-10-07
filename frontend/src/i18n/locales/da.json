@@ -124,7 +124,18 @@
       "loadError": "Kunne ikke indlæse bookinger. Prøv at genindlæse siden.",
       "cancelError": "Bookingen kunne ikke aflyses. Prøv igen.",
       "viewList": "Liste",
-      "viewCalendar": "Kalender"
+      "viewCalendar": "Kalender",
+      "selected": {
+        "title": "Valgt booking",
+        "empty": "Vælg en booking i kalenderen for at se den her.",
+        "resident": "Beboer",
+        "apartment": "Lejlighed",
+        "cancel": "Aflys booking",
+        "started": "Tiden er startet og kan ikke aflyses her.",
+        "machinesTitle": "Maskiner i {{room}}",
+        "machineCount_one": "{{count}} booking",
+        "machineCount_other": "{{count}} bookinger"
+      }
     },
     "users": {
       "title": "Brugere",
@@ -482,7 +493,8 @@
       "prevWeek": "Forrige uge",
       "nextWeek": "Næste uge",
       "noSlots": "Ingen tidspladser opsat for dette lokale.",
-      "bookingCellTitle": "{{name}} - klik for at aflyse"
+      "bookingCellTitle": "{{name}} - klik for at aflyse",
+      "bookingCellSelect": "{{name}} - vis detaljer"
     },
     "list": {
       "emptyTitle": "Ingen bookinger i perioden",
