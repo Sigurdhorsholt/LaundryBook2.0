@@ -21,7 +21,10 @@
   --color-bg-card:        #ffffff;
   --color-bg-subtle:      #f3f5f1;
   --color-border:         #cfd8d0;
+  --color-chrome:         #17251f;
   --color-chrome-raised:  #22352c;
+  --color-chrome-text:    #e4ece6;
+  --color-chrome-accent:  #9fd4b6;
   --color-success:        #22693a;
   --color-warning:        #8a500c;
   --color-danger:         #a8261f;
@@ -98,24 +101,30 @@ body {
   color: #ffffff !important;
 }
 
-/* Admin sidebar nav links */
+/* Bootstrap's .offcanvas-lg forces a transparent background (!important) on wide screens */
+.admin-sidebar {
+  background-color: var(--color-chrome) !important;
+}
+
+/* Admin sidebar nav links (on the dark chrome sidebar) */
 .sidebar-link {
-  color: var(--color-text-secondary);
+  color: var(--color-chrome-text);
   background-color: transparent;
   transition: background-color 0.15s, color 0.15s;
 }
 .sidebar-link:hover {
-  background-color: var(--color-bg-subtle);
-  color: var(--color-text-secondary);
+  background-color: var(--color-chrome-raised);
+  color: #ffffff;
 }
 .sidebar-link--active,
 .sidebar-link--active:hover {
-  color: var(--color-primary);
-  background-color: var(--color-primary-light);
+  color: #ffffff;
+  background-color: var(--color-chrome-raised);
+  box-shadow: inset 3px 0 0 var(--color-chrome-accent);
 }
 
 .sidebar-back-btn:hover {
-  background-color: var(--color-bg-subtle) !important;
+  background-color: var(--color-chrome-raised) !important;
 }
 
 /* ── Property card hover ────────────────────────────────────────────────────── */

@@ -50,13 +50,13 @@
     "allProperties": "All properties",
     "property": "Property",
     "sectionAdministration": "Administration",
+    "sectionResident": "Resident",
     "users": "Users",
     "settings": "Settings",
     "sectionLaundry": "Laundry rooms",
     "roomsAndMachines": "Rooms & Machines",
     "timeslots": "Time slots",
-    "bookings": "Bookings",
-    "residentView": "Resident view"
+    "bookings": "Bookings"
   },
   "layout": {
     "pendingApproval": "Your association is awaiting approval. You can set up laundry rooms and settings, but can only invite residents once the association is activated."

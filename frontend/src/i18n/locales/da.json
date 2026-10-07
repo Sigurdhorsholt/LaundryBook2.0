@@ -50,13 +50,13 @@
     "allProperties": "Alle ejendomme",
     "property": "Ejendom",
     "sectionAdministration": "Administration",
+    "sectionResident": "Beboer",
     "users": "Brugere",
     "settings": "Indstillinger",
     "sectionLaundry": "Vaskerum",
     "roomsAndMachines": "Lokaler & Maskiner",
     "timeslots": "Tidspladser",
-    "bookings": "Bookinger",
-    "residentView": "Beboervisning"
+    "bookings": "Bookinger"
   },
   "layout": {
     "pendingApproval": "Jeres forening afventer godkendelse. I kan opsætte vaskerum og indstillinger, men kan først invitere beboere, når foreningen er aktiveret."
