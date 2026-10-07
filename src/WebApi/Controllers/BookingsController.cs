@@ -53,6 +53,22 @@ public class BookingsController(IMediator mediator) : ControllerBase
         return Ok(new { id });
     }
 
+    // GET /api/bookings/cancellation-notices: the caller's bookings the board cancelled, not yet acknowledged
+    [HttpGet("api/bookings/cancellation-notices")]
+    public async Task<IActionResult> GetCancellationNotices(CancellationToken ct)
+    {
+        var result = await mediator.Send(new GetMyCancellationNoticesQuery(), ct);
+        return Ok(result);
+    }
+
+    // POST /api/bookings/cancellation-notices/acknowledge
+    [HttpPost("api/bookings/cancellation-notices/acknowledge")]
+    public async Task<IActionResult> AcknowledgeCancellationNotices([FromBody] AcknowledgeCancellationNoticesRequest request, CancellationToken ct)
+    {
+        await mediator.Send(new AcknowledgeCancellationNoticesCommand(request.BookingIds), ct);
+        return NoContent();
+    }
+
     // DELETE /api/bookings/{bookingId}
     [HttpDelete("api/bookings/{bookingId:guid}")]
     public async Task<IActionResult> CancelBooking(Guid bookingId, CancellationToken ct)
@@ -63,3 +79,5 @@ public class BookingsController(IMediator mediator) : ControllerBase
 }
 
 public record CreateBookingRequest(Guid TimeSlotTemplateId, DateOnly Date, Guid? MachineId);
+
+public record AcknowledgeCancellationNoticesRequest(IReadOnlyList<Guid> BookingIds);

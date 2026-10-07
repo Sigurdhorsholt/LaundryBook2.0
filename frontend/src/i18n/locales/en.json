@@ -566,6 +566,13 @@
       "cancelDeadlinePassed": "Cancel deadline passed",
       "taken": "Taken"
     },
+    "cancelNotice": {
+      "title_one": "The board cancelled one of your bookings",
+      "title_other": "The board cancelled {{count}} of your bookings",
+      "body": "You're welcome to book a new time.",
+      "item": "{{date}} at {{time}}",
+      "ok": "OK, got it"
+    },
     "inlineConfirm": {
       "usageAfter": "You will then have used {{used}} of {{max}} bookings."
     },

@@ -70,6 +70,16 @@ export interface MyBookingDto {
   machineName: string | null
 }
 
+// A booking the board cancelled that the resident hasn't acknowledged yet
+export interface CancellationNoticeDto {
+  bookingId: string
+  date: string        // "YYYY-MM-DD"
+  startTime: string   // "HH:mm:ss"
+  endTime: string     // "HH:mm:ss"
+  roomName: string
+  machineName: string | null
+}
+
 export interface AdminBookingDto {
   id: string
   roomId: string
@@ -213,6 +223,20 @@ export const laundryApi = baseApi.injectEndpoints({
       providesTags: (_result, _err, { roomId }) => [{ type: 'Booking', id: roomId }],
     }),
 
+    getCancellationNotices: build.query<CancellationNoticeDto[], void>({
+      query: () => '/api/bookings/cancellation-notices',
+      providesTags: [{ type: 'Booking', id: 'cancellation-notices' }],
+    }),
+
+    acknowledgeCancellationNotices: build.mutation<void, string[]>({
+      query: (bookingIds) => ({
+        url: '/api/bookings/cancellation-notices/acknowledge',
+        method: 'POST',
+        body: { bookingIds },
+      }),
+      invalidatesTags: [{ type: 'Booking', id: 'cancellation-notices' }],
+    }),
+
     getMyBookings: build.query<MyBookingDto[], string>({
       query: (propertyId) => `/api/properties/${propertyId}/bookings/mine`,
       providesTags: (_result, _err, propertyId) => [{ type: 'Booking', id: `mine-${propertyId}` }],
@@ -264,6 +288,8 @@ export const {
   useReplaceTimeSlotsMutation,
   useGetBookingsQuery,
   useGetMyBookingsQuery,
+  useGetCancellationNoticesQuery,
+  useAcknowledgeCancellationNoticesMutation,
   useGetPropertyBookingsQuery,
   useCreateBookingMutation,
   useCancelBookingMutation,
