@@ -71,6 +71,7 @@ export const colors = {
   chromeBorder: '#4b6457',
   chromeText:   '#e4ece6',
   chromeMuted:  '#9fb3a8',
+  chromeAccent: '#9fd4b6',   // links and the avatar on dark chrome
 
   // ── Footer ────────────────────────────────────────────────────────────────────
   footerBg: '#0a1929',

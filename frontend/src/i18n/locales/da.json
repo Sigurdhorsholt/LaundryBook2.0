@@ -443,7 +443,9 @@
       "cancelBooking": "Aflys",
       "dismiss": "Fortryd",
       "confirmBook": "Bekræft booking",
-      "confirmCancel": "Bekræft aflysning"
+      "confirmCancel": "Bekræft aflysning",
+      "bookTime": "Book tiden",
+      "cancelTime": "Aflys tiden"
     },
     "machineType": {
       "washer": "Vaskemaskine",
@@ -505,7 +507,11 @@
       "noMachinesDescription": "Administratoren har ikke tilføjet maskiner til dette lokale.",
       "limitReachedTitle": "Du har nået din bookinggrænse.",
       "limitReachedHint": "Aflys en aktiv booking for at frigøre en plads.",
-      "noAvailableToday": "Ingen ledige tider denne dag."
+      "noAvailableToday": "Ingen ledige tider denne dag.",
+      "pastCollapsed_one": "{{count}} tid er passeret",
+      "pastCollapsed_other": "{{count}} tider er passeret",
+      "showPast": "Vis",
+      "hidePast": "Skjul"
     },
     "slot": {
       "past": "Passeret",
@@ -517,8 +523,8 @@
       "limitReached": "Grænse nået",
       "cancelDeadlinePassed": "Aflysfrist udløbet"
     },
-    "upcoming": {
-      "title": "Mine kommende bookinger"
+    "inlineConfirm": {
+      "usageAfter": "Du har så brugt {{used}} af {{max}} bookinger."
     },
     "week": {
       "caption": "Ugens vasketider",
@@ -529,7 +535,9 @@
       "yours": "Din booking"
     },
     "next": {
-      "title": "Din næste booking"
+      "title": "Din næste booking",
+      "showAll": "Se alle ({{count}})",
+      "hideAll": "Skjul"
     },
     "mine": {
       "title": "Mine bookinger",
@@ -546,7 +554,8 @@
       "maxBookings_other": "Du kan have {{count}} bookinger ad gangen.",
       "cancelUntilStart": "Du kan aflyse, indtil tiden starter.",
       "cancelHours_one": "Du kan aflyse indtil {{count}} time før start.",
-      "cancelHours_other": "Du kan aflyse indtil {{count}} timer før start."
+      "cancelHours_other": "Du kan aflyse indtil {{count}} timer før start.",
+      "disclosureTitle": "Regler og maskiner"
     },
     "template": {
       "standard": "Standard",

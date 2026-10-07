@@ -33,7 +33,7 @@ export function NextBookingCard({ booking: b, onCancel }: Props) {
           onClick={() => onCancel(b)}
           aria-label={t('laundry.actions.cancelSlot', { time: `${formatDateFull(b.date)} ${formatTimeRange(b.startTime, b.endTime)}` })}
           style={{
-            minHeight: TAP_TARGET_PX + 4, padding: '0 18px', borderRadius: 9, cursor: 'pointer',
+            minHeight: TAP_TARGET_PX, padding: '0 18px', borderRadius: 9, cursor: 'pointer',
             border: `1px solid ${colors.chromeBorder}`, background: 'transparent', color: colors.chromeText,
             fontSize: '0.88rem', fontWeight: 600,
           }}

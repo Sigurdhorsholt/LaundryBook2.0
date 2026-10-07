@@ -273,6 +273,9 @@ export function useLaundryBooking() {
     lookaheadDays,
     maxBookings,
     usedBookings,
+    roomRules: settings
+      ? { lookaheadDays, maxBookings, cancellationWindowMinutes: settings.cancellationWindowMinutes }
+      : null,
     maxReached,
     property,
     rooms,

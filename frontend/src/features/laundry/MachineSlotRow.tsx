@@ -7,7 +7,7 @@ import { colors } from '../../shared/theme'
 import { badge } from './slotBadge'
 import { MACHINE_TYPE_LABEL, TAP_TARGET_PX } from './constants'
 import { IconClock, IconChevronDown, IconWasher, IconDryer } from '../../shared/icons'
-import { InlineConfirm, ConfirmMessage } from './InlineConfirm'
+import { InlineConfirmPanel } from './InlineConfirm'
 
 interface Props {
   slot: TimeSlotTemplateDto
@@ -23,6 +23,7 @@ interface Props {
   confirmError?: string | null
   onConfirm?: () => void
   onDismissConfirm?: () => void
+  usage?: { used: number; max: number }
 }
 
 function MachineIcon({ type, color }: { type: MachineType; color: string }) {
@@ -33,7 +34,7 @@ function MachineIcon({ type, color }: { type: MachineType; color: string }) {
 
 export function MachineSlotRow({
   slot, machines, bookings, past, locked, maxReached, onBook, onCancel,
-  pending, confirmLoading, confirmError, onConfirm, onDismissConfirm,
+  pending, confirmLoading, confirmError, onConfirm, onDismissConfirm, usage,
 }: Props) {
   const { t } = useTranslation()
   const [expanded, setExpanded] = useState(false)
@@ -99,9 +100,7 @@ export function MachineSlotRow({
               action = (
                 <span className="d-flex align-items-center" style={{ gap: 8 }}>
                   <span style={badge(colors.successBg, colors.successText)}>{t('laundry.slot.myBooking')}</span>
-                  {machinePending?.type === 'cancel' ? (
-                    <InlineConfirm variant="cancel" loading={!!confirmLoading} onConfirm={onConfirm!} onDismiss={onDismissConfirm!} />
-                  ) : booking.canCancel ? (
+                  {machinePending?.type === 'cancel' ? null : booking.canCancel ? (
                     <button
                       type="button"
                       className="btn btn-sm btn-outline-secondary"
@@ -121,7 +120,7 @@ export function MachineSlotRow({
             } else if (blocked) {
               action = <span style={badge(colors.slotWarningBg, colors.slotWarningText)}>{t('laundry.slot.limitReached')}</span>
             } else if (machinePending?.type === 'book') {
-              action = <InlineConfirm variant="book" loading={!!confirmLoading} onConfirm={onConfirm!} onDismiss={onDismissConfirm!} />
+              action = null
             } else {
               action = (
                 <button
@@ -161,7 +160,15 @@ export function MachineSlotRow({
                   {action}
                 </div>
                 {machinePending && (
-                  <ConfirmMessage pending={machinePending} error={confirmError ?? null} style={{ padding: '0 12px 8px' }} />
+                  <InlineConfirmPanel
+                    pending={machinePending}
+                    loading={!!confirmLoading}
+                    error={confirmError ?? null}
+                    usage={usage}
+                    onConfirm={onConfirm!}
+                    onDismiss={onDismissConfirm!}
+                    style={{ padding: '0 12px 12px' }}
+                  />
                 )}
               </div>
             )

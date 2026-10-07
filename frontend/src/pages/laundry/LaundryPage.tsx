@@ -1,11 +1,11 @@
-import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useLaundryBooking } from '../../features/laundry/useLaundryBooking'
-import { UpcomingBookingsCard } from '../../features/laundry/UpcomingBookingsCard'
+import { DayBookingsSummary } from '../../features/laundry/DayBookingsSummary'
 import { RoomSelector } from '../../features/laundry/RoomSelector'
 import { DayBookingView } from '../../features/laundry/DayBookingView'
 import { WeekBookingView } from '../../features/laundry/WeekBookingView'
 import { BookingSidePanel } from '../../features/laundry/BookingSidePanel'
+import { RoomInfoDisclosure } from '../../features/laundry/RoomInfoDisclosure'
 import { ConfirmBookingModal } from '../../features/laundry/ConfirmBookingModal'
 import { PageHeader, EmptyState, ErrorState } from '../../shared/ui'
 import { useMediaQuery } from '../../shared/utils/useMediaQuery'
@@ -18,7 +18,6 @@ export function LaundryPage() {
   // The whole week needs ~950px; below that the day view (date strip + slot list) is the better fit
   const showWeek = useMediaQuery(MEDIA_LG)
   const panelBeside = useMediaQuery(MEDIA_XL)
-  const [bookingsExpanded, setBookingsExpanded] = useState(true)
 
   if (!lb.propertyId) {
     return (
@@ -51,15 +50,7 @@ export function LaundryPage() {
     <div className={showWeek ? 'container-fluid px-4 py-5' : 'container-xl px-4 py-5'} style={showWeek ? { maxWidth: 1440 } : undefined}>
       <PageHeader eyebrow={lb.property.data?.name} title={t('nav.laundry')} description={t('laundryPage.description')} />
 
-      {!showWeek && (
-        <UpcomingBookingsCard
-          myBookings={lb.myBookings}
-          today={lb.today}
-          expanded={bookingsExpanded}
-          onToggle={() => setBookingsExpanded(x => !x)}
-          onCancelUpcoming={lb.handleCancelUpcoming}
-        />
-      )}
+      {!showWeek && <DayBookingsSummary booking={lb} />}
 
       {noRooms && (
         <EmptyState title={t('laundryPage.noRoomsTitle')} description={t('laundryPage.noRoomsDescription')} />
@@ -81,7 +72,14 @@ export function LaundryPage() {
           <BookingSidePanel booking={lb} layout={panelBeside ? 'column' : 'row'} />
         </div>
       ) : (
-        <DayBookingView booking={lb} showRoomName={rooms.length === 1} />
+        <>
+          <DayBookingView booking={lb} showRoomName={rooms.length === 1} />
+          {lb.selectedRoom && lb.roomRules && (
+            <div className="mt-3">
+              <RoomInfoDisclosure room={lb.selectedRoom} machines={lb.machines} rules={lb.roomRules} />
+            </div>
+          )}
+        </>
       ))}
 
       {lb.pending && lb.pending.source !== 'grid' && (

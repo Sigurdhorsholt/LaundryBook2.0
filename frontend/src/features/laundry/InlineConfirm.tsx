@@ -1,66 +1,65 @@
-import { useTranslation } from 'react-i18next'
+import { useTranslation, Trans } from 'react-i18next'
 import type { PendingAction } from './types'
+import { formatDateFull } from '../../shared/utils/dateUtils'
 import { colors } from '../../shared/theme'
-import { IconCheck, IconX } from '../../shared/icons'
 import { TAP_TARGET_PX } from './constants'
 
-interface InlineConfirmProps {
-  variant: 'book' | 'cancel'
+interface InlineConfirmPanelProps {
+  pending: PendingAction
   loading: boolean
+  error: string | null
+  // Bookings in use before this one, so the prompt can say where the resident ends up
+  usage?: { used: number; max: number }
   onConfirm: () => void
   onDismiss: () => void
+  style?: React.CSSProperties
 }
 
-const roundBtn: React.CSSProperties = {
-  width: TAP_TARGET_PX, height: TAP_TARGET_PX, borderRadius: '50%', padding: 0,
-  display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
-  cursor: 'pointer', flexShrink: 0,
-}
-
-/** Compact ✗ / ✓ pair that rolls out in place of the clicked action button. */
-export function InlineConfirm({ variant, loading, onConfirm, onDismiss }: InlineConfirmProps) {
+export function InlineConfirmPanel({ pending, loading, error, usage, onConfirm, onDismiss, style }: InlineConfirmPanelProps) {
   const { t } = useTranslation()
+  const isBook = pending.type === 'book'
+  const values = { slotTime: pending.slotTime, dateText: formatDateFull(pending.date), machineName: pending.machineName }
+  const promptKey = isBook
+    ? (pending.machineName ? 'laundry.confirmBooking.promptBookWithMachine' : 'laundry.confirmBooking.promptBook')
+    : (pending.machineName ? 'laundry.confirmBooking.promptCancelWithMachine' : 'laundry.confirmBooking.promptCancel')
+
   return (
-    <span
+    <div
       onClick={(e) => e.stopPropagation()}
-      style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}
+      onKeyDown={(e) => { if (e.key === 'Escape' && !loading) onDismiss() }}
+      style={style}
     >
-      <button
-        type="button"
-        aria-label={t('laundry.actions.dismiss')}
-        disabled={loading}
-        onClick={onDismiss}
-        style={{
-          ...roundBtn,
-          border: `1px solid ${colors.borderStrong}`,
-          backgroundColor: colors.bgCard,
-          animation: 'confirm-roll-in 0.2s ease-out both',
-        }}
-      >
-        <IconX size={13} color={colors.textSecondary} strokeWidth={2.2} />
-      </button>
-      <button
-        type="button"
-        aria-label={variant === 'book' ? t('laundry.actions.confirmBook') : t('laundry.actions.confirmCancel')}
-        disabled={loading}
-        onClick={onConfirm}
-        style={{
-          ...roundBtn,
-          border: 'none',
-          backgroundColor: variant === 'book' ? colors.primary : colors.dangerText,
-          animation: 'confirm-roll-in 0.2s ease-out 0.06s both',
-        }}
-      >
-        {loading ? (
-          <span
-            className="spinner-border spinner-border-sm"
-            style={{ width: 13, height: 13, borderWidth: 2, color: colors.bgCard }}
-          />
-        ) : (
-          <IconCheck size={14} color={colors.bgCard} strokeWidth={2.4} />
-        )}
-      </button>
-    </span>
+      <p style={{ margin: 0, fontSize: '0.88rem', color: colors.textPrimary }}>
+        <Trans i18nKey={promptKey} values={values} components={{ s: <strong /> }} />
+        {isBook && usage && ` ${t('laundry.inlineConfirm.usageAfter', { used: usage.used + 1, max: usage.max })}`}
+      </p>
+      <ConfirmMessage pending={pending} error={error} style={{ marginTop: 4 }} />
+      <div style={{ display: 'flex', gap: 8, marginTop: 10 }}>
+        <button
+          type="button"
+          className="btn btn-outline-secondary"
+          // Focus lands here because the button that opened the panel is gone; dismissing is the safe default
+          autoFocus
+          disabled={loading}
+          onClick={onDismiss}
+          // Inline colours: Bootstrap's focus state would otherwise turn the text white on this white button
+          style={{ flex: 1, minHeight: TAP_TARGET_PX, borderRadius: 10, fontSize: '0.88rem', fontWeight: 600, backgroundColor: colors.bgCard, color: colors.textPrimary, borderColor: colors.borderStrong }}
+        >
+          {t('laundry.actions.dismiss')}
+        </button>
+        <button
+          type="button"
+          className={`btn ${isBook ? 'btn-primary' : 'btn-danger'}`}
+          disabled={loading}
+          onClick={onConfirm}
+          style={{ flex: 2, minHeight: TAP_TARGET_PX, borderRadius: 10, fontSize: '0.88rem', fontWeight: 700 }}
+        >
+          {loading
+            ? <span className="spinner-border spinner-border-sm" />
+            : isBook ? t('laundry.actions.bookTime') : t('laundry.actions.cancelTime')}
+        </button>
+      </div>
+    </div>
   )
 }
 
@@ -72,12 +71,12 @@ export function ConfirmMessage({ pending, error, style }: {
 }) {
   const { t } = useTranslation()
   if (error) {
-    return <div style={{ fontSize: '0.76rem', color: colors.dangerText, ...style }}>{error}</div>
+    return <div role="alert" style={{ fontSize: '0.8rem', color: colors.dangerText, ...style }}>{error}</div>
   }
   const mu = pending.minutesUntil
   if (pending.type === 'cancel' && mu !== undefined && mu >= 0 && mu < 240) {
     return (
-      <div style={{ fontSize: '0.76rem', color: colors.warningText, ...style }}>
+      <div style={{ fontSize: '0.8rem', color: colors.warningText, ...style }}>
         {mu < 60
           ? t('laundry.confirmBooking.warningMinutes', { count: mu })
           : t('laundry.confirmBooking.warningHours', { count: Math.floor(mu / 60) })}
