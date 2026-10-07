@@ -1,26 +1,20 @@
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useGetAllUsersQuery } from './sysAdminApi'
 import type { SysAdminUserDto } from './sysAdminApi'
 import { ManageUserMembershipsModal } from './ManageUserMembershipsModal'
 import { colors } from '../../shared/theme'
+import { useDebouncedValue } from '../../shared/utils/useDebouncedValue'
 
 const PAGE_SIZE = 10
 
 export function UserTable() {
   const { t } = useTranslation()
   const [search, setSearch] = useState('')
-  const [debouncedSearch, setDebouncedSearch] = useState('')
   const [page, setPage] = useState(1)
   const [managingUser, setManagingUser] = useState<SysAdminUserDto | null>(null)
 
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setDebouncedSearch(search)
-      setPage(1)
-    }, 400)
-    return () => clearTimeout(timer)
-  }, [search])
+  const debouncedSearch = useDebouncedValue(search, 400)
 
   const { data, isLoading } = useGetAllUsersQuery({
     search: debouncedSearch || undefined,
@@ -44,7 +38,7 @@ export function UserTable() {
           type="search"
           placeholder={t('sysadmin.searchPlaceholder')}
           value={search}
-          onChange={(e) => setSearch(e.target.value)}
+          onChange={(e) => { setSearch(e.target.value); setPage(1) }}
         />
       </div>
 

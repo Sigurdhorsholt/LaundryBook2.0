@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react'
+import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import type { TimeSlotTemplateDto } from './laundryApi'
 import type { GridBooking, PendingAction } from './types'
@@ -31,25 +31,17 @@ export function SlotRow({
   const { t } = useTranslation()
   const [hovered, setHovered] = useState(false)
 
-  const [justBooked, setJustBooked] = useState(false)
-  const [justCancelled, setJustCancelled] = useState(false)
-  const prevBookingRef = useRef<GridBooking | null>(null)
-
-  useEffect(() => {
-    const prev = prevBookingRef.current
-    prevBookingRef.current = booking
-
-    if (prev === null && booking?.isOwn) {
-      setJustBooked(true)
-      const t = setTimeout(() => setJustBooked(false), 500)
-      return () => clearTimeout(t)
-    }
-    if (prev?.isOwn && booking === null) {
-      setJustCancelled(true)
-      const t = setTimeout(() => setJustCancelled(false), 400)
-      return () => clearTimeout(t)
-    }
-  }, [booking])
+  // Flash only on a change seen while mounted. Starting from the current booking means a row that
+  // mounts already booked (switching day) doesn't play the "just booked" animation.
+  const isOwn = booking?.isOwn ?? false
+  const [prevOwn, setPrevOwn] = useState(isOwn)
+  const [flash, setFlash] = useState<'booked' | 'cancelled' | null>(null)
+  if (prevOwn !== isOwn) {
+    setPrevOwn(isOwn)
+    setFlash(isOwn ? 'booked' : booking === null ? 'cancelled' : null)
+  }
+  const justBooked = flash === 'booked'
+  const justCancelled = flash === 'cancelled'
 
   const timeLabel = `${formatTime(slot.startTime)} – ${formatTime(slot.endTime)}`
   const dimmed = past || locked
@@ -122,6 +114,7 @@ export function SlotRow({
     <div
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
+      onAnimationEnd={() => setFlash(null)}
       onClick={isClickable ? onBook : undefined}
       style={{
         borderBottom: `1px solid ${colors.borderRow}`,

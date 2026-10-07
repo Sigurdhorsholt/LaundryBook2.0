@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useMeQuery, useForgotPasswordMutation, useUpdateCurrentUserMutation } from '../auth/authApi'
 import { FormError } from '../../shared/ui'
@@ -10,17 +10,21 @@ export function UserInfoForm() {
   const { data: user } = useMeQuery()
   const [updateUser, { isLoading: saving, isSuccess: saved }] = useUpdateCurrentUserMutation()
   const [forgotPassword, { isLoading: resetting, isSuccess: resetSent }] = useForgotPasswordMutation()
-  const [firstName, setFirstName] = useState('')
-  const [lastName, setLastName] = useState('')
+  // Only what the user has typed; untouched fields show the saved name, so a refetch of `me`
+  // can't overwrite an edit in progress
+  const [draft, setDraft] = useState<{ firstName: string; lastName: string } | null>(null)
   const [saveError, setSaveError] = useState<string | null>(null)
   const [resetError, setResetError] = useState<string | null>(null)
 
-  useEffect(() => {
-    if (user) {
-      setFirstName(user.firstName)
-      setLastName(user.lastName)
-    }
-  }, [user])
+  const firstName = draft?.firstName ?? user?.firstName ?? ''
+  const lastName = draft?.lastName ?? user?.lastName ?? ''
+  const dirty = draft !== null && (draft.firstName !== user?.firstName || draft.lastName !== user?.lastName)
+  // Once the saved name comes back from the server the draft has done its job
+  if (draft !== null && !dirty) setDraft(null)
+
+  function edit(patch: Partial<{ firstName: string; lastName: string }>) {
+    setDraft({ firstName, lastName, ...patch })
+  }
 
   const apartment = user?.memberships[0]?.apartmentNumber
 
@@ -55,7 +59,7 @@ export function UserInfoForm() {
               <input
                 className="form-control"
                 value={firstName}
-                onChange={e => setFirstName(e.target.value)}
+                onChange={e => edit({ firstName: e.target.value })}
                 required
               />
             </div>
@@ -64,7 +68,7 @@ export function UserInfoForm() {
               <input
                 className="form-control"
                 value={lastName}
-                onChange={e => setLastName(e.target.value)}
+                onChange={e => edit({ lastName: e.target.value })}
                 required
               />
             </div>
@@ -89,7 +93,7 @@ export function UserInfoForm() {
             />
           </div>
           <FormError message={saveError} />
-          {saved && (
+          {saved && !dirty && (
             <p className="mb-3" style={{ fontSize: '0.85rem', color: colors.successText }}>
               {t('profile.infoSaved')}
             </p>

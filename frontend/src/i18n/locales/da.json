@@ -576,6 +576,11 @@
       "cancelHours_other": "Du kan aflyse indtil {{count}} timer før start.",
       "disclosureTitle": "Regler og maskiner"
     },
+    "duration": {
+      "minutes": "{{m}}m",
+      "hours": "{{h}}t",
+      "hoursMinutes": "{{h}}t{{m}}"
+    },
     "template": {
       "standard": "Standard",
       "compact": "Kompakt",
