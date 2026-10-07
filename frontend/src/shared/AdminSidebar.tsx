@@ -9,7 +9,7 @@ import { colors } from './theme'
 import { userInitials } from './utils/formatUtils'
 import { SidebarLink, SidebarSectionLabel } from './AdminSidebarLink'
 import {
-  IconUsers, IconSettings, IconBuilding, IconClock, IconCalendarCheck, IconCalendar, IconUser,
+  IconUsers, IconSettings, IconBuilding, IconClock, IconCalendarCheck, IconCalendar, IconUser, IconGrid,
   IconChevronLeft,
 } from './icons'
 
@@ -96,6 +96,10 @@ export function AdminSidebar() {
                 <p className="mb-0 text-truncate fw-semibold" style={{ fontSize: '0.92rem', color: colors.bgCard }}>
                   {activeProperty?.propertyName ?? t('nav.property')}
                 </p>
+              </div>
+
+              <div className="mt-2">
+                <SidebarLink to={`/admin/properties/${activePropertyId}`} end icon={<IconGrid size={15} />} label={t('nav.overview')} />
               </div>
 
               {propertySubNav.map((section) => (
