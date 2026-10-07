@@ -70,7 +70,7 @@ export interface MyBookingDto {
   machineName: string | null
 }
 
-// A booking the board cancelled that the resident hasn't acknowledged yet
+// A booking an admin cancelled that the resident hasn't acknowledged yet
 export interface CancellationNoticeDto {
   bookingId: string
   date: string        // "YYYY-MM-DD"

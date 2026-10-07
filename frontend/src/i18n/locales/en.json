@@ -568,8 +568,8 @@
       "taken": "Taken"
     },
     "cancelNotice": {
-      "title_one": "The board cancelled one of your bookings",
-      "title_other": "The board cancelled {{count}} of your bookings",
+      "title_one": "The admin cancelled one of your bookings",
+      "title_other": "The admin cancelled {{count}} of your bookings",
       "body": "You're welcome to book a new time.",
       "item": "{{date}} at {{time}}",
       "ok": "OK, got it"
@@ -802,7 +802,7 @@
       "empty": "There are no laundry rooms yet."
     },
     "board": {
-      "title": "The board",
+      "title": "Admin",
       "empty": "There are no contacts yet."
     }
   },
