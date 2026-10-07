@@ -765,22 +765,29 @@
     "role_grant_too_high": "Du kan ikke tildele en højere rolle end din egen.",
     "invite_email_mismatch": "Invitationen er sendt til en anden e-mailadresse."
   },
+  "markdownEditor": {
+    "toolbar": "Formatering",
+    "heading": "Overskrift",
+    "subheading": "Underoverskrift",
+    "bold": "Fed",
+    "bulletList": "Punktliste",
+    "numberedList": "Nummereret liste",
+    "undo": "Fortryd sidste ændring",
+    "redo": "Gentag"
+  },
   "houseRules": {
     "title": "Husorden og vaskeregler",
     "updated": "Opdateret {{date}}",
     "adminDescription": "Skriv de regler, beboerne skal kende. De vises under Ejendommen, og bookingsiden linker til dem.",
     "editorTitle": "Tekst",
-    "formatHelp": "En tom linje giver et nyt afsnit. Start en linje med - for et punkt, 1. for en nummereret liste og # for en overskrift. Skriv **ord** for fed.",
-    "placeholder": "Skriv jeres vaskeregler, fx:\n\n- Rens fnugfilteret efter brug.\n- Tøm maskinen senest 15 minutter efter din tid.",
+    "formatHelp": "Brug knapperne over feltet. Du kan også skrive - for en punktliste, 1. for en nummereret liste og # for en overskrift.",
+    "placeholder": "Skriv jeres vaskeregler her, fx at fnugfilteret skal renses efter brug.",
     "lastUpdated": "Sidst opdateret {{date}}",
     "save": "Gem",
     "saving": "Gemmer…",
-    "undo": "Fortryd",
+    "undo": "Kassér ændringer",
     "saved": "Gemt. Beboerne kan se det nu.",
-    "saveFailed": "Reglerne kunne ikke gemmes. Prøv igen.",
-    "previewTitle": "Sådan ser beboerne det",
-    "previewHelp": "Opdateres, mens du skriver.",
-    "previewEmpty": "Beboerne ser ingen regler, før I skriver noget."
+    "saveFailed": "Reglerne kunne ikke gemmes. Prøv igen."
   },
   "propertyInfo": {
     "description": "Det praktiske om jeres vaskerum: regler, maskiner og hvem I kan kontakte.",
