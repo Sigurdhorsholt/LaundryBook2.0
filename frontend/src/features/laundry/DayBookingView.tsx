@@ -7,6 +7,7 @@ import { BookingGrid } from './BookingGrid'
 import { ErrorState } from '../../shared/ui'
 import { formatDateFull } from '../../shared/utils/dateUtils'
 import { colors } from '../../shared/theme'
+import { NAVBAR_HEIGHT_PX } from '../../shared/constants'
 
 interface Props {
   booking: LaundryBooking
@@ -34,23 +35,26 @@ export function DayBookingView({ booking: lb, showRoomName }: Props) {
 
   return (
     <>
-      <div ref={setGridEl} className="rounded-3" style={{ border: `1px solid ${colors.borderDefault}`, overflow: 'hidden', backgroundColor: colors.bgCard }}>
-        <WeekNavigator
-          weekStart={lb.weekStart}
-          weekFrom={lb.weekFrom}
-          weekTo={lb.weekTo}
-          canGoBack={lb.canGoBack}
-          canGoForward={lb.canGoForward}
-          onShift={lb.shiftWeek}
-        />
+      {/* overflow: clip keeps the rounded corners without turning the card into a scroll container, which would stop the strip sticking */}
+      <div ref={setGridEl} className="rounded-3" style={{ border: `1px solid ${colors.borderDefault}`, overflow: 'clip', backgroundColor: colors.bgCard }}>
+        <div style={{ position: 'sticky', top: NAVBAR_HEIGHT_PX, zIndex: 5, backgroundColor: colors.bgCard }}>
+          <WeekNavigator
+            weekStart={lb.weekStart}
+            weekFrom={lb.weekFrom}
+            weekTo={lb.weekTo}
+            canGoBack={lb.canGoBack}
+            canGoForward={lb.canGoForward}
+            onShift={lb.shiftWeek}
+          />
 
-        <DateStrip
-          weekDays={lb.weekDays}
-          today={lb.today}
-          selectedDate={lb.selectedDate}
-          availabilityByDate={lb.availabilityByDate}
-          onSelectDate={lb.selectDate}
-        />
+          <DateStrip
+            weekDays={lb.weekDays}
+            today={lb.today}
+            selectedDate={lb.selectedDate}
+            availabilityByDate={lb.availabilityByDate}
+            onSelectDate={lb.selectDate}
+          />
+        </div>
 
         <div style={{ padding: '8px 20px', borderBottom: `1px solid ${colors.borderRow}`, backgroundColor: colors.bgSubtle }}>
           <span style={{ fontSize: '0.82rem', fontWeight: 500, color: colors.textSecondary }}>
@@ -72,6 +76,7 @@ export function DayBookingView({ booking: lb, showRoomName }: Props) {
           />
         ) : lb.selectedRoomId ? (
           <BookingGrid
+            key={lb.selectedDate}
             slots={lb.slots}
             date={lb.selectedDate}
             today={lb.today}
@@ -88,6 +93,7 @@ export function DayBookingView({ booking: lb, showRoomName }: Props) {
             confirmError={lb.confirmError}
             onConfirm={() => lb.handleConfirm()}
             onDismissConfirm={lb.dismissConfirm}
+            usage={{ used: lb.usedBookings, max: lb.maxBookings }}
           />
         ) : (
           <div style={{ padding: '40px 20px', textAlign: 'center', color: colors.textMuted, fontSize: '0.9rem' }}>

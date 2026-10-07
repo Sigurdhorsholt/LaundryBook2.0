@@ -1,5 +1,6 @@
 import type { LaundryRoomDto } from './laundryApi'
 import { colors } from '../../shared/theme'
+import { TAP_TARGET_PX } from './constants'
 
 interface Props {
   rooms: LaundryRoomDto[]
@@ -17,7 +18,7 @@ export function RoomSelector({ rooms, selectedRoomId, onSelect }: Props) {
           key={room.id}
           className="btn btn-sm"
           style={{
-            borderRadius: 20, padding: '5px 16px', fontSize: '0.85rem', fontWeight: 500,
+            borderRadius: 20, padding: '5px 16px', minHeight: TAP_TARGET_PX, fontSize: '0.85rem', fontWeight: 500,
             backgroundColor: selectedRoomId === room.id ? colors.primary : colors.bgSubtle,
             color: selectedRoomId === room.id ? '#ffffff' : colors.textPrimary,
             border: 'none', transition: 'background-color 0.12s',

@@ -41,6 +41,7 @@ const pairs = [
   ['sidebarText', 'sidebarHoverBg', TEXT],
   ['chromeText', 'chrome', TEXT],
   ['chromeMuted', 'chrome', TEXT],
+  ['chromeAccent', 'chrome', TEXT],
   ['chromeText', 'chromeRaised', TEXT],
   ['bgCard', 'chrome', TEXT],
   ['dotFree', 'bgCard', UI],

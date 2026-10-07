@@ -443,7 +443,9 @@
       "cancelBooking": "Cancel",
       "dismiss": "Cancel",
       "confirmBook": "Confirm booking",
-      "confirmCancel": "Confirm cancellation"
+      "confirmCancel": "Confirm cancellation",
+      "bookTime": "Book it",
+      "cancelTime": "Cancel it"
     },
     "machineType": {
       "washer": "Washer",
@@ -505,7 +507,11 @@
       "noMachinesDescription": "The administrator has not added machines to this room.",
       "limitReachedTitle": "You have reached your booking limit.",
       "limitReachedHint": "Cancel an active booking to free up a slot.",
-      "noAvailableToday": "No available times this day."
+      "noAvailableToday": "No available times this day.",
+      "pastCollapsed_one": "{{count}} time has passed",
+      "pastCollapsed_other": "{{count}} times have passed",
+      "showPast": "Show",
+      "hidePast": "Hide"
     },
     "slot": {
       "past": "Passed",
@@ -517,8 +523,8 @@
       "limitReached": "Limit reached",
       "cancelDeadlinePassed": "Cancel deadline passed"
     },
-    "upcoming": {
-      "title": "My upcoming bookings"
+    "inlineConfirm": {
+      "usageAfter": "You will then have used {{used}} of {{max}} bookings."
     },
     "week": {
       "caption": "This week's laundry times",
@@ -529,7 +535,9 @@
       "yours": "Your booking"
     },
     "next": {
-      "title": "Your next booking"
+      "title": "Your next booking",
+      "showAll": "See all ({{count}})",
+      "hideAll": "Hide"
     },
     "mine": {
       "title": "My bookings",
@@ -546,7 +554,8 @@
       "maxBookings_other": "You can have {{count}} bookings at a time.",
       "cancelUntilStart": "You can cancel until the time starts.",
       "cancelHours_one": "You can cancel up to {{count}} hour before the start.",
-      "cancelHours_other": "You can cancel up to {{count}} hours before the start."
+      "cancelHours_other": "You can cancel up to {{count}} hours before the start.",
+      "disclosureTitle": "Rules and machines"
     },
     "template": {
       "standard": "Standard",

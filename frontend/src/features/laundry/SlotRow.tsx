@@ -5,7 +5,7 @@ import type { GridBooking, PendingAction } from './types'
 import { formatTime } from '../../shared/utils/dateUtils'
 import { colors } from '../../shared/theme'
 import { badge } from './slotBadge'
-import { InlineConfirm, ConfirmMessage } from './InlineConfirm'
+import { InlineConfirmPanel } from './InlineConfirm'
 import { TAP_TARGET_PX } from './constants'
 
 interface Props {
@@ -21,11 +21,12 @@ interface Props {
   confirmError?: string | null
   onConfirm?: () => void
   onDismissConfirm?: () => void
+  usage?: { used: number; max: number }
 }
 
 export function SlotRow({
   slot, booking, past, locked, blocked, onBook, onCancel,
-  pending, confirmLoading, confirmError, onConfirm, onDismissConfirm,
+  pending, confirmLoading, confirmError, onConfirm, onDismissConfirm, usage,
 }: Props) {
   const { t } = useTranslation()
   const [hovered, setHovered] = useState(false)
@@ -59,7 +60,7 @@ export function SlotRow({
   const rowBg =
     (justBooked || booking?.isOwn)              ? colors.slotOwnBg :
     takenByOther                                ? colors.slotTakenBg :
-    (confirming && pending?.type === 'book')    ? colors.primaryLighter :
+    (confirming && pending?.type === 'book')    ? colors.primaryLight :
     (hovered && isClickable)                    ? colors.primaryLighter :
                                                   colors.bgCard
 
@@ -81,9 +82,7 @@ export function SlotRow({
     status = (
       <span className="d-flex align-items-center gap-2 flex-wrap justify-content-end">
         <span style={badge(colors.successBg, colors.successText)}>{t('laundry.slot.myBooking')}</span>
-        {confirming && pending?.type === 'cancel' ? (
-          <InlineConfirm variant="cancel" loading={!!confirmLoading} onConfirm={onConfirm!} onDismiss={onDismissConfirm!} />
-        ) : booking.canCancel ? (
+        {confirming && pending?.type === 'cancel' ? null : booking.canCancel ? (
           <button
             type="button"
             className="btn btn-sm btn-outline-secondary"
@@ -103,7 +102,7 @@ export function SlotRow({
   } else if (blocked) {
     status = null
   } else if (confirming && pending?.type === 'book') {
-    status = <InlineConfirm variant="book" loading={!!confirmLoading} onConfirm={onConfirm!} onDismiss={onDismissConfirm!} />
+    status = null
   } else {
     status = (
       // The real control for keyboard/screen-reader users; the row itself stays clickable for mouse users
@@ -127,6 +126,7 @@ export function SlotRow({
       style={{
         borderBottom: `1px solid ${colors.borderRow}`,
         backgroundColor: rowBg,
+        boxShadow: confirming ? `inset 4px 0 0 ${pending?.type === 'cancel' ? colors.dangerText : colors.primary}` : undefined,
         opacity: dimmed ? 0.45 : blocked ? 0.5 : 1,
         cursor: isClickable ? 'pointer' : 'default',
         transition: (justBooked || justCancelled) ? 'none' : 'background-color 0.12s',
@@ -141,7 +141,15 @@ export function SlotRow({
         {status}
       </div>
       {confirming && pending && (
-        <ConfirmMessage pending={pending} error={confirmError ?? null} style={{ padding: '0 20px 9px' }} />
+        <InlineConfirmPanel
+          pending={pending}
+          loading={!!confirmLoading}
+          error={confirmError ?? null}
+          usage={usage}
+          onConfirm={onConfirm!}
+          onDismiss={onDismissConfirm!}
+          style={{ padding: '2px 20px 14px' }}
+        />
       )}
     </div>
   )

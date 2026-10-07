@@ -9,6 +9,9 @@ export const SITE_ORIGIN = 'https://www.laundrybook.dk'
 export const MEDIA_LG = '(min-width: 992px)'
 export const MEDIA_XL = '(min-width: 1200px)'
 
+// The app navbar is sticky; anything else that sticks to the top must sit below it
+export const NAVBAR_HEIGHT_PX = 56
+
 export const ROLE_LABEL_KEY = {
   [UserRole.Resident]: 'roles.resident',
   [UserRole.ComplexAdmin]: 'roles.complexAdmin',

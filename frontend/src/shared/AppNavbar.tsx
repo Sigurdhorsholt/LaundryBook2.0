@@ -9,6 +9,7 @@ import {BrandLogo} from './BrandLogo'
 import {IconMenu} from './icons'
 import {LanguageSelector} from './ui'
 import { useOffcanvasAutoClose } from './utils/bootstrapUtils'
+import { NAVBAR_HEIGHT_PX } from './constants'
 
 const NAV_OFFCANVAS_ID = 'navMenuOffcanvas'
 
@@ -41,7 +42,7 @@ export function AppNavbar({isAdmin = false}: NavbarProps) {
                 className="sticky-top border-bottom flex-shrink-0"
                 style={{backgroundColor: 'rgba(255,255,255,0.96)', backdropFilter: 'blur(10px)', zIndex: 1040}}
             >
-                <div className="container-fluid px-3 px-lg-4 d-flex align-items-center" style={{height: 56}}>
+                <div className="container-fluid px-3 px-lg-4 d-flex align-items-center" style={{height: NAVBAR_HEIGHT_PX}}>
 
                     {/* Admin: sidebar offcanvas toggle (mobile only) */}
                     {isAdmin && (

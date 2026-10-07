@@ -30,14 +30,8 @@ export function BookingSidePanel({ booking: lb, layout }: Props) {
         today={lb.today}
         onCancel={lb.handleCancelUpcoming}
       />
-      {lb.selectedRoom && lb.settings && (
-        <RoomInfoCard
-          room={lb.selectedRoom}
-          machines={lb.machines}
-          lookaheadDays={lb.lookaheadDays}
-          maxBookings={lb.maxBookings}
-          cancellationWindowMinutes={lb.settings.cancellationWindowMinutes}
-        />
+      {lb.selectedRoom && lb.roomRules && (
+        <RoomInfoCard room={lb.selectedRoom} machines={lb.machines} rules={lb.roomRules} />
       )}
     </aside>
   )
