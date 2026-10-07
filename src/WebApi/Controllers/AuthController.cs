@@ -47,7 +47,9 @@ public class AuthController(IMediator mediator, IWebHostEnvironment env) : Contr
     [HttpPost("logout")]
     public IActionResult Logout()
     {
-        Response.Cookies.Delete("access_token");
+        // Must match how the cookie was set: a deletion without SameSite=None is blocked on the
+        // cross-site response in production, and the session would survive "Log ud"
+        Response.Cookies.Delete("access_token", AuthCookieOptions());
         return NoContent();
     }
 
