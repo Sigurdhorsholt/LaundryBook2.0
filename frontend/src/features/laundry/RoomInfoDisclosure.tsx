@@ -2,7 +2,7 @@ import { useId, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import type { LaundryMachineDto, LaundryRoomDto } from './laundryApi'
 import { RoomInfoDetails } from './RoomInfoCard'
-import type { RoomRules } from './types'
+import type { HouseRulesLink, RoomRules } from './types'
 import { IconChevronDown } from '../../shared/icons'
 import { colors } from '../../shared/theme'
 import { SIDE_CARD, TAP_TARGET_PX } from './constants'
@@ -11,9 +11,10 @@ interface Props {
   room: LaundryRoomDto
   machines: LaundryMachineDto[]
   rules: RoomRules
+  houseRules: HouseRulesLink | null
 }
 
-export function RoomInfoDisclosure({ room, machines, rules }: Props) {
+export function RoomInfoDisclosure({ room, machines, rules, houseRules }: Props) {
   const { t } = useTranslation()
   const [open, setOpen] = useState(false)
   const panelId = useId()
@@ -41,7 +42,7 @@ export function RoomInfoDisclosure({ room, machines, rules }: Props) {
       </button>
       {open && (
         <div id={panelId} style={{ padding: '0 16px 16px', borderTop: `1px solid ${colors.borderRow}` }}>
-          <RoomInfoDetails machines={machines} rules={rules} />
+          <RoomInfoDetails machines={machines} rules={rules} houseRules={houseRules} />
         </div>
       )}
     </section>

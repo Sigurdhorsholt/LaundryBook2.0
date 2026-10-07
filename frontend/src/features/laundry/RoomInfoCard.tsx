@@ -4,11 +4,13 @@ import type { LaundryMachineDto, LaundryRoomDto } from './laundryApi'
 import { colors } from '../../shared/theme'
 import { MACHINE_TYPE_LABEL, SIDE_CARD } from './constants'
 import { BookingRulesList } from './BookingRulesList'
-import type { RoomRules } from './types'
+import type { HouseRulesLink, RoomRules } from './types'
+import { HOUSE_RULES_ANCHOR } from '../properties/constants'
 
 interface DetailsProps {
   machines: LaundryMachineDto[]
   rules: RoomRules
+  houseRules: HouseRulesLink | null
 }
 
 const subTitle: React.CSSProperties = {
@@ -16,7 +18,7 @@ const subTitle: React.CSSProperties = {
   textTransform: 'uppercase', color: colors.textMuted,
 }
 
-export function RoomInfoDetails({ machines, rules }: DetailsProps) {
+export function RoomInfoDetails({ machines, rules, houseRules }: DetailsProps) {
   const { t } = useTranslation()
 
   return (
@@ -37,9 +39,16 @@ export function RoomInfoDetails({ machines, rules }: DetailsProps) {
 
       <h3 style={subTitle}>{t('laundry.room.rulesTitle')}</h3>
       <BookingRulesList rules={rules} />
-      <Link to="/property" className="d-inline-block mt-3" style={{ fontSize: '0.85rem', fontWeight: 600 }}>
-        {t('laundry.room.moreAboutProperty')}
-      </Link>
+      <div className="d-flex align-items-center gap-2 mt-3">
+        <Link to={houseRules ? `/property#${HOUSE_RULES_ANCHOR}` : '/property'} style={{ fontSize: '0.85rem', fontWeight: 600 }}>
+          {houseRules ? t('laundry.room.readHouseRules') : t('laundry.room.moreAboutProperty')}
+        </Link>
+        {houseRules?.isNew && (
+          <span style={{ fontSize: '0.72rem', fontWeight: 700, borderRadius: 999, padding: '2px 8px', backgroundColor: colors.warningBg, color: colors.warningText }}>
+            {t('laundry.room.newHouseRules')}
+          </span>
+        )}
+      </div>
     </>
   )
 }
@@ -48,14 +57,14 @@ interface Props extends DetailsProps {
   room: LaundryRoomDto
 }
 
-export function RoomInfoCard({ room, machines, rules }: Props) {
+export function RoomInfoCard({ room, machines, rules, houseRules }: Props) {
   return (
     <section style={SIDE_CARD}>
       <h2 style={{ margin: 0, fontSize: '1rem', fontWeight: 700, color: colors.textPrimary }}>{room.name}</h2>
       {room.description && (
         <p style={{ margin: '2px 0 0', fontSize: '0.85rem', color: colors.textMuted }}>{room.description}</p>
       )}
-      <RoomInfoDetails machines={machines} rules={rules} />
+      <RoomInfoDetails machines={machines} rules={rules} houseRules={houseRules} />
     </section>
   )
 }

@@ -23,6 +23,7 @@ const AdminDashboardPage = lazy(() => import('../pages/admin/AdminDashboardPage'
 const PropertiesPage = lazy(() => import('../pages/admin/properties/PropertiesPage').then((m) => ({ default: m.PropertiesPage })))
 const PropertyOverviewPage = lazy(() => import('../pages/admin/properties/PropertyOverviewPage').then((m) => ({ default: m.PropertyOverviewPage })))
 const PropertyUsersPage = lazy(() => import('../pages/admin/properties/PropertyUsersPage').then((m) => ({ default: m.PropertyUsersPage })))
+const PropertyHouseRulesPage = lazy(() => import('../pages/admin/properties/PropertyHouseRulesPage').then((m) => ({ default: m.PropertyHouseRulesPage })))
 const PropertySettingsPage = lazy(() => import('../pages/admin/properties/PropertySettingsPage').then((m) => ({ default: m.PropertySettingsPage })))
 const LaundryRoomsPage = lazy(() => import('../pages/admin/properties/LaundryRoomsPage').then((m) => ({ default: m.LaundryRoomsPage })))
 const PropertyTimeslotsPage = lazy(() => import('../pages/admin/properties/PropertyTimeslotsPage').then((m) => ({ default: m.PropertyTimeslotsPage })))
@@ -129,6 +130,13 @@ export const routes: AppRoute[] = [
   {
     path: '/admin/properties/:propertyId/users',
     component: PropertyUsersPage,
+    layout: 'admin',
+    protected: true,
+    minRole: UserRole.ComplexAdmin,
+  },
+  {
+    path: '/admin/properties/:propertyId/house-rules',
+    component: PropertyHouseRulesPage,
     layout: 'admin',
     protected: true,
     minRole: UserRole.ComplexAdmin,

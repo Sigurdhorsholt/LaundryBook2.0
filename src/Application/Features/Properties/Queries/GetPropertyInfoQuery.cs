@@ -16,7 +16,9 @@ public record PropertyInfoDto(
     string Address,
     IReadOnlyList<BoardMemberDto> Board,
     IReadOnlyList<PropertyRoomInfoDto> Rooms,
-    ComplexSettingsDto Settings);
+    ComplexSettingsDto Settings,
+    string? HouseRules,
+    DateTime? HouseRulesUpdatedAt);
 
 public record BoardMemberDto(string Name, string Email);
 
@@ -68,6 +70,8 @@ public class GetPropertyInfoQueryHandler(
             property.Address,
             board,
             rooms,
-            ComplexSettingsDto.From(property.Settings));
+            ComplexSettingsDto.From(property.Settings),
+            property.HouseRules,
+            property.HouseRulesUpdatedAt);
     }
 }

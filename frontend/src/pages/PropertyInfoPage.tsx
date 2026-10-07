@@ -1,12 +1,14 @@
-import { useId, useState } from 'react'
+import { useEffect, useId, useState } from 'react'
+import { useLocation } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { skipToken } from '@reduxjs/toolkit/query/react'
 import { useMeQuery } from '../features/auth/authApi'
 import { useGetPropertyInfoQuery } from '../features/properties/propertiesApi'
 import { PropertyBoardCard } from '../features/properties/PropertyBoardCard'
 import { PropertyRoomsCard } from '../features/properties/PropertyRoomsCard'
+import { HouseRulesCard } from '../features/properties/HouseRulesCard'
 import { BookingRulesList } from '../features/laundry/BookingRulesList'
-import { OVERVIEW_CARD } from '../features/properties/constants'
+import { HOUSE_RULES_ANCHOR, OVERVIEW_CARD } from '../features/properties/constants'
 import { PageHeader, ErrorState, Spinner } from '../shared/ui'
 import { colors } from '../shared/theme'
 
@@ -18,6 +20,13 @@ export function PropertyInfoPage() {
   const [picked, setPicked] = useState<string | null>(null)
   const propertyId = memberships.some(m => m.propertyId === picked) ? picked : (memberships[0]?.propertyId ?? null)
   const info = useGetPropertyInfoQuery(propertyId ?? skipToken)
+  const { hash } = useLocation()
+  const hasRules = !!info.data?.houseRules
+
+  // The router doesn't scroll to #vaskeregler by itself, and the section only exists once loaded
+  useEffect(() => {
+    if (hash === `#${HOUSE_RULES_ANCHOR}` && hasRules) document.getElementById(HOUSE_RULES_ANCHOR)?.scrollIntoView()
+  }, [hash, hasRules])
 
   if (!propertyId) {
     return (
@@ -49,6 +58,7 @@ export function PropertyInfoPage() {
       ) : (
         <div className="row g-4">
           <div className="col-12 col-lg-8 d-flex flex-column gap-4">
+            {data.houseRules && <HouseRulesCard propertyId={data.id} text={data.houseRules} updatedAt={data.houseRulesUpdatedAt} />}
             <section style={OVERVIEW_CARD}>
               <h2 style={{ margin: '0 0 10px', fontSize: '1rem', fontWeight: 700, color: colors.textPrimary }}>{t('propertyInfo.rules.title')}</h2>
               <BookingRulesList

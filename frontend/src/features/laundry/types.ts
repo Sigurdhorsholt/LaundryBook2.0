@@ -63,3 +63,8 @@ export interface RoomRules {
   maxBookings: number
   cancellationWindowMinutes: number
 }
+
+// Set when the property has house rules; isNew when this browser hasn't shown the latest version
+export interface HouseRulesLink {
+  isNew: boolean
+}

@@ -35,6 +35,13 @@ public class PropertiesController(IMediator mediator, IConfiguration configurati
         return Ok(result);
     }
 
+    [HttpPut("{id:guid}/house-rules")]
+    public async Task<IActionResult> UpdateHouseRules(Guid id, [FromBody] UpdateHouseRulesRequest request, CancellationToken ct)
+    {
+        await mediator.Send(new UpdateHouseRulesCommand(id, request.Text), ct);
+        return NoContent();
+    }
+
     [HttpPost]
     public async Task<IActionResult> CreateProperty([FromBody] CreatePropertyCommand command, CancellationToken ct)
     {
@@ -161,6 +168,8 @@ public class PropertiesController(IMediator mediator, IConfiguration configurati
         return Ok(new { revoked });
     }
 }
+
+public record UpdateHouseRulesRequest(string? Text);
 
 public record UpdateSettingsRequest(
     BookingMode BookingMode,

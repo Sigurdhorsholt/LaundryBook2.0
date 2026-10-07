@@ -38,6 +38,7 @@
     "laundry": "Vaskebooking",
     "myPage": "Min side",
     "propertyInfo": "Ejendommen",
+    "houseRules": "Husorden",
     "overview": "Oversigt",
     "properties": "Ejendomme",
     "system": "System",
@@ -578,6 +579,8 @@
       "modeMachine": "Du booker en bestemt maskine.",
       "modeRoom": "Du booker hele vaskerummet.",
       "moreAboutProperty": "Mere om ejendommen",
+      "readHouseRules": "Læs vaskereglerne",
+      "newHouseRules": "Nye regler",
       "disclosureTitle": "Regler og maskiner"
     },
     "duration": {
@@ -711,6 +714,23 @@
     "role_too_high": "Du kan ikke administrere en bruger med en højere rolle end din egen.",
     "role_grant_too_high": "Du kan ikke tildele en højere rolle end din egen.",
     "invite_email_mismatch": "Invitationen er sendt til en anden e-mailadresse."
+  },
+  "houseRules": {
+    "title": "Husorden og vaskeregler",
+    "updated": "Opdateret {{date}}",
+    "adminDescription": "Skriv de regler, beboerne skal kende. De vises under Ejendommen, og bookingsiden linker til dem.",
+    "editorTitle": "Tekst",
+    "formatHelp": "En tom linje giver et nyt afsnit. Start en linje med - for et punkt, 1. for en nummereret liste og # for en overskrift. Skriv **ord** for fed.",
+    "placeholder": "Skriv jeres vaskeregler, fx:\n\n- Rens fnugfilteret efter brug.\n- Tøm maskinen senest 15 minutter efter din tid.",
+    "lastUpdated": "Sidst opdateret {{date}}",
+    "save": "Gem",
+    "saving": "Gemmer…",
+    "undo": "Fortryd",
+    "saved": "Gemt. Beboerne kan se det nu.",
+    "saveFailed": "Reglerne kunne ikke gemmes. Prøv igen.",
+    "previewTitle": "Sådan ser beboerne det",
+    "previewHelp": "Opdateres, mens du skriver.",
+    "previewEmpty": "Beboerne ser ingen regler, før I skriver noget."
   },
   "propertyInfo": {
     "description": "Det praktiske om jeres vaskerum: regler, maskiner og hvem I kan kontakte.",

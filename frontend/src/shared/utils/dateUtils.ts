@@ -3,7 +3,11 @@ import i18n from '../../i18n'
 // ── Date string helpers ────────────────────────────────────────────────────────
 
 export function todayStr(): string {
-  const d = new Date()
+  return localDateStr(new Date())
+}
+
+// "YYYY-MM-DD" in the browser's time zone, e.g. for a server timestamp shown as a date
+export function localDateStr(d: Date): string {
   return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`
 }
 
