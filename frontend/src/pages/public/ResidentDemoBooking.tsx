@@ -173,7 +173,7 @@ export function ResidentDemoBooking() {
 
       {/* Date strip with week navigation */}
       <div className="d-flex align-items-center gap-1 mb-3 p-2 rounded-3"
-        style={{ backgroundColor: colors.bgPage, border: `1px solid ${colors.borderDefault}` }}>
+        style={{ backgroundColor: colors.bgSubtle, border: `1px solid ${colors.borderDefault}` }}>
         <button
           className="btn btn-sm p-1 flex-shrink-0"
           style={{ color: canGoBack ? colors.textPrimary : colors.textDisabled, lineHeight: 1 }}

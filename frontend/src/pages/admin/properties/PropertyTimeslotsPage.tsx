@@ -347,7 +347,7 @@ function RoomCard({
 
       {/* Expanded content */}
       {isExpanded && (
-        <div style={{ borderTop: `1.5px solid ${colors.borderDefault}`, backgroundColor: colors.bgPage }}>
+        <div style={{ borderTop: `1.5px solid ${colors.borderDefault}`, backgroundColor: colors.bgSubtle }}>
           {isLoading ? (
             <Spinner />
           ) : (

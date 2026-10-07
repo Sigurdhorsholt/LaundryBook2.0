@@ -21,7 +21,7 @@ export function GetStartedSteps() {
           {STEPS.map((s, i) => (
             <div key={s.num} className="col-12 col-sm-6 col-lg-3">
               <div className="h-100 p-4 rounded-4 position-relative"
-                style={{ backgroundColor: colors.bgPage, border: `1px solid ${colors.borderDefault}` }}>
+                style={{ backgroundColor: colors.bgSubtle, border: `1px solid ${colors.borderDefault}` }}>
                 {i < STEPS.length - 1 && (
                   <div className="d-none d-lg-block position-absolute"
                     style={{ top: '2.1rem', right: '-1.1rem', width: '2.2rem', height: 2, backgroundColor: colors.borderStrong, zIndex: 1 }} />

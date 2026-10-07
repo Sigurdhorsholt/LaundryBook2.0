@@ -71,7 +71,7 @@ export function FeaturesPage() {
         </div>
       </section>
 
-      <section style={{ backgroundColor: colors.bgPage }}>
+      <section style={{ backgroundColor: colors.bgSubtle }}>
         <div className="container-xl px-4" style={{ paddingTop: '4rem', paddingBottom: '4rem' }}>
           <h2 className="fw-bold mb-5 text-center" style={{ fontSize: 'clamp(1.6rem, 3vw, 2rem)', color: colors.textPrimary, letterSpacing: '-0.3px' }}>
             {t('public.features.smallSectionTitle')}

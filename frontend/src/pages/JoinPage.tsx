@@ -127,7 +127,7 @@ export function JoinPage() {
               required
               autoComplete="email"
               readOnly={!!invite.email}
-              style={invite.email ? { backgroundColor: colors.bgPage, cursor: 'default' } : undefined}
+              style={invite.email ? { backgroundColor: colors.bgSubtle, cursor: 'default' } : undefined}
             />
           </div>
 

@@ -83,7 +83,7 @@ export function LandingPage() {
       </section>
 
       {/* ── Value props ── */}
-      <section style={{ backgroundColor: colors.bgPage }}>
+      <section style={{ backgroundColor: colors.bgSubtle }}>
         <div className="container-xl px-4" style={{ paddingTop: '5rem', paddingBottom: '5rem' }}>
           <div className="row justify-content-center mb-5">
             <div className="col-12 col-lg-8 text-center">

@@ -1,15 +1,15 @@
-// Single source of truth for all UI colors. The primary cluster is the brand (Warm Sage);
+// Single source of truth for all UI colors. The primary cluster is the brand (Deep Sage);
 // all other tokens (text, surfaces, borders, semantic) are palette-neutral.
 
 const palette = {
-  primary:          '#3d7a5c',
-  primaryLight:     '#e8f5ee',
-  primaryLighter:   '#f2faf5',
-  primaryBorder:    '#b8ddc9',
-  primaryMuted:     '#d0ecdb',
-  primaryMutedText: '#2a5c42',
-  primaryAccent:    '#336650',
-  textPrimary:      '#1a2e24',   // slightly green-tinted dark for cohesion
+  primary:          '#2c6a4d',
+  primaryLight:     '#dcebe2',
+  primaryLighter:   '#eef5f0',
+  primaryBorder:    '#a9cdb8',
+  primaryMuted:     '#cfe8da',
+  primaryMutedText: '#1e4f38',
+  primaryAccent:    '#235a40',
+  textPrimary:      '#12201a',   // slightly green-tinted dark for cohesion
 }
 
 // ── Stable tokens (palette-neutral) ───────────────────────────────────────────
@@ -21,71 +21,71 @@ export const colors = {
 
   // ── Text ─────────────────────────────────────────────────────────────────────
   // textPrimary comes from palette above (may vary per palette)
-  textSecondary: '#5a6a7a',
-  textMuted:     '#a0adb8',
-  textDisabled:  '#c0ccd8',
+  textSecondary: '#3f5048',
+  textMuted:     '#5a6b62',
+  textDisabled:  '#8a978f',
 
   // ── Surfaces ──────────────────────────────────────────────────────────────────
-  bgPage:   '#f8fafb',
+  bgPage:   '#e8ece6',
   bgCard:   '#ffffff',
-  bgSubtle: '#f0f4f8',
-  bgMuted:  '#f4f6f8',
-  bgHeader: '#f8fafc',   // card/section header rows
+  bgSubtle: '#f3f5f1',
+  bgMuted:  '#eef1ec',
+  bgHeader: '#f3f5f1',   // card/section header rows
 
   // ── Borders ───────────────────────────────────────────────────────────────────
-  borderDefault: '#e8ecf0',
-  borderStrong:  '#d0d8e0',
-  borderRow:     '#f0f4f8',  // between rows inside cards
+  borderDefault: '#cfd8d0',
+  borderStrong:  '#aebbb1',
+  borderRow:     '#e1e7e2',  // between rows inside cards
 
   // ── Semantic — success ────────────────────────────────────────────────────────
-  successText:   '#2e7d32',
-  successBg:     '#f0fdf4',
-  successBorder: '#c8e6c9',
+  successText:   '#22693a',
+  successBg:     '#e6f3ea',
+  successBorder: '#b9dcc4',
 
   // ── Semantic — warning ────────────────────────────────────────────────────────
-  warningText:   '#b45309',
-  warningBg:     '#fff8e1',
-  warningBorder: '#ffe0b2',
+  warningText:   '#8a500c',
+  warningBg:     '#fbefd9',
+  warningBorder: '#ecd3a4',
 
   // ── Semantic — danger ─────────────────────────────────────────────────────────
-  dangerText:    '#c62828',
-  dangerBg:      '#fce4ec',
-  dangerBorder:  '#f8bbd0',
+  dangerText:    '#a8261f',
+  dangerBg:      '#fbe7e5',
+  dangerBorder:  '#f0c3bf',
 
   // ── Booking grid ──────────────────────────────────────────────────────────────
-  slotOwnBg:        '#f0fdf4',   // green tint for "my booking" row
-  slotOwnText:      '#2e7d32',
-  slotTakenBg:      '#f2f4f7',
-  slotTakenText:    '#8a9aaa',
-  slotFreeBg:       '#eafaf0',   // soft green for "ledig" availability badges
-  slotFreeText:     '#2e7d32',
+  slotOwnBg:        '#cfe8da',   // green tint for "my booking" row
+  slotOwnText:      '#174a32',
+  slotTakenBg:      '#e3e7e2',
+  slotTakenText:    '#4b5a52',
+  slotFreeBg:       '#e4f1e8',   // soft green for "ledig" availability badges
+  slotFreeText:     '#1f5c3f',
 
   // ── Availability dots ─────────────────────────────────────────────────────────
-  dotFree: '#4caf50',
-  dotFew:  '#f59e0b',
-  dotFull: '#e0e0e0',
+  dotFree: '#2f8a5a',
+  dotFew:  '#c27c12',
+  dotFull: '#aebbb1',
 
   // ── Footer ────────────────────────────────────────────────────────────────────
   footerBg: '#0a1929',
 
   // ── Booking grid — warning overrides ──────────────────────────────────────────
   // maxReached banner uses a slightly warmer amber than the standard warning tokens
-  slotWarningBg:     '#fff3e0',
-  slotWarningText:   '#7a3f00',
-  slotWarningBorder: '#f0e0b0',
+  slotWarningBg:     '#fbefd9',
+  slotWarningText:   '#6e3f06',
+  slotWarningBorder: '#ecd3a4',
 
   // Pending (unsaved) slot colour in the day timeline
   slotPendingColor: '#64b5f6',
 
   // ── Sidebar ───────────────────────────────────────────────────────────────────
-  sidebarText:       '#4a5568',
-  sidebarHoverBg:    '#f5f7fa',
+  sidebarText:       '#3f5048',
+  sidebarHoverBg:    '#eef1ec',
 
   // ── Role badges ───────────────────────────────────────────────────────────────
-  roleResident:     { bg: '#f0f4f8',      text: '#5a6a7a'  },
-  roleComplexAdmin: { bg: palette.primaryLight, text: palette.primary },
-  roleOrgAdmin:     { bg: '#e8f5e9',      text: '#2e7d32'  },
-  roleSysAdmin:     { bg: '#fce4ec',      text: '#c62828'  },
+  roleResident:     { bg: '#eef1ec',      text: '#3f5048'  },
+  roleComplexAdmin: { bg: palette.primaryLight, text: palette.primaryMutedText },
+  roleOrgAdmin:     { bg: '#e4f1e8',      text: '#1f5c3f'  },
+  roleSysAdmin:     { bg: '#fbe7e5',      text: '#a8261f'  },
 
 } as const
 

@@ -4,10 +4,11 @@ import { AppNavbar } from './AppNavbar'
 import { AppFooter } from './AppFooter'
 import { PendingApprovalBanner } from './PendingApprovalBanner'
 import { Spinner } from './ui'
+import { colors } from './theme'
 
 export function AppLayout() {
   return (
-    <div className="d-flex flex-column min-vh-100">
+    <div className="d-flex flex-column min-vh-100" style={{ backgroundColor: colors.bgPage }}>
       <AppNavbar />
       <PendingApprovalBanner />
       <main className="flex-grow-1">

@@ -186,7 +186,7 @@ export function PropertyUsersPage() {
         {/* ── Desktop: table (hidden below md) ── */}
         <div className="d-none d-md-block table-responsive">
           <table className="table table-hover mb-0" style={{ fontSize: '0.875rem' }}>
-            <thead style={{ backgroundColor: colors.bgPage }}>
+            <thead style={{ backgroundColor: colors.bgSubtle }}>
               <tr>
                 <th className="border-0 px-4 py-3 fw-semibold" style={{ ...thStyle, borderTopLeftRadius: '0.5rem' }}>{t('adminProperties.users.colName')}</th>
                 <th className="border-0 px-4 py-3 fw-semibold" style={thStyle}>{t('adminProperties.users.colEmail')}</th>

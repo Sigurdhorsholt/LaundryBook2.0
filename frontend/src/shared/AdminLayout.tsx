@@ -191,7 +191,7 @@ export function AdminLayout() {
                   </button>
 
                   {/* Property name */}
-                  <div className="px-3 py-2 mb-1 rounded-2" style={{ backgroundColor: colors.bgPage, border: `1px solid ${colors.borderDefault}` }}>
+                  <div className="px-3 py-2 mb-1 rounded-2" style={{ backgroundColor: colors.bgSubtle, border: `1px solid ${colors.borderDefault}` }}>
                     <p className="mb-0 text-truncate fw-semibold" style={{ fontSize: '0.88rem', color: colors.textPrimary }}>
                       {activeProperty?.propertyName ?? t('nav.property')}
                     </p>

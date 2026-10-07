@@ -307,7 +307,7 @@ function RoomCard({
 
       {/* Machines section */}
       {isExpanded && (
-        <div style={{ borderTop: `1.5px solid ${colors.borderDefault}`, backgroundColor: colors.bgPage }}>
+        <div style={{ borderTop: `1.5px solid ${colors.borderDefault}`, backgroundColor: colors.bgSubtle }}>
           <MachineList roomId={room.id} propertyId={propertyId} onEdit={onEditMachine} onDeleted={onDeleted} />
           <div className="px-4 pb-3 pt-2">
             <button
