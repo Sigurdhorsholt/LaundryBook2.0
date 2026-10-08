@@ -3,7 +3,7 @@ import type { ReactNode } from 'react'
 import { useTranslation } from 'react-i18next'
 import { colors } from '../../shared/theme'
 import { BrandLogo } from '../../shared/BrandLogo'
-import { useOffcanvasAutoClose } from '../../shared/utils/bootstrapUtils'
+import { closeOffcanvasThen, useOffcanvasAutoClose } from '../../shared/utils/bootstrapUtils'
 import { IconMenu, IconBrand } from '../../shared/icons'
 import { useModal } from '../../shared/modals/useModal'
 import { LanguageSelector } from '../../shared/ui'
@@ -186,7 +186,7 @@ function PublicNavbar() {
                 <button
                   className="btn fw-medium"
                   style={{ color: colors.textSecondary, borderRadius: 8, fontSize: '0.95rem', border: `1px solid ${colors.borderStrong}` }}
-                  onClick={() => openModal('login')}
+                  onClick={() => closeOffcanvasThen(OFFCANVAS_ID, () => openModal('login'))}
                 >
                   {t('public.layout.login')}
                 </button>
