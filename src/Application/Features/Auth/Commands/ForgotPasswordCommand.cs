@@ -13,8 +13,10 @@ public class ForgotPasswordCommandHandler(
 {
     public async Task Handle(ForgotPasswordCommand request, CancellationToken cancellationToken)
     {
+        // Phones often add a trailing space or a capital letter; an exact match would quietly send nothing
+        var email = request.Email.Trim().ToLowerInvariant();
         var user = await db.Users
-            .FirstOrDefaultAsync(u => u.Email == request.Email, cancellationToken);
+            .FirstOrDefaultAsync(u => u.Email.ToLower() == email, cancellationToken);
 
         // Silent success — never reveal whether the email is registered
         if (user is null)
