@@ -21,7 +21,7 @@
   "seo": {
     "home": { "title": "LaundryBook - vaskebooking til jeres forening", "description": "Digital vaskebooking til danske ejer- og andelsboligforeninger. Beboerne booker vasketider hjemmefra, og bestyrelsen har overblikket." },
     "features": { "title": "Funktioner - LaundryBook", "description": "Booking af vasketider, opsætning af vaskerum og tidspladser, invitationer og overblik over belægning - alt i browseren." },
-    "demo": { "title": "Prøv demoen - LaundryBook", "description": "Prøv LaundryBook uden login: book og aflys en vasketid i en demo-forening, og se admin-panelet." },
+    "demo": { "title": "Demo - LaundryBook", "description": "Se LaundryBook med en opdigtet forening: det beboerne ser, og det administratoren ser." },
     "faq": { "title": "Spørgsmål og svar - LaundryBook", "description": "Svar på de mest almindelige spørgsmål om LaundryBook: booking, mobil, pris og hvordan jeres forening kommer i gang." },
     "about": { "title": "Om LaundryBook", "description": "Hvem står bag LaundryBook, og hvorfor findes det." },
     "getStarted": { "title": "Kom i gang - LaundryBook", "description": "Opret jeres forening på LaundryBook: konto, vaskerum, tidspladser og invitationer til beboerne." },
@@ -675,9 +675,9 @@
     "heroBadge": "Til danske ejer- og andelsboligforeninger",
     "heroTitle": "Vasketider, der kan bookes <s>hjemmefra</s>.",
     "heroSubtitle": "Slut med at gå i kælderen for at se, om der er en ledig vasketid. Med LaundryBook booker beboerne hjemmefra, og bestyrelsen har overblikket. Ingen sedler og ingen forgæves ture ned ad trappen.",
-    "tryDemo": "Prøv demo",
+    "tryDemo": "Se demoen",
     "login": "Log ind",
-    "heroNote": "Prøv demoen - ingen oprettelse nødvendig.",
+    "heroNote": "Se skærmbilleder fra en demo-forening. Det kræver ikke login.",
     "cardLabel": "Din booking",
     "cardTime": "Onsdag 10:00 - 11:30",
     "cardRoom": "Vaskerum 1",
@@ -699,7 +699,7 @@
     "boardFeature2": "Se hvem der har booket hvornår",
     "boardFeature3": "Sæt bookingregler og synlighed for foreningen",
     "ctaTitle": "Klar til at gøre vaskerummet nemmere?",
-    "ctaBody": "Prøv en demo eller log ind for at komme i gang med jeres forening."
+    "ctaBody": "Se demoen, eller log ind for at komme i gang med jeres forening."
   },
   "notFound": {
     "title": "Siden blev ikke fundet",
@@ -887,7 +887,11 @@
       "weekAlt": "Ugevisningen i LaundryBook med ledige tider, optagede tider og dine egne bookinger",
       "phoneAlt": "LaundryBook på en telefon: din næste booking, ugens dage og dagens vasketider",
       "adminAlt": "Administratorens overblik: ugens bookinger, belægning og dagens bookinger",
-      "usageAlt": "Administratorens overblik over, hvor meget hvert vaskerum bliver brugt"
+      "usageAlt": "Administratorens overblik over, hvor meget hvert vaskerum bliver brugt",
+      "bookAlt": "Ugevisningen med vinduet, der åbner, når man trykker på en ledig tid",
+      "propertyAlt": "Ejendommen: husorden, bookingregler, vaskerum og kontakt til administratoren",
+      "bookingsAlt": "Administratorens liste over kommende bookinger med knapper til at aflyse",
+      "houseRulesAlt": "Administratorens editor til husorden med knapper til overskrift, fed og lister"
     },
     "layout": {
       "nav": {
@@ -914,7 +918,7 @@
       "title": "Få jeres forening i gang",
       "subtitle": "Opret jeres forening med det samme. Vi aktiverer den, så snart vi har set den, og I kan sætte vaskerum og beboere op.",
       "createAssociation": "Opret forening",
-      "tryDemoFirst": "Prøv demo først",
+      "tryDemoFirst": "Se demoen først",
       "alreadyHaveAccount": "Har du allerede en konto?",
       "loginHere": "Log ind her",
       "trust": {
@@ -1027,164 +1031,44 @@
         "noDoubleBooking": "Ingen dobbeltbookinger - systemet tillader det ikke",
         "boardInsight": "Bestyrelsen kan se, hvor meget vaskerummene bliver brugt"
       },
-      "ctaTitle": "Den bedste måde at se det på er at prøve det",
-      "ctaButton": "Prøv demoen"
+      "ctaTitle": "Se, hvordan det ser ud",
+      "ctaButton": "Se demoen"
     },
     "demo": {
-      "eyebrow": "Prøv uden login",
-      "title": "Prøv at booke en vasketid",
-      "subtitle": "Det her er den rigtige booking - bare med en opdigtet forening. Prøv at booke en tid, aflys igen, skift dag. Sådan ser det ud for jeres beboere.",
-      "browserBar": "laundrybook.dk/laundry · Mejlgade 42 (demo)",
-      "noDataStored": "Ingen data gemmes. Opdater siden for at nulstille demoen.",
-      "tipsTitle": "Prøv disse ting i demoen",
-      "tips": {
-        "book": "Klik på en ledig tid i listen for at booke",
-        "switchDay": "Skift dag med pileknapperne i datorækken",
-        "cancel": "Aflys din booking med den røde knap",
-        "dots": "Læg mærke til prikkerne - grøn = ledig, gul = næsten fuld, grå = optaget"
-      }
-    },
-    "adminDemo": {
-      "eyebrow": "Admin-panelet",
-      "title": "Fuld kontrol til bestyrelsen",
-      "subtitle": "Opsæt bookingregler, inviter beboere og se alt fra ét sted - ingen teknisk viden krævet.",
-      "browserBar": "laundrybook.dk/admin · Mejlgade 42 (demo)",
-      "ctaButton": "Opret jeres forening →",
-      "ctaNote": "Vi aktiverer foreningen, så snart vi har set den.",
-      "roleAdmin": "Admin",
-      "tabs": {
-        "users": "Beboere",
-        "rooms": "Lokaler"
-      },
-      "dashboard": {
-        "welcome": "Velkommen tilbage",
-        "yourProperties": "Dine ejendomme",
-        "stats": {
-          "bookings": {
-            "label": "Aktive bookinger",
-            "sub": "i dag"
-          },
-          "residents": {
-            "label": "Beboere",
-            "sub": "registrerede"
-          },
-          "rooms": {
-            "label": "Vaskerum",
-            "sub": "aktive"
-          }
+      "eyebrow": "Demo",
+      "title": "Sådan ser LaundryBook ud",
+      "subtitle": "Skærmbilleder fra en opdigtet forening. Først det, beboerne ser. Længere nede det, administratoren ser.",
+      "residentsTitle": "For beboerne",
+      "adminTitle": "For administratoren",
+      "screens": {
+        "book": {
+          "title": "Book en tid",
+          "body": "Ugen vises som et skema. Tryk på en ledig tid, og et lille vindue viser dato og tid. Et tryk mere, så er tiden booket."
+        },
+        "phone": {
+          "title": "På telefonen",
+          "body": "Din næste booking står øverst. Vælg en dag, og se, hvilke tider der er ledige. Aflys med to tryk, hvis planerne ændrer sig."
+        },
+        "property": {
+          "title": "Ejendommen",
+          "body": "Husorden, bookingregler, vaskerum og maskiner, og hvem man kontakter. Samlet ét sted."
+        },
+        "overview": {
+          "title": "Overblik",
+          "body": "Ugens bookinger, belægningen og dagens tider. Ventende invitationer står under Kræver handling."
+        },
+        "bookings": {
+          "title": "Bookinger",
+          "body": "Alle bookinger for de kommende uger. Aflyser du en, får beboeren besked, næste gang de åbner appen."
+        },
+        "houseRules": {
+          "title": "Husorden",
+          "body": "Skriv vaskereglerne med overskrifter, fed og lister. Beboerne kan se dem, så snart du gemmer."
         }
       },
-      "users": {
-        "subtitle": "Mejlgade 42 · {{count}} beboere",
-        "invite": "Inviter beboer",
-        "apt": "Lejl. {{apt}}",
-        "pendingInvite_one": "+ {{count}} invitation afventer svar",
-        "pendingInvite_other": "+ {{count}} invitationer afventer svar"
-      },
-      "rooms": {
-        "roomName1": "Vaskerum 1",
-        "roomName2": "Vaskerum 2",
-        "washerA": "Vaskemaskine A",
-        "dryerB": "Tørretumbler B",
-        "washerC": "Vaskemaskine C",
-        "washerD": "Vaskemaskine D",
-        "addRoom": "Tilføj lokale",
-        "active": "Aktiv"
-      },
-      "settings": {
-        "subtitle": "Mejlgade 42 · Gælder for alle beboere.",
-        "bookingType": {
-          "label": "Bookingtype",
-          "description": "Hvad booker beboerne?",
-          "specificMachine": {
-            "label": "Specifik maskine",
-            "desc": "Beboeren vælger præcis hvilken maskine"
-          },
-          "entireRoom": {
-            "label": "Helt lokale",
-            "desc": "Beboeren booker adgang til hele vaskerummet"
-          }
-        },
-        "visibility": {
-          "label": "Synlighed i kalenderen",
-          "description": "Hvad ser andre beboere?",
-          "apartment": {
-            "label": "Lejlighedsnummer",
-            "desc": "Andre ser \"Lejl. 1A\" - navne vises ikke"
-          },
-          "fullName": {
-            "label": "Fuldt navn",
-            "desc": "Andre ser beboerens fulde navn"
-          },
-          "anonymous": {
-            "label": "Anonymt",
-            "desc": "Andre ser kun \"Optaget\""
-          }
-        },
-        "horizon": {
-          "label": "Fremtidshorisont",
-          "value": "14 dage"
-        },
-        "cancelDeadline": {
-          "label": "Aflysningsfrist",
-          "value": "2 timer"
-        },
-        "maxBookings": {
-          "label": "Maks. bookinger",
-          "value": "2 pr. beboer"
-        }
-      }
-    },
-    "residentDemo": {
-      "subtitle": "Vaskerum 1 · Mejlgade 42 (demo)",
-      "myBooking": "Min booking",
-      "busy": "Optaget",
-      "nextBooking": "Din næste booking",
-      "cancelBooking": "Aflys",
-      "book": "Book",
-      "prevWeek": "Forrige uge",
-      "nextWeek": "Næste uge",
-      "today": "i dag",
-      "tomorrow": "i morgen",
-      "daysShort": {
-        "sun": "sø",
-        "mon": "ma",
-        "tue": "ti",
-        "wed": "on",
-        "thu": "to",
-        "fri": "fr",
-        "sat": "lø"
-      },
-      "daysLong": {
-        "sun": "Søndag",
-        "mon": "Mandag",
-        "tue": "Tirsdag",
-        "wed": "Onsdag",
-        "thu": "Torsdag",
-        "fri": "Fredag",
-        "sat": "Lørdag"
-      },
-      "monthsShort": {
-        "jan": "jan",
-        "feb": "feb",
-        "mar": "mar",
-        "apr": "apr",
-        "may": "maj",
-        "jun": "jun",
-        "jul": "jul",
-        "aug": "aug",
-        "sep": "sep",
-        "oct": "okt",
-        "nov": "nov",
-        "dec": "dec"
-      },
-      "modal": {
-        "confirmBookTitle": "Bekræft booking",
-        "confirmCancelTitle": "Bekræft aflysning",
-        "bookBody": "<s>{{slotTime}}</s> den {{dateLabel}}",
-        "cancelBody": "Aflys <s>{{slotTime}}</s> den {{dateLabel}}?",
-        "demoNote": "Dette er en demo - ingen rigtige bookinger oprettes."
-      }
+      "ctaTitle": "Klar til at sætte jeres forening op?",
+      "ctaBody": "Opret jeres forening. Vi aktiverer den, så snart vi har set den.",
+      "ctaButton": "Kom i gang"
     },
     "about": {
       "eyebrow": "Om LaundryBook",
@@ -1204,8 +1088,8 @@
       "factAudience": "Til danske ejer- og andelsboligforeninger",
       "factPrice": "Skriv til os for en pris",
       "ctaTitle": "Vil du prøve det?",
-      "ctaBody": "Prøv demoen uden at oprette noget, eller sæt jeres forening op. Har I spørgsmål, så skriv - vi svarer gerne.",
-      "tryDemo": "Prøv demo",
+      "ctaBody": "Se demoen uden at oprette noget, eller sæt jeres forening op. Har I spørgsmål, så skriv - vi svarer gerne.",
+      "tryDemo": "Se demo",
       "getStarted": "Opret forening",
       "contact": "Skriv til os"
     },

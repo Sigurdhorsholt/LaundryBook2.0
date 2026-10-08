@@ -6,12 +6,16 @@ import { PREVIEW_PROPERTY } from './previewData'
 
 interface Props {
   admin?: boolean
+  // Index of the highlighted menu item
+  active?: number
 }
 
 // A look-alike of the app's header; the real one needs a signed-in user
-export function PreviewAppBar({ admin = false }: Props) {
+export function PreviewAppBar({ admin = false, active = 0 }: Props) {
   const { t } = useTranslation()
-  const items = admin ? [t('nav.overview'), t('nav.laundry')] : [t('nav.laundry'), t('nav.propertyInfo'), t('nav.myPage')]
+  const items = admin
+    ? [t('nav.overview'), t('nav.bookings'), t('nav.houseRules')]
+    : [t('nav.laundry'), t('nav.propertyInfo'), t('nav.myPage')]
 
   return (
     <div className="d-flex align-items-center gap-3 px-4" style={{ height: NAVBAR_HEIGHT_PX, backgroundColor: colors.chrome, color: colors.chromeText }}>
@@ -28,8 +32,8 @@ export function PreviewAppBar({ admin = false }: Props) {
             key={item}
             style={{
               padding: '7px 12px', borderRadius: 8, fontSize: '0.88rem',
-              fontWeight: i === 0 ? 600 : 500, color: i === 0 ? colors.bgCard : colors.chromeMuted,
-              backgroundColor: i === 0 ? colors.chromeRaised : 'transparent',
+              fontWeight: i === active ? 600 : 500, color: i === active ? colors.bgCard : colors.chromeMuted,
+              backgroundColor: i === active ? colors.chromeRaised : 'transparent',
             }}
           >
             {item}
@@ -37,7 +41,7 @@ export function PreviewAppBar({ admin = false }: Props) {
         ))}
       </span>
       <span className="ms-auto d-inline-flex align-items-center justify-content-center" style={{ width: 32, height: 32, borderRadius: '50%', backgroundColor: colors.chromeAccent, color: colors.chrome, fontSize: '0.78rem', fontWeight: 700 }}>
-        MH
+        {admin ? 'OH' : 'MH'}
       </span>
     </div>
   )

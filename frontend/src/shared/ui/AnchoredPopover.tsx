@@ -1,6 +1,6 @@
 import { useEffect, useLayoutEffect, useRef } from 'react'
 import { createPortal } from 'react-dom'
-import { colors } from '../theme'
+import { POPOVER_SURFACE } from './popoverSurface'
 
 interface Props {
   anchor: HTMLElement
@@ -111,10 +111,9 @@ export function AnchoredPopover({ anchor, labelledBy, width = 300, onClose, chil
       onKeyDown={keepTabInside}
       className="anchored-popover"
       style={{
+        ...POPOVER_SURFACE,
         position: 'fixed', zIndex: 1050, width, maxWidth: `calc(100vw - ${MARGIN * 2}px)`,
-        maxHeight: `calc(100vh - ${MARGIN * 2}px)`, overflowY: 'auto', boxSizing: 'border-box',
-        backgroundColor: colors.bgCard, border: `1px solid ${colors.borderDefault}`, borderRadius: 12,
-        boxShadow: '0 14px 36px rgba(18,32,26,0.24)', padding: '14px 16px', outline: 'none',
+        maxHeight: `calc(100vh - ${MARGIN * 2}px)`, overflowY: 'auto', outline: 'none',
       }}
     >
       {children}
