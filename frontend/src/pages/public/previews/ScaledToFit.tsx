@@ -17,7 +17,8 @@ export function ScaledToFit({ designWidth, children }: Props) {
     const i = inner.current
     if (!o || !i) return
     function update() {
-      if (!o || !i) return
+      // Zero while the page is still hidden behind a loading state; the observer fires again once it shows
+      if (!o || !i || o.clientWidth === 0) return
       const scale = Math.min(1, o.clientWidth / designWidth)
       i.style.transform = `scale(${scale})`
       o.style.height = `${i.offsetHeight * scale}px`

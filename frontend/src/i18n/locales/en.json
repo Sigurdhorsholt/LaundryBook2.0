@@ -21,7 +21,7 @@
   "seo": {
     "home": { "title": "LaundryBook - laundry booking for your association", "description": "Digital laundry booking for Danish homeowner and cooperative housing associations. Residents book from home, and the board has the overview." },
     "features": { "title": "Features - LaundryBook", "description": "Laundry slot booking, room and time slot setup, invitations and an overview of utilisation - all in the browser." },
-    "demo": { "title": "Try the demo - LaundryBook", "description": "Try LaundryBook without logging in: book and cancel a laundry slot in a demo association, and see the admin panel." },
+    "demo": { "title": "Demo - LaundryBook", "description": "See LaundryBook with a made-up association: what residents see, and what the admin sees." },
     "faq": { "title": "Questions and answers - LaundryBook", "description": "Answers to the most common questions about LaundryBook: booking, mobile, price and how your association gets started." },
     "about": { "title": "About LaundryBook", "description": "Who is behind LaundryBook, and why it exists." },
     "getStarted": { "title": "Get started - LaundryBook", "description": "Set up your association on LaundryBook: account, laundry rooms, time slots and invitations for residents." },
@@ -675,9 +675,9 @@
     "heroBadge": "For Danish homeowner and cooperative housing associations",
     "heroTitle": "Laundry times you can book <s>from home</s>.",
     "heroSubtitle": "No more going down to the basement to see if there is a free laundry slot. With LaundryBook, residents book from home and the board has the overview. No notes and no wasted trips down the stairs.",
-    "tryDemo": "Try demo",
+    "tryDemo": "See the demo",
     "login": "Log in",
-    "heroNote": "Try the demo - no sign-up required.",
+    "heroNote": "See screenshots from a demo association. No login needed.",
     "cardLabel": "Your booking",
     "cardTime": "Wednesday 10:00 - 11:30",
     "cardRoom": "Laundry room 1",
@@ -699,7 +699,7 @@
     "boardFeature2": "See who booked when",
     "boardFeature3": "Set booking rules and visibility for the association",
     "ctaTitle": "Ready to make the laundry room easier?",
-    "ctaBody": "Try a demo or log in to get started with your association."
+    "ctaBody": "See the demo, or log in to get started with your association."
   },
   "notFound": {
     "title": "Page not found",
@@ -887,7 +887,11 @@
       "weekAlt": "The week view in LaundryBook with free times, taken times and your own bookings",
       "phoneAlt": "LaundryBook on a phone: your next booking, the week's days and the day's laundry times",
       "adminAlt": "The admin's overview: this week's bookings, occupancy and today's bookings",
-      "usageAlt": "The admin's overview of how much each laundry room is used"
+      "usageAlt": "The admin's overview of how much each laundry room is used",
+      "bookAlt": "The week view with the window that opens when you tap a free time",
+      "propertyAlt": "The property page: house rules, booking rules, laundry rooms and the admin's contact details",
+      "bookingsAlt": "The admin's list of upcoming bookings with buttons to cancel",
+      "houseRulesAlt": "The admin's house-rules editor with buttons for headings, bold and lists"
     },
     "layout": {
       "nav": {
@@ -914,7 +918,7 @@
       "title": "Get your association going",
       "subtitle": "Create your association right away. We'll activate it as soon as we've reviewed it, and you can set up laundry rooms and residents.",
       "createAssociation": "Create association",
-      "tryDemoFirst": "Try the demo first",
+      "tryDemoFirst": "See the demo first",
       "alreadyHaveAccount": "Already have an account?",
       "loginHere": "Log in here",
       "trust": {
@@ -1027,164 +1031,44 @@
         "noDoubleBooking": "No double bookings - the system doesn't allow it",
         "boardInsight": "The board can see how much the laundry rooms are used"
       },
-      "ctaTitle": "The best way to see it is to try it",
-      "ctaButton": "Try the demo"
+      "ctaTitle": "See what it looks like",
+      "ctaButton": "See the demo"
     },
     "demo": {
-      "eyebrow": "Try without login",
-      "title": "Try booking a laundry slot",
-      "subtitle": "This is the real booking - just with a made-up association. Try booking a time, cancel again, switch day. This is what it looks like for your residents.",
-      "browserBar": "laundrybook.dk/laundry · Mejlgade 42 (demo)",
-      "noDataStored": "No data is stored. Refresh the page to reset the demo.",
-      "tipsTitle": "Try these things in the demo",
-      "tips": {
-        "book": "Click a free time in the list to book",
-        "switchDay": "Switch day with the arrow buttons in the date row",
-        "cancel": "Cancel your booking with the red button",
-        "dots": "Notice the dots - green = available, yellow = almost full, gray = occupied"
-      }
-    },
-    "adminDemo": {
-      "eyebrow": "The admin panel",
-      "title": "Full control for the board",
-      "subtitle": "Set up booking rules, invite residents and see everything from one place - no technical knowledge required.",
-      "browserBar": "laundrybook.dk/admin · Mejlgade 42 (demo)",
-      "ctaButton": "Create your association →",
-      "ctaNote": "We'll activate the association as soon as we've reviewed it.",
-      "roleAdmin": "Admin",
-      "tabs": {
-        "users": "Residents",
-        "rooms": "Rooms"
-      },
-      "dashboard": {
-        "welcome": "Welcome back",
-        "yourProperties": "Your properties",
-        "stats": {
-          "bookings": {
-            "label": "Active bookings",
-            "sub": "today"
-          },
-          "residents": {
-            "label": "Residents",
-            "sub": "registered"
-          },
-          "rooms": {
-            "label": "Laundry rooms",
-            "sub": "active"
-          }
+      "eyebrow": "Demo",
+      "title": "What LaundryBook looks like",
+      "subtitle": "Screenshots from a made-up association. First what residents see. Further down, what the admin sees.",
+      "residentsTitle": "For residents",
+      "adminTitle": "For the admin",
+      "screens": {
+        "book": {
+          "title": "Book a time",
+          "body": "The week is shown as a timetable. Tap a free time, and a small window shows the date and time. One more tap and it's booked."
+        },
+        "phone": {
+          "title": "On the phone",
+          "body": "Your next booking is at the top. Pick a day to see which times are free. Cancel with two taps if plans change."
+        },
+        "property": {
+          "title": "The property",
+          "body": "House rules, booking rules, laundry rooms and machines, and who to contact. All in one place."
+        },
+        "overview": {
+          "title": "Overview",
+          "body": "This week's bookings, occupancy and today's times. Pending invitations show under Needs attention."
+        },
+        "bookings": {
+          "title": "Bookings",
+          "body": "All bookings for the coming weeks. If you cancel one, the resident is told the next time they open the app."
+        },
+        "houseRules": {
+          "title": "House rules",
+          "body": "Write the laundry rules with headings, bold and lists. Residents can see them as soon as you save."
         }
       },
-      "users": {
-        "subtitle": "Mejlgade 42 · {{count}} residents",
-        "invite": "Invite resident",
-        "apt": "Apt. {{apt}}",
-        "pendingInvite_one": "+ {{count}} invitation awaiting reply",
-        "pendingInvite_other": "+ {{count}} invitations awaiting reply"
-      },
-      "rooms": {
-        "roomName1": "Laundry room 1",
-        "roomName2": "Laundry room 2",
-        "washerA": "Washer A",
-        "dryerB": "Dryer B",
-        "washerC": "Washer C",
-        "washerD": "Washer D",
-        "addRoom": "Add room",
-        "active": "Active"
-      },
-      "settings": {
-        "subtitle": "Mejlgade 42 · Applies to all residents.",
-        "bookingType": {
-          "label": "Booking type",
-          "description": "What do residents book?",
-          "specificMachine": {
-            "label": "Specific machine",
-            "desc": "The resident chooses exactly which machine"
-          },
-          "entireRoom": {
-            "label": "Entire room",
-            "desc": "The resident books access to the whole laundry room"
-          }
-        },
-        "visibility": {
-          "label": "Visibility in the calendar",
-          "description": "What do other residents see?",
-          "apartment": {
-            "label": "Apartment number",
-            "desc": "Others see \"Apt. 1A\" - names are not shown"
-          },
-          "fullName": {
-            "label": "Full name",
-            "desc": "Others see the resident's full name"
-          },
-          "anonymous": {
-            "label": "Anonymous",
-            "desc": "Others only see \"Occupied\""
-          }
-        },
-        "horizon": {
-          "label": "Booking horizon",
-          "value": "14 days"
-        },
-        "cancelDeadline": {
-          "label": "Cancellation deadline",
-          "value": "2 hours"
-        },
-        "maxBookings": {
-          "label": "Max. bookings",
-          "value": "2 per resident"
-        }
-      }
-    },
-    "residentDemo": {
-      "subtitle": "Laundry room 1 · Mejlgade 42 (demo)",
-      "myBooking": "My booking",
-      "busy": "Occupied",
-      "nextBooking": "Your next booking",
-      "cancelBooking": "Cancel",
-      "book": "Book",
-      "prevWeek": "Previous week",
-      "nextWeek": "Next week",
-      "today": "today",
-      "tomorrow": "tomorrow",
-      "daysShort": {
-        "sun": "Sun",
-        "mon": "Mon",
-        "tue": "Tue",
-        "wed": "Wed",
-        "thu": "Thu",
-        "fri": "Fri",
-        "sat": "Sat"
-      },
-      "daysLong": {
-        "sun": "Sunday",
-        "mon": "Monday",
-        "tue": "Tuesday",
-        "wed": "Wednesday",
-        "thu": "Thursday",
-        "fri": "Friday",
-        "sat": "Saturday"
-      },
-      "monthsShort": {
-        "jan": "Jan",
-        "feb": "Feb",
-        "mar": "Mar",
-        "apr": "Apr",
-        "may": "May",
-        "jun": "Jun",
-        "jul": "Jul",
-        "aug": "Aug",
-        "sep": "Sep",
-        "oct": "Oct",
-        "nov": "Nov",
-        "dec": "Dec"
-      },
-      "modal": {
-        "confirmBookTitle": "Confirm booking",
-        "confirmCancelTitle": "Confirm cancellation",
-        "bookBody": "<s>{{slotTime}}</s> on {{dateLabel}}",
-        "cancelBody": "Cancel <s>{{slotTime}}</s> on {{dateLabel}}?",
-        "demoNote": "This is a demo - no real bookings are created."
-      }
+      "ctaTitle": "Ready to set up your association?",
+      "ctaBody": "Create your association. We activate it as soon as we've looked at it.",
+      "ctaButton": "Get started"
     },
     "about": {
       "eyebrow": "About LaundryBook",
@@ -1204,8 +1088,8 @@
       "factAudience": "For Danish homeowner and cooperative housing associations",
       "factPrice": "Write to us for a price",
       "ctaTitle": "Want to try it?",
-      "ctaBody": "Try the demo without creating anything, or set up your association. If you have questions, write to us - we're happy to answer.",
-      "tryDemo": "Try demo",
+      "ctaBody": "See the demo without creating anything, or set up your association. If you have questions, write to us - we're happy to answer.",
+      "tryDemo": "See demo",
       "getStarted": "Create association",
       "contact": "Write to us"
     },
