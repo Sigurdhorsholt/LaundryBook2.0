@@ -17,11 +17,11 @@ import { durationLabel } from '../../../shared/utils/formatUtils'
 import { toMinutes, toHHmmss, toHHmm, formatTime } from '../../../shared/utils/dateUtils'
 import { ModalShell } from '../../../shared/modals/ModalShell'
 import { IconPlus, IconChevronDown, IconX } from '../../../shared/icons'
-import { useMeQuery } from '../../../features/auth/authApi'
 import { PageHeader, EmptyState, Spinner } from '../../../shared/ui'
 import { BookingMode, useGetPropertyQuery } from '../../../features/properties/propertiesApi'
 import { NoMachinesWarning } from '../../../features/laundry/NoMachinesWarning'
 import { colors } from '../../../shared/theme'
+import { usePropertyName } from '../../../features/properties/usePropertyName'
 
 // ── Helpers ────────────────────────────────────────────────────────────────────
 
@@ -58,8 +58,7 @@ function overlapsAny(startTime: string, endTime: string, slots: PendingSlot[]): 
 export function PropertyTimeslotsPage() {
   const { t } = useTranslation()
   const { propertyId } = useParams<{ propertyId: string }>()
-  const { data: user } = useMeQuery()
-  const property = user?.memberships?.find((m) => m.propertyId === propertyId)
+  const propertyName = usePropertyName(propertyId)
 
   const { data: rooms = [], isLoading, isError } = useGetLaundryRoomsQuery(propertyId!, {
     skip: !propertyId,
@@ -100,7 +99,7 @@ export function PropertyTimeslotsPage() {
   return (
     <div className="p-4 p-lg-5">
       <PageHeader
-        eyebrow={property?.propertyName}
+        eyebrow={propertyName}
         title={t('adminProperties.timeslots.title')}
         description={t('adminProperties.timeslots.description')}
       />

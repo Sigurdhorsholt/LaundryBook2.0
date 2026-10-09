@@ -19,6 +19,7 @@ import { IconPlus } from '../../../shared/icons'
 import { PageHeader, Spinner, Notice, Callout } from '../../../shared/ui'
 import { extractErrorMessage } from '../../../shared/utils/errorUtils'
 import { colors } from '../../../shared/theme'
+import { usePropertyName } from '../../../features/properties/usePropertyName'
 
 export function PropertyUsersPage() {
   const { t } = useTranslation()
@@ -26,6 +27,7 @@ export function PropertyUsersPage() {
   const { data: currentUser } = useMeQuery()
   const property = currentUser?.memberships.find((m) => m.propertyId === propertyId)
   const isPendingApproval = property ? !property.propertyIsActive : false
+  const propertyName = usePropertyName(propertyId)
   const { openModal } = useModal()
 
   const { data: members = [], isLoading, isError } = useGetPropertyMembersQuery(propertyId!, {
@@ -209,7 +211,7 @@ export function PropertyUsersPage() {
   return (
     <div className="p-4 p-lg-5">
       <PageHeader
-        eyebrow={property?.propertyName}
+        eyebrow={propertyName}
         title={t('adminProperties.users.title')}
         action={
           <button

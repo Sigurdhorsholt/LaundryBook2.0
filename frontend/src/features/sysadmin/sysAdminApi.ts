@@ -39,6 +39,20 @@ export interface PendingPropertyDto {
   adminEmail: string | null
 }
 
+// Every property on the platform, with the numbers /system shows
+export interface SystemPropertyDto {
+  id: string
+  name: string
+  address: string
+  isActive: boolean
+  createdAt: string
+  members: number
+  admins: number
+  rooms: number
+  bookingsLast30Days: number
+  bookingsNext7Days: number
+}
+
 export interface AuditLogDto {
   id: string
   timestampUtc: string
@@ -91,6 +105,11 @@ export const sysAdminApi = baseApi.injectEndpoints({
       providesTags: [{ type: 'Property', id: 'PENDING' }],
     }),
 
+    getAllProperties: build.query<SystemPropertyDto[], void>({
+      query: () => '/api/sysadmin/properties',
+      providesTags: [{ type: 'Property', id: 'SYSTEM' }],
+    }),
+
     activateProperty: build.mutation<void, string>({
       query: (propertyId) => ({
         url: `/api/sysadmin/properties/${propertyId}/activate`,
@@ -99,6 +118,19 @@ export const sysAdminApi = baseApi.injectEndpoints({
       invalidatesTags: [
         { type: 'Property', id: 'PENDING' },
         { type: 'Property', id: 'LIST' },
+        { type: 'Property', id: 'SYSTEM' },
+      ],
+    }),
+
+    deactivateProperty: build.mutation<void, string>({
+      query: (propertyId) => ({
+        url: `/api/sysadmin/properties/${propertyId}/deactivate`,
+        method: 'POST',
+      }),
+      invalidatesTags: [
+        { type: 'Property', id: 'PENDING' },
+        { type: 'Property', id: 'LIST' },
+        { type: 'Property', id: 'SYSTEM' },
       ],
     }),
 
@@ -126,7 +158,9 @@ export const {
   useGetUserWithMembershipsQuery,
   useAssignUserToPropertyMutation,
   useGetPendingPropertiesQuery,
+  useGetAllPropertiesQuery,
   useActivatePropertyMutation,
+  useDeactivatePropertyMutation,
   useGetAuditLogsQuery,
   useSendTestEmailMutation,
 } = sysAdminApi
