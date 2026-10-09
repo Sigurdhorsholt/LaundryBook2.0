@@ -1,10 +1,10 @@
-import { useMeQuery } from '../features/auth/authApi'
-import { isAdmin } from './roleUtils'
-import { IconBuilding, IconCalendar, IconShield, IconUser } from './icons'
+import { useMeQuery, UserRole } from '../features/auth/authApi'
+import { getHighestRole, isAdmin } from './roleUtils'
+import { IconBuilding, IconCalendar, IconSettings, IconShield, IconUser } from './icons'
 
 export interface ResidentNavItem {
   to: string
-  labelKey: 'nav.laundry' | 'nav.propertyInfo' | 'nav.myPage' | 'nav.admin'
+  labelKey: 'nav.laundry' | 'nav.propertyInfo' | 'nav.myPage' | 'nav.admin' | 'nav.system'
   Icon: typeof IconCalendar
 }
 
@@ -17,5 +17,6 @@ export function useResidentNavItems(): ResidentNavItem[] {
     { to: '/my-page', labelKey: 'nav.myPage', Icon: IconUser },
   ]
   if (user && isAdmin(user)) items.push({ to: '/admin', labelKey: 'nav.admin', Icon: IconShield })
+  if (user && getHighestRole(user) === UserRole.SysAdmin) items.push({ to: '/admin/system', labelKey: 'nav.system', Icon: IconSettings })
   return items
 }
