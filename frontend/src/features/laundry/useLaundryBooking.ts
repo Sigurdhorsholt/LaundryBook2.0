@@ -1,7 +1,7 @@
 import { useState, useMemo, useEffect, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 import { skipToken } from '@reduxjs/toolkit/query/react'
-import { useMeQuery } from '../auth/authApi'
+import { useActiveProperty } from '../properties/useActiveProperty'
 import { useGetPropertyQuery, useGetPropertyInfoQuery, BookingMode } from '../properties/propertiesApi'
 import { houseRulesUnseen } from '../properties/utils'
 import {
@@ -50,8 +50,17 @@ export function useLaundryBooking() {
     }
   }, [])
 
-  const { data: me } = useMeQuery()
-  const propertyId   = me?.memberships[0]?.propertyId ?? null
+  const { membership } = useActiveProperty()
+  const propertyId   = membership?.propertyId ?? null
+  // Switching property leaves the room, an open confirm or popover pointing at the old one
+  const [prevPropertyId, setPrevPropertyId] = useState(propertyId)
+  if (prevPropertyId !== propertyId) {
+    setPrevPropertyId(propertyId)
+    setPickedRoomId(null)
+    setPending(null)
+    setWeekSlot(null)
+    setConfirmError(null)
+  }
 
   const property = useGetPropertyQuery(propertyId ?? skipToken)
   // Only to know whether to point at the house rules; the property page shares this cached request

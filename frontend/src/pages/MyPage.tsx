@@ -1,5 +1,6 @@
 import { useTranslation } from 'react-i18next'
 import { useMeQuery } from '../features/auth/authApi'
+import { useActiveProperty } from '../features/properties/useActiveProperty'
 import { PageHeader, Spinner } from '../shared/ui'
 import { UserInfoForm } from '../features/profile/UserInfoForm'
 import { BookingsOverview } from '../features/profile/BookingsOverview'
@@ -7,8 +8,8 @@ import { MyDataCard } from '../features/profile/MyDataCard'
 
 export function MyPage() {
   const { t } = useTranslation()
-  const { data: user, isLoading } = useMeQuery()
-  const propertyId = user?.memberships[0]?.propertyId
+  const { isLoading } = useMeQuery()
+  const propertyId = useActiveProperty().membership?.propertyId
 
   if (isLoading) return <Spinner fullPage />
 

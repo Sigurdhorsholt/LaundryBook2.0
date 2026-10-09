@@ -789,9 +789,12 @@
     "saved": "Gemt. Beboerne kan se det nu.",
     "saveFailed": "Reglerne kunne ikke gemmes. Prøv igen."
   },
+  "propertySwitcher": {
+    "title": "Dine ejendomme",
+    "label": "Skift ejendom. Valgt: {{property}}"
+  },
   "propertyInfo": {
     "description": "Det praktiske om jeres vaskerum: regler, maskiner og hvem I kan kontakte.",
-    "pick": "Ejendom",
     "loadErrorTitle": "Kunne ikke hente oplysningerne",
     "address": "Adresse",
     "rules": {

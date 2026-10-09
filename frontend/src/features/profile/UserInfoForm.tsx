@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useMeQuery, useForgotPasswordMutation, useUpdateCurrentUserMutation } from '../auth/authApi'
+import { useActiveProperty } from '../properties/useActiveProperty'
 import { FormError } from '../../shared/ui'
 import { colors } from '../../shared/theme'
 import { extractErrorMessage } from '../../shared/utils/errorUtils'
@@ -26,7 +27,7 @@ export function UserInfoForm() {
     setDraft({ firstName, lastName, ...patch })
   }
 
-  const apartment = user?.memberships[0]?.apartmentNumber
+  const apartment = useActiveProperty().membership?.apartmentNumber
 
   async function handleSave(e: React.FormEvent) {
     e.preventDefault()

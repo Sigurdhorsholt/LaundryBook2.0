@@ -1,6 +1,9 @@
+import { useEffect } from 'react'
 import { useNavigate, useMatch } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { useMeQuery } from '../features/auth/authApi'
+import { useActiveProperty } from '../features/properties/useActiveProperty'
+import { AdminPropertySwitcher } from './AdminPropertySwitcher'
 import { routes } from '../app/routes'
 import { isEnabled, type FeatureKey } from '../config/features'
 import { getHighestRole } from './roleUtils'
@@ -51,8 +54,15 @@ export function AdminSidebar() {
 
   const propertyMatch = useMatch({ path: '/admin/properties/:propertyId', end: false })
   const activePropertyId = propertyMatch?.params.propertyId ?? null
-  const activeProperty = activePropertyId ? user?.memberships.find((m) => m.propertyId === activePropertyId) : null
+  const isMember = !!activePropertyId && !!user?.memberships.some((m) => m.propertyId === activePropertyId)
   const userRole = user ? getHighestRole(user) : null
+  const { membership: residentProperty, select } = useActiveProperty()
+  const alreadyActive = residentProperty?.propertyId === activePropertyId
+
+  // "Vaskebooking" and "Min side" below should open the property the admin is working on
+  useEffect(() => {
+    if (activePropertyId && isMember && !alreadyActive) select(activePropertyId)
+  }, [activePropertyId, isMember, alreadyActive, select])
 
   // Filtered by feature flag and role so SysAdmin-only routes are hidden from lower roles
   const topLevelItems = routes.filter(
@@ -90,14 +100,7 @@ export function AdminSidebar() {
                 {t('nav.allProperties')}
               </button>
 
-              <div className="px-3 py-2 mb-1 rounded-2" style={{ backgroundColor: colors.chromeRaised }}>
-                <p className="mb-0 text-uppercase fw-semibold" style={{ fontSize: '0.65rem', letterSpacing: '0.09em', color: colors.chromeMuted }}>
-                  {t('nav.property')}
-                </p>
-                <p className="mb-0 text-truncate fw-semibold" style={{ fontSize: '0.92rem', color: colors.bgCard }}>
-                  {activeProperty?.propertyName ?? t('nav.property')}
-                </p>
-              </div>
+              <AdminPropertySwitcher propertyId={activePropertyId} />
 
               <div className="mt-2">
                 <SidebarLink to={`/admin/properties/${activePropertyId}`} end icon={<IconGrid size={15} />} label={t('nav.overview')} />

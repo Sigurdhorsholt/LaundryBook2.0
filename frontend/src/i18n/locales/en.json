@@ -789,9 +789,12 @@
     "saved": "Saved. Residents can see it now.",
     "saveFailed": "The rules couldn't be saved. Try again."
   },
+  "propertySwitcher": {
+    "title": "Your properties",
+    "label": "Switch property. Current: {{property}}"
+  },
   "propertyInfo": {
     "description": "The practical side of your laundry: rules, machines and who to contact.",
-    "pick": "Property",
     "loadErrorTitle": "Couldn't load the information",
     "address": "Address",
     "rules": {
