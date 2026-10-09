@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { useActivatePropertyMutation, useDeactivatePropertyMutation, type SystemPropertyDto } from './sysAdminApi'
+import { SYSTEM_TABLE_CELL as cell } from './constants'
 import { colors } from '../../shared/theme'
 import { formatDateFull } from '../../shared/utils/dateUtils'
 import { extractErrorMessage } from '../../shared/utils/errorUtils'
@@ -11,7 +12,6 @@ interface Props {
   onInviteAdmin: (propertyId: string) => void
 }
 
-const cell: React.CSSProperties = { padding: '10px 12px', borderTop: `1px solid ${colors.borderRow}`, fontSize: '0.85rem', verticalAlign: 'middle' }
 const num: React.CSSProperties = { ...cell, textAlign: 'right', fontVariantNumeric: 'tabular-nums', color: colors.textPrimary }
 
 export function SystemPropertyRow({ property: p, onInviteAdmin }: Props) {

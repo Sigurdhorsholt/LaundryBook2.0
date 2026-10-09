@@ -66,6 +66,22 @@ export interface SystemPropertyDto {
   bookingsNext7Days: number
 }
 
+export type SystemInviteStatus = 'Pending' | 'Expired' | 'SharedLink'
+
+// An unused invite on any property; createdBy comes from the audit log and can be missing
+export interface SystemInviteDto {
+  id: string
+  propertyId: string
+  propertyName: string
+  email: string | null
+  apartmentNumber: string | null
+  role: UserRole
+  isMultiUse: boolean
+  createdAt: string
+  expiresAt: string
+  createdBy: string | null
+}
+
 export interface AuditLogDto {
   id: string
   timestampUtc: string
@@ -156,6 +172,11 @@ export const sysAdminApi = baseApi.injectEndpoints({
       ],
     }),
 
+    getAllInvites: build.query<SystemInviteDto[], SystemInviteStatus>({
+      query: (status) => `/api/sysadmin/invites?status=${status}`,
+      providesTags: [{ type: 'PendingInvite', id: 'SYSTEM' }],
+    }),
+
     getAuditLogs: build.query<PagedAuditLogsResult, { entityType?: string; action?: string; page: number; pageSize?: number }>({
       query: ({ entityType, action, page, pageSize = 25 }) => {
         const params = new URLSearchParams({ page: String(page), pageSize: String(pageSize) })
@@ -184,6 +205,7 @@ export const {
   useGetAllPropertiesQuery,
   useActivatePropertyMutation,
   useDeactivatePropertyMutation,
+  useGetAllInvitesQuery,
   useGetAuditLogsQuery,
   useSendTestEmailMutation,
 } = sysAdminApi
