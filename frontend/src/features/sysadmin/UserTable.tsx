@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useGetAllUsersQuery } from './sysAdminApi'
 import type { SysAdminUserDto } from './sysAdminApi'
-import { ManageUserMembershipsModal } from './ManageUserMembershipsModal'
+import { UserDetailModal } from './UserDetailModal'
 import { colors } from '../../shared/theme'
 import { useDebouncedValue } from '../../shared/utils/useDebouncedValue'
 
@@ -79,7 +79,7 @@ export function UserTable() {
                     className="btn btn-sm btn-outline-secondary"
                     onClick={() => setManagingUser(u)}
                   >
-                    {t('sysadmin.manageAccess')}
+                    {t('sysadmin.userDetail.open')}
                   </button>
                 </td>
               </tr>
@@ -112,7 +112,7 @@ export function UserTable() {
       )}
 
       {managingUser && (
-        <ManageUserMembershipsModal user={managingUser} onClose={() => setManagingUser(null)} />
+        <UserDetailModal user={managingUser} onClose={() => setManagingUser(null)} />
       )}
     </>
   )

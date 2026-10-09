@@ -22,11 +22,24 @@ export interface UserPropertyMembershipDto {
   isActive: boolean
 }
 
+// Counted on the server only when a user is opened
+export interface UserActivityDto {
+  upcomingBookings: number
+  bookingsLast90Days: number
+  totalBookings: number
+  loggedChanges: number
+  lastLoggedChangeAt: string | null
+}
+
 export interface SysAdminUserDetailDto {
   id: string
   email: string
   firstName: string
   lastName: string
+  createdAt: string
+  lastSeenAt: string | null
+  termsAcceptedAt: string | null
+  activity: UserActivityDto
   memberships: UserPropertyMembershipDto[]
 }
 
@@ -100,6 +113,15 @@ export const sysAdminApi = baseApi.injectEndpoints({
       ],
     }),
 
+    deleteUser: build.mutation<void, string>({
+      query: (userId) => ({ url: `/api/sysadmin/users/${userId}`, method: 'DELETE' }),
+      invalidatesTags: (_result, _err, userId) => [
+        { type: 'User', id: userId },
+        { type: 'User', id: 'LIST' },
+        { type: 'Property', id: 'SYSTEM' },
+      ],
+    }),
+
     getPendingProperties: build.query<PendingPropertyDto[], void>({
       query: () => '/api/sysadmin/pending-properties',
       providesTags: [{ type: 'Property', id: 'PENDING' }],
@@ -157,6 +179,7 @@ export const {
   useGetAllUsersQuery,
   useGetUserWithMembershipsQuery,
   useAssignUserToPropertyMutation,
+  useDeleteUserMutation,
   useGetPendingPropertiesQuery,
   useGetAllPropertiesQuery,
   useActivatePropertyMutation,

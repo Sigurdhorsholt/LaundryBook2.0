@@ -57,6 +57,8 @@ public class AuthController(IMediator mediator, IWebHostEnvironment env) : Contr
     [HttpGet("me")]
     public async Task<IActionResult> Me(CancellationToken ct)
     {
+        // Every app load asks for /me, which makes it the place to note "last active"
+        await mediator.Send(new RecordUserSeenCommand(), ct);
         var user = await mediator.Send(new GetCurrentUserQuery(), ct);
         return Ok(user);
     }

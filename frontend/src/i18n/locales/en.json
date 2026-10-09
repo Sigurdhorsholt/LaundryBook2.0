@@ -373,6 +373,25 @@
     "quickLinkBookings": "Bookings"
   },
   "sysadmin": {
+    "userDetail": {
+      "open": "Details",
+      "created": "Created",
+      "lastSeen": "Last active",
+      "notRecorded": "Not recorded yet",
+      "termsAccepted": "Terms accepted",
+      "notAccepted": "Not accepted",
+      "upcomingBookings": "Upcoming bookings",
+      "bookingsLast90": "Bookings, 90 days",
+      "totalBookings": "Bookings in total",
+      "loggedChanges": "Changes in the log",
+      "loggedChangesValue": "{{count}}, latest {{date}}",
+      "roleIn": "Role in {{property}}",
+      "deleteTitle": "Delete user",
+      "deleteBody": "Deletes the account and its login, all memberships and bookings. Upcoming times become free again. This can't be undone.",
+      "deleteConfirmLabel": "Type {{email}} to confirm",
+      "deleteButton": "Delete user",
+      "deleting": "Deleting…"
+    },
     "allProperties": {
       "title": "All properties",
       "search": "Search by name or address",
@@ -393,7 +412,6 @@
     },
     "confirmRemove": "Confirm remove",
     "confirmActivate": "Confirm activation",
-    "manageAccess": "Manage access",
     "currentProperties": "Current properties",
     "loading": "Loading…",
     "noProperties": "No properties.",

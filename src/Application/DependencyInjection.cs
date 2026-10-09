@@ -1,5 +1,6 @@
 using Application.Common.Authorization;
 using Application.Common.Behaviours;
+using Application.Features.Auth;
 using FluentValidation;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
@@ -19,6 +20,7 @@ public static class DependencyInjection
         services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehaviour<,>));
 
         services.AddScoped<PropertyAuthorizationService>();
+        services.AddScoped<AccountDeletion>();
 
         return services;
     }

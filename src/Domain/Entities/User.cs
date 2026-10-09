@@ -13,6 +13,9 @@ public class User : BaseEntity
     public DateTime? TermsAcceptedAt { get; set; }
     public string? TermsVersion { get; set; }
 
+    // When the app was last opened by this user, to the nearest 15 minutes; shown on /system
+    public DateTime? LastSeenAt { get; set; }
+
     public ICollection<UserComplexMembership> Memberships { get; set; } = [];
     public ICollection<Booking> Bookings { get; set; } = [];
 }

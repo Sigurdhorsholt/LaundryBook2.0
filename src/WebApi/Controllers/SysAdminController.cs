@@ -31,6 +31,13 @@ public class SysAdminController(IMediator mediator) : ControllerBase
         return Ok(result);
     }
 
+    [HttpDelete("users/{userId:guid}")]
+    public async Task<IActionResult> DeleteUser(Guid userId, CancellationToken ct)
+    {
+        await mediator.Send(new DeleteUserCommand(userId), ct);
+        return NoContent();
+    }
+
     [HttpPost("users/{userId:guid}/memberships")]
     public async Task<IActionResult> AssignToProperty(Guid userId, [FromBody] AssignToPropertyRequest request, CancellationToken ct)
     {

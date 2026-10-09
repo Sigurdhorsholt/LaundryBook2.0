@@ -373,6 +373,25 @@
     "quickLinkBookings": "Bookinger"
   },
   "sysadmin": {
+    "userDetail": {
+      "open": "Detaljer",
+      "created": "Oprettet",
+      "lastSeen": "Sidst aktiv",
+      "notRecorded": "Ikke registreret endnu",
+      "termsAccepted": "Vilkår accepteret",
+      "notAccepted": "Ikke accepteret",
+      "upcomingBookings": "Kommende bookinger",
+      "bookingsLast90": "Bookinger, 90 dage",
+      "totalBookings": "Bookinger i alt",
+      "loggedChanges": "Ændringer i loggen",
+      "loggedChangesValue": "{{count}}, senest {{date}}",
+      "roleIn": "Rolle i {{property}}",
+      "deleteTitle": "Slet bruger",
+      "deleteBody": "Sletter kontoen og login'et, alle medlemskaber og bookinger. Kommende tider bliver ledige igen. Det kan ikke fortrydes.",
+      "deleteConfirmLabel": "Skriv {{email}} for at bekræfte",
+      "deleteButton": "Slet bruger",
+      "deleting": "Sletter…"
+    },
     "allProperties": {
       "title": "Alle ejendomme",
       "search": "Søg på navn eller adresse",
@@ -393,7 +412,6 @@
     },
     "confirmRemove": "Bekræft fjern",
     "confirmActivate": "Bekræft aktivering",
-    "manageAccess": "Administrer adgang",
     "currentProperties": "Nuværende ejendomme",
     "loading": "Indlæser…",
     "noProperties": "Ingen ejendomme.",
