@@ -108,6 +108,12 @@ export function formatDateFull(dateStr: string): string {
   return `${dayName} ${d.getDate()}${sep} ${MONTH_SHORT[lang]?.[d.getMonth()] ?? ''}`
 }
 
+// A server timestamp (UTC ISO) as local date and time, e.g. "Fredag 9. okt, 14:30"
+export function formatDateTime(iso: string): string {
+  const d = new Date(iso)
+  return `${formatDateFull(localDateStr(d))}, ${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`
+}
+
 export function formatDayMonth(dateStr: string): string {
   const parts = dateStr.split('-').map(Number)
   const lang = activeLang()
