@@ -16,12 +16,12 @@ import {
 } from '../../../features/laundry/laundryApi'
 import { ModalShell } from '../../../shared/modals/ModalShell'
 import { IconPlus, IconChevronDown } from '../../../shared/icons'
-import { useMeQuery } from '../../../features/auth/authApi'
 import { PageHeader, EmptyState, Spinner, FormError, Notice } from '../../../shared/ui'
 import { extractErrorMessage } from '../../../shared/utils/errorUtils'
 import { BookingMode, useGetPropertyQuery } from '../../../features/properties/propertiesApi'
 import { NoMachinesWarning } from '../../../features/laundry/NoMachinesWarning'
 import { colors } from '../../../shared/theme'
+import { usePropertyName } from '../../../features/properties/usePropertyName'
 
 function useMachineTypeLabel(): Record<MachineType, string> {
   const { t } = useTranslation()
@@ -51,9 +51,8 @@ type ModalState =
 export function LaundryRoomsPage() {
   const { t } = useTranslation()
   const { propertyId } = useParams<{ propertyId: string }>()
-  const { data: user } = useMeQuery()
 
-  const property = user?.memberships?.find((m) => m.propertyId === propertyId)
+  const propertyName = usePropertyName(propertyId)
 
   const { data: rooms = [], isLoading, isError } = useGetLaundryRoomsQuery(propertyId!, { skip: !propertyId })
   const { data: propertyDetail } = useGetPropertyQuery(propertyId!, { skip: !propertyId })
@@ -86,7 +85,7 @@ export function LaundryRoomsPage() {
   return (
     <div className="p-4 p-lg-5">
       <PageHeader
-        eyebrow={property?.propertyName}
+        eyebrow={propertyName}
         title={t('adminProperties.laundryRooms.title')}
         description={t('adminProperties.laundryRooms.description')}
         action={

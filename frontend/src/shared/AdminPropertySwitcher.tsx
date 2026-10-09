@@ -1,6 +1,7 @@
 import { useLocation, useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { useMeQuery, UserRole } from '../features/auth/authApi'
+import { usePropertyName } from '../features/properties/usePropertyName'
 import { IconCheck, IconChevronDown } from './icons'
 import { colors } from './theme'
 
@@ -20,8 +21,7 @@ export function AdminPropertySwitcher({ propertyId }: Props) {
   const { data: user } = useMeQuery()
   // The same properties the admin's property list shows
   const adminOf = user?.memberships.filter(m => m.role >= UserRole.ComplexAdmin) ?? []
-  const current = user?.memberships.find(m => m.propertyId === propertyId)
-  const currentName = current?.propertyName ?? t('nav.property')
+  const currentName = usePropertyName(propertyId) ?? t('nav.property')
 
   if (adminOf.length < 2) {
     return (

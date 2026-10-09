@@ -11,6 +11,7 @@ import { useModal } from '../../../shared/modals/useModal'
 import { PageHeader, ErrorState, Spinner } from '../../../shared/ui'
 import { IconPlus } from '../../../shared/icons'
 import { formatDateFull, weekLabel } from '../../../shared/utils/dateUtils'
+import { usePropertyName } from '../../../features/properties/usePropertyName'
 
 export function PropertyOverviewPage() {
   const { t } = useTranslation()
@@ -21,11 +22,12 @@ export function PropertyOverviewPage() {
   const o = usePropertyOverview(propertyId)
   const base = `/admin/properties/${propertyId}`
   const isPendingApproval = membership ? !membership.propertyIsActive : false
+  const propertyName = usePropertyName(propertyId)
 
   return (
     <div className="p-4 p-lg-5">
       <PageHeader
-        eyebrow={[membership?.propertyName, formatDateFull(o.today), weekLabel(o.weekStart)].filter(Boolean).join(' · ')}
+        eyebrow={[propertyName, formatDateFull(o.today), weekLabel(o.weekStart)].filter(Boolean).join(' · ')}
         title={t('nav.overview')}
         action={
           <button

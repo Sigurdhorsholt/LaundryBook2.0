@@ -45,10 +45,24 @@ public class SysAdminController(IMediator mediator) : ControllerBase
         return Ok(result);
     }
 
+    [HttpGet("properties")]
+    public async Task<IActionResult> GetAllProperties(CancellationToken ct)
+    {
+        var result = await mediator.Send(new GetAllPropertiesQuery(), ct);
+        return Ok(result);
+    }
+
     [HttpPost("properties/{propertyId:guid}/activate")]
     public async Task<IActionResult> ActivateProperty(Guid propertyId, CancellationToken ct)
     {
         await mediator.Send(new ActivatePropertyCommand(propertyId), ct);
+        return NoContent();
+    }
+
+    [HttpPost("properties/{propertyId:guid}/deactivate")]
+    public async Task<IActionResult> DeactivateProperty(Guid propertyId, CancellationToken ct)
+    {
+        await mediator.Send(new DeactivatePropertyCommand(propertyId), ct);
         return NoContent();
     }
 

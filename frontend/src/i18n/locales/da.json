@@ -372,6 +372,24 @@
     "quickLinkBookings": "Bookinger"
   },
   "sysadmin": {
+    "allProperties": {
+      "title": "Alle ejendomme",
+      "search": "Søg på navn eller adresse",
+      "noMatch": "Ingen ejendomme matcher søgningen.",
+      "colProperty": "Ejendom",
+      "colStatus": "Status",
+      "colCreated": "Oprettet",
+      "colMembers": "Medlemmer",
+      "colRooms": "Vaskerum",
+      "colLast30": "Bookinger, 30 dage",
+      "colNext7": "Næste 7 dage",
+      "colActions": "Handlinger",
+      "membersValue": "{{members}} · {{admins}} admin",
+      "open": "Åbn",
+      "deactivate": "Deaktivér",
+      "confirmDeactivate": "Deaktivér",
+      "deactivateHint": "Deaktivér {{property}}? Ejendommen kan ikke sende nye invitationer og kommer tilbage i godkendelseslisten. Medlemmer og bookinger bliver, og beboerne kan stadig booke."
+    },
     "confirmRemove": "Bekræft fjern",
     "confirmActivate": "Bekræft aktivering",
     "manageAccess": "Administrer adgang",
