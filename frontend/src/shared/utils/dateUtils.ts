@@ -114,6 +114,13 @@ export function formatDateTime(iso: string): string {
   return `${formatDateFull(localDateStr(d))}, ${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`
 }
 
+// A server timestamp (UTC ISO) as a local date, e.g. "Fredag 9. okt", with the year when it isn't this year
+export function formatTimestampDate(iso: string): string {
+  const d = new Date(iso)
+  const date = formatDateFull(localDateStr(d))
+  return d.getFullYear() === new Date().getFullYear() ? date : `${date} ${d.getFullYear()}`
+}
+
 export function formatDayMonth(dateStr: string): string {
   const parts = dateStr.split('-').map(Number)
   const lang = activeLang()

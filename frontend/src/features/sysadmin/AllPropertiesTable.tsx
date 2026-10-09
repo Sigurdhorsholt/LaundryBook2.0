@@ -4,13 +4,9 @@ import { useGetAllPropertiesQuery } from './sysAdminApi'
 import { SystemPropertyRow } from './SystemPropertyRow'
 import { CreatePropertyModal } from '../properties/CreatePropertyModal'
 import { InviteUserModal } from '../users/InviteUserModal'
+import { SYSTEM_TABLE_HEAD as head } from './constants'
 import { useAdminRoleOptions } from '../../shared/constants'
 import { colors } from '../../shared/theme'
-
-const head: React.CSSProperties = {
-  padding: '8px 12px', fontSize: '0.72rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.06em',
-  color: colors.textMuted, backgroundColor: colors.bgHeader, whiteSpace: 'nowrap',
-}
 
 // Every property on the platform, including ones the SysAdmin isn't a member of
 export function AllPropertiesTable() {

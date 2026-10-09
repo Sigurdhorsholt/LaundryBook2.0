@@ -61,6 +61,7 @@ export const usersApi = baseApi.injectEndpoints({
       invalidatesTags: (_result, _err, { propertyId }) => [
         { type: 'Member', id: propertyId },
         { type: 'PendingInvite', id: propertyId },
+        { type: 'PendingInvite', id: 'SYSTEM' },
       ],
     }),
 
@@ -106,7 +107,9 @@ export const usersApi = baseApi.injectEndpoints({
       }),
       // A new shared link revokes the previous one server-side
       invalidatesTags: (_result, _err, { propertyId, isMultiUse }) =>
-        isMultiUse ? [{ type: 'InviteLink', id: propertyId }] : [],
+        isMultiUse
+          ? [{ type: 'InviteLink', id: propertyId }, { type: 'PendingInvite', id: 'SYSTEM' }]
+          : [{ type: 'PendingInvite', id: 'SYSTEM' }],
     }),
 
     getOpenInviteLink: builder.query<OpenInviteLinkDto | null, string>({
@@ -119,7 +122,10 @@ export const usersApi = baseApi.injectEndpoints({
         url: `/api/properties/${propertyId}/members/invite-link`,
         method: 'DELETE',
       }),
-      invalidatesTags: (_result, _err, propertyId) => [{ type: 'InviteLink', id: propertyId }],
+      invalidatesTags: (_result, _err, propertyId) => [
+        { type: 'InviteLink', id: propertyId },
+        { type: 'PendingInvite', id: 'SYSTEM' },
+      ],
     }),
 
     getPendingInvites: builder.query<PendingInviteDto[], string>({
@@ -132,7 +138,10 @@ export const usersApi = baseApi.injectEndpoints({
         url: `/api/properties/${propertyId}/members/pending/${inviteId}/resend`,
         method: 'POST',
       }),
-      invalidatesTags: (_result, _err, { propertyId }) => [{ type: 'PendingInvite', id: propertyId }],
+      invalidatesTags: (_result, _err, { propertyId }) => [
+        { type: 'PendingInvite', id: propertyId },
+        { type: 'PendingInvite', id: 'SYSTEM' },
+      ],
     }),
 
     deleteInvite: builder.mutation<void, { propertyId: string; inviteId: string }>({
@@ -140,7 +149,10 @@ export const usersApi = baseApi.injectEndpoints({
         url: `/api/properties/${propertyId}/members/pending/${inviteId}`,
         method: 'DELETE',
       }),
-      invalidatesTags: (_result, _err, { propertyId }) => [{ type: 'PendingInvite', id: propertyId }],
+      invalidatesTags: (_result, _err, { propertyId }) => [
+        { type: 'PendingInvite', id: propertyId },
+        { type: 'PendingInvite', id: 'SYSTEM' },
+      ],
     }),
   }),
 })

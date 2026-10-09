@@ -73,6 +73,13 @@ public class SysAdminController(IMediator mediator) : ControllerBase
         return NoContent();
     }
 
+    [HttpGet("invites")]
+    public async Task<IActionResult> GetAllInvites([FromQuery] SystemInviteStatus status = SystemInviteStatus.Pending, CancellationToken ct = default)
+    {
+        var result = await mediator.Send(new GetAllInvitesQuery(status), ct);
+        return Ok(result);
+    }
+
     [EnableRateLimiting("email")]
     [HttpPost("test-email")]
     public async Task<IActionResult> SendTestEmail([FromBody] SendTestEmailCommand command, CancellationToken ct)

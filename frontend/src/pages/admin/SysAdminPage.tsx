@@ -4,6 +4,7 @@ import { IconShield } from '../../shared/icons'
 import { AllPropertiesTable } from '../../features/sysadmin/AllPropertiesTable'
 import { PendingPropertiesList } from '../../features/sysadmin/PendingPropertiesList'
 import { UserTable } from '../../features/sysadmin/UserTable'
+import { AllInvitesTable } from '../../features/sysadmin/AllInvitesTable'
 import { AuditLogTable } from '../../features/sysadmin/AuditLogTable'
 import { TestEmailPanel } from '../../features/sysadmin/TestEmailPanel'
 
@@ -45,6 +46,13 @@ export function SysAdminPage() {
         style={{ border: `1px solid ${colors.borderDefault}`, backgroundColor: colors.bgCard }}
       >
         <UserTable />
+      </div>
+
+      <div
+        className="rounded-3 p-4 mb-4"
+        style={{ border: `1px solid ${colors.borderDefault}`, backgroundColor: colors.bgCard }}
+      >
+        <AllInvitesTable />
       </div>
 
       <div
