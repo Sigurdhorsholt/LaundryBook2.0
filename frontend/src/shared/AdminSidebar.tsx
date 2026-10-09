@@ -1,7 +1,7 @@
 import { useEffect } from 'react'
 import { useNavigate, useMatch } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
-import { useMeQuery } from '../features/auth/authApi'
+import { useMeQuery, UserRole } from '../features/auth/authApi'
 import { useActiveProperty } from '../features/properties/useActiveProperty'
 import { AdminPropertySwitcher } from './AdminPropertySwitcher'
 import { routes } from '../app/routes'
@@ -13,7 +13,7 @@ import { userInitials } from './utils/formatUtils'
 import { SidebarLink, SidebarSectionLabel } from './AdminSidebarLink'
 import {
   IconUsers, IconSettings, IconBuilding, IconClock, IconCalendarCheck, IconCalendar, IconUser, IconGrid, IconFileText,
-  IconChevronLeft,
+  IconChevronLeft, IconShield,
 } from './icons'
 
 interface SubNavSection {
@@ -123,6 +123,14 @@ export function AdminSidebar() {
               {topLevelItems.map((route) => (
                 <SidebarLink key={route.path} to={route.path} icon={route.icon} label={tx(route.label!)} end={route.path === '/admin'} />
               ))}
+            </>
+          )}
+
+          {/* Inside a property the top-level links are hidden, but a SysAdmin should still reach System */}
+          {activePropertyId && userRole === UserRole.SysAdmin && (
+            <>
+              <SidebarSectionLabel>{t('nav.sectionPlatform')}</SidebarSectionLabel>
+              <SidebarLink to="/admin/system" icon={<IconShield size={15} />} label={t('nav.system')} />
             </>
           )}
 
