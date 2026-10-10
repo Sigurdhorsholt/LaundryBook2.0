@@ -17,6 +17,20 @@ export const MACHINE_TYPE_LABEL = {
   [MachineType.WasherDryer]: 'laundry.machineType.washerDryer',
 } as const satisfies Record<MachineType, string>
 
+export const MACHINE_TYPES = [MachineType.Washer, MachineType.Dryer, MachineType.WasherDryer]
+
+// The admin pages name a washer-dryer "Kombi"; the option in the form spells out what it does
+export const ADMIN_MACHINE_TYPE_LABEL = {
+  [MachineType.Washer]:      'adminProperties.laundryRooms.machineType.washer',
+  [MachineType.Dryer]:       'adminProperties.laundryRooms.machineType.dryer',
+  [MachineType.WasherDryer]: 'adminProperties.laundryRooms.machineType.combi',
+} as const satisfies Record<MachineType, string>
+
+export const ADMIN_MACHINE_TYPE_OPTION_LABEL = {
+  ...ADMIN_MACHINE_TYPE_LABEL,
+  [MachineType.WasherDryer]: 'adminProperties.laundryRooms.machineType.combiOption',
+} as const satisfies Record<MachineType, string>
+
 export const MACHINE_FILTER_LABEL = {
   all:  'laundry.machineFilter.all',
   wash: 'laundry.machineFilter.wash',
