@@ -22,6 +22,7 @@ const pairs = [
   ['primary', 'primaryLight', TEXT],
   ['primary', 'primaryLighter', TEXT],
   ['bgCard', 'primary', TEXT],
+  ['textOnPrimary', 'primary', TEXT],
   ['bgCard', 'primaryAccent', TEXT],
   ['primaryMutedText', 'primaryMuted', TEXT],
   ['primaryMutedText', 'primaryLight', TEXT],

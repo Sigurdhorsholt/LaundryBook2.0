@@ -2,6 +2,9 @@ import type { BookingDto, LaundryMachineDto } from './laundryApi'
 
 export type AvailabilityState = 'free' | 'few' | 'full' | 'past'
 
+// Which machines the booking views offer; 'wash' and 'dry' both include washer-dryers
+export type MachineFilter = 'all' | 'wash' | 'dry'
+
 export type PendingAction = {
   type: 'book' | 'cancel'
   // 'grid' actions confirm inline in the row; 'upcoming' actions use the modal
@@ -17,6 +20,9 @@ export type PendingAction = {
 
 // What booking or cancelling needs, whether it was confirmed in a row or straight from the week popover
 export type BookingAction = Pick<PendingAction, 'type' | 'slotId' | 'date' | 'bookingId' | 'machineId'>
+
+// The week-grid cells a popover can open on
+export type OpenWeekCell = Extract<WeekCell, { kind: 'own' | 'free' }>
 
 // The week-grid slot whose popover is open
 export interface OpenWeekSlot {

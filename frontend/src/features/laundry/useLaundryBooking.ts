@@ -1,7 +1,7 @@
 import { useState, useMemo, useEffect, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 import { skipToken } from '@reduxjs/toolkit/query/react'
-import { useMeQuery } from '../auth/authApi'
+import { useActiveProperty } from '../properties/useActiveProperty'
 import { useGetPropertyQuery, useGetPropertyInfoQuery, BookingMode } from '../properties/propertiesApi'
 import { houseRulesUnseen } from '../properties/utils'
 import {
@@ -14,8 +14,8 @@ import {
   useCancelBookingMutation,
 } from './laundryApi'
 import type { BookingDto, MyBookingDto } from './laundryApi'
-import type { PendingAction, BookingAction, OpenWeekSlot, GridBooking, AvailabilityState } from './types'
-import { incrementBookingCount, freeSlotCount, bookingLabel, type WeekCellContext } from './utils'
+import type { PendingAction, BookingAction, OpenWeekSlot, GridBooking, AvailabilityState, MachineFilter } from './types'
+import { incrementBookingCount, freeSlotCount, bookingLabel, machineMatches, availableMachineFilters, type WeekCellContext } from './utils'
 import { extractErrorMessage } from '../../shared/utils/errorUtils'
 import { todayStr, addDays, getWeekMonday, formatTimeRange, minutesUntilSlot } from '../../shared/utils/dateUtils'
 
@@ -30,6 +30,7 @@ export function useLaundryBooking() {
   const [weekSlot, setWeekSlot]             = useState<OpenWeekSlot | null>(null)
   const [confirmError, setConfirmError]     = useState<string | null>(null)
   const [milestoneCount, setMilestoneCount] = useState<number | null>(null)
+  const [pickedMachineFilter, setPickedMachineFilter] = useState<MachineFilter>('all')
 
   // A phone tab left open overnight would otherwise keep showing (and booking against) yesterday
   useEffect(() => {
@@ -50,8 +51,17 @@ export function useLaundryBooking() {
     }
   }, [])
 
-  const { data: me } = useMeQuery()
-  const propertyId   = me?.memberships[0]?.propertyId ?? null
+  const { membership } = useActiveProperty()
+  const propertyId   = membership?.propertyId ?? null
+  // Switching property leaves the room, an open confirm or popover pointing at the old one
+  const [prevPropertyId, setPrevPropertyId] = useState(propertyId)
+  if (prevPropertyId !== propertyId) {
+    setPrevPropertyId(propertyId)
+    setPickedRoomId(null)
+    setPending(null)
+    setWeekSlot(null)
+    setConfirmError(null)
+  }
 
   const property = useGetPropertyQuery(propertyId ?? skipToken)
   // Only to know whether to point at the house rules; the property page shares this cached request
@@ -85,6 +95,15 @@ export function useLaundryBooking() {
   const slots    = slotsQuery.data
   const bookings = bookingsQuery.data
 
+  const machineFilters = useMemo(
+    () => (machineMode ? availableMachineFilters(machines ?? []) : [])
+  , [machineMode, machines])
+  // Kept across rooms; a room without that kind of machine just shows all of them
+  const machineFilter = machineFilters.includes(pickedMachineFilter) ? pickedMachineFilter : 'all'
+  const shownMachines = useMemo(
+    () => (machines ?? []).filter(m => machineMatches(m, machineFilter))
+  , [machines, machineFilter])
+
   const [createBooking, { isLoading: creating }]  = useCreateBookingMutation()
   const [cancelBooking, { isLoading: cancelling }] = useCancelBookingMutation()
 
@@ -112,8 +131,8 @@ export function useLaundryBooking() {
   const maxReached = usedBookings >= maxBookings
 
   const cellContext = useMemo((): WeekCellContext => ({
-    today, lookaheadDays, machineMode, machines: machines ?? [], bookings: bookings ?? [],
-  }), [today, lookaheadDays, machineMode, machines, bookings])
+    today, lookaheadDays, machineMode, machines: shownMachines, bookings: bookings ?? [],
+  }), [today, lookaheadDays, machineMode, shownMachines, bookings])
 
   const freeCountByDate = useMemo((): Record<string, number> =>
     Object.fromEntries(weekDays.map(d => [d, freeSlotCount(slots ?? [], d, cellContext)]))
@@ -123,19 +142,23 @@ export function useLaundryBooking() {
     const result: Record<string, AvailabilityState> = {}
     const lookaheadEnd = settings ? addDays(today, settings.bookingLookaheadDays) : null
     const totalSlots   = (slots ?? []).length
-    const capacityPerSlot = machineMode ? (machines?.length ?? 0) : 1
+    const capacityPerSlot = machineMode ? shownMachines.length : 1
     const totalCapacity   = totalSlots * capacityPerSlot
+    const shownIds = new Set(shownMachines.map(m => m.id))
+    const counted = machineFilter === 'all'
+      ? (bookings ?? [])
+      : (bookings ?? []).filter(b => b.machineId !== null && shownIds.has(b.machineId))
     for (const d of weekDays) {
       if (d < today || (lookaheadEnd !== null && d > lookaheadEnd)) {
         result[d] = 'past'
         continue
       }
-      const bookedCount = (bookings ?? []).filter(b => b.date === d).length
+      const bookedCount = counted.filter(b => b.date === d).length
       const free        = totalCapacity - bookedCount
       result[d] = free <= 0 ? 'full' : free <= 2 ? 'few' : 'free'
     }
     return result
-  }, [weekDays, bookings, slots, today, settings, machineMode, machines])
+  }, [weekDays, bookings, slots, today, settings, machineMode, shownMachines, machineFilter])
 
   const othersBookedToday = useMemo(
     () => (bookings ?? []).filter(b => b.date === selectedDate && !b.isOwn).length
@@ -160,6 +183,11 @@ export function useLaundryBooking() {
 
   function selectRoom(roomId: string) {
     setPickedRoomId(roomId)
+    disarmGridConfirm()
+  }
+
+  function selectMachineFilter(filter: MachineFilter) {
+    setPickedMachineFilter(filter)
     disarmGridConfirm()
   }
 
@@ -307,6 +335,9 @@ export function useLaundryBooking() {
     bookingsQuery,
     slots: slots ?? [],
     machines: machines ?? [],
+    machineFilter,
+    machineFilters,
+    selectMachineFilter,
     myBookings: myBookings ?? [],
     gridBookings,
     cellContext,

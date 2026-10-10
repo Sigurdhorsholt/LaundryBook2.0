@@ -1,9 +1,11 @@
 import { useTranslation } from 'react-i18next'
 import { colors } from '../../shared/theme'
 import { IconShield } from '../../shared/icons'
-import { PropertiesList } from '../../features/properties/PropertiesList'
+import { SystemStatusCard } from '../../features/sysadmin/SystemStatusCard'
+import { AllPropertiesTable } from '../../features/sysadmin/AllPropertiesTable'
 import { PendingPropertiesList } from '../../features/sysadmin/PendingPropertiesList'
 import { UserTable } from '../../features/sysadmin/UserTable'
+import { AllInvitesTable } from '../../features/sysadmin/AllInvitesTable'
 import { AuditLogTable } from '../../features/sysadmin/AuditLogTable'
 import { TestEmailPanel } from '../../features/sysadmin/TestEmailPanel'
 
@@ -30,6 +32,13 @@ export function SysAdminPage() {
         className="rounded-3 p-4 mb-4"
         style={{ border: `1px solid ${colors.borderDefault}`, backgroundColor: colors.bgCard }}
       >
+        <SystemStatusCard />
+      </div>
+
+      <div
+        className="rounded-3 p-4 mb-4"
+        style={{ border: `1px solid ${colors.borderDefault}`, backgroundColor: colors.bgCard }}
+      >
         <PendingPropertiesList />
       </div>
 
@@ -37,7 +46,7 @@ export function SysAdminPage() {
         className="rounded-3 p-4 mb-4"
         style={{ border: `1px solid ${colors.borderDefault}`, backgroundColor: colors.bgCard }}
       >
-        <PropertiesList />
+        <AllPropertiesTable />
       </div>
 
       <div
@@ -45,6 +54,13 @@ export function SysAdminPage() {
         style={{ border: `1px solid ${colors.borderDefault}`, backgroundColor: colors.bgCard }}
       >
         <UserTable />
+      </div>
+
+      <div
+        className="rounded-3 p-4 mb-4"
+        style={{ border: `1px solid ${colors.borderDefault}`, backgroundColor: colors.bgCard }}
+      >
+        <AllInvitesTable />
       </div>
 
       <div

@@ -1,7 +1,6 @@
 import { useState, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useParams } from 'react-router-dom'
-import { useMeQuery } from '../../../features/auth/authApi'
 import { useGetPropertyBookingsQuery } from '../../../features/laundry/laundryApi'
 import type { AdminBookingsView } from '../../../features/laundry/types'
 import { useAdminCancelBooking } from '../../../features/laundry/useAdminCancelBooking'
@@ -18,6 +17,7 @@ import { MEDIA_XL } from '../../../shared/constants'
 import { PageHeader, Spinner, SegmentedControl } from '../../../shared/ui'
 import { todayStr, getWeekMonday, addDays } from '../../../shared/utils/dateUtils'
 import { colors } from '../../../shared/theme'
+import { usePropertyName } from '../../../features/properties/usePropertyName'
 
 // The overview always loads one bounded window at a time (never the full history),
 // and the period navigator pages that window backward/forward through time.
@@ -31,8 +31,7 @@ export function PropertyBookingsPage() {
     { value: 'calendar', label: t('adminProperties.bookings.viewCalendar') },
   ]
   const { propertyId } = useParams<{ propertyId: string }>()
-  const { data: user } = useMeQuery()
-  const property = user?.memberships.find((m) => m.propertyId === propertyId)
+  const propertyName = usePropertyName(propertyId)
 
   const today = useMemo(() => todayStr(), [])
   const currentWindowStart = useMemo(() => getWeekMonday(today), [today])
@@ -71,7 +70,7 @@ export function PropertyBookingsPage() {
   return (
     <div className="p-4 p-lg-5">
       <PageHeader
-        eyebrow={property?.propertyName}
+        eyebrow={propertyName}
         title={t('adminProperties.bookings.title')}
         description={t('adminProperties.bookings.description')}
       />

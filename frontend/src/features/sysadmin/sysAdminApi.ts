@@ -22,11 +22,24 @@ export interface UserPropertyMembershipDto {
   isActive: boolean
 }
 
+// Counted on the server only when a user is opened
+export interface UserActivityDto {
+  upcomingBookings: number
+  bookingsLast90Days: number
+  totalBookings: number
+  loggedChanges: number
+  lastLoggedChangeAt: string | null
+}
+
 export interface SysAdminUserDetailDto {
   id: string
   email: string
   firstName: string
   lastName: string
+  createdAt: string
+  lastSeenAt: string | null
+  termsAcceptedAt: string | null
+  activity: UserActivityDto
   memberships: UserPropertyMembershipDto[]
 }
 
@@ -37,6 +50,51 @@ export interface PendingPropertyDto {
   createdAt: string
   adminName: string | null
   adminEmail: string | null
+}
+
+// Every property on the platform, with the numbers /system shows
+export interface SystemPropertyDto {
+  id: string
+  name: string
+  address: string
+  isActive: boolean
+  createdAt: string
+  members: number
+  admins: number
+  rooms: number
+  bookingsLast30Days: number
+  bookingsNext7Days: number
+}
+
+export type SystemInviteStatus = 'Pending' | 'Expired' | 'SharedLink'
+
+// An unused invite on any property; createdBy comes from the audit log and can be missing
+export interface SystemInviteDto {
+  id: string
+  propertyId: string
+  propertyName: string
+  email: string | null
+  apartmentNumber: string | null
+  role: UserRole
+  isMultiUse: boolean
+  createdAt: string
+  expiresAt: string
+  createdBy: string | null
+}
+
+// Totals plus how the running backend was started; commit is null when not deployed on Render
+export interface SystemStatusDto {
+  activeProperties: number
+  pendingProperties: number
+  users: number
+  bookingsThisWeek: number
+  pendingInvites: number
+  environment: string
+  emailConfigured: boolean
+  firebaseConfigured: boolean
+  errorTrackingConfigured: boolean
+  commit: string | null
+  startedAt: string
 }
 
 export interface AuditLogDto {
@@ -57,6 +115,11 @@ export interface PagedAuditLogsResult {
 
 export const sysAdminApi = baseApi.injectEndpoints({
   endpoints: (build) => ({
+    getSystemStatus: build.query<SystemStatusDto, void>({
+      query: () => '/api/sysadmin/status',
+      providesTags: [{ type: 'Property', id: 'SYSTEM' }, { type: 'PendingInvite', id: 'SYSTEM' }],
+    }),
+
     getAllUsers: build.query<PagedUsersResult, { search?: string; page: number; pageSize?: number }>({
       query: ({ search, page, pageSize = 10 }) => {
         const params = new URLSearchParams({ page: String(page), pageSize: String(pageSize) })
@@ -86,9 +149,23 @@ export const sysAdminApi = baseApi.injectEndpoints({
       ],
     }),
 
+    deleteUser: build.mutation<void, string>({
+      query: (userId) => ({ url: `/api/sysadmin/users/${userId}`, method: 'DELETE' }),
+      invalidatesTags: (_result, _err, userId) => [
+        { type: 'User', id: userId },
+        { type: 'User', id: 'LIST' },
+        { type: 'Property', id: 'SYSTEM' },
+      ],
+    }),
+
     getPendingProperties: build.query<PendingPropertyDto[], void>({
       query: () => '/api/sysadmin/pending-properties',
       providesTags: [{ type: 'Property', id: 'PENDING' }],
+    }),
+
+    getAllProperties: build.query<SystemPropertyDto[], void>({
+      query: () => '/api/sysadmin/properties',
+      providesTags: [{ type: 'Property', id: 'SYSTEM' }],
     }),
 
     activateProperty: build.mutation<void, string>({
@@ -99,7 +176,25 @@ export const sysAdminApi = baseApi.injectEndpoints({
       invalidatesTags: [
         { type: 'Property', id: 'PENDING' },
         { type: 'Property', id: 'LIST' },
+        { type: 'Property', id: 'SYSTEM' },
       ],
+    }),
+
+    deactivateProperty: build.mutation<void, string>({
+      query: (propertyId) => ({
+        url: `/api/sysadmin/properties/${propertyId}/deactivate`,
+        method: 'POST',
+      }),
+      invalidatesTags: [
+        { type: 'Property', id: 'PENDING' },
+        { type: 'Property', id: 'LIST' },
+        { type: 'Property', id: 'SYSTEM' },
+      ],
+    }),
+
+    getAllInvites: build.query<SystemInviteDto[], SystemInviteStatus>({
+      query: (status) => `/api/sysadmin/invites?status=${status}`,
+      providesTags: [{ type: 'PendingInvite', id: 'SYSTEM' }],
     }),
 
     getAuditLogs: build.query<PagedAuditLogsResult, { entityType?: string; action?: string; page: number; pageSize?: number }>({
@@ -122,11 +217,16 @@ export const sysAdminApi = baseApi.injectEndpoints({
 })
 
 export const {
+  useGetSystemStatusQuery,
   useGetAllUsersQuery,
   useGetUserWithMembershipsQuery,
   useAssignUserToPropertyMutation,
+  useDeleteUserMutation,
   useGetPendingPropertiesQuery,
+  useGetAllPropertiesQuery,
   useActivatePropertyMutation,
+  useDeactivatePropertyMutation,
+  useGetAllInvitesQuery,
   useGetAuditLogsQuery,
   useSendTestEmailMutation,
 } = sysAdminApi

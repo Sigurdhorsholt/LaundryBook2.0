@@ -1,5 +1,7 @@
 import { NavLink } from 'react-router-dom'
 import { useMeQuery } from '../features/auth/authApi'
+import { useActiveProperty } from '../features/properties/useActiveProperty'
+import { PropertySwitcher } from '../features/properties/PropertySwitcher'
 import { BrandLogo } from './BrandLogo'
 import { LanguageSelector } from './ui'
 import { ProfileMenu } from './ProfileMenu'
@@ -9,7 +11,10 @@ import { colors } from './theme'
 
 export function ResidentHeader() {
   const { data: user } = useMeQuery()
-  const propertyName = user?.memberships[0]?.propertyName
+  const { membership, memberships } = useActiveProperty()
+  const propertyName = membership?.propertyName
+  // With several properties the switcher next to the logo names the building instead
+  const switchable = memberships.length > 1
 
   return (
     <header className="sticky-top flex-shrink-0" style={{ backgroundColor: colors.chrome, color: colors.chromeText, zIndex: 1040 }}>
@@ -22,17 +27,10 @@ export function ResidentHeader() {
           <BrandLogo size={20} color={colors.chromeAccent} />
           <span className="d-none d-md-inline">LaundryBook</span>
           {/* On a phone the tab bar carries the navigation, so the header names the building instead */}
-          <span className="d-md-none text-truncate">{propertyName ?? 'LaundryBook'}</span>
+          {!switchable && <span className="d-md-none text-truncate">{propertyName ?? 'LaundryBook'}</span>}
         </NavLink>
 
-        {propertyName && (
-          <span
-            className="d-none d-md-inline"
-            style={{ padding: '4px 12px', borderRadius: 999, backgroundColor: colors.chromeRaised, color: colors.chromeText, fontSize: '0.8rem', fontWeight: 500 }}
-          >
-            {propertyName}
-          </span>
-        )}
+        <PropertySwitcher />
 
         <HeaderNav className="d-none d-md-flex" />
 

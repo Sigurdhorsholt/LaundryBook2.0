@@ -2,14 +2,15 @@ import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { PublicLayout } from './PublicLayout'
 import { PageMeta } from '../../shared/PageMeta'
-import { PhotoPlaceholder } from './PhotoPlaceholder'
+import { PhonePreview } from './previews/PhonePreview'
+import { AdminPreview } from './previews/AdminPreview'
 import { colors } from '../../shared/theme'
 import { IconCheck, IconClock, IconUsers, IconSettings } from '../../shared/icons'
 
 const BIG_FEATURES = [
-  { key: 'booking', scene: 'laundry' as const },
-  { key: 'administration', scene: 'hallway' as const },
-  { key: 'overview', scene: 'building' as const },
+  { key: 'booking', preview: <PhonePreview width={300} /> },
+  { key: 'administration', preview: <AdminPreview focus="today" /> },
+  { key: 'overview', preview: <AdminPreview focus="usage" /> },
 ]
 
 const SMALL_FEATURES = [
@@ -52,9 +53,7 @@ export function FeaturesPage() {
           {BIG_FEATURES.map((f, i) => (
             <div key={f.key} className={`row align-items-center g-5 mb-5 pb-4 ${i % 2 ? 'flex-lg-row-reverse' : ''}`}>
               <div className="col-12 col-lg-6">
-                <div className="rounded-4 overflow-hidden" style={{ border: `1px solid ${colors.borderDefault}`, boxShadow: '0 8px 28px rgba(13,59,122,0.08)' }}>
-                  <PhotoPlaceholder scene={f.scene} aspect="4/3" />
-                </div>
+                {f.preview}
               </div>
               <div className="col-12 col-lg-6">
                 <span className="d-inline-block mb-3 px-3 py-1 rounded-pill"
