@@ -13,6 +13,13 @@ namespace WebApi.Controllers;
 [Route("api/sysadmin")]
 public class SysAdminController(IMediator mediator) : ControllerBase
 {
+    [HttpGet("status")]
+    public async Task<IActionResult> GetStatus(CancellationToken ct)
+    {
+        var result = await mediator.Send(new GetSystemStatusQuery(), ct);
+        return Ok(result);
+    }
+
     [HttpGet("users")]
     public async Task<IActionResult> GetAllUsers(
         [FromQuery] string? search,

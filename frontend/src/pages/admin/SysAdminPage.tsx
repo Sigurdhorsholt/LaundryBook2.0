@@ -1,6 +1,7 @@
 import { useTranslation } from 'react-i18next'
 import { colors } from '../../shared/theme'
 import { IconShield } from '../../shared/icons'
+import { SystemStatusCard } from '../../features/sysadmin/SystemStatusCard'
 import { AllPropertiesTable } from '../../features/sysadmin/AllPropertiesTable'
 import { PendingPropertiesList } from '../../features/sysadmin/PendingPropertiesList'
 import { UserTable } from '../../features/sysadmin/UserTable'
@@ -25,6 +26,13 @@ export function SysAdminPage() {
             {t('sysadminPage.subtitle')}
           </p>
         </div>
+      </div>
+
+      <div
+        className="rounded-3 p-4 mb-4"
+        style={{ border: `1px solid ${colors.borderDefault}`, backgroundColor: colors.bgCard }}
+      >
+        <SystemStatusCard />
       </div>
 
       <div
