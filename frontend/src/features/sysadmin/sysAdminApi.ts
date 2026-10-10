@@ -82,6 +82,21 @@ export interface SystemInviteDto {
   createdBy: string | null
 }
 
+// Totals plus how the running backend was started; commit is null when not deployed on Render
+export interface SystemStatusDto {
+  activeProperties: number
+  pendingProperties: number
+  users: number
+  bookingsThisWeek: number
+  pendingInvites: number
+  environment: string
+  emailConfigured: boolean
+  firebaseConfigured: boolean
+  errorTrackingConfigured: boolean
+  commit: string | null
+  startedAt: string
+}
+
 export interface AuditLogDto {
   id: string
   timestampUtc: string
@@ -100,6 +115,11 @@ export interface PagedAuditLogsResult {
 
 export const sysAdminApi = baseApi.injectEndpoints({
   endpoints: (build) => ({
+    getSystemStatus: build.query<SystemStatusDto, void>({
+      query: () => '/api/sysadmin/status',
+      providesTags: [{ type: 'Property', id: 'SYSTEM' }, { type: 'PendingInvite', id: 'SYSTEM' }],
+    }),
+
     getAllUsers: build.query<PagedUsersResult, { search?: string; page: number; pageSize?: number }>({
       query: ({ search, page, pageSize = 10 }) => {
         const params = new URLSearchParams({ page: String(page), pageSize: String(pageSize) })
@@ -197,6 +217,7 @@ export const sysAdminApi = baseApi.injectEndpoints({
 })
 
 export const {
+  useGetSystemStatusQuery,
   useGetAllUsersQuery,
   useGetUserWithMembershipsQuery,
   useAssignUserToPropertyMutation,

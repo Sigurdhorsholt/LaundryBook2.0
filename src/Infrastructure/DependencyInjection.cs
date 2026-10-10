@@ -1,3 +1,4 @@
+using Application.Common;
 using Application.Common.Interfaces;
 using FirebaseAdmin;
 using Google.Apis.Auth.OAuth2;
@@ -60,10 +61,21 @@ public static class DependencyInjection
         }
 
         // Email service — use Mailgun when an API key is configured, otherwise log to console (dev)
-        if (!string.IsNullOrEmpty(configuration["Mailgun:ApiKey"]))
+        var mailgunConfigured = !string.IsNullOrEmpty(configuration["Mailgun:ApiKey"]);
+        if (mailgunConfigured)
             services.AddHttpClient<IEmailService, MailgunEmailService>();
         else
             services.AddScoped<IEmailService, DevEmailService>();
+
+        var commit = configuration["RENDER_GIT_COMMIT"];
+        services.AddSingleton(new SystemInfo(
+            environment.EnvironmentName,
+            mailgunConfigured,
+            !string.IsNullOrEmpty(firebaseProjectId),
+            !string.IsNullOrEmpty(configuration["Sentry:Dsn"]),
+            // Render sets this on every deploy; there is none when running locally
+            string.IsNullOrEmpty(commit) ? null : commit,
+            DateTime.UtcNow));
 
         return services;
     }

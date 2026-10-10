@@ -3,6 +3,10 @@ import react from '@vitejs/plugin-react'
 
 export default defineConfig({
   plugins: [react()],
+  // Render sets RENDER_GIT_COMMIT during the build; /system shows it next to the backend's commit
+  define: {
+    'import.meta.env.VITE_GIT_COMMIT': JSON.stringify(process.env.RENDER_GIT_COMMIT ?? ''),
+  },
   server: {
     port: 5173,
     // Proxy API calls to .NET backend during development
