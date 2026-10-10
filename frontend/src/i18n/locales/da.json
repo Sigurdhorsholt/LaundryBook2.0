@@ -20,11 +20,11 @@
   },
   "seo": {
     "home": { "title": "LaundryBook - vaskebooking til jeres forening", "description": "Digital vaskebooking til danske ejer- og andelsboligforeninger. Beboerne booker vasketider hjemmefra, og bestyrelsen har overblikket." },
-    "features": { "title": "Funktioner - LaundryBook", "description": "Booking af vasketider, opsætning af vaskerum og tidspladser, invitationer og overblik over belægning - alt i browseren." },
+    "features": { "title": "Funktioner - LaundryBook", "description": "Booking og opsætning af vaskerum og vasketider, invitationer og overblik over belægning - alt i browseren." },
     "demo": { "title": "Demo - LaundryBook", "description": "Se LaundryBook med en opdigtet forening: det beboerne ser, og det administratoren ser." },
     "faq": { "title": "Spørgsmål og svar - LaundryBook", "description": "Svar på de mest almindelige spørgsmål om LaundryBook: booking, mobil, pris og hvordan jeres forening kommer i gang." },
     "about": { "title": "Om LaundryBook", "description": "Hvem står bag LaundryBook, og hvorfor findes det." },
-    "getStarted": { "title": "Kom i gang - LaundryBook", "description": "Opret jeres forening på LaundryBook: konto, vaskerum, tidspladser og invitationer til beboerne." },
+    "getStarted": { "title": "Kom i gang - LaundryBook", "description": "Opret jeres forening på LaundryBook: konto, vaskerum, vasketider og invitationer til beboerne." },
     "privacy": { "title": "Privatlivspolitik - LaundryBook", "description": "Sådan behandler LaundryBook personoplysninger." },
     "terms": { "title": "Vilkår - LaundryBook", "description": "Vilkår for brug af LaundryBook." }
   },
@@ -58,7 +58,7 @@
     "settings": "Indstillinger",
     "sectionLaundry": "Vaskerum",
     "roomsAndMachines": "Lokaler & Maskiner",
-    "timeslots": "Tidspladser",
+    "timeslots": "Vasketider",
     "bookings": "Bookinger"
   },
   "layout": {
@@ -111,7 +111,7 @@
       },
       "cancellation": {
         "title": "Aflysningsfrist",
-        "description": "Beboere kan aflyse op til dette antal timer inden tidspladsen starter. Sæt til 0 for ingen frist.",
+        "description": "Beboere kan aflyse op til dette antal timer inden vasketiden starter. Sæt til 0 for ingen frist.",
         "unit": "timer",
         "noLimit": "Ingen frist",
         "rangeError": "Skal være mellem 0 og {{max}} timer."
@@ -227,24 +227,24 @@
       }
     },
     "timeslots": {
-      "title": "Tidspladser",
-      "discardUnsavedConfirm": "Du har ændringer i tidspladserne, som ikke er gemt. Vil du kassere dem?",
+      "title": "Vasketider",
+      "discardUnsavedConfirm": "Du har ændringer i vasketiderne, som ikke er gemt. Vil du kassere dem?",
       "goToRooms": "Gå til Lokaler & Maskiner",
-      "description": "Tidspladsskabeloner gentages dagligt og gælder på ubestemt tid.",
+      "description": "Vasketiderne gentages hver dag og gælder, indtil du ændrer dem.",
       "loadError": "Kunne ikke indlæse lokaler. Prøv at genindlæse siden.",
       "emptyTitle": "Ingen lokaler endnu",
-      "emptyDescription": "Opret vaskerum under \"Lokaler & Maskiner\" først, inden du tilføjer tidspladser.",
+      "emptyDescription": "Opret vaskerum under \"Lokaler & Maskiner\" først, inden du tilføjer vasketider.",
       "saveError": "Ikke alle ændringer kunne gemmes. Prøv igen.",
-      "noSlots": "Ingen tidspladser - brug generatoren ovenfor eller tilføj manuelt.",
-      "addSingleSlot": "Tilføj enkelt tidsplads",
+      "noSlots": "Ingen vasketider - brug generatoren ovenfor eller tilføj manuelt.",
+      "addSingleSlot": "Tilføj én vasketid",
       "quickTemplates": "Hurtigskabeloner",
-      "previewLabel_one": "{{count}} tidsplads · erstatter nuværende",
-      "previewLabel_other": "{{count}} tidspladser · erstatter nuværende",
+      "previewLabel_one": "{{count}} vasketid · erstatter nuværende",
+      "previewLabel_other": "{{count}} vasketider · erstatter nuværende",
       "invalidWindow": "Ugyldig tidsramme",
       "generateSchedule": "Generer tidsplan",
       "from": "Fra",
       "to": "Til",
-      "durationPerSlot": "Varighed pr. plads",
+      "durationPerSlot": "Varighed pr. vasketid",
       "generate": "Generer",
       "colTimeRange": "Tidsrum",
       "new": "Ny",
@@ -256,21 +256,21 @@
       "discard": "Kassér",
       "saving": "Gemmer…",
       "saveChanges": "Gem ændringer",
-      "addSlotTitle": "Tilføj tidsplads - {{room}}",
+      "addSlotTitle": "Tilføj vasketid - {{room}}",
       "startTime": "Starttidspunkt",
       "duration": "Varighed",
       "endsAt": "Slutter:",
       "exceedsMidnight": "Overskrider midnat",
-      "overlapsExisting": "Overlapper en eksisterende tidsplads.",
+      "overlapsExisting": "Overlapper en eksisterende vasketid.",
       "add": "Tilføj",
-      "removeSlotsTitle": "Fjern tidspladser?",
-      "aboutToRemove_one": "Du er ved at fjerne {{count}} tidsplads:",
-      "aboutToRemove_other": "Du er ved at fjerne {{count}} tidspladser:",
-      "futureBookingsWarning_one": "{{count}} fremtidig booking på disse tidspladser annulleres automatisk.",
-      "futureBookingsWarning_other": "{{count}} fremtidige bookinger på disse tidspladser annulleres automatisk.",
+      "removeSlotsTitle": "Fjern vasketider?",
+      "aboutToRemove_one": "Du er ved at fjerne {{count}} vasketid:",
+      "aboutToRemove_other": "Du er ved at fjerne {{count}} vasketider:",
+      "futureBookingsWarning_one": "{{count}} fremtidig booking på disse vasketider annulleres automatisk.",
+      "futureBookingsWarning_other": "{{count}} fremtidige bookinger på disse vasketider annulleres automatisk.",
       "noFutureBookings": "Ingen fremtidige bookinger berøres.",
       "removeAndCancel": "Fjern og annullér bookinger",
-      "removeOnly": "Fjern tidspladser",
+      "removeOnly": "Fjern vasketider",
       "hour": "Time",
       "minute": "Minut"
     }
@@ -353,7 +353,7 @@
     "resetPassword": "Nulstil adgangskode"
   },
   "properties": {
-    "quickLinkTimeslots": "Tidspladser",
+    "quickLinkTimeslots": "Vasketider",
     "createProperty": "Opret ejendom",
     "creating": "Opretter…",
     "createFailed": "Noget gik galt. Prøv igen.",
@@ -628,7 +628,7 @@
       "noRoomsDescription": "Aktivér et vaskerum for at se kalenderen.",
       "prevWeek": "Forrige uge",
       "nextWeek": "Næste uge",
-      "noSlots": "Ingen tidspladser opsat for dette lokale.",
+      "noSlots": "Ingen vasketider sat op for dette lokale.",
       "bookingCellTitle": "{{name}} - klik for at aflyse",
       "bookingCellSelect": "{{name}} - vis detaljer"
     },
@@ -641,7 +641,7 @@
     "adminCancel": {
       "title": "Aflys booking",
       "prompt": "Aflys <s>{{slotTime}}</s> den {{dateLabel}} i <s>{{roomName}}</s>?",
-      "bookedBy": "Booket af {{name}}. Beboeren får frigivet tidspladsen.",
+      "bookedBy": "Booket af {{name}}. Beboeren får frigivet vasketiden.",
       "keep": "Behold",
       "cancelling": "Aflyser…"
     },
@@ -652,7 +652,7 @@
     },
     "grid": {
       "noSlotsTitle": "Ingen tider opsat endnu",
-      "noSlotsDescription": "Administratoren har ikke konfigureret tidspladser for dette lokale.",
+      "noSlotsDescription": "Administratoren har ikke sat vasketider op for dette lokale.",
       "noMachinesTitle": "Ingen maskiner opsat endnu",
       "noMachinesDescription": "Administratoren har ikke tilføjet maskiner til dette lokale.",
       "limitReachedTitle": "Du har nået din bookinggrænse.",
@@ -801,7 +801,7 @@
     "residentFeature3": "Virker på mobil, tablet og computer",
     "boardEyebrow": "For bestyrelsen",
     "boardTitle": "Mindre bøvl for bestyrelsen",
-    "boardBody": "Opret vaskerum, definér tidspladser og tilføj beboere. Én gang. Derefter passer systemet sig selv - og I kan fokusere på det, der faktisk kræver jeres tid.",
+    "boardBody": "Opret vaskerum, vælg vasketider og tilføj beboere. Én gang. Derefter passer systemet sig selv - og I kan fokusere på det, der faktisk kræver jeres tid.",
     "boardFeature1": "Tilføj eller fjern beboere ved indflytning",
     "boardFeature2": "Se hvem der har booket hvornår",
     "boardFeature3": "Sæt bookingregler og synlighed for foreningen",
@@ -860,8 +860,8 @@
     "max_bookings_reached": "Du har nået grænsen på {{max}} bookinger ad gangen.",
     "booking_already_cancelled": "Bookingen er allerede aflyst.",
     "cancel_window_passed": "Fristen for at aflyse er udløbet.",
-    "slot_overlap": "Tidspladsen overlapper en eksisterende tidsplads.",
-    "slot_duplicate": "Den samme tidsplads er med mere end én gang.",
+    "slot_overlap": "Vasketiden overlapper en eksisterende vasketid.",
+    "slot_duplicate": "Den samme vasketid er med mere end én gang.",
     "booking_mode_locked_one": "Bookingtypen kan ikke ændres, mens der er {{count}} kommende booking.",
     "booking_mode_locked_other": "Bookingtypen kan ikke ændres, mens der er {{count}} kommende bookinger.",
     "property_pending_approval": "Foreningen afventer godkendelse og kan endnu ikke invitere beboere.",
@@ -955,7 +955,7 @@
       "pendingInvites_one": "{{count}} invitation er ikke taget i brug",
       "pendingInvites_other": "{{count}} invitationer er ikke taget i brug",
       "seeInvites": "Se invitationer",
-      "noSlots": "{{room}} har ingen tidspladser",
+      "noSlots": "{{room}} har ingen vasketider",
       "addSlots": "Opsæt tider",
       "noMachines": "{{room}} har ingen aktive maskiner",
       "addMachines": "Tilføj maskiner"
@@ -975,8 +975,8 @@
       "roomsDesc": "Start med det vaskerum, beboerne skal kunne booke.",
       "machines": "Tilføj maskiner",
       "machinesDesc": "Beboerne booker en bestemt maskine, så hvert vaskerum skal have mindst én.",
-      "timeslots": "Opsæt tidspladser",
-      "timeslotsDesc": "Bestem hvilke tider, der kan bookes. Tidspladserne gentages hver dag.",
+      "timeslots": "Sæt vasketider op",
+      "timeslotsDesc": "Bestem hvilke tider, der kan bookes. Vasketiderne gentages hver dag.",
       "invite": "Inviter beboere",
       "inviteDesc": "Send en invitation på e-mail, eller print en QR-kode til opslagstavlen."
     },
@@ -1052,7 +1052,7 @@
         },
         "rooms": {
           "title": "Opsæt vaskerum",
-          "body": "Tilføj rum og definer tidspladser én gang. Systemet kører derefter selv."
+          "body": "Tilføj rum og vælg vasketider én gang. Systemet kører derefter selv."
         },
         "invite": {
           "title": "Inviter beboere",
@@ -1103,7 +1103,7 @@
         "administration": {
           "tag": "Administration",
           "title": "Sæt det op én gang. Glem det så.",
-          "body": "Bestyrelsen opretter vaskerum, tidspladser og lister over lejligheder. Nye beboere tilføjes med email. Gamle beboere fjernes igen. Hverken mere eller mindre."
+          "body": "Bestyrelsen opretter vaskerum, vasketider og lister over lejligheder. Nye beboere tilføjes med email. Gamle beboere fjernes igen. Hverken mere eller mindre."
         },
         "overview": {
           "tag": "Overblik",
@@ -1114,7 +1114,7 @@
       "smallSectionTitle": "Flere små ting der gør det nemmere",
       "small": {
         "slots": {
-          "title": "Fleksible tidspladser",
+          "title": "Fleksible vasketider",
           "body": "Definér selv længden på vaskeslots - 90 min, 2 timer, aftenslot indtil 22."
         },
         "roles": {

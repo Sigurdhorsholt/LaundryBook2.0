@@ -94,7 +94,8 @@ Vi lyder som en flink nabo, der har bygget noget nyttigt - ikke som et marketing
 - **Indlæser…** (med rigtig ellipsis …) - aldrig "Henter..."
 - **pr.** - aldrig "per"
 - **book / booke / booking** er OK - det er indarbejdet dansk her
-- **en vasketid**, **vaskerum**, **tidsplads**, **forening**, **bestyrelse**, **beboer**
+- **vasketid / vasketider** - aldrig "tidsplads" (det lyder oversat fra "time slot")
+- **vaskerum**, **forening**, **bestyrelse**, **beboer**
 
 **Tegnsætning**
 - **Ingen lange eller korte tankestreger** (em-dash / en-dash). Brug almindelig bindestreg "-"
