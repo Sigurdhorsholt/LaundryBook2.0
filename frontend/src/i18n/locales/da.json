@@ -596,6 +596,12 @@
       "dryer": "Tørretumbler",
       "washerDryer": "Vaske/tørre"
     },
+    "machineFilter": {
+      "label": "Vis ledige tider til",
+      "all": "Alle maskiner",
+      "wash": "Vask",
+      "dry": "Tørring"
+    },
     "apartmentShort": "Lejl. {{number}}",
     "confirmBooking": {
       "titleBook": "Bekræft booking",

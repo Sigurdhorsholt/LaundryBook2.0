@@ -85,6 +85,7 @@ export function DayBookingView({ booking: lb, showRoomName }: Props) {
             maxReached={lb.maxReached}
             bookingMode={lb.bookingMode}
             machines={lb.machines}
+            machineFilter={lb.machineFilter}
             onBook={lb.handleBook}
             onCancel={lb.handleCancel}
             loading={lb.gridLoading}

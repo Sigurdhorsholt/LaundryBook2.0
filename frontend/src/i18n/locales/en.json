@@ -596,6 +596,12 @@
       "dryer": "Dryer",
       "washerDryer": "Washer/dryer"
     },
+    "machineFilter": {
+      "label": "Show free times for",
+      "all": "All machines",
+      "wash": "Washing",
+      "dry": "Drying"
+    },
     "apartmentShort": "Apt. {{number}}",
     "confirmBooking": {
       "titleBook": "Confirm booking",

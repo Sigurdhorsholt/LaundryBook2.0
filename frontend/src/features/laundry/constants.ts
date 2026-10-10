@@ -1,5 +1,6 @@
 import { colors } from '../../shared/theme'
 import { MachineType } from './laundryApi'
+import type { MachineFilter } from './types'
 
 // ── Booking grid ───────────────────────────────────────────────────────────────
 
@@ -15,6 +16,12 @@ export const MACHINE_TYPE_LABEL = {
   [MachineType.Dryer]:       'laundry.machineType.dryer',
   [MachineType.WasherDryer]: 'laundry.machineType.washerDryer',
 } as const satisfies Record<MachineType, string>
+
+export const MACHINE_FILTER_LABEL = {
+  all:  'laundry.machineFilter.all',
+  wash: 'laundry.machineFilter.wash',
+  dry:  'laundry.machineFilter.dry',
+} as const satisfies Record<MachineFilter, string>
 
 // ── Slot generator ─────────────────────────────────────────────────────────────
 

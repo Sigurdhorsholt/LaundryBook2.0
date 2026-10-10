@@ -2,6 +2,7 @@ import { useTranslation } from 'react-i18next'
 import { useLaundryBooking } from '../../features/laundry/useLaundryBooking'
 import { DayBookingsSummary } from '../../features/laundry/DayBookingsSummary'
 import { RoomSelector } from '../../features/laundry/RoomSelector'
+import { MachineFilterSelector } from '../../features/laundry/MachineFilterSelector'
 import { DayBookingView } from '../../features/laundry/DayBookingView'
 import { WeekBookingView } from '../../features/laundry/WeekBookingView'
 import { BookingSidePanel } from '../../features/laundry/BookingSidePanel'
@@ -63,6 +64,8 @@ export function LaundryPage() {
       ) : (
         <RoomSelector rooms={rooms} selectedRoomId={lb.selectedRoomId} onSelect={lb.selectRoom} />
       )}
+
+      {!noRooms && <MachineFilterSelector options={lb.machineFilters} value={lb.machineFilter} onChange={lb.selectMachineFilter} />}
 
       {!noRooms && (showWeek ? (
         <div style={{ display: 'flex', flexDirection: panelBeside ? 'row' : 'column', alignItems: panelBeside ? 'flex-start' : 'stretch', gap: 24 }}>
