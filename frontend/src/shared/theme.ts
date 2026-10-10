@@ -24,6 +24,7 @@ export const colors = {
   textSecondary: '#3f5048',
   textMuted:     '#5a6b62',
   textDisabled:  '#8a978f',
+  textOnPrimary: '#ffffff',
 
   // ── Surfaces ──────────────────────────────────────────────────────────────────
   bgPage:   '#e8ece6',

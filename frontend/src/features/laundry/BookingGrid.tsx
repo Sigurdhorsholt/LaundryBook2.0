@@ -12,7 +12,8 @@
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import type { LaundryMachineDto, TimeSlotTemplateDto } from './laundryApi'
-import type { GridBooking, PendingAction } from './types'
+import type { GridBooking, MachineFilter, PendingAction } from './types'
+import { machineMatches } from './utils'
 import { BookingMode } from '../properties/propertiesApi'
 import { isPast, isLocked } from '../../shared/utils/dateUtils'
 import { colors } from '../../shared/theme'
@@ -32,6 +33,7 @@ interface BookingGridProps {
   maxReached: boolean          // active user has hit their concurrent booking limit
   bookingMode: BookingMode
   machines: LaundryMachineDto[]  // active machines; only used in BookSpecificMachine mode
+  machineFilter?: MachineFilter
   onBook: (slotId: string, machineId?: string) => void
   onCancel: (slotId: string, machineId?: string) => void
   loading?: boolean            // shows skeleton rows while slots are fetched
@@ -87,6 +89,7 @@ export function BookingGrid({
   maxReached,
   bookingMode,
   machines,
+  machineFilter = 'all',
   onBook,
   onCancel,
   loading,
@@ -136,6 +139,9 @@ export function BookingGrid({
   }
 
   const slotBookings = (slotId: string) => gridBookings.filter((b) => b.slotId === slotId)
+  // The filter narrows the machines on offer, but the resident's own booking always stays in view
+  const slotMachines = (slotId: string) => machines.filter((m) =>
+    machineMatches(m, machineFilter) || slotBookings(slotId).some((b) => b.isOwn && b.machineId === m.id))
 
   // Today's finished slots fold into one row so the bookable ones show without scrolling on a phone
   const firstOpen = date === today ? slots.findIndex((s) => !isPast(date, s.startTime, today)) : 0
@@ -149,7 +155,7 @@ export function BookingGrid({
     if (past || locked) return true
     if (machineMode) {
       const booked = slotBookings(slot.id)
-      return machines.every((m) => booked.some((b) => b.machineId === m.id))
+      return slotMachines(slot.id).every((m) => booked.some((b) => b.machineId === m.id))
     }
     return slotBookings(slot.id).length > 0
   })
@@ -220,7 +226,7 @@ export function BookingGrid({
             <MachineSlotRow
               key={slot.id}
               slot={slot}
-              machines={machines}
+              machines={slotMachines(slot.id)}
               bookings={slotBookings(slot.id)}
               past={past}
               locked={locked}

@@ -2,6 +2,9 @@ import type { BookingDto, LaundryMachineDto } from './laundryApi'
 
 export type AvailabilityState = 'free' | 'few' | 'full' | 'past'
 
+// Which machines the booking views offer; 'wash' and 'dry' both include washer-dryers
+export type MachineFilter = 'all' | 'wash' | 'dry'
+
 export type PendingAction = {
   type: 'book' | 'cancel'
   // 'grid' actions confirm inline in the row; 'upcoming' actions use the modal

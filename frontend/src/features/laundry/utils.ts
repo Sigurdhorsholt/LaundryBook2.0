@@ -1,6 +1,6 @@
 import i18n from '../../i18n'
-import { BookingLabelKind, type BookingDto, type LaundryMachineDto, type MyBookingDto, type TimeSlotTemplateDto } from './laundryApi'
-import type { WeekCell } from './types'
+import { BookingLabelKind, MachineType, type BookingDto, type LaundryMachineDto, type MyBookingDto, type TimeSlotTemplateDto } from './laundryApi'
+import type { MachineFilter, WeekCell } from './types'
 import { CALENDAR_REMINDER_MINUTES, COPENHAGEN_VTIMEZONE } from './constants'
 import { isLocked, isPast, minutesUntilSlot } from '../../shared/utils/dateUtils'
 
@@ -20,6 +20,21 @@ export function bookingLabel(b: Pick<BookingDto, 'labelKind' | 'labelValue'>): s
     case BookingLabelKind.Apartment: return i18n.t('laundry.apartmentShort', { number: b.labelValue ?? '' })
     default: return i18n.t('laundry.slot.taken')
   }
+}
+
+// A washer-dryer can do either job, so it matches both filters
+export function machineMatches(m: LaundryMachineDto, filter: MachineFilter): boolean {
+  if (filter === 'all' || m.machineType === MachineType.WasherDryer) return true
+  return m.machineType === (filter === 'wash' ? MachineType.Washer : MachineType.Dryer)
+}
+
+// Only the filters that would leave some machines out; none when every machine can do the same jobs
+export function availableMachineFilters(machines: LaundryMachineDto[]): MachineFilter[] {
+  const has = (type: MachineType) => machines.some(m => m.machineType === type)
+  const filters: MachineFilter[] = []
+  if (has(MachineType.Dryer) && (has(MachineType.Washer) || has(MachineType.WasherDryer))) filters.push('wash')
+  if (has(MachineType.Washer) && (has(MachineType.Dryer) || has(MachineType.WasherDryer))) filters.push('dry')
+  return filters
 }
 
 export interface WeekCellContext {
