@@ -19,4 +19,13 @@ public interface IEmailService
         string propertyName,
         string adminName,
         CancellationToken cancellationToken = default);
+
+    /// <summary>Confirms a signup: a new association to the admin who created it, or a resident joining one.</summary>
+    Task SendSignupConfirmationEmailAsync(
+        string toEmail,
+        string firstName,
+        string propertyName,
+        bool createdAssociation,
+        string termsVersion,
+        CancellationToken cancellationToken = default);
 }

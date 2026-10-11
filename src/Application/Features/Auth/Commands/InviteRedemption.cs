@@ -3,6 +3,7 @@ using Application.Common.Interfaces;
 using Domain.Common;
 using Domain.Entities;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 
 namespace Application.Features.Auth.Commands;
 
@@ -47,5 +48,16 @@ internal static class InviteRedemption
         // Multi-use tokens (printed QR) are never consumed
         if (!invite.IsMultiUse)
             invite.IsUsed = true;
+    }
+
+    // Call after saving, so the email never confirms a signup that didn't happen
+    public static async Task ConfirmAsync(
+        IAppDbContext db, IEmailService emailService, ILogger logger, UserInvite invite, User user, CancellationToken cancellationToken)
+    {
+        var propertyName = await db.Properties
+            .Where(p => p.Id == invite.PropertyId)
+            .Select(p => p.Name)
+            .FirstAsync(cancellationToken);
+        await SignupConfirmation.SendAsync(emailService, logger, user, propertyName, createdAssociation: false, cancellationToken);
     }
 }

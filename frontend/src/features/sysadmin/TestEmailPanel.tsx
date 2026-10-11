@@ -8,6 +8,8 @@ const TEMPLATES = [
   { template: 0, labelKey: 'invite' },
   { template: 1, labelKey: 'passwordReset' },
   { template: 2, labelKey: 'adminReset' },
+  { template: 3, labelKey: 'associationCreated' },
+  { template: 4, labelKey: 'residentJoined' },
 ] as const
 
 export function TestEmailPanel() {

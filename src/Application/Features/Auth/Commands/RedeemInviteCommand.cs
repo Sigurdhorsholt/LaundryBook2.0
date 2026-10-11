@@ -3,6 +3,7 @@ using Domain.Entities;
 using FluentValidation;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 
 namespace Application.Features.Auth.Commands;
 
@@ -31,7 +32,9 @@ public class RedeemInviteCommandValidator : AbstractValidator<RedeemInviteComman
 public class RedeemInviteCommandHandler(
     IAppDbContext db,
     IIdentityProvider identityProvider,
-    IJwtService jwtService) : IRequestHandler<RedeemInviteCommand, RedeemInviteResult>
+    IJwtService jwtService,
+    IEmailService emailService,
+    ILogger<RedeemInviteCommandHandler> logger) : IRequestHandler<RedeemInviteCommand, RedeemInviteResult>
 {
     public async Task<RedeemInviteResult> Handle(RedeemInviteCommand request, CancellationToken cancellationToken)
     {
@@ -62,6 +65,7 @@ public class RedeemInviteCommandHandler(
 
         await InviteRedemption.ApplyAsync(db, invite, user, request.ApartmentNumber, cancellationToken);
         await db.SaveChangesAsync(cancellationToken);
+        await InviteRedemption.ConfirmAsync(db, emailService, logger, invite, user, cancellationToken);
 
         var token = jwtService.GenerateToken(user);
         return new RedeemInviteResult(token, user.Id);
