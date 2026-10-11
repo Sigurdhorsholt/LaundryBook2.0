@@ -7,9 +7,12 @@ import * as Sentry from '@sentry/react'
 import { store } from './app/store'
 import App from './App.tsx'
 import { ErrorFallback } from './shared/ErrorFallback'
+import { linkAppManifest } from './shared/hosts'
 import './i18n'
 import 'bootstrap/dist/js/bootstrap.bundle.min.js'
 import './index.css'
+
+linkAppManifest()
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>

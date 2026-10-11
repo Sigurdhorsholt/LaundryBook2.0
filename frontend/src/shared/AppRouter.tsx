@@ -8,6 +8,7 @@ import { AppLayout } from './AppLayout'
 import { AdminLayout } from './AdminLayout'
 import { NotFoundPage } from '../pages/NotFoundPage'
 import { PublicLayout } from '../pages/public/PublicLayout'
+import { HostGate } from './HostGate'
 import type { AppRoute } from '../app/routes'
 
 /**
@@ -48,56 +49,58 @@ export function AppRouter() {
   const adminProtected = routes.filter((r) => r.layout === 'admin' && r.protected)
 
   return (
-    <Routes>
+    <HostGate>
+      <Routes>
 
-      {/* 1. Bare public (landing, login) */}
-      {barePublic.map((r) => (
-        <Route key={r.path} path={r.path} element={<RouteGuard route={r} />} />
-      ))}
+        {/* 1. Bare public (landing, login) */}
+        {barePublic.map((r) => (
+          <Route key={r.path} path={r.path} element={<RouteGuard route={r} />} />
+        ))}
 
-      {/* 2. Bare protected (SmartRedirect) */}
-      {bareProtected.length > 0 && (
-        <Route element={<ProtectedRoute />}>
-          {bareProtected.map((r) => (
-            <Route key={r.path} path={r.path} element={<RouteGuard route={r} />} />
-          ))}
-        </Route>
-      )}
+        {/* 2. Bare protected (SmartRedirect) */}
+        {bareProtected.length > 0 && (
+          <Route element={<ProtectedRoute />}>
+            {bareProtected.map((r) => (
+              <Route key={r.path} path={r.path} element={<RouteGuard route={r} />} />
+            ))}
+          </Route>
+        )}
 
-      {/* 3. App shell public */}
-      {appPublic.length > 0 && (
-        <Route element={<AppLayout />}>
-          {appPublic.map((r) => (
-            <Route key={r.path} path={r.path} element={<RouteGuard route={r} />} />
-          ))}
-        </Route>
-      )}
-
-      {/* 4. App shell protected (resident pages) */}
-      {appProtected.length > 0 && (
-        <Route element={<ProtectedRoute />}>
+        {/* 3. App shell public */}
+        {appPublic.length > 0 && (
           <Route element={<AppLayout />}>
-            {appProtected.map((r) => (
+            {appPublic.map((r) => (
               <Route key={r.path} path={r.path} element={<RouteGuard route={r} />} />
             ))}
           </Route>
-        </Route>
-      )}
+        )}
 
-      {/* 5. Admin shell protected */}
-      {adminProtected.length > 0 && (
-        <Route element={<ProtectedRoute />}>
-          <Route element={<AdminLayout />}>
-            {adminProtected.map((r) => (
-              <Route key={r.path} path={r.path} element={<RouteGuard route={r} />} />
-            ))}
+        {/* 4. App shell protected (resident pages) */}
+        {appProtected.length > 0 && (
+          <Route element={<ProtectedRoute />}>
+            <Route element={<AppLayout />}>
+              {appProtected.map((r) => (
+                <Route key={r.path} path={r.path} element={<RouteGuard route={r} />} />
+              ))}
+            </Route>
           </Route>
-        </Route>
-      )}
+        )}
 
-      {/* 6. Catch-all — unknown paths get a 404, no redirect loop */}
-      <Route path="*" element={<PublicLayout><NotFoundPage /></PublicLayout>} />
+        {/* 5. Admin shell protected */}
+        {adminProtected.length > 0 && (
+          <Route element={<ProtectedRoute />}>
+            <Route element={<AdminLayout />}>
+              {adminProtected.map((r) => (
+                <Route key={r.path} path={r.path} element={<RouteGuard route={r} />} />
+              ))}
+            </Route>
+          </Route>
+        )}
 
-    </Routes>
+        {/* 6. Catch-all — unknown paths get a 404, no redirect loop */}
+        <Route path="*" element={<PublicLayout><NotFoundPage /></PublicLayout>} />
+
+      </Routes>
+    </HostGate>
   )
 }

@@ -7,6 +7,7 @@ import { Spinner } from '../shared/ui'
 import { useModal } from '../shared/modals/useModal'
 import { BrandLogo } from '../shared/BrandLogo'
 import { colors } from '../shared/theme'
+import { hostUrl } from '../shared/hosts'
 
 export function SignupPage() {
   const { t } = useTranslation()
@@ -116,7 +117,7 @@ export function SignupPage() {
           </button>
         </p>
         <p className="text-center mt-2 mb-0">
-          <Link to="/" style={{ fontSize: '0.82rem', color: colors.textMuted, textDecoration: 'none' }}>{t('signup.backToHome')}</Link>
+          <Link to={hostUrl('site', '/')} style={{ fontSize: '0.82rem', color: colors.textMuted, textDecoration: 'none' }}>{t('signup.backToHome')}</Link>
         </p>
       </div>
     </div>
