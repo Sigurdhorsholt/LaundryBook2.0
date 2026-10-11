@@ -15,7 +15,7 @@ import {
 } from './laundryApi'
 import type { BookingDto, MyBookingDto } from './laundryApi'
 import type { PendingAction, BookingAction, OpenWeekSlot, GridBooking, AvailabilityState, MachineFilter } from './types'
-import { incrementBookingCount, freeSlotCount, bookingLabel, machineMatches, availableMachineFilters, type WeekCellContext } from './utils'
+import { freeSlotCount, bookingLabel, machineMatches, availableMachineFilters, type WeekCellContext } from './utils'
 import { extractErrorMessage } from '../../shared/utils/errorUtils'
 import { todayStr, addDays, getWeekMonday, formatTimeRange, minutesUntilSlot } from '../../shared/utils/dateUtils'
 
@@ -29,7 +29,6 @@ export function useLaundryBooking() {
   const [pending, setPending]               = useState<PendingAction | null>(null)
   const [weekSlot, setWeekSlot]             = useState<OpenWeekSlot | null>(null)
   const [confirmError, setConfirmError]     = useState<string | null>(null)
-  const [milestoneCount, setMilestoneCount] = useState<number | null>(null)
   const [pickedMachineFilter, setPickedMachineFilter] = useState<MachineFilter>('all')
 
   // A phone tab left open overnight would otherwise keep showing (and booking against) yesterday
@@ -280,11 +279,6 @@ export function useLaundryBooking() {
           timeSlotTemplateId: action.slotId, date: action.date,
           machineId: action.machineId ?? null,
         }).unwrap()
-        const newCount = incrementBookingCount()
-        if (newCount % 5 === 0) {
-          setMilestoneCount(newCount)
-          setTimeout(() => setMilestoneCount(null), 4000)
-        }
       } else {
         if (!action.bookingId) return false
         // Prefer the booking's own room: cancelling from the upcoming card can target another room
@@ -348,7 +342,6 @@ export function useLaundryBooking() {
     pending,
     confirmError,
     confirmLoading: creating || cancelling,
-    milestoneCount,
     handleBook,
     handleCancel,
     weekSlot,
