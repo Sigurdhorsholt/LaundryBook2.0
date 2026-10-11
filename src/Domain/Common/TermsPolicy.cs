@@ -3,8 +3,9 @@ namespace Domain.Common;
 public static class TermsPolicy
 {
     /// <summary>
-    /// Version identifier of the currently published terms + privacy policy. Bump this whenever
-    /// the terms or privacy policy change materially, so recorded consent reflects what was agreed.
+    /// Version identifier of the currently published terms and data processing agreement. Bump this
+    /// (and LEGAL_VERSION in the frontend) whenever either changes materially, so the recorded
+    /// acceptance reflects what was agreed. The privacy policy is information and is never accepted.
     /// </summary>
-    public const string CurrentVersion = "2026-07-15";
+    public const string CurrentVersion = "2026-10-11";
 }

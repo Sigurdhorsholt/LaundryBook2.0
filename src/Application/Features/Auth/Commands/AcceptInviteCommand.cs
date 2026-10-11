@@ -14,7 +14,7 @@ public class AcceptInviteCommandValidator : AbstractValidator<AcceptInviteComman
     public AcceptInviteCommandValidator()
     {
         RuleFor(x => x.InviteToken).NotEmpty();
-        RuleFor(x => x.AcceptedTerms).Equal(true).WithMessage("Du skal acceptere vilkårene og privatlivspolitikken.");
+        RuleFor(x => x.AcceptedTerms).Equal(true).WithMessage("Du skal acceptere vilkårene.");
     }
 }
 

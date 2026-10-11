@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { useDispatch } from 'react-redux'
-import { Link, useNavigate } from 'react-router-dom'
-import { useTranslation, Trans } from 'react-i18next'
+import { useNavigate } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 import { signOut } from 'firebase/auth'
 import { firebaseAuth } from '../../lib/firebase'
 import { baseApi } from '../../app/baseApi'
@@ -10,6 +10,7 @@ import { FormError, FormLabel } from '../../shared/ui'
 import { colors } from '../../shared/theme'
 import { useAcceptInviteMutation, useLogoutMutation, type CurrentUserDto, type InviteInfoDto } from './authApi'
 import { authErrorMessage } from './utils'
+import { TermsAcceptance } from './TermsAcceptance'
 
 interface Props {
   invite: InviteInfoDto
@@ -86,18 +87,7 @@ export function AcceptInviteCard({ invite, inviteToken, user }: Props) {
               </div>
             )}
 
-            <label className="d-flex align-items-start gap-2" style={{ fontSize: '0.82rem', color: colors.textSecondary, lineHeight: 1.5 }}>
-              <input type="checkbox" checked={consent} onChange={(e) => setConsent(e.target.checked)} required style={{ marginTop: 3 }} />
-              <span>
-                <Trans
-                  i18nKey="common.acceptTerms"
-                  components={{
-                    terms: <Link to="/vilkaar" target="_blank" style={{ color: colors.primary, textDecoration: 'underline' }} />,
-                    privacy: <Link to="/privatliv" target="_blank" style={{ color: colors.primary, textDecoration: 'underline' }} />,
-                  }}
-                />
-              </span>
-            </label>
+            <TermsAcceptance checked={consent} onChange={setConsent} />
 
             <FormError message={error} />
 

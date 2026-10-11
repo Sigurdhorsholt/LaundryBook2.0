@@ -3,7 +3,7 @@ import { useLocation } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { SITE_ORIGIN } from './constants'
 
-export type SeoPage = 'home' | 'features' | 'demo' | 'faq' | 'about' | 'getStarted' | 'privacy' | 'terms'
+export type SeoPage = 'home' | 'features' | 'demo' | 'faq' | 'about' | 'getStarted' | 'privacy' | 'terms' | 'dpa'
 
 // Per-page <title>, description and canonical for the public pages. Set imperatively and restored on
 // unmount so the static defaults in index.html stay in place for every other page (and for scrapers

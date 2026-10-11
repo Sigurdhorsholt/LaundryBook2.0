@@ -1,9 +1,10 @@
 import { useState } from 'react'
-import { useNavigate, useSearchParams, Link } from 'react-router-dom'
-import { useTranslation, Trans } from 'react-i18next'
+import { useNavigate, useSearchParams } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 import { useGetInviteInfoQuery, useRedeemInviteMutation, useMeQuery } from '../features/auth/authApi'
 import { AcceptInviteCard } from '../features/auth/AcceptInviteCard'
 import { createOrSignInFirebaseUser, authErrorMessage } from '../features/auth/utils'
+import { TermsAcceptance } from '../features/auth/TermsAcceptance'
 import { Spinner, FormError } from '../shared/ui'
 import { BrandLogo } from '../shared/BrandLogo'
 import { colors } from '../shared/theme'
@@ -166,18 +167,7 @@ export function JoinPage() {
             </div>
           )}
 
-          <label className="d-flex align-items-start gap-2" style={{ fontSize: '0.82rem', color: colors.textSecondary, lineHeight: 1.5 }}>
-            <input type="checkbox" checked={consent} onChange={(e) => setConsent(e.target.checked)} required style={{ marginTop: 3 }} />
-            <span>
-              <Trans
-                i18nKey="common.acceptTerms"
-                components={{
-                  terms: <Link to="/vilkaar" target="_blank" style={{ color: colors.primary, textDecoration: 'underline' }} />,
-                  privacy: <Link to="/privatliv" target="_blank" style={{ color: colors.primary, textDecoration: 'underline' }} />,
-                }}
-              />
-            </span>
-          </label>
+          <TermsAcceptance checked={consent} onChange={setConsent} />
 
           <FormError message={error} />
 

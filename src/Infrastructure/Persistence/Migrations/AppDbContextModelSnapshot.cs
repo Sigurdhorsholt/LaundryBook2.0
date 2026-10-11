@@ -226,6 +226,15 @@ namespace Infrastructure.Persistence.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
 
+                    b.Property<DateTime?>("DpaAcceptedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid?>("DpaAcceptedByUserId")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("DpaVersion")
+                        .HasColumnType("text");
+
                     b.Property<string>("HouseRules")
                         .HasColumnType("text");
 

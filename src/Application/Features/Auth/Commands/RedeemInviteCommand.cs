@@ -24,7 +24,7 @@ public class RedeemInviteCommandValidator : AbstractValidator<RedeemInviteComman
         RuleFor(x => x.InviteToken).NotEmpty();
         RuleFor(x => x.FirstName).NotEmpty().MaximumLength(100);
         RuleFor(x => x.LastName).NotEmpty().MaximumLength(100);
-        RuleFor(x => x.AcceptedTerms).Equal(true).WithMessage("Du skal acceptere vilkårene og privatlivspolitikken.");
+        RuleFor(x => x.AcceptedTerms).Equal(true).WithMessage("Du skal acceptere vilkårene.");
     }
 }
 

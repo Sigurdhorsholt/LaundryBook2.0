@@ -10,7 +10,9 @@
     "cancel": "Annuller",
     "loading": "Indlæser…",
     "genericError": "Noget gik galt. Prøv igen.",
-    "acceptTerms": "Jeg accepterer <terms>vilkårene</terms> og <privacy>privatlivspolitikken</privacy>"
+    "acceptTerms": "Jeg accepterer <terms>vilkårene</terms>.",
+    "acceptTermsAndDpa": "Jeg accepterer <terms>vilkårene</terms> og <dpa>databehandleraftalen</dpa> på foreningens vegne og bekræfter, at jeg må indgå aftaler for foreningen.",
+    "acceptNotes": "Vilkårene begrænser LaundryBooks <liability>ansvar</liability>. Læs, hvordan dine oplysninger behandles, i <privacy>privatlivspolitikken</privacy>."
   },
   "errorBoundary": {
     "title": "Noget gik galt",
@@ -26,7 +28,8 @@
     "about": { "title": "Om LaundryBook", "description": "Hvem står bag LaundryBook, og hvorfor findes det." },
     "getStarted": { "title": "Kom i gang - LaundryBook", "description": "Opret jeres forening på LaundryBook: konto, vaskerum, vasketider og invitationer til beboerne." },
     "privacy": { "title": "Privatlivspolitik - LaundryBook", "description": "Sådan behandler LaundryBook personoplysninger." },
-    "terms": { "title": "Vilkår - LaundryBook", "description": "Vilkår for brug af LaundryBook." }
+    "terms": { "title": "Vilkår - LaundryBook", "description": "Vilkår for brug af LaundryBook." },
+    "dpa": { "title": "Databehandleraftale - LaundryBook", "description": "Databehandleraftalen mellem foreningen og LaundryBook." }
   },
   "roles": {
     "resident": "Beboer",
@@ -1010,7 +1013,8 @@
         "faq": "FAQ",
         "about": "Om os",
         "privacy": "Privatlivspolitik",
-        "terms": "Vilkår"
+        "terms": "Vilkår",
+        "dpa": "Databehandleraftale"
       },
       "login": "Log ind",
       "getStarted": "Kom i gang",
@@ -1206,48 +1210,63 @@
     "privacy": {
       "eyebrow": "Juridisk",
       "title": "Privatlivspolitik",
-      "draftNotice": "Udkast - skal gennemgås juridisk, før LaundryBook går i luften.",
-      "intro": "Sådan behandler LaundryBook personoplysninger. Politikken forklarer, hvilke oplysninger vi behandler, hvorfor, og hvilke rettigheder du har.",
+      "intro": "Her kan du læse, hvilke personoplysninger der behandles, når du bruger LaundryBook, hvem der er ansvarlig, og hvilke rettigheder du har. Privatlivspolitikken er information til dig. Du skal ikke acceptere den.",
       "sections": {
-        "controller": {
-          "heading": "Dataansvar",
-          "body": "Din boligforening er dataansvarlig for de personoplysninger, der behandles i LaundryBook. LaundryBook er databehandler og behandler kun oplysninger efter foreningens instruks og en databehandleraftale."
+        "roles": {
+          "heading": "Hvem er ansvarlig",
+          "body": "Når du bruger LaundryBook som beboer eller administrator i en forening, er der to ansvarlige:\n• Din forening er dataansvarlig for oplysningerne om dig som beboer og om dine bookinger. Du kan se foreningens navn og administrator under Ejendommen i appen.\n• LaundryBook er databehandler for foreningen og behandler kun de oplysninger efter foreningens instruks, som aftalt i databehandleraftalen.\nLaundryBook er selv dataansvarlig for din login-konto, for sikkerhed og fejlfinding, for support og for fakturering af foreningen."
+        },
+        "operator": {
+          "heading": "Hvem står bag LaundryBook",
+          "body": "LaundryBook drives af {{name}}, {{address}}, CVR {{cvr}}. E-mail: {{email}}."
         },
         "data": {
-          "heading": "Hvilke oplysninger vi behandler",
-          "body": "Vi behandler navn, e-mailadresse, eventuelt lejlighedsnummer samt dine bookinger og din rolle i foreningen. Adgangskoder håndteres af vores login-udbyder og opbevares ikke af os i klartekst."
+          "heading": "Hvilke oplysninger",
+          "body": "• Navn og e-mailadresse. De er nødvendige for at oprette en konto.\n• Lejlighedsnummer, hvis det er oplyst. Det er frivilligt.\n• Din rolle, og hvilke foreninger du er tilknyttet.\n• Dine bookinger: dato, tid, vaskerum og eventuelt maskine.\n• Hvornår du sidst brugte appen (afrundet til 15 minutter), og hvornår du accepterede vilkårene.\n• En log over ændringer: hvem der gjorde hvad, og hvornår.\n• Tekniske fejlrapporter uden navn, e-mail og IP-adresse.\nDin adgangskode håndteres af vores login-udbyder, Google Firebase. LaundryBook ser den aldrig."
         },
-        "purpose": {
-          "heading": "Formål",
-          "body": "Oplysningerne bruges til at give adgang til systemet, administrere vaskebookinger og sende driftsmails som invitationer og booking-relateret information."
+        "association": {
+          "heading": "Foreningens behandling",
+          "body": "Foreningen bruger oplysningerne til at give beboerne adgang til vaskerummet, fordele vasketiderne og give administratoren overblik. Retsgrundlaget er foreningens berettigede interesse i at administrere et fælles vaskerum (databeskyttelsesforordningens art. 6, stk. 1, litra f). Administratoren kan se beboernes navne, lejlighedsnumre og bookinger. Andre beboere ser det, foreningen har valgt under bookingsynlighed."
         },
-        "legalBasis": {
-          "heading": "Retsgrundlag",
-          "body": "Behandlingen sker for at kunne levere tjenesten til foreningen og dens beboere. [Indsæt endeligt retsgrundlag efter juridisk gennemgang.]"
+        "own": {
+          "heading": "LaundryBooks egen behandling",
+          "body": "LaundryBook behandler oplysninger til egne formål, når det er nødvendigt for at drive tjenesten:\n• Login og kontosikkerhed: din login-konto og loggen over ændringer (art. 6, stk. 1, litra f: vores berettigede interesse i en sikker tjeneste).\n• Fejlfinding: tekniske fejlrapporter uden personoplysninger (litra f).\n• Support: når du skriver til os (litra f).\n• Fakturering af foreningen: kontaktpersonens navn og e-mail og fakturaerne, som vi skal gemme efter bogføringsloven (art. 6, stk. 1, litra c).\nVi bruger ikke oplysningerne til markedsføring, sælger dem ikke og laver ingen profilering eller automatiske afgørelser."
         },
-        "subprocessors": {
-          "heading": "Underdatabehandlere",
-          "body": "Vi bruger udvalgte underleverandører til hosting, database, login og e-mailudsendelse. Data hostes i EU. En opdateret liste over underdatabehandlere udleveres til foreningen. [Indsæt liste.]"
+        "recipients": {
+          "heading": "Hvem oplysningerne deles med",
+          "body": "Vi bruger disse underdatabehandlere:\n• Render (Render Services, Inc.): hosting af appen, serveren og databasen. Servere i USA (Oregon).\n• Google Firebase Authentication (Google LLC): login. Behandler din e-mail og din adgangskode i krypteret form. Kører kun fra datacentre i USA.\n• Mailgun (Sinch): udsendelse af e-mails, fx invitationer og nulstilling af adgangskode. EU-region.\n• Sentry (Functional Software, Inc.): tekniske fejlrapporter. Gemmes i EU (Frankfurt). Enkelte driftsdata om kontoen hos Sentry ligger i USA.\nOplysningerne gives ikke videre til andre, medmindre loven kræver det."
+        },
+        "transfers": {
+          "heading": "Overførsel til USA",
+          "body": "Render og Google behandler oplysninger i USA. Begge er certificeret under EU-USA-databeskyttelsesrammen (Data Privacy Framework), som EU-Kommissionen har godkendt i en afgørelse om tilstrækkeligt beskyttelsesniveau. Deres databehandleraftaler indeholder også EU-Kommissionens standardkontraktbestemmelser. Skriv til os, hvis du vil have en kopi."
         },
         "retention": {
-          "heading": "Opbevaring",
-          "body": "Oplysninger opbevares, så længe foreningen bruger LaundryBook, og din konto er aktiv. Ved sletning af konto eller ophør af aftalen slettes oplysningerne inden for [indsæt frist]."
+          "heading": "Hvor længe oplysningerne gemmes",
+          "body": "• Din konto, dine tilknytninger og dine bookinger: indtil du sletter kontoen, eller foreningen holder op med at bruge LaundryBook.\n• Sletter du din konto, slettes den med det samme sammen med dine bookinger og tilknytninger.\n• Holder en forening op, sletter vi foreningens oplysninger inden for 30 dage.\n• Loggen over ændringer: 365 dage. Den kan indeholde navne og e-mailadresser.\n• Fejlrapporter: højst 90 dage.\n• Sikkerhedskopier af databasen: slettes automatisk inden for 30 dage.\n• Fakturaer til foreningen: 5 år efter regnskabsårets udløb (bogføringsloven)."
         },
         "rights": {
           "heading": "Dine rettigheder",
-          "body": "Du har ret til indsigt, berigtigelse, sletning, begrænsning, indsigelse og dataportabilitet. Henvendelser om dine rettigheder rettes til din forening som dataansvarlig. Du kan klage til Datatilsynet."
+          "body": "Du har ret til at få indsigt i dine oplysninger, få dem rettet eller slettet, få behandlingen begrænset og få dem udleveret (dataportabilitet). Under Min side kan du selv hente dine data og slette din konto. Andre henvendelser kan du sende til din forening eller til os på {{email}}. Vi hjælper foreningen med at svare."
+        },
+        "objection": {
+          "heading": "Ret til indsigelse",
+          "body": "Når behandlingen sker på grundlag af en berettiget interesse (art. 6, stk. 1, litra f), har du ret til at gøre indsigelse mod den af grunde, der vedrører din særlige situation. Skriv til din forening eller til os på {{email}}."
+        },
+        "complaint": {
+          "heading": "Klage",
+          "body": "Du kan klage til Datatilsynet, Carl Jacobsens Vej 35, 2500 Valby, www.datatilsynet.dk."
+        },
+        "cookies": {
+          "heading": "Cookies og lagring i browseren",
+          "body": "LaundryBook gemmer kun det i din browser, der er teknisk nødvendigt for at levere tjenesten:\n• En login-cookie, der holder dig logget ind. Den udløber efter 8 timer.\n• Login-udbyderen (Google Firebase) gemmer din login-status.\n• Browseren husker dit valgte sprog, den forening du har valgt, og om du har set husordenen.\nVi bruger ingen cookies til statistik, markedsføring eller sporing. Derfor spørger vi ikke om samtykke til cookies."
         },
         "security": {
           "heading": "Sikkerhed",
-          "body": "Data overføres krypteret (HTTPS), og adgang styres via roller, så beboere kun ser deres egen forenings oplysninger."
-        },
-        "cookies": {
-          "heading": "Cookies",
-          "body": "Vi bruger kun de cookies, der er nødvendige for at holde dig logget ind. [Opdateres, hvis der tilføjes statistik- eller analyseværktøjer.]"
+          "body": "Al trafik er krypteret (HTTPS). Login-cookien kan ikke læses af scripts på siden. Beboere ser kun deres egen forenings oplysninger, og ændringer bliver logget. Opdager vi et brud på sikkerheden, giver vi foreningen besked uden unødig forsinkelse, så den kan anmelde det til Datatilsynet."
         },
         "changes": {
           "heading": "Ændringer",
-          "body": "Vi kan opdatere denne privatlivspolitik. Væsentlige ændringer varsles til foreningen."
+          "body": "Ændrer vi privatlivspolitikken væsentligt, giver vi besked på e-mail eller i appen, før ændringen træder i kraft. Datoen øverst viser den gældende version."
         },
         "contact": {
           "heading": "Kontakt",
@@ -1258,50 +1277,129 @@
     "terms": {
       "eyebrow": "Juridisk",
       "title": "Vilkår",
-      "draftNotice": "Udkast - skal gennemgås juridisk, før LaundryBook går i luften.",
-      "intro": "Disse vilkår gælder for brugen af LaundryBook.",
+      "intro": "Vilkårene gælder for alle, der bruger LaundryBook: foreninger, administratorer og beboere.",
       "sections": {
-        "acceptance": {
-          "heading": "Accept af vilkår",
-          "body": "Ved at oprette en konto eller bruge LaundryBook accepterer du disse vilkår. Læs dem igennem, inden du opretter dig."
+        "parties": {
+          "heading": "Aftalen",
+          "body": "Aftalen indgås mellem {{name}}, {{address}}, CVR {{cvr}} (LaundryBook) og den forening, der bruger LaundryBook. Beboere og administratorer får adgang gennem foreningen og bruger LaundryBook på de samme vilkår."
+        },
+        "conclusion": {
+          "heading": "Sådan indgås aftalen",
+          "body": "• En forening oprettes ved at udfylde formularen, sætte flueben ved vilkårene og databehandleraftalen og trykke Opret forening. Den, der opretter foreningen, bekræfter at måtte indgå aftaler på foreningens vegne.\n• Beboere opretter sig via en invitation fra foreningen og sætter flueben ved vilkårene.\n• Før du opretter dig, kan du rette alle felter. Bagefter kan du rette dine oplysninger under Min side.\n• Vi gemmer, hvornår du accepterede, og hvilken version af vilkårene det var. Du kan gemme eller udskrive vilkårene fra denne side.\n• Aftalen indgås på dansk."
         },
         "service": {
           "heading": "Tjenesten",
-          "body": "LaundryBook er et digitalt bookingsystem til vaskerum i danske ejer- og andelsboligforeninger. Tjenesten leveres via browseren, uden app."
+          "body": "LaundryBook er et bookingsystem til vaskerum i danske ejer- og andelsboligforeninger. Det kører i browseren. Beboerne booker og aflyser vasketider, og administratoren sætter vaskerum, maskiner og vasketider op og inviterer beboerne."
+        },
+        "age": {
+          "heading": "Alder",
+          "body": "Du skal være fyldt 18 år for at oprette en konto. Er du yngre, skal en forælder eller værge acceptere vilkårene for dig."
         },
         "signupApproval": {
           "heading": "Oprettelse og godkendelse",
-          "body": "Enhver kan teste systemet, men en forening bliver først aktiveret, når vi har godkendt den. Det sikrer, at kun rigtige foreninger oprettes med beboere."
+          "body": "En ny forening bliver aktiveret, når vi har set den. Indtil da kan administratoren sætte vaskerum op, men ikke invitere beboere. Vi kan afvise en forening, hvis den ikke ser ud til at være en rigtig forening."
+        },
+        "association": {
+          "heading": "Foreningens ansvar",
+          "body": "Foreningen er dataansvarlig for oplysningerne om sine beboere, og databehandleraftalen gælder mellem foreningen og LaundryBook. Foreningen sørger for, at kun beboere og administratorer, der hører til foreningen, får adgang, og at oplysningerne holdes opdateret, fx ved fraflytning."
         },
         "userResponsibility": {
           "heading": "Dit ansvar",
-          "body": "Du er ansvarlig for at give korrekte oplysninger, for aktivitet på din konto og for ikke at misbruge systemet eller genere andre beboere."
+          "body": "Du giver korrekte oplysninger, passer på din adgangskode og bruger ikke LaundryBook til at genere andre eller omgå foreningens regler. Vi kan lukke en konto, der bliver misbrugt."
         },
         "payment": {
-          "heading": "Betaling",
-          "body": "Pris og betaling for en aktiv forening aftales særskilt med foreningen. [Indsæt endelige betalingsvilkår, når prismodellen er fastlagt.]"
+          "heading": "Pris og betaling",
+          "body": "Beboere betaler ikke for at bruge LaundryBook. Foreningen betaler den pris, der er aftalt ved oprettelsen. Betalingen sker forud pr. måned eller pr. år mod faktura. Der er ingen betaling i appen."
         },
         "availability": {
-          "heading": "Tilgængelighed og ansvar",
-          "body": "Vi bestræber os på høj oppetid, men tjenesten leveres, som den er, uden garanti for uafbrudt drift. Vi er ikke ansvarlige for indirekte tab. [Præciseres juridisk.]"
+          "heading": "Drift",
+          "body": "Vi arbejder for, at LaundryBook altid virker, men kan ikke love uafbrudt drift. Planlagt vedligehold varsler vi, når det er muligt."
+        },
+        "liability": {
+          "heading": "Ansvar",
+          "body": "LaundryBook er ikke ansvarlig for indirekte tab, fx en mistet vasketid, tabt arbejdsfortjeneste eller skader på vasketøj og maskiner. Over for foreningen er LaundryBooks samlede ansvar begrænset til det beløb, foreningen har betalt de seneste 12 måneder. Begrænsningerne gælder ikke, hvis tabet skyldes forsæt eller grov uagtsomhed, og de begrænser ikke de rettigheder, du har efter ufravigelig lovgivning."
         },
         "termination": {
           "heading": "Opsigelse",
-          "body": "Foreningen kan til enhver tid ophøre med at bruge LaundryBook. Ved ophør lukkes adgangen, og data behandles som beskrevet i privatlivspolitikken."
+          "body": "Foreningen kan opsige aftalen når som helst ved at skrive til os. Aftalen løber til udgangen af den betalte periode. LaundryBook kan opsige med 30 dages varsel, eller med det samme, hvis aftalen misligholdes væsentligt. Efter ophør sletter vi foreningens oplysninger inden for 30 dage. Beboere kan altid slette deres konto under Min side."
         },
         "changes": {
-          "heading": "Ændringer af vilkår",
-          "body": "Vi kan opdatere disse vilkår. Væsentlige ændringer varsles til foreningen."
+          "heading": "Ændringer af vilkårene",
+          "body": "Vi kan ændre vilkårene, fx hvis tjenesten eller lovgivningen ændrer sig. Væsentlige ændringer varsler vi på e-mail mindst 30 dage, før de træder i kraft, og vi beder om din accept, næste gang du logger ind. Ønsker I ikke de nye vilkår, kan I opsige aftalen, før de træder i kraft."
         },
         "law": {
-          "heading": "Lovvalg",
-          "body": "Vilkårene er underlagt dansk ret med de danske domstole som værneting."
+          "heading": "Lovvalg og klager",
+          "body": "Vilkårene følger dansk ret, og uenighed afgøres ved de danske domstole. Er du forbruger, kan du klage via Nævnenes Hus på www.naevneneshus.dk."
         },
         "contact": {
           "heading": "Kontakt",
           "body": "Spørgsmål til vilkårene? Skriv til {{email}}."
         }
       }
+    },
+    "dpa": {
+      "eyebrow": "Juridisk",
+      "title": "Databehandleraftale",
+      "intro": "Aftalen gælder mellem foreningen som dataansvarlig og LaundryBook som databehandler (databeskyttelsesforordningens art. 28). Den accepteres af foreningens administrator, når foreningen oprettes.",
+      "sections": {
+        "parties": {
+          "heading": "Parter",
+          "body": "Dataansvarlig: den forening, der er oprettet i LaundryBook, repræsenteret af den administrator, der oprettede foreningen.\nDatabehandler: {{name}}, {{address}}, CVR {{cvr}}, {{email}}."
+        },
+        "clauses": {
+          "heading": "Standardkontraktbestemmelser",
+          "body": "Aftalen består af Datatilsynets standardkontraktbestemmelser for databehandleraftaler (art. 28, stk. 8) i uændret form, udfyldt med bilagene nedenfor. Standardkontraktbestemmelserne kan hentes hos Datatilsynet på www.datatilsynet.dk/regler-og-vejledning/blanketter-og-skabeloner. Den valgfrie bestemmelse om tredjemandsret ved databehandlerens konkurs er ikke valgt."
+        },
+        "subject": {
+          "heading": "Bilag A: Formål og behandlingens art",
+          "body": "Formålet er at drive et bookingsystem til foreningens vaskerum: give beboerne adgang, registrere bookinger, sende invitationer og driftsmails og give administratoren overblik. Behandlingen består i indsamling, opbevaring, visning, ændring, afsendelse af e-mails og sletning."
+        },
+        "categories": {
+          "heading": "Bilag A: Oplysninger og registrerede",
+          "body": "Personoplysninger: navn, e-mail, lejlighedsnummer, rolle, bookinger (dato, tid, vaskerum og maskine), log over ændringer, tidspunkt for sidste brug og accept af vilkår. Ingen følsomme oplysninger (art. 9) og ingen CPR-numre.\nRegistrerede: foreningens beboere og administratorer.\nVarighed: så længe foreningen bruger LaundryBook."
+        },
+        "instructions": {
+          "heading": "Bilag C: Instruks",
+          "body": "Databehandleren behandler kun oplysningerne for at levere LaundryBook til foreningen, som beskrevet i vilkårene og i bilag A. Foreningens administrator giver løbende instruks gennem indstillingerne i LaundryBook, fx bookingsynlighed og hvem der inviteres."
+        },
+        "security": {
+          "heading": "Bilag C: Sikkerhed",
+          "body": "• Al trafik er krypteret med HTTPS.\n• Adgangskoder håndteres af Google Firebase og opbevares ikke af databehandleren.\n• Login sker med en cookie, der ikke kan læses af scripts.\n• Adgang er opdelt pr. forening og rolle.\n• Alle ændringer logges med bruger og tidspunkt og gemmes i 365 dage.\n• Fejlrapporter sendes uden navn, e-mail og IP-adresse.\n• Kun databehandleren har adgang til driften og databasen."
+        },
+        "subprocessors": {
+          "heading": "Bilag B: Underdatabehandlere",
+          "body": "• Render (Render Services, Inc.): hosting af appen, serveren og databasen. Servere i USA (Oregon).\n• Google Firebase Authentication (Google LLC): login. Behandler din e-mail og din adgangskode i krypteret form. Kører kun fra datacentre i USA.\n• Mailgun (Sinch): udsendelse af e-mails, fx invitationer og nulstilling af adgangskode. EU-region.\n• Sentry (Functional Software, Inc.): tekniske fejlrapporter. Gemmes i EU (Frankfurt). Enkelte driftsdata om kontoen hos Sentry ligger i USA.\nForeningen giver generel godkendelse af underdatabehandlere. Nye eller udskiftede underdatabehandlere varsles på e-mail til administratoren mindst 10 dage i forvejen, så foreningen kan gøre indsigelse."
+        },
+        "transfers": {
+          "heading": "Bilag C: Overførsel til tredjelande",
+          "body": "Foreningen giver instruks om overførsel til USA til Render Services, Inc. og Google LLC, som begge er certificeret under EU-USA-databeskyttelsesrammen (Data Privacy Framework). Deres databehandleraftaler indeholder også EU-Kommissionens standardkontraktbestemmelser."
+        },
+        "assistance": {
+          "heading": "Bilag C: Hjælp til foreningen",
+          "body": "Beboere kan selv hente og slette deres data under Min side. Andre anmodninger fra registrerede videresender databehandleren til foreningen, og databehandleren hjælper med at besvare dem."
+        },
+        "breach": {
+          "heading": "Bilag C: Brud på persondatasikkerheden",
+          "body": "Databehandleren underretter foreningens administrator på e-mail uden unødig forsinkelse og senest 48 timer efter at være blevet opmærksom på et brud, med de oplysninger, foreningen skal bruge for at anmelde bruddet til Datatilsynet."
+        },
+        "deletion": {
+          "heading": "Bilag C: Sletning",
+          "body": "Ved ophør sletter databehandleren foreningens oplysninger inden for 30 dage, medmindre foreningen inden da beder om at få dem udleveret. Loggen over ændringer slettes løbende efter 365 dage. Sikkerhedskopier slettes automatisk inden for 30 dage."
+        },
+        "audit": {
+          "heading": "Bilag C: Tilsyn",
+          "body": "Databehandleren giver efter anmodning foreningen en skriftlig redegørelse for, hvordan aftalen overholdes. Foreningen kan få foretaget en inspektion efter aftale og for egen regning."
+        },
+        "term": {
+          "heading": "Bilag D: Øvrige forhold",
+          "body": "Aftalen gælder, så længe foreningen bruger LaundryBook. Ansvar følger vilkårene. Ændringer af aftalen sendes til administratoren på e-mail og kræver foreningens godkendelse."
+        }
+      }
+    },
+    "legal": {
+      "draftNotice": "Udkast: virksomhedsoplysningerne mangler, og teksten bør gennemgås af en jurist, før LaundryBook går i luften.",
+      "version": "Gældende fra {{date}}",
+      "print": "Udskriv"
     }
   }
 }
