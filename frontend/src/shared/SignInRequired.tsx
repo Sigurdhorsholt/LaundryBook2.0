@@ -3,6 +3,7 @@ import { Link, useLocation } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { useAppDispatch } from '../app/hooks'
 import { openModal } from './modals/modalSlice'
+import { hostUrl } from './hosts'
 import { BrandLogo } from './BrandLogo'
 import { colors } from './theme'
 
@@ -30,7 +31,7 @@ export function SignInRequired() {
           <button type="button" className="btn btn-primary fw-semibold" onClick={() => dispatch(openModal({ name: 'login', props: { redirectTo } }))}>
             {t('auth.login')}
           </button>
-          <Link to="/" className="btn btn-outline-secondary">{t('auth.goHome')}</Link>
+          <Link to={hostUrl('site', '/')} className="btn btn-outline-secondary">{t('auth.goHome')}</Link>
         </div>
       </div>
     </div>

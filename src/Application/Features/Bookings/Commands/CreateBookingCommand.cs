@@ -47,7 +47,7 @@ public class CreateBookingCommandHandler(
 
         // Slot must not be in the past
         if (CopenhagenTime.ToUtc(request.Date, template.StartTime) <= DateTime.UtcNow)
-            throw new ConflictException("Tidspladsen er allerede passeret.", ErrorCodes.SlotPassed);
+            throw new ConflictException("Vasketiden er allerede passeret.", ErrorCodes.SlotPassed);
 
         Guid? machineId = null;
 
@@ -91,7 +91,7 @@ public class CreateBookingCommandHandler(
                     cancellationToken);
 
             if (slotTaken)
-                throw new ConflictException("Tidspladsen er allerede optaget.", ErrorCodes.SlotTaken);
+                throw new ConflictException("Vasketiden er allerede optaget.", ErrorCodes.SlotTaken);
         }
 
         // Enforce max concurrent bookings per user

@@ -40,6 +40,8 @@ export interface AppRoute {
   /** i18n key for the label shown in top-level sidebar nav when set */
   label?: string
   icon?: ReactNode
+  // Which host serves it once the site and app are split (#158); see HostGate for the default
+  host?: 'site' | 'app' | 'both'
 }
 
 export const routes: AppRoute[] = [
@@ -50,11 +52,11 @@ export const routes: AppRoute[] = [
   { path: '/demo',      component: DemoPage,      layout: 'bare', protected: false },
   { path: '/faq',       component: FaqPage,       layout: 'bare', protected: false },
   { path: '/om',        component: AboutPage,     layout: 'bare', protected: false },
-  { path: '/privatliv', component: PrivacyPage,   layout: 'bare', protected: false },
-  { path: '/vilkaar',   component: TermsPage,     layout: 'bare', protected: false },
+  { path: '/privatliv', component: PrivacyPage,   layout: 'bare', protected: false, host: 'both' },
+  { path: '/vilkaar',   component: TermsPage,     layout: 'bare', protected: false, host: 'both' },
   { path: '/get-started', component: GetStartedPage, layout: 'bare', protected: false },
-  { path: '/signup',    component: SignupPage,    layout: 'bare', protected: false },
-  { path: '/join',      component: JoinPage,      layout: 'bare', protected: false },
+  { path: '/signup',    component: SignupPage,    layout: 'bare', protected: false, host: 'app' },
+  { path: '/join',      component: JoinPage,      layout: 'bare', protected: false, host: 'app' },
   { path: '/dashboard', component: SmartRedirectPage,    layout: 'bare', protected: true },
 
   // ── Resident shell ──────────────────────────────────────────────────────────
