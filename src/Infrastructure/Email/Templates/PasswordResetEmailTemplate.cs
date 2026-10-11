@@ -42,7 +42,7 @@ internal static class PasswordResetEmailTemplate
                           <td style="padding:16px 20px;">
                             <p style="margin:0;font-size:13px;color:#92400e;line-height:1.5;">
                               &#9888; Linket er gyldigt i <strong>1 time</strong>.
-                              Har du ikke bedt om dette, kan du ignorere denne e-mail &mdash; din adgangskode er ikke &aelig;ndret.
+                              Har du ikke bedt om dette, kan du ignorere denne e-mail. Din adgangskode er ikke &aelig;ndret.
                             </p>
                           </td>
                         </tr>
@@ -100,11 +100,11 @@ internal static class PasswordResetEmailTemplate
         {resetLink}
 
         Linket er gyldigt i 1 time.
-        Har du ikke bedt om dette, kan du ignorere denne e-mail — din adgangskode er ikke ændret.
+        Har du ikke bedt om dette, kan du ignorere denne e-mail. Din adgangskode er ikke ændret.
 
         ---
         Denne e-mail er sendt automatisk. Svar ikke på denne besked.
 
-        LaundryBook — {landingPageUrl}
+        LaundryBook - {landingPageUrl}
         """;
 }

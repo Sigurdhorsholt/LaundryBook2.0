@@ -109,14 +109,6 @@ export function DayBookingView({ booking: lb, showRoomName }: Props) {
             </p>
           </div>
         )}
-
-        {lb.milestoneCount !== null && (
-          <div style={{ padding: '8px 20px', borderTop: `1px solid ${colors.borderRow}` }}>
-            <p style={{ fontSize: '0.76rem', color: colors.textSecondary, margin: 0, textAlign: 'center' }}>
-              {t('laundryPage.milestone', { count: lb.milestoneCount })}
-            </p>
-          </div>
-        )}
       </div>
 
       {lb.myBookings.length > 0 && gridBelowViewport && (

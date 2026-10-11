@@ -10,7 +10,7 @@ const CONTACT_EMAIL = 'sigurd-horsholt@hotmail.com'
 const FAQ_GROUPS = [
   {
     key: 'washingBookingStart',
-    items: ['booking', 'join', 'mobile', 'pricing'] as const,
+    items: ['booking', 'join', 'mobile', 'pricing', 'data', 'leave'] as const,
   },
 ] as const
 

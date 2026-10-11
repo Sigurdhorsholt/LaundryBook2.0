@@ -14,16 +14,16 @@
   },
   "errorBoundary": {
     "title": "Noget gik galt",
-    "body": "Siden kunne ikke vises. Prøv at genindlæse – fejlen er registreret, så vi kan rette den.",
+    "body": "Siden kunne ikke vises. Prøv at genindlæse. Fejlen er registreret, så vi kan rette den.",
     "reload": "Genindlæs",
     "home": "Til forsiden"
   },
   "seo": {
-    "home": { "title": "LaundryBook - vaskebooking til jeres forening", "description": "Digital vaskebooking til danske ejer- og andelsboligforeninger. Beboerne booker vasketider hjemmefra, og bestyrelsen har overblikket." },
+    "home": { "title": "LaundryBook - vaskebooking til jeres forening", "description": "Digital vaskebooking til danske ejer- og andelsboligforeninger. Beboerne booker vasketider hjemmefra, og administratoren har overblikket." },
     "features": { "title": "Funktioner - LaundryBook", "description": "Booking og opsætning af vaskerum og vasketider, invitationer og overblik over belægning - alt i browseren." },
     "demo": { "title": "Demo - LaundryBook", "description": "Se LaundryBook med en opdigtet forening: det beboerne ser, og det administratoren ser." },
     "faq": { "title": "Spørgsmål og svar - LaundryBook", "description": "Svar på de mest almindelige spørgsmål om LaundryBook: booking, mobil, pris og hvordan jeres forening kommer i gang." },
-    "about": { "title": "Om LaundryBook", "description": "Hvem står bag LaundryBook, og hvorfor findes det." },
+    "about": { "title": "Om LaundryBook", "description": "Hvem står bag LaundryBook, hvordan data behandles, og hvordan en forening kommer i gang og stopper igen." },
     "getStarted": { "title": "Kom i gang - LaundryBook", "description": "Opret jeres forening på LaundryBook: konto, vaskerum, vasketider og invitationer til beboerne." },
     "privacy": { "title": "Privatlivspolitik - LaundryBook", "description": "Sådan behandler LaundryBook personoplysninger." },
     "terms": { "title": "Vilkår - LaundryBook", "description": "Vilkår for brug af LaundryBook." }
@@ -550,7 +550,7 @@
     "apartmentPlaceholderShort": "1A",
     "saveFailed": "Kunne ikke gemme ændringer. Prøv igen.",
     "saving": "Gemmer…",
-    "inviteSent": "Invitation sendt!",
+    "inviteSent": "Invitationen er sendt.",
     "inviteEmailSentMessage": "{{email}} modtager en e-mail med link til at oprette adgangskode.",
     "email": "E-mail",
     "emailPlaceholder": "beboer@example.com",
@@ -781,7 +781,7 @@
   "landing": {
     "heroBadge": "Til danske ejer- og andelsboligforeninger",
     "heroTitle": "Vasketider, der kan bookes <s>hjemmefra</s>.",
-    "heroSubtitle": "Slut med at gå i kælderen for at se, om der er en ledig vasketid. Med LaundryBook booker beboerne hjemmefra, og bestyrelsen har overblikket. Ingen sedler og ingen forgæves ture ned ad trappen.",
+    "heroSubtitle": "Med en papirliste skal beboerne ned i kælderen for at se, om der er en ledig tid. Med LaundryBook booker de hjemmefra, og administratoren har overblikket.",
     "tryDemo": "Se demoen",
     "login": "Log ind",
     "heroNote": "Se skærmbilleder fra en demo-forening. Det kræver ikke login.",
@@ -790,23 +790,23 @@
     "cardRoom": "Vaskerum 1",
     "cardFreeToday": "6 ledige tider i dag",
     "valueBadge": "Lavet til jeres forening",
-    "valueTitleLine1": "Mindre besvær.",
-    "valueTitleLine2": "Bedre naboskab.",
-    "valueSubtitle": "Bookingsedlen i kælderen har haft sin tid. LaundryBook giver beboerne et sted at finde en ledig tid - og bestyrelsen overblikket, uden en masse besvær.",
+    "valueTitleLine1": "Én kalender for vaskerummet.",
+    "valueTitleLine2": "Den samme for alle beboere.",
+    "valueSubtitle": "LaundryBook erstatter bookingsedlen i kælderen. Beboerne finder en ledig tid på telefonen eller computeren, og administratoren kan se, hvordan vaskerummet bliver brugt.",
     "residentEyebrow": "For beboeren",
-    "residentTitle": "Book en vask på vej hjem fra arbejde",
-    "residentBody": "Se hvilke tider der er ledige i dag, i morgen, eller senere på ugen. Book med ét tryk.",
-    "residentFeature1": "Ledige tider vist med farvekoder",
+    "residentTitle": "Book og aflys hjemmefra",
+    "residentBody": "Se, hvilke vasketider der er ledige i dag og resten af ugen. Det tager et par tryk at booke.",
+    "residentFeature1": "Ledige og optagede tider vist med farver",
     "residentFeature2": "Aflys direkte i kalenderen, hvis planerne ændrer sig",
     "residentFeature3": "Virker på mobil, tablet og computer",
-    "boardEyebrow": "For bestyrelsen",
-    "boardTitle": "Mindre bøvl for bestyrelsen",
-    "boardBody": "Opret vaskerum, vælg vasketider og tilføj beboere. Én gang. Derefter passer systemet sig selv - og I kan fokusere på det, der faktisk kræver jeres tid.",
-    "boardFeature1": "Tilføj eller fjern beboere ved indflytning",
+    "boardEyebrow": "For administratoren",
+    "boardTitle": "Sæt vaskerum og vasketider op én gang",
+    "boardBody": "Opret vaskerum og maskiner, vælg vasketiderne, og inviter beboerne med e-mail eller en QR-kode. Derefter kører bookingen uden papirlister.",
+    "boardFeature1": "Tilføj og fjern beboere ved ind- og udflytning",
     "boardFeature2": "Se hvem der har booket hvornår",
     "boardFeature3": "Sæt bookingregler og synlighed for foreningen",
-    "ctaTitle": "Klar til at gøre vaskerummet nemmere?",
-    "ctaBody": "Se demoen, eller log ind for at komme i gang med jeres forening."
+    "ctaTitle": "Se, hvordan det virker",
+    "ctaBody": "Se demoen, eller log ind, hvis jeres forening allerede er oprettet."
   },
   "notFound": {
     "title": "Siden blev ikke fundet",
@@ -844,7 +844,6 @@
     "selectRoom": "Vælg et vaskerum herover.",
     "othersBooked_one": "{{count}} anden beboer har booket denne dag",
     "othersBooked_other": "{{count}} andre beboere har booket denne dag",
-    "milestone": "Du har nu booket {{count}} gange - vaskerummet kender dig efterhånden.",
     "goToBooking": "Gå til booking"
   },
   "errors": {
@@ -1017,7 +1016,7 @@
       "backToApp": "Tilbage til appen",
       "footer": {
         "product": "Produkt",
-        "company": "Selskab",
+        "company": "LaundryBook",
         "contact": "Kontakt",
         "tagline": "Digital vaskebooking til danske ejer- og andelsboligforeninger.",
         "legal": "Juridisk"
@@ -1033,36 +1032,36 @@
       "loginHere": "Log ind her",
       "trust": {
         "support": "Dansk support via mail",
-        "browser": "Virker i browseren - ingen app at installere",
+        "browser": "Kører i browseren. Ingen app.",
         "invite": "Beboere inviteres med et link"
       },
-      "ctaTitle": "Klar til at komme af med bookingbøvlet?",
-      "ctaSubtitle": "Opret jeres forening - det tager et øjeblik."
+      "ctaTitle": "Opret jeres forening",
+      "ctaSubtitle": "Det tager et par minutter. Vi aktiverer foreningen, når vi har set den."
     },
     "getStartedSteps": {
       "eyebrow": "Sådan fungerer det",
       "items": {
         "account": {
           "title": "Opret konto",
-          "body": "Email og kodeord - tager under et minut."
+          "body": "E-mail og adgangskode."
         },
         "property": {
-          "title": "Opret din ejendom",
+          "title": "Opret jeres forening",
           "body": "Navn og adresse på foreningen. Derefter godkender vi den."
         },
         "rooms": {
           "title": "Opsæt vaskerum",
-          "body": "Tilføj rum og vælg vasketider én gang. Systemet kører derefter selv."
+          "body": "Tilføj vaskerum og maskiner, og vælg vasketiderne."
         },
         "invite": {
           "title": "Inviter beboere",
-          "body": "Send et link - beboerne opretter sig selv på få sekunder."
+          "body": "Send en invitation på e-mail, eller hæng en QR-kode op. Beboerne opretter selv deres konto."
         }
       }
     },
     "faq": {
       "eyebrow": "Ofte stillede spørgsmål",
-      "title": "Svarene på det, vi oftest bliver spurgt om",
+      "title": "Spørgsmål og svar",
       "subtitle": "Finder I ikke det I leder efter? Skriv til {{email}}.",
       "moreDoubtsTitle": "Andet I er i tvivl om?",
       "moreDoubtsSubtitle": "Skriv til os, så vender vi tilbage.",
@@ -1072,19 +1071,27 @@
           "items": {
             "booking": {
               "q": "Hvordan booker beboerne en vask?",
-              "a": "De logger ind og vælger en ledig tid i kalenderen for jeres vaskerum. Ledige tider er grønne, optagede er grå. Book med et par klik - og aflys igen, hvis planerne ændrer sig."
+              "a": "De logger ind og vælger en ledig tid i kalenderen for jeres vaskerum. Ledige tider er grønne, og optagede er grå. Det tager et par tryk at booke, og de kan aflyse igen, hvis planerne ændrer sig."
             },
             "join": {
               "q": "Hvordan kommer en beboer med?",
-              "a": "En administrator i foreningen inviterer beboeren med et link. Beboeren opretter selv sin konto via invitationen."
+              "a": "En administrator i foreningen inviterer beboeren med en e-mail eller en QR-kode. Beboeren opretter selv sin konto via invitationen."
             },
             "mobile": {
               "q": "Virker det på mobil?",
-              "a": "Ja. LaundryBook kører direkte i browseren på mobil, tablet og computer - ingen app at installere. I kan lægge en genvej på hjemmeskærmen, hvis I vil have det som en app."
+              "a": "Ja. LaundryBook kører i browseren på mobil, tablet og computer. Der er ingen app at installere, men I kan lægge en genvej på hjemmeskærmen."
             },
             "pricing": {
               "q": "Hvordan får vi vores forening på LaundryBook, og hvad koster det?",
               "a": "Opret jeres forening under \"Kom i gang\", så godkender vi den. Skriv til os på {{email}} for en pris - der er ingen betaling i appen."
+            },
+            "data": {
+              "q": "Hvordan behandler I beboernes oplysninger?",
+              "a": "Vi behandler kun det, bookingen kræver: navn, e-mail, eventuelt lejlighedsnummer og bookinger. Foreningen er dataansvarlig, og LaundryBook er databehandler. Læs mere i privatlivspolitikken."
+            },
+            "leave": {
+              "q": "Kan vi stoppe igen?",
+              "a": "Ja, når I vil. Skriv til os på {{email}}, så lukker vi foreningen og sletter dens oplysninger inden for 30 dage."
             }
           }
         }
@@ -1092,54 +1099,54 @@
     },
     "features": {
       "eyebrow": "Hvorfor LaundryBook",
-      "title": "Vaskerummet skal ikke fylde mere end det behøver",
-      "subtitle": "LaundryBook løser én lille, men bøvlet del af det at bo sammen: vasketiderne. Sådan gør det i praksis:",
+      "title": "Det, LaundryBook gør",
+      "subtitle": "LaundryBook samler vasketiderne i én kalender, som både beboerne og administratoren kan se.",
       "big": {
         "booking": {
           "tag": "Booking",
-          "title": "Som at se vejrudsigten for vaskerummet",
-          "body": "Ledige tider er grønne, travle er gule, optagede er grå. Vælg en dag i ugen, find et tidsrum der passer, og book det. Alle i foreningen ser den samme kalender."
+          "title": "Ledige tider med det samme",
+          "body": "Ledige tider er grønne, og optagede er grå. Dage med få ledige tider er markeret med gult. Vælg en dag, find en vasketid, og book den. Alle i foreningen ser den samme kalender."
         },
         "administration": {
           "tag": "Administration",
-          "title": "Sæt det op én gang. Glem det så.",
-          "body": "Bestyrelsen opretter vaskerum, vasketider og lister over lejligheder. Nye beboere tilføjes med email. Gamle beboere fjernes igen. Hverken mere eller mindre."
+          "title": "Sæt det op én gang",
+          "body": "Administratoren opretter vaskerum, maskiner og vasketider. Nye beboere inviteres med e-mail eller en QR-kode, og beboere, der flytter, fjernes igen."
         },
         "overview": {
           "tag": "Overblik",
-          "title": "Tal til generalforsamlingen",
-          "body": "Se antal bookinger og belægning pr. vaskerum for en valgt periode. Tallene er der, når I skal bruge dem."
+          "title": "Overblik over brugen",
+          "body": "Se antal bookinger og belægning pr. vaskerum for en valgt periode, fx til generalforsamlingen."
         }
       },
-      "smallSectionTitle": "Flere små ting der gør det nemmere",
+      "smallSectionTitle": "Også med",
       "small": {
         "slots": {
           "title": "Fleksible vasketider",
-          "body": "Definér selv længden på vaskeslots - 90 min, 2 timer, aftenslot indtil 22."
+          "body": "Vælg selv længden på vasketiderne, fx 90 minutter eller 2 timer, og hvornår den sidste starter."
         },
         "roles": {
-          "title": "Flere roller",
-          "body": "Beboere og administratorer. Alle ser det, de skal."
+          "title": "Administratorer og beboere",
+          "body": "Administratorer sætter op og har overblikket. Beboere booker."
         },
         "rooms": {
           "title": "Flere vaskerum pr. ejendom",
-          "body": "Har I to kældre? Intet problem. Hver får sin egen kalender."
+          "body": "Hvert vaskerum har sin egen kalender."
         }
       },
       "beforeAfterTitle": "Før og efter LaundryBook",
       "beforeLabel": "Før",
       "afterLabel": "Efter",
       "before": {
-        "note": "Seddel i kælderen der forsvinder",
-        "sms": "Nabo-SMS: \"Har du taget lørdag 14-16?\"",
-        "doubleBooking": "Dobbeltbookinger og sur-tøj",
-        "noInsight": "Ingen ved hvad vaskerummet faktisk bruges til"
+        "note": "En papirliste i kælderen, der kan forsvinde",
+        "sms": "Beboerne skal ned i kælderen for at se, om der er ledigt",
+        "doubleBooking": "Dobbeltbookinger og uenighed om, hvem der havde tiden",
+        "noInsight": "Intet overblik over, hvor meget vaskerummet bliver brugt"
       },
       "after": {
-        "calendar": "En digital kalender alle beboere kender",
-        "bookFromSofa": "Book fra sofaen, aflys når planerne skifter",
-        "noDoubleBooking": "Ingen dobbeltbookinger - systemet tillader det ikke",
-        "boardInsight": "Bestyrelsen kan se, hvor meget vaskerummene bliver brugt"
+        "calendar": "Én kalender, som alle beboere kan se",
+        "bookFromSofa": "Book og aflys hjemmefra",
+        "noDoubleBooking": "En vasketid kan ikke dobbeltbookes",
+        "boardInsight": "Administratoren kan se, hvor meget vaskerummene bliver brugt"
       },
       "ctaTitle": "Se, hvordan det ser ud",
       "ctaButton": "Se demoen"
@@ -1182,23 +1189,37 @@
     },
     "about": {
       "eyebrow": "Om LaundryBook",
-      "title": "Det startede fire sale oppe",
-      "lead": "Vasketider burde være nemme. Her er problemet, vi satte os for at løse.",
-      "storyTitle": "Historien",
-      "story1": "Kender du det? Du skal vaske, men først må du hele vejen ned i kælderen for at se, om der overhovedet er en ledig tid. Som regel er der ikke - dagen er booket.",
-      "story2": "Du kan ikke booke hjemmefra. Du skal stå i kælderen for at se skemaet og skrive dig på. Og en travl hverdag bliver lagt om efter vaskeskemaet, fordi man opdager for sent, at hele dagen er taget.",
-      "story3": "Det problem oplevede vi selv - så derfor byggede vi LaundryBook. En vaskebooking, du kan tjekke og bruge hjemmefra, så turen i kælderen kun handler om at vaske.",
-      "honestTitle": "Sådan gør vi",
-      "honest1": "LaundryBook gør én ting og gør den ordentligt: vasketider. Ingen overflødige funktioner og ingen app at installere - bare en kalender, som alle i foreningen kan finde ud af.",
-      "honest2": "Hver ny forening bliver godkendt, før den går live. Det holder systemet trygt og rent, så I kan stole på, at kalenderen passer.",
-      "honest3": "Vi bygger videre på LaundryBook hele tiden. Har I ønsker eller idéer, så sig til - vi lytter gerne.",
+      "title": "Vaskebooking til ejer- og andelsboligforeninger",
+      "lead": "LaundryBook gør én ting: vasketider, som beboerne kan booke og aflyse hjemmefra. Her er det, en forening typisk vil vide, før den går i gang.",
+      "sections": {
+        "who": {
+          "title": "Hvem står bag",
+          "body": "LaundryBook er udviklet og drives fra Aarhus. Spørgsmål besvares på {{email}}."
+        },
+        "data": {
+          "title": "Data",
+          "body": "Vi behandler kun det, bookingen kræver: navn, e-mail, eventuelt lejlighedsnummer og bookinger. Foreningen er dataansvarlig, og LaundryBook er databehandler. Læs mere i <privacy>privatlivspolitikken</privacy>."
+        },
+        "price": {
+          "title": "Pris",
+          "body": "Skriv til os for en pris. Der er ingen betaling i appen. Foreningen får en faktura."
+        },
+        "start": {
+          "title": "Sådan kommer I i gang",
+          "body": "Opret foreningen. Vi aktiverer den, når vi har set den. Derefter sætter administratoren vaskerum og vasketider op og inviterer beboerne."
+        },
+        "stop": {
+          "title": "Sådan stopper I",
+          "body": "I kan stoppe, når I vil. Skriv til os, så lukker vi foreningen og sletter dens oplysninger inden for 30 dage. Beboerne kan selv slette deres konto under Min side."
+        }
+      },
       "factsTitle": "Kort fortalt",
       "factLocation": "Lavet i Aarhus",
-      "factBrowser": "Kører i browseren - ingen app at installere",
+      "factBrowser": "Kører i browseren. Ingen app.",
       "factAudience": "Til danske ejer- og andelsboligforeninger",
       "factPrice": "Skriv til os for en pris",
-      "ctaTitle": "Vil du prøve det?",
-      "ctaBody": "Se demoen uden at oprette noget, eller sæt jeres forening op. Har I spørgsmål, så skriv - vi svarer gerne.",
+      "ctaTitle": "Se, hvordan det virker",
+      "ctaBody": "Se demoen uden at oprette noget, eller opret jeres forening. Har I spørgsmål, så skriv til os.",
       "tryDemo": "Se demo",
       "getStarted": "Opret forening",
       "contact": "Skriv til os"
