@@ -4,14 +4,6 @@ import type { MachineFilter, WeekCell } from './types'
 import { CALENDAR_REMINDER_MINUTES, COPENHAGEN_VTIMEZONE } from './constants'
 import { isLocked, isPast, minutesUntilSlot } from '../../shared/utils/dateUtils'
 
-const BOOKING_COUNT_KEY = 'laundryBookingCount'
-
-export function incrementBookingCount(): number {
-  const next = parseInt(localStorage.getItem(BOOKING_COUNT_KEY) ?? '0', 10) + 1
-  localStorage.setItem(BOOKING_COUNT_KEY, String(next))
-  return next
-}
-
 // Formatted here rather than on the server so the text follows the resident's chosen language
 export function bookingLabel(b: Pick<BookingDto, 'labelKind' | 'labelValue'>): string {
   switch (b.labelKind) {

@@ -8,6 +8,7 @@ import { IconMenu, IconBrand } from '../../shared/icons'
 import { useModal } from '../../shared/modals/useModal'
 import { LanguageSelector } from '../../shared/ui'
 import { useMeQuery } from '../../features/auth/authApi'
+import { LEGAL_ENTITY } from '../../shared/constants'
 
 const NAV_LINKS = [
   { to: '/features', labelKey: 'public.layout.nav.features' },
@@ -204,7 +205,7 @@ function PublicFooter() {
   const groups: { title: string; items: [string, string | null][] }[] = [
     { title: t('public.layout.footer.product'), items: [[t('public.layout.nav.features'), '/features'], [t('public.layout.nav.demo'), '/demo']] },
     { title: t('public.layout.footer.company'), items: [[t('public.layout.nav.about'), '/om'], [t('public.layout.nav.faq'), '/faq']] },
-    { title: t('public.layout.footer.legal'), items: [[t('public.layout.nav.privacy'), '/privatliv'], [t('public.layout.nav.terms'), '/vilkaar']] },
+    { title: t('public.layout.footer.legal'), items: [[t('public.layout.nav.privacy'), '/privatliv'], [t('public.layout.nav.terms'), '/vilkaar'], [t('public.layout.nav.dpa'), '/databehandleraftale']] },
     { title: t('public.layout.footer.contact'), items: [[CONTACT_EMAIL, null]] },
   ]
 
@@ -253,6 +254,12 @@ function PublicFooter() {
           <span style={{ color: 'rgba(255,255,255,0.4)', fontSize: '0.82rem' }}>
             © {new Date().getFullYear()} LaundryBook
           </span>
+          {/* e-handelsloven § 7: who runs the service must be easy to find on every page */}
+          {LEGAL_ENTITY.name && (
+            <span style={{ color: 'rgba(255,255,255,0.4)', fontSize: '0.82rem', textAlign: 'center' }}>
+              {LEGAL_ENTITY.name} · {LEGAL_ENTITY.address}{LEGAL_ENTITY.cvr && ` · CVR ${LEGAL_ENTITY.cvr}`}
+            </span>
+          )}
         </div>
       </div>
     </footer>

@@ -5,6 +5,17 @@ import { colors } from './theme'
 // laundrybook.dk redirects here, so canonical URLs must use this host
 export const SITE_ORIGIN = 'https://www.laundrybook.dk'
 
+// Who runs LaundryBook, as the legal pages must say (e-handelsloven § 7). Empty until a company
+// exists; while any field is empty the legal pages keep their draft notice.
+export const LEGAL_ENTITY = {
+  name: '',
+  address: '',
+  cvr: '',
+}
+
+// Must match TermsPolicy.CurrentVersion on the server, which is what acceptance is recorded against
+export const LEGAL_VERSION = '2026-10-11'
+
 // Bootstrap's lg/xl breakpoints; inline styles can't hold media queries, so layout switches read these
 export const MEDIA_LG = '(min-width: 992px)'
 export const MEDIA_XL = '(min-width: 1200px)'

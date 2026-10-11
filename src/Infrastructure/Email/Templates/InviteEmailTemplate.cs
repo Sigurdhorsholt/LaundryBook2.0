@@ -37,9 +37,9 @@ internal static class InviteEmailTemplate
 
                   <tr>
                     <td class="content-padding" style="padding:40px 48px 32px;">
-                      <h2 style="margin:0 0 12px;font-size:22px;font-weight:700;color:#1a2e24;">Du er inviteret!</h2>
+                      <h2 style="margin:0 0 12px;font-size:22px;font-weight:700;color:#1a2e24;">Du er inviteret til LaundryBook</h2>
                       <p style="margin:0 0 28px;font-size:15px;color:#1a2e24;line-height:1.65;">
-                        Du har modtaget en invitation til at bruge <strong>LaundryBook</strong> &mdash; bookingsystemet til din ejendoms vaskerum.
+                        Du har modtaget en invitation til <strong>LaundryBook</strong>, bookingsystemet til din ejendoms vaskerum.
                       </p>
 
                       <table width="100%" cellpadding="0" cellspacing="0" role="presentation" style="background-color:#e8f5ee;border-radius:10px;border-left:4px solid #3d7a5c;margin:0 0 32px;">
@@ -87,9 +87,13 @@ internal static class InviteEmailTemplate
                       <p style="margin:0 0 10px;font-size:13px;color:#2a5c42;line-height:1.6;">
                         Denne invitation er sendt af <strong style="color:#1a2e24;">{{adminName}}</strong> p&aring; vegne af {{propertyName}}.
                       </p>
+                      <p style="margin:0 0 10px;font-size:12px;color:#2a5c42;line-height:1.6;">
+                        Din e-mailadresse er givet til LaundryBook af {{adminName}}, s&aring; du kan f&aring; adgang.
+                        L&aelig;s, hvordan dine oplysninger behandles, i <a href="{{landingPageUrl}}/privatliv" style="color:#3d7a5c;text-decoration:underline;">privatlivspolitikken</a>.
+                      </p>
                       <p style="margin:0;font-size:12px;color:#2a5c42;opacity:0.7;line-height:1.6;">
                         Har du ikke forventet denne e-mail? Du kan blot ignorere den.<br>
-                        <a href="{{landingPageUrl}}" style="color:#3d7a5c;text-decoration:none;font-weight:600;">L&aelig;s mere om LaundryBook</a>
+                        <a href="{{landingPageUrl}}" style="color:#3d7a5c;text-decoration:none;font-weight:600;">G&aring; til LaundryBook</a>
                       </p>
                     </td>
                   </tr>
@@ -108,10 +112,10 @@ internal static class InviteEmailTemplate
         string adminName,
         string passwordSetupLink,
         string landingPageUrl) => $"""
-        Du er inviteret til LaundryBook!
-        ================================
+        Du er inviteret til LaundryBook
+        ===============================
 
-        Du har modtaget en invitation til at bruge LaundryBook — bookingsystemet til din ejendoms vaskerum.
+        Du har modtaget en invitation til LaundryBook, bookingsystemet til din ejendoms vaskerum.
 
         Ejendom : {propertyName}
         Adresse  : {propertyAddress}
@@ -123,8 +127,10 @@ internal static class InviteEmailTemplate
 
         ---
         Invitationen er sendt af {adminName} på vegne af {propertyName}.
+        Din e-mailadresse er givet til LaundryBook af {adminName}, så du kan få adgang.
+        Læs, hvordan dine oplysninger behandles: {landingPageUrl}/privatliv
         Har du ikke forventet denne e-mail, kan du blot se bort fra den.
 
-        LaundryBook — {landingPageUrl}
+        LaundryBook - {landingPageUrl}
         """;
 }

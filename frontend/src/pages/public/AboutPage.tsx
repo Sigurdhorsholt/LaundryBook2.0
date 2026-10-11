@@ -1,14 +1,32 @@
 import { Link } from 'react-router-dom'
-import { useTranslation } from 'react-i18next'
+import { Trans, useTranslation } from 'react-i18next'
 import { PublicLayout } from './PublicLayout'
 import { PageMeta } from '../../shared/PageMeta'
 import { colors } from '../../shared/theme'
 import { IconCheck } from '../../shared/icons'
 
 const CONTACT_EMAIL = 'sigurd-horsholt@hotmail.com'
-const STORY_KEYS = ['story1', 'story2', 'story3'] as const
-const HONEST_KEYS = ['honest1', 'honest2', 'honest3'] as const
+// What an association asks before signing up; the second band is how to start and how to leave
+const MAIN_SECTIONS = ['who', 'data', 'price'] as const
+const BAND_SECTIONS = ['start', 'stop'] as const
 const FACT_KEYS = ['factLocation', 'factBrowser', 'factAudience', 'factPrice'] as const
+
+function AboutSection({ id, last }: { id: (typeof MAIN_SECTIONS | typeof BAND_SECTIONS)[number]; last: boolean }) {
+  return (
+    <div className={last ? '' : 'mb-4'}>
+      <h2 className="fw-bold mb-2" style={{ fontSize: '1.25rem', color: colors.textPrimary, letterSpacing: '-0.2px' }}>
+        <Trans i18nKey={`public.about.sections.${id}.title`} />
+      </h2>
+      <p className="mb-0" style={{ color: colors.textSecondary, fontSize: '1.02rem', lineHeight: 1.75 }}>
+        <Trans
+          i18nKey={`public.about.sections.${id}.body`}
+          values={{ email: CONTACT_EMAIL }}
+          components={{ privacy: <Link to="/privatliv" style={{ color: colors.primary }} /> }}
+        />
+      </p>
+    </div>
+  )
+}
 
 export function AboutPage() {
   const { t } = useTranslation()
@@ -34,19 +52,12 @@ export function AboutPage() {
         </div>
       </section>
 
-      {/* Story + facts */}
+      {/* Who, data, price + facts */}
       <section style={{ backgroundColor: '#fff' }}>
         <div className="container-xl px-4" style={{ paddingTop: '3.5rem', paddingBottom: '3.5rem' }}>
           <div className="row justify-content-center g-5">
             <div className="col-12 col-lg-7">
-              <h2 className="fw-bold mb-3" style={{ fontSize: '1.5rem', color: colors.textPrimary, letterSpacing: '-0.3px' }}>
-                {t('public.about.storyTitle')}
-              </h2>
-              {STORY_KEYS.map(k => (
-                <p key={k} className="mb-3" style={{ color: colors.textSecondary, fontSize: '1.02rem', lineHeight: 1.75 }}>
-                  {t(`public.about.${k}`)}
-                </p>
-              ))}
+              {MAIN_SECTIONS.map((k, i) => <AboutSection key={k} id={k} last={i === MAIN_SECTIONS.length - 1} />)}
             </div>
             <div className="col-12 col-lg-4">
               <div className="rounded-3 p-4" style={{ backgroundColor: colors.bgSubtle, border: `1px solid ${colors.borderDefault}` }}>
@@ -67,19 +78,12 @@ export function AboutPage() {
         </div>
       </section>
 
-      {/* Honesty + name */}
+      {/* Starting and stopping */}
       <section style={{ backgroundColor: colors.primaryLight }}>
         <div className="container-xl px-4" style={{ paddingTop: '3.5rem', paddingBottom: '3.5rem' }}>
           <div className="row justify-content-center">
             <div className="col-12 col-lg-8">
-              <h2 className="fw-bold mb-3" style={{ fontSize: '1.5rem', color: colors.textPrimary, letterSpacing: '-0.3px' }}>
-                {t('public.about.honestTitle')}
-              </h2>
-              {HONEST_KEYS.map((k, i) => (
-                <p key={k} className={i === HONEST_KEYS.length - 1 ? 'mb-0' : 'mb-3'} style={{ color: colors.textSecondary, fontSize: '1.02rem', lineHeight: 1.75 }}>
-                  {t(`public.about.${k}`)}
-                </p>
-              ))}
+              {BAND_SECTIONS.map((k, i) => <AboutSection key={k} id={k} last={i === BAND_SECTIONS.length - 1} />)}
             </div>
           </div>
         </div>

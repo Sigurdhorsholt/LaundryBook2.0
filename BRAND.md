@@ -1,38 +1,31 @@
 # LaundryBook - tone & baggrund
 
 Denne fil er kilden til, hvordan LaundryBook lyder, og hvad der er *sandt* om produktet.
-Al tekst (marketing, About-side, UI-mikrotekst) skal kunne holdes op mod den her.
-Facts er bekræftet med grundlæggeren - der digtes ikke nyt til.
+Al tekst (hjemmeside, e-mails, UI-mikrotekst) skal kunne holdes op mod den her - på dansk og
+engelsk. Facts er bekræftet med grundlæggeren - der digtes ikke nyt til.
 
 ---
 
 ## 1. Hvad LaundryBook er (én linje)
 
 Digital vaskebooking til danske ejer- og andelsboligforeninger: beboerne booker vasketider
-hjemmefra, og bestyrelsen har overblikket - uden sedler i kælderen.
+hjemmefra, og administratoren har overblikket - uden sedler i kælderen.
 
 ---
 
 ## 2. Den sande baggrund
 
-Brug det her som råstof til About-siden. Det er sandt - intet af det er opdigtet.
+Til internt brug. Historien bruges **ikke** som fortælling på siden (se §4) - men den er sand,
+og intet af det er opdigtet.
 
 - **Gnisten:** Grundlæggeren bor på 4. sal og måtte gå hele vejen ned i kælderen bare for at
-  se, om der var en ledig vasketid - som regel for at opdage, at dagen var booket. Så op igen,
-  nogle gange med vasketøjet stadig under armen, for at booke en tid dagen efter. Man kunne
-  ikke booke hjemmefra, og en travl hverdag blev gang på gang lagt om efter vaskeskemaet.
-  Det burde man kunne klare fra sofaen.
-- **Hvordan:** Bygget om aftenen ved siden af et fuldtidsarbejde, som hobbyprojekt, over et par
-  måneder.
+  se, om der var en ledig vasketid - som regel for at opdage, at dagen var booket. Man kunne
+  ikke booke hjemmefra.
+- **Hvordan:** Bygget om aftenen ved siden af et fuldtidsarbejde, over et par måneder.
 - **Hvor:** Lavet i **Aarhus**. (IKKE København - den gamle tekst tog fejl.)
-- **Hvem:** Ét menneske (Sigurd). I teksten bruger vi et redaktionelt "vi", men About-siden må
-  gerne være ærlig om, at det er et lille soloprojekt.
-- **Status:** Før-lancering. **Ingen kunder endnu.** Systemet virker og bruges kan testes, men
-  der er ingen rigtige foreninger på det endnu.
-- **Mangler før rigtig drift:** GDPR-erklæring, rigtige brugere, mail-opsætning der ikke helt
-  spiller endnu. Systemet i sig selv virker.
-- **Navnet:** "LaundryBook" blev valgt lidt tilfældigt - det klinger godt og beskriver præcis,
-  hvad man bruger det til. Engelsk navn på ellers dansk tekst er helt fint.
+- **Hvem:** Ét menneske (Sigurd). I teksten bruger vi et redaktionelt "vi".
+- **Status:** Før-lancering. **Ingen kunder endnu.**
+- **Navnet:** "LaundryBook" - engelsk navn på ellers dansk tekst er helt fint.
 
 ---
 
@@ -41,61 +34,79 @@ Brug det her som råstof til About-siden. Det er sandt - intet af det er opdigte
 | Emne | Sandt | I teksten |
 |---|---|---|
 | Målgruppe | Danske **ejer- og andelsboligforeninger** | Sig "ejer- og andelsboligforeninger", ikke kun "ejerforeninger" |
-| Oprindelse | **Aarhus** | "Lavet i Aarhus" (ret alle "København"-referencer) |
-| Hold | Solo (Sigurd) | Redaktionelt "vi"; About må sige det er lille |
-| Pris | **Ikke fastlagt / ikke offentlig** | "Skriv til os for en pris" - aldrig et tal |
+| Aktører i produktet | **Administratoren** (ofte en beboer, nogle gange en ekstern administrator) og **beboerne** | Aldrig "bestyrelsen" som en, der gør noget i systemet |
+| Oprindelse | **Aarhus** | "Lavet i Aarhus" |
+| Hold | Solo (Sigurd) | Redaktionelt "vi" |
+| Pris | **Ikke offentlig** | "Skriv til os for en pris" - aldrig et tal på siden |
 | Kontakt | sigurd-horsholt@hotmail.com | Den rigtige, offentlige adresse |
-| Platform | **Kun browser, ingen app** | "Virker i browseren - ingen app". Kan lægges på hjemmeskærmen |
-| Aktivering | **Manuel** af grundlæggeren (anti-misbrug) | "Vi aktiverer foreningen, når vi har set den". Man kan teste uden, men ikke oprette en rigtig forening med beboere før godkendelse |
+| Platform | **Kun browser, ingen app** | "Kører i browseren. Ingen app." Kan lægges på hjemmeskærmen |
+| Adresser | Siden på **laundrybook.dk**, appen på **app.laundrybook.dk** | "Log ind" fører til appen |
+| Aktivering | **Manuel** af grundlæggeren (anti-misbrug) | "Vi aktiverer foreningen, når vi har set den" |
 | Status | Før-lancering, ingen kunder | **Ingen** brugertal, cases, anmeldelser eller "X foreninger bruger…" |
 
 ---
 
-## 4. Tonen: let, ærlig og jordnær - med et glimt i øjet
+## 4. Tonen: enkel, saglig og rolig
 
-Vi lyder som en flink nabo, der har bygget noget nyttigt - ikke som et marketingbureau.
+Køberen er en forening, der beslutter på vegne af en hel ejendom. Den læser kritisk og vil vide,
+hvad det koster af tid, penge og besvær - og om data behandles ordentligt. Vi lyder derfor
+kompetente og rolige - ikke som en reklame og ikke som en flink nabo med en sjov historie.
 
-**Bær-principper**
-1. **Konkret frem for abstrakt.** Tal om trapper, vasketøj under armen og en travl tirsdag -
-   ikke om "friktion", "oplevelser" eller "løsninger".
-2. **Glimt i øjet.** Vaskerum er kedeligt, og det må vi godt indrømme. Tør, dansk humor -
-   ikke amerikansk pep.
-3. **Ærlig.** Vi er nye. Vi praler ikke, og vi opfinder ikke tal, kunder eller ros.
-4. **Kort og aktivt.** Hellere en sætning man kunne sige højt til en nabo end en brochure.
-5. **Mennesker, ikke "kunder".** Vi taler til beboere og bestyrelse - ikke til "brugere" eller
-   "et marked".
+**Hvem læser hvad**
+
+| Læser | Hvor | Tiltale |
+|---|---|---|
+| **Foreningen, der overvejer det** (ofte den beboer, der skal administrere det, nogle gange en ekstern administrator) | Hjemmesiden, oprettelse | **I / jeres forening** |
+| **Administratoren** | Admin-sider, admin-mails | **du** |
+| **Beboerne** | Booking, Ejendommen, Min side, invitationsmails | **du** |
+
+**Principper**
+1. **Sig hvad det gør, ikke hvordan det føles.** "Book og aflys hjemmefra" - ikke "Mindre bøvl".
+2. **Korte sætninger, én pointe hver.** Et punktum er bedre end en tankestreg eller et semikolon.
+3. **Konkret.** Brug facts, vi kan stå inde for: "Kører i browseren. Ingen app."
+4. **Kun det, der findes.** Ingen funktioner, tal eller løfter, produktet ikke lever op til.
+5. **Engelsk følger de samme regler** og de samme ord.
 
 ---
 
 ## 5. Gør / gør ikke
 
 **GØR**
-- Læn dig op ad den rigtige historie (trapperne, kælderen, booke hjemmefra).
-- Sig tingene ligeud: "Book fra sofaen. Slip for turen ned i kælderen."
-- Brug tør humor: "Lavet i Aarhus, om aftenen, af én der var træt af trapper."
+- Knapper starter med et udsagnsord: Book tiden, Aflys, Gem, Kassér ændringer.
+- Fejl siger, hvad der skete, og hvad man kan gøre: "Tiden er lige blevet booket af en anden.
+  Vælg en anden tid." Giv aldrig læseren skylden.
+- Skriv til foreningen om det, en forening tænker på: tid, pris, opsætning, data og hvordan man
+  stopper igen.
 
 **GØR IKKE**
-- ❌ **"Det rolige sted" / ro / zen / åndehul.** Det er en hjemmeside, ikke et chatforum eller
-   en meditationsapp. Cheesy. Helt bandlyst.
-- ❌ **Engelske oversættelseslån:** "er historie", "lave en stor ting ud af det",
-   "fjerner friktion", "her er hvad det betyder i praksis", "drevet af omtanke for…".
+- ❌ **Jokes, ordspil og "glimt i øjet":** ingen "fire sale oppe", "uden drama" eller
+  "vaskerummet kender dig efterhånden".
+- ❌ **Personlige historier og retoriske spørgsmål:** ingen "Kender du det?".
+- ❌ **Udråbstegn og pep:** ingen "godt gået!".
+- ❌ **"Det rolige sted" / ro / zen / åndehul.** Det er et bookingsystem.
+- ❌ **Engelske oversættelseslån:** "er historie", "fjerner friktion", "her er hvad det betyder
+  i praksis", "drevet af omtanke for…".
 - ❌ **Påstande vi ikke kan stå inde for:** brugertal, "hundredvis af foreninger",
-   "markedets bedste", anmeldelser, cases. Vi har ingen kunder endnu.
+  "markedets bedste", anmeldelser, cases.
 - ❌ **Buzzwords:** "oplevelse", "friktion", "synergi", "løsning" (med mindre bogstaveligt).
-- ❌ **Overdreven begejstring / pep:** "godt gået!", masser af udråbstegn.
 
 ---
 
 ## 6. Ordvalg (fast konsistens)
 
-- **aflys / aflysning** - aldrig "afbestil"
-- **adgangskode** - aldrig "password"
-- **Udskriv** - aldrig "print"
-- **Indlæser…** (med rigtig ellipsis …) - aldrig "Henter..."
-- **pr.** - aldrig "per"
-- **book / booke / booking** er OK - det er indarbejdet dansk her
-- **vasketid / vasketider** - aldrig "tidsplads" (det lyder oversat fra "time slot")
-- **vaskerum**, **forening**, **bestyrelse**, **beboer**
+| Brug | Ikke |
+|---|---|
+| **vasketid / vasketider** (det beboeren booker, og det administratoren sætter op) | tidsplads, slot, vaskeslot, booking-tid |
+| **vaskerum**, **maskine** | lokale (undtagen admin-siden "Lokaler & Maskiner") |
+| **forening** (kunden), **ejendom** (bygningen i appen) | kompleks, opgang |
+| **administrator**, **beboer** | bestyrelsen, bruger (undtagen admins brugerliste) |
+| **aflys / aflysning** | afbestil, annullér, slet |
+| **adgangskode** | password |
+| **Udskriv** | print |
+| **Indlæser…** (med rigtig ellipsis …) | Henter... |
+| **pr.** | per |
+
+**book / booke / booking** er OK - det er indarbejdet dansk her.
 
 **Tegnsætning**
 - **Ingen lange eller korte tankestreger** (em-dash / en-dash). Brug almindelig bindestreg "-"
@@ -105,38 +116,17 @@ Vi lyder som en flink nabo, der har bygget noget nyttigt - ikke som et marketing
 
 ---
 
-## 7. Eksempler på tonen (udkast - skal godkendes før de lægges i da.json)
+## 7. Før → efter
 
-Hero-undertekst:
-> Slut med at gå i kælderen for at se, om der er en ledig vasketid. Med LaundryBook booker
-> beboerne hjemmefra, og bestyrelsen har styr på resten. Ingen sedler, ingen nøgler, ingen
-> tur ned ad trappen forgæves.
+| Før | Efter |
+|---|---|
+| Kender du det? Du skal vaske, men først må du hele vejen ned i kælderen … | Med en papirliste skal beboerne ned i kælderen for at se, om der er en ledig tid. |
+| Mindre bøvl for bestyrelsen | Sæt vaskerum og vasketider op én gang |
+| Book fra sofaen, aflys når planerne skifter | Book og aflys hjemmefra |
+| Ingen dobbeltbookinger - systemet tillader det ikke | En vasketid kan kun bookes af én beboer |
+| Det problem oplevede vi selv - så derfor byggede vi LaundryBook. | (About-siden fortæller i stedet, hvem der står bag, hvordan data behandles, og hvordan man starter og stopper) |
+| Du har nu booket 5 gange - vaskerummet kender dig efterhånden. | *(fjernet - det er ikke systeminformation)* |
 
-Værdi-undertekst:
-> Bookingsedlen i kælderen har haft sin tid. LaundryBook giver beboerne et sted at finde en
-> ledig tid - og bestyrelsen overblikket, uden en masse besvær.
-
-Features-overskrift:
-> Vaskerummet skal ikke fylde mere end det behøver
-
-Features-undertekst:
-> LaundryBook løser én lille, men bøvlet del af det at bo sammen: vasketiderne. Sådan gør det
-> i praksis:
-
-Overblik-overskrift (var "Rolig statistik…"):
-> Tal til generalforsamlingen
-
-Footer-tagline (var "…drevet af omtanke…"):
-> Digital vaskebooking til danske ejer- og andelsboligforeninger. Lavet i Aarhus, om aftenen,
-> af én der var træt af trapper.
-
-About-side (den rigtige tone):
-> Kender du det? Du skal vaske, men først må du hele vejen ned i kælderen for at se, om der
-> overhovedet er en ledig tid. Som regel er der ikke - dagen er booket. Det problem oplevede vi
-> selv - så derfor byggede vi LaundryBook.
-
-**Vigtigt om ærlighed på offentlige sider:** Facts skal være sande (aldrig opdigtede kunder,
-tal eller ros), MEN vi hænger ikke vores svagheder til skue. About-siden skal *ikke* fortælle,
-at det er ét menneske, et hobbyprojekt, eller at der endnu ingen kunder er / at ting mangler.
-Vi bruger et selvsikkert redaktionelt "vi" og fortæller, hvad LaundryBook gør godt - ikke hvad
-det endnu ikke kan. Den fulde, ærlige baggrund lever her i BRAND.md, ikke på hjemmesiden.
+**Om ærlighed på offentlige sider:** Facts skal være sande (aldrig opdigtede kunder, tal eller
+ros), MEN vi hænger ikke vores svagheder til skue. Vi bruger et selvsikkert redaktionelt "vi" og
+fortæller, hvad LaundryBook gør - ikke hvad det endnu ikke kan.

@@ -96,11 +96,6 @@ export function WeekBookingView({ booking: lb }: Props) {
         </div>
       )}
       <div style={{ padding: '6px 8px 8px' }}>{body()}</div>
-      {lb.milestoneCount !== null && (
-        <p style={{ margin: 0, padding: '8px 20px', borderTop: `1px solid ${colors.borderRow}`, fontSize: '0.78rem', color: colors.textSecondary, textAlign: 'center' }}>
-          {t('laundryPage.milestone', { count: lb.milestoneCount })}
-        </p>
-      )}
       {lb.weekSlot && openSlot && anchor && (
         <WeekSlotPopover
           key={`${lb.weekSlot.slotId}|${lb.weekSlot.date}`}
