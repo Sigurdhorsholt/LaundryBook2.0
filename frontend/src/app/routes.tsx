@@ -14,6 +14,7 @@ const FaqPage = lazy(() => import('../pages/public/FaqPage').then((m) => ({ defa
 const AboutPage = lazy(() => import('../pages/public/AboutPage').then((m) => ({ default: m.AboutPage })))
 const PrivacyPage = lazy(() => import('../pages/public/PrivacyPage').then((m) => ({ default: m.PrivacyPage })))
 const TermsPage = lazy(() => import('../pages/public/TermsPage').then((m) => ({ default: m.TermsPage })))
+const DpaPage = lazy(() => import('../pages/public/DpaPage').then((m) => ({ default: m.DpaPage })))
 const GetStartedPage = lazy(() => import('../pages/public/GetStartedPage').then((m) => ({ default: m.GetStartedPage })))
 const MyPage = lazy(() => import('../pages/MyPage').then((m) => ({ default: m.MyPage })))
 const PropertyInfoPage = lazy(() => import('../pages/PropertyInfoPage').then((m) => ({ default: m.PropertyInfoPage })))
@@ -54,6 +55,7 @@ export const routes: AppRoute[] = [
   { path: '/om',        component: AboutPage,     layout: 'bare', protected: false },
   { path: '/privatliv', component: PrivacyPage,   layout: 'bare', protected: false, host: 'both' },
   { path: '/vilkaar',   component: TermsPage,     layout: 'bare', protected: false, host: 'both' },
+  { path: '/databehandleraftale', component: DpaPage, layout: 'bare', protected: false, host: 'both' },
   { path: '/get-started', component: GetStartedPage, layout: 'bare', protected: false },
   { path: '/signup',    component: SignupPage,    layout: 'bare', protected: false, host: 'app' },
   { path: '/join',      component: JoinPage,      layout: 'bare', protected: false, host: 'app' },

@@ -121,6 +121,13 @@ export function formatTimestampDate(iso: string): string {
   return d.getFullYear() === new Date().getFullYear() ? date : `${date} ${d.getFullYear()}`
 }
 
+// A calendar date with the year, e.g. "11. oktober 2026", for dates that aren't about this week
+export function formatDateLong(dateStr: string): string {
+  const [y, m, d] = dateStr.split('-').map(Number)
+  return new Date(y ?? 2025, (m ?? 1) - 1, d ?? 1)
+    .toLocaleDateString(activeLang() === 'en' ? 'en-GB' : 'da-DK', { day: 'numeric', month: 'long', year: 'numeric' })
+}
+
 export function formatDayMonth(dateStr: string): string {
   const parts = dateStr.split('-').map(Number)
   const lang = activeLang()

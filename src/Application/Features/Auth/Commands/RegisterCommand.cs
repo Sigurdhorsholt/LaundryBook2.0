@@ -27,7 +27,7 @@ public class RegisterCommandValidator : AbstractValidator<RegisterCommand>
         RuleFor(x => x.LastName).NotEmpty().MaximumLength(100);
         RuleFor(x => x.PropertyName).NotEmpty().MaximumLength(200);
         RuleFor(x => x.PropertyAddress).NotEmpty().MaximumLength(500);
-        RuleFor(x => x.AcceptedTerms).Equal(true).WithMessage("Du skal acceptere vilkårene og privatlivspolitikken.");
+        RuleFor(x => x.AcceptedTerms).Equal(true).WithMessage("Du skal acceptere vilkårene og databehandleraftalen.");
     }
 }
 
@@ -60,7 +60,8 @@ public class RegisterCommandHandler(
             user.LastName = request.LastName;
         }
 
-        user.TermsAcceptedAt = DateTime.UtcNow;
+        var now = DateTime.UtcNow;
+        user.TermsAcceptedAt = now;
         user.TermsVersion = TermsPolicy.CurrentVersion;
 
         var property = new Property
@@ -68,6 +69,10 @@ public class RegisterCommandHandler(
             Name = request.PropertyName,
             Address = request.PropertyAddress,
             IsActive = false,
+            // The signup checkbox accepts the terms and, on the association's behalf, the data processing agreement
+            DpaAcceptedAt = now,
+            DpaAcceptedByUserId = user.Id,
+            DpaVersion = TermsPolicy.CurrentVersion,
             Settings = new ComplexSettings
             {
                 BookingMode = BookingMode.BookSpecificMachine,

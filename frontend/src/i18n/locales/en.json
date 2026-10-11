@@ -10,7 +10,9 @@
     "cancel": "Cancel",
     "loading": "Loading…",
     "genericError": "Something went wrong. Please try again.",
-    "acceptTerms": "I accept the <terms>terms</terms> and <privacy>privacy policy</privacy>"
+    "acceptTerms": "I accept the <terms>terms</terms>.",
+    "acceptTermsAndDpa": "I accept the <terms>terms</terms> and the <dpa>data processing agreement</dpa> on behalf of the association, and I confirm that I may enter into agreements for it.",
+    "acceptNotes": "The terms limit LaundryBook's <liability>liability</liability>. Read how your data is handled in the <privacy>privacy policy</privacy>."
   },
   "errorBoundary": {
     "title": "Something went wrong",
@@ -26,7 +28,8 @@
     "about": { "title": "About LaundryBook", "description": "Who is behind LaundryBook, how data is handled, and how an association starts and stops." },
     "getStarted": { "title": "Get started - LaundryBook", "description": "Set up your association on LaundryBook: account, laundry rooms, time slots and invitations for residents." },
     "privacy": { "title": "Privacy policy - LaundryBook", "description": "How LaundryBook processes personal data." },
-    "terms": { "title": "Terms - LaundryBook", "description": "Terms of use for LaundryBook." }
+    "terms": { "title": "Terms - LaundryBook", "description": "Terms of use for LaundryBook." },
+    "dpa": { "title": "Data processing agreement - LaundryBook", "description": "The data processing agreement between the association and LaundryBook." }
   },
   "roles": {
     "resident": "Resident",
@@ -1009,7 +1012,8 @@
         "faq": "FAQ",
         "about": "About us",
         "privacy": "Privacy policy",
-        "terms": "Terms"
+        "terms": "Terms",
+        "dpa": "Data processing agreement"
       },
       "login": "Log in",
       "getStarted": "Get started",
@@ -1227,48 +1231,63 @@
     "privacy": {
       "eyebrow": "Legal",
       "title": "Privacy policy",
-      "draftNotice": "Draft - to be legally reviewed before LaundryBook goes live.",
-      "intro": "How LaundryBook processes personal data. The policy explains what information we process, why, and what rights you have.",
+      "intro": "This explains which personal data is processed when you use LaundryBook, who is responsible, and what your rights are. The privacy policy is information for you. You do not need to accept it. If the Danish and English versions differ, the Danish version applies.",
       "sections": {
-        "controller": {
-          "heading": "Data responsibility",
-          "body": "Your housing association is the data controller for the personal data processed in LaundryBook. LaundryBook is the data processor and only processes information according to the association's instructions and a data processing agreement."
+        "roles": {
+          "heading": "Who is responsible",
+          "body": "When you use LaundryBook as a resident or administrator in an association, two parties are responsible:\n• Your association is the data controller for the data about you as a resident and about your bookings. You can see the association and its administrator under Property in the app.\n• LaundryBook is the association's data processor and only processes that data on the association's instructions, as set out in the data processing agreement.\nLaundryBook is itself the controller for your login account, for security and troubleshooting, for support and for invoicing the association."
+        },
+        "operator": {
+          "heading": "Who runs LaundryBook",
+          "body": "LaundryBook is run by {{name}}, {{address}}, CVR {{cvr}}. Email: {{email}}."
         },
         "data": {
-          "heading": "What information we process",
-          "body": "We process your name, email address, possibly apartment number, as well as your bookings and your role in the association. Passwords are handled by our login provider and are not stored by us in plain text."
+          "heading": "What data",
+          "body": "• Name and email address. These are needed to create an account.\n• Apartment number, if given. This is optional.\n• Your role, and which associations you belong to.\n• Your bookings: date, time, laundry room and machine if any.\n• When you last used the app (rounded to 15 minutes), and when you accepted the terms.\n• A log of changes: who did what, and when.\n• Technical error reports without name, email or IP address.\nYour password is handled by our login provider, Google Firebase. LaundryBook never sees it."
         },
-        "purpose": {
-          "heading": "Purpose",
-          "body": "The information is used to provide access to the system, manage laundry bookings and send operational emails such as invitations and booking-related information."
+        "association": {
+          "heading": "The association's processing",
+          "body": "The association uses the data to give residents access to the laundry room, share out the laundry times and give the administrator an overview. The legal basis is the association's legitimate interest in running a shared laundry room (GDPR Art. 6(1)(f)). The administrator can see residents' names, apartment numbers and bookings. Other residents see what the association has chosen under booking visibility."
         },
-        "legalBasis": {
-          "heading": "Legal basis",
-          "body": "The processing takes place in order to provide the service to the association and its residents. [Insert final legal basis after legal review.]"
+        "own": {
+          "heading": "LaundryBook's own processing",
+          "body": "LaundryBook processes data for its own purposes where this is needed to run the service:\n• Login and account security: your login account and the log of changes (Art. 6(1)(f): our legitimate interest in a secure service).\n• Troubleshooting: technical error reports without personal data (Art. 6(1)(f)).\n• Support: when you write to us (Art. 6(1)(f)).\n• Invoicing the association: the contact person's name and email, and the invoices, which we must keep under the Danish Bookkeeping Act (Art. 6(1)(c)).\nWe do not use the data for marketing, do not sell it, and make no profiling or automated decisions."
         },
-        "subprocessors": {
-          "heading": "Sub-processors",
-          "body": "We use selected suppliers for hosting, database, login and email delivery. Data is hosted in the EU. An updated list of sub-processors is provided to the association. [Insert list.]"
+        "recipients": {
+          "heading": "Who the data is shared with",
+          "body": "We use these sub-processors:\n• Render (Render Services, Inc.): hosting of the app, the server and the database. Servers in the USA (Oregon).\n• Google Firebase Authentication (Google LLC): login. Processes your email and your password in encrypted form. Runs only from data centres in the USA.\n• Mailgun (Sinch): sending emails such as invitations and password resets. EU region.\n• Sentry (Functional Software, Inc.): technical error reports. Stored in the EU (Frankfurt). Some account data at Sentry is kept in the USA.\nThe data is not passed on to anyone else unless the law requires it."
+        },
+        "transfers": {
+          "heading": "Transfers to the USA",
+          "body": "Render and Google process data in the USA. Both are certified under the EU-US Data Privacy Framework, which the European Commission has approved in an adequacy decision. Their data processing agreements also include the European Commission's standard contractual clauses. Write to us if you want a copy."
         },
         "retention": {
-          "heading": "Retention",
-          "body": "Information is stored as long as the association uses LaundryBook and your account is active. Upon deletion of the account or termination of the agreement, the information is deleted within [insert deadline]."
+          "heading": "How long data is kept",
+          "body": "• Your account, memberships and bookings: until you delete the account, or the association stops using LaundryBook.\n• If you delete your account, it is deleted straight away together with your bookings and memberships.\n• If an association stops, we delete the association's data within 30 days.\n• The log of changes: 365 days. It can contain names and email addresses.\n• Error reports: at most 90 days.\n• Database backups: deleted automatically within 30 days.\n• Invoices to the association: 5 years after the end of the financial year (Danish Bookkeeping Act)."
         },
         "rights": {
           "heading": "Your rights",
-          "body": "You have the right to access, rectification, erasure, restriction, objection and data portability. Requests regarding your rights should be directed to your association as data controller. You can complain to the Danish Data Protection Agency."
+          "body": "You have the right to access your data, have it corrected or deleted, have processing restricted, and receive it in a portable format. Under My page you can download your data and delete your account yourself. Other requests can go to your association or to us at {{email}}. We help the association reply."
+        },
+        "objection": {
+          "heading": "Right to object",
+          "body": "Where processing is based on a legitimate interest (Art. 6(1)(f)), you have the right to object to it on grounds relating to your particular situation. Write to your association or to us at {{email}}."
+        },
+        "complaint": {
+          "heading": "Complaints",
+          "body": "You can complain to the Danish Data Protection Agency (Datatilsynet), Carl Jacobsens Vej 35, 2500 Valby, www.datatilsynet.dk."
+        },
+        "cookies": {
+          "heading": "Cookies and browser storage",
+          "body": "LaundryBook only stores what is technically necessary to provide the service in your browser:\n• A login cookie that keeps you logged in. It expires after 8 hours.\n• The login provider (Google Firebase) stores your login state.\n• The browser remembers your chosen language, the association you selected, and whether you have seen the house rules.\nWe use no cookies for statistics, marketing or tracking. That is why we do not ask for cookie consent."
         },
         "security": {
           "heading": "Security",
-          "body": "Data is transmitted encrypted (HTTPS), and access is controlled via roles, so residents only see their own association's information."
-        },
-        "cookies": {
-          "heading": "Cookies",
-          "body": "We only use the cookies necessary to keep you logged in. [Updated if statistics or analytics tools are added.]"
+          "body": "All traffic is encrypted (HTTPS). The login cookie can't be read by scripts on the page. Residents only see their own association's data, and changes are logged. If we discover a security breach, we tell the association without undue delay so it can report it to the Danish Data Protection Agency."
         },
         "changes": {
           "heading": "Changes",
-          "body": "We may update this privacy policy. Significant changes are notified to the association."
+          "body": "If we change the privacy policy materially, we tell you by email or in the app before the change takes effect. The date at the top shows the current version."
         },
         "contact": {
           "heading": "Contact",
@@ -1279,50 +1298,129 @@
     "terms": {
       "eyebrow": "Legal",
       "title": "Terms",
-      "draftNotice": "Draft - to be legally reviewed before LaundryBook goes live.",
-      "intro": "These terms apply to the use of LaundryBook.",
+      "intro": "These terms apply to everyone who uses LaundryBook: associations, administrators and residents. If the Danish and English versions differ, the Danish version applies.",
       "sections": {
-        "acceptance": {
-          "heading": "Acceptance of terms",
-          "body": "By creating an account or using LaundryBook, you accept these terms. Read them through before you sign up."
+        "parties": {
+          "heading": "The agreement",
+          "body": "The agreement is between {{name}}, {{address}}, CVR {{cvr}} (LaundryBook) and the association that uses LaundryBook. Residents and administrators get access through the association and use LaundryBook on the same terms."
+        },
+        "conclusion": {
+          "heading": "How the agreement is made",
+          "body": "• An association is created by filling in the form, ticking the box for the terms and the data processing agreement, and pressing Create association. The person creating it confirms they may enter into agreements on the association's behalf.\n• Residents sign up through an invitation from the association and tick the box for the terms.\n• Before you sign up, you can correct every field. Afterwards you can correct your details under My page.\n• We record when you accepted, and which version of the terms it was. You can save or print the terms from this page.\n• The agreement is made in Danish."
         },
         "service": {
           "heading": "The service",
-          "body": "LaundryBook is a digital booking system for laundry rooms in Danish homeowner and cooperative housing associations. The service is delivered via the browser, without an app."
+          "body": "LaundryBook is a booking system for laundry rooms in Danish homeowner and cooperative housing associations. It runs in the browser. Residents book and cancel laundry times, and the administrator sets up laundry rooms, machines and laundry times and invites the residents."
+        },
+        "age": {
+          "heading": "Age",
+          "body": "You must be 18 or over to create an account. If you are younger, a parent or guardian must accept the terms for you."
         },
         "signupApproval": {
-          "heading": "Sign-up and approval",
-          "body": "Anyone can test the system, but an association is only activated once we have approved it. This ensures that only real associations are created with residents."
+          "heading": "Creation and approval",
+          "body": "A new association is activated once we have seen it. Until then the administrator can set up laundry rooms but cannot invite residents. We may decline an association that does not appear to be a real association."
+        },
+        "association": {
+          "heading": "The association's responsibility",
+          "body": "The association is the data controller for its residents' data, and the data processing agreement applies between the association and LaundryBook. The association makes sure that only residents and administrators who belong to it get access, and that the data is kept up to date, for example when someone moves out."
         },
         "userResponsibility": {
           "heading": "Your responsibility",
-          "body": "You are responsible for providing correct information, for activity on your account and for not misusing the system or bothering other residents."
+          "body": "You give correct details, keep your password safe, and don't use LaundryBook to bother others or get around the association's rules. We may close an account that is misused."
         },
         "payment": {
-          "heading": "Payment",
-          "body": "Price and payment for an active association are agreed separately with the association. [Insert final payment terms once the pricing model is set.]"
+          "heading": "Price and payment",
+          "body": "Residents do not pay to use LaundryBook. The association pays the price agreed when it was created. Payment is made in advance per month or per year against an invoice. There is no payment in the app."
         },
         "availability": {
-          "heading": "Availability and liability",
-          "body": "We strive for high uptime, but the service is delivered as is, without a guarantee of uninterrupted operation. We are not liable for indirect losses. [To be specified legally.]"
+          "heading": "Operation",
+          "body": "We work to keep LaundryBook running at all times, but cannot promise uninterrupted operation. We announce planned maintenance when possible."
+        },
+        "liability": {
+          "heading": "Liability",
+          "body": "LaundryBook is not liable for indirect losses, such as a missed laundry time, lost earnings, or damage to laundry or machines. Towards the association, LaundryBook's total liability is limited to the amount the association has paid in the last 12 months. These limits do not apply if the loss is caused by intent or gross negligence, and they do not limit rights you have under mandatory law."
         },
         "termination": {
           "heading": "Termination",
-          "body": "The association can stop using LaundryBook at any time. Upon termination, access is closed, and data is processed as described in the privacy policy."
+          "body": "The association can end the agreement at any time by writing to us. The agreement runs to the end of the paid period. LaundryBook can end it with 30 days' notice, or immediately in case of a material breach. After it ends, we delete the association's data within 30 days. Residents can always delete their account under My page."
         },
         "changes": {
-          "heading": "Changes to terms",
-          "body": "We may update these terms. Significant changes are notified to the association."
+          "heading": "Changes to the terms",
+          "body": "We may change the terms, for example if the service or the law changes. We announce material changes by email at least 30 days before they take effect, and ask for your acceptance the next time you log in. If you do not want the new terms, you can end the agreement before they take effect."
         },
         "law": {
-          "heading": "Governing law",
-          "body": "The terms are governed by Danish law with the Danish courts as venue."
+          "heading": "Governing law and complaints",
+          "body": "The terms are governed by Danish law, and disputes are settled by the Danish courts. If you are a consumer, you can complain through Nævnenes Hus at www.naevneneshus.dk."
         },
         "contact": {
           "heading": "Contact",
           "body": "Questions about the terms? Write to {{email}}."
         }
       }
+    },
+    "dpa": {
+      "eyebrow": "Legal",
+      "title": "Data processing agreement",
+      "intro": "This agreement applies between the association as data controller and LaundryBook as data processor (GDPR Art. 28). It is accepted by the association's administrator when the association is created. If the Danish and English versions differ, the Danish version applies.",
+      "sections": {
+        "parties": {
+          "heading": "Parties",
+          "body": "Controller: the association created in LaundryBook, represented by the administrator who created it.\nProcessor: {{name}}, {{address}}, CVR {{cvr}}, {{email}}."
+        },
+        "clauses": {
+          "heading": "Standard contractual clauses",
+          "body": "The agreement consists of the Danish Data Protection Agency's standard contractual clauses for data processing agreements (Art. 28(8)), unchanged, completed with the appendices below. The clauses can be downloaded from the agency at www.datatilsynet.dk/regler-og-vejledning/blanketter-og-skabeloner. The optional clause on third-party rights if the processor goes bankrupt is not selected."
+        },
+        "subject": {
+          "heading": "Appendix A: Purpose and nature of the processing",
+          "body": "The purpose is to run a booking system for the association's laundry rooms: give residents access, record bookings, send invitations and service emails, and give the administrator an overview. The processing consists of collection, storage, display, alteration, sending emails and deletion."
+        },
+        "categories": {
+          "heading": "Appendix A: Data and data subjects",
+          "body": "Personal data: name, email, apartment number, role, bookings (date, time, laundry room and machine), log of changes, time of last use and acceptance of the terms. No special categories of data (Art. 9) and no CPR numbers.\nData subjects: the association's residents and administrators.\nDuration: as long as the association uses LaundryBook."
+        },
+        "instructions": {
+          "heading": "Appendix C: Instructions",
+          "body": "The processor only processes the data to provide LaundryBook to the association, as described in the terms and in Appendix A. The association's administrator gives ongoing instructions through the settings in LaundryBook, such as booking visibility and who is invited."
+        },
+        "security": {
+          "heading": "Appendix C: Security",
+          "body": "• All traffic is encrypted with HTTPS.\n• Passwords are handled by Google Firebase and are not stored by the processor.\n• Login uses a cookie that can't be read by scripts.\n• Access is separated by association and role.\n• All changes are logged with user and time and kept for 365 days.\n• Error reports are sent without name, email and IP address.\n• Only the processor has access to operations and the database."
+        },
+        "subprocessors": {
+          "heading": "Appendix B: Sub-processors",
+          "body": "• Render (Render Services, Inc.): hosting of the app, the server and the database. Servers in the USA (Oregon).\n• Google Firebase Authentication (Google LLC): login. Processes your email and your password in encrypted form. Runs only from data centres in the USA.\n• Mailgun (Sinch): sending emails such as invitations and password resets. EU region.\n• Sentry (Functional Software, Inc.): technical error reports. Stored in the EU (Frankfurt). Some account data at Sentry is kept in the USA.\nThe association gives general authorisation for sub-processors. New or replaced sub-processors are announced by email to the administrator at least 10 days in advance, so the association can object."
+        },
+        "transfers": {
+          "heading": "Appendix C: Transfers to third countries",
+          "body": "The association instructs transfers to the USA to Render Services, Inc. and Google LLC, both certified under the EU-US Data Privacy Framework. Their data processing agreements also include the European Commission's standard contractual clauses."
+        },
+        "assistance": {
+          "heading": "Appendix C: Assistance to the association",
+          "body": "Residents can download and delete their own data under My page. The processor forwards other requests from data subjects to the association and helps answer them."
+        },
+        "breach": {
+          "heading": "Appendix C: Personal data breaches",
+          "body": "The processor notifies the association's administrator by email without undue delay and no later than 48 hours after becoming aware of a breach, with the information the association needs to report the breach to the Danish Data Protection Agency."
+        },
+        "deletion": {
+          "heading": "Appendix C: Deletion",
+          "body": "When the agreement ends, the processor deletes the association's data within 30 days, unless the association first asks to receive it. The log of changes is deleted continuously after 365 days. Backups are deleted automatically within 30 days."
+        },
+        "audit": {
+          "heading": "Appendix C: Supervision",
+          "body": "On request, the processor gives the association a written account of how the agreement is complied with. The association may have an inspection carried out by arrangement and at its own cost."
+        },
+        "term": {
+          "heading": "Appendix D: Other matters",
+          "body": "The agreement applies as long as the association uses LaundryBook. Liability follows the terms. Changes to the agreement are sent to the administrator by email and require the association's approval."
+        }
+      }
+    },
+    "legal": {
+      "draftNotice": "Draft: the company details are missing, and the text should be reviewed by a lawyer before LaundryBook launches.",
+      "version": "Effective from {{date}}",
+      "print": "Print"
     }
   }
 }

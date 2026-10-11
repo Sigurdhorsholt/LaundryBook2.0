@@ -1,22 +1,40 @@
+import { useEffect } from 'react'
+import { useLocation } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { PublicLayout } from './PublicLayout'
 import { PageMeta } from '../../shared/PageMeta'
 import { colors } from '../../shared/theme'
+import { LEGAL_ENTITY, LEGAL_VERSION } from '../../shared/constants'
+import { formatDateLong } from '../../shared/utils/dateUtils'
 
 const CONTACT_EMAIL = 'sigurd-horsholt@hotmail.com'
 
 interface LegalPageProps {
-  ns: 'public.privacy' | 'public.terms'
+  ns: 'public.privacy' | 'public.terms' | 'public.dpa'
   sectionKeys: readonly string[]
 }
+
+const draft = !LEGAL_ENTITY.name || !LEGAL_ENTITY.address
 
 export function LegalPage({ ns, sectionKeys }: LegalPageProps) {
   const { t } = useTranslation()
   const tx = t as (key: string, opts?: Record<string, unknown>) => string
+  const { hash } = useLocation()
+
+  // The page is lazy-loaded, so the browser's own jump to #liability happens before the section exists
+  useEffect(() => {
+    if (hash) document.getElementById(hash.slice(1))?.scrollIntoView()
+  }, [hash])
+  const values = {
+    email: CONTACT_EMAIL,
+    name: LEGAL_ENTITY.name || '…',
+    address: LEGAL_ENTITY.address || '…',
+    cvr: LEGAL_ENTITY.cvr || '…',
+  }
 
   return (
     <PublicLayout>
-      <PageMeta page={ns === 'public.privacy' ? 'privacy' : 'terms'} />
+      <PageMeta page={ns === 'public.privacy' ? 'privacy' : ns === 'public.terms' ? 'terms' : 'dpa'} />
 
       <section style={{ backgroundColor: '#f7f3ea' }}>
         <div className="container-xl px-4" style={{ paddingTop: '4rem', paddingBottom: '2.5rem' }}>
@@ -28,12 +46,21 @@ export function LegalPage({ ns, sectionKeys }: LegalPageProps) {
               <h1 className="fw-bold mb-3" style={{ fontSize: 'clamp(1.8rem, 4vw, 2.5rem)', letterSpacing: '-0.5px', color: colors.textPrimary }}>
                 {tx(`${ns}.title`)}
               </h1>
-              <div className="d-inline-block mb-3 px-3 py-2 rounded-2"
-                style={{ backgroundColor: colors.warningBg, border: `1px solid ${colors.warningBorder}`, color: colors.warningText, fontSize: '0.85rem' }}>
-                {tx(`${ns}.draftNotice`)}
-              </div>
+              {draft && (
+                <div className="d-inline-block mb-3 px-3 py-2 rounded-2"
+                  style={{ backgroundColor: colors.warningBg, border: `1px solid ${colors.warningBorder}`, color: colors.warningText, fontSize: '0.85rem' }}>
+                  {t('public.legal.draftNotice')}
+                </div>
+              )}
               <p className="mb-0" style={{ color: colors.textSecondary, fontSize: '1.02rem', lineHeight: 1.7 }}>
                 {tx(`${ns}.intro`)}
+              </p>
+              <p className="mt-3 mb-0 d-flex flex-wrap align-items-center gap-3" style={{ color: colors.textMuted, fontSize: '0.85rem' }}>
+                <span>{t('public.legal.version', { date: formatDateLong(LEGAL_VERSION) })}</span>
+                {/* e-handelsloven § 11: the terms must be possible to keep and reproduce */}
+                <button type="button" className="btn btn-sm btn-outline-secondary d-print-none" onClick={() => window.print()}>
+                  {t('public.legal.print')}
+                </button>
               </p>
             </div>
           </div>
@@ -45,12 +72,14 @@ export function LegalPage({ ns, sectionKeys }: LegalPageProps) {
           <div className="row justify-content-center">
             <div className="col-12 col-lg-8">
               {sectionKeys.map(k => (
-                <div key={k} className="mb-4">
+                // The id lets the signup checkbox link straight to a section, such as #liability
+                <div key={k} id={k} className="mb-4" style={{ scrollMarginTop: 80 }}>
                   <h2 className="fw-bold mb-2" style={{ fontSize: '1.15rem', color: colors.textPrimary }}>
                     {tx(`${ns}.sections.${k}.heading`)}
                   </h2>
-                  <p className="mb-0" style={{ color: colors.textSecondary, fontSize: '0.97rem', lineHeight: 1.7 }}>
-                    {tx(`${ns}.sections.${k}.body`, { email: CONTACT_EMAIL })}
+                  {/* pre-line, so a body can hold a short list, one item per line */}
+                  <p className="mb-0" style={{ color: colors.textSecondary, fontSize: '0.97rem', lineHeight: 1.7, whiteSpace: 'pre-line' }}>
+                    {tx(`${ns}.sections.${k}.body`, values)}
                   </p>
                 </div>
               ))}

@@ -15,6 +15,12 @@ public class Property : BaseEntity
     public string? HouseRules { get; set; }
     public DateTime? HouseRulesUpdatedAt { get; set; }
 
+    // Proof that the association agreed to the data processing agreement (GDPR art. 28): who
+    // accepted it on its behalf, when, and which version. Empty for SysAdmin-created properties.
+    public DateTime? DpaAcceptedAt { get; set; }
+    public Guid? DpaAcceptedByUserId { get; set; }
+    public string? DpaVersion { get; set; }
+
     public ComplexSettings? Settings { get; set; }
     public ICollection<UserComplexMembership> Memberships { get; set; } = [];
     public ICollection<LaundryRoom> LaundryRooms { get; set; } = [];

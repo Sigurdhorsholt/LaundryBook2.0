@@ -1,8 +1,8 @@
 import { LegalPage } from './LegalPage'
 
 const SECTIONS = [
-  'controller', 'data', 'purpose', 'legalBasis', 'subprocessors',
-  'retention', 'rights', 'security', 'cookies', 'changes', 'contact',
+  'roles', 'operator', 'data', 'association', 'own', 'recipients', 'transfers',
+  'retention', 'rights', 'objection', 'complaint', 'cookies', 'security', 'changes', 'contact',
 ] as const
 
 export function PrivacyPage() {

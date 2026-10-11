@@ -1,8 +1,8 @@
 import { LegalPage } from './LegalPage'
 
 const SECTIONS = [
-  'acceptance', 'service', 'signupApproval', 'userResponsibility', 'payment',
-  'availability', 'termination', 'changes', 'law', 'contact',
+  'parties', 'conclusion', 'service', 'age', 'signupApproval', 'association', 'userResponsibility',
+  'payment', 'availability', 'liability', 'termination', 'changes', 'law', 'contact',
 ] as const
 
 export function TermsPage() {

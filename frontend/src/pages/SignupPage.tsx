@@ -1,8 +1,9 @@
 import { useState } from 'react'
 import { Navigate, useNavigate, Link } from 'react-router-dom'
-import { useTranslation, Trans } from 'react-i18next'
+import { useTranslation } from 'react-i18next'
 import { useMeQuery, useRegisterMutation } from '../features/auth/authApi'
 import { createOrSignInFirebaseUser, authErrorMessage } from '../features/auth/utils'
+import { TermsAcceptance } from '../features/auth/TermsAcceptance'
 import { Spinner } from '../shared/ui'
 import { useModal } from '../shared/modals/useModal'
 import { BrandLogo } from '../shared/BrandLogo'
@@ -90,18 +91,7 @@ export function SignupPage() {
             <input className="form-control" type="text" placeholder={t('signup.addressPlaceholder')} maxLength={500} value={propertyAddress} onChange={(e) => setPropertyAddress(e.target.value)} required />
           </div>
 
-          <label className="d-flex align-items-start gap-2" style={{ fontSize: '0.82rem', color: colors.textSecondary, lineHeight: 1.5 }}>
-            <input type="checkbox" checked={consent} onChange={(e) => setConsent(e.target.checked)} required style={{ marginTop: 3 }} />
-            <span>
-              <Trans
-                i18nKey="common.acceptTerms"
-                components={{
-                  terms: <Link to="/vilkaar" target="_blank" style={{ color: colors.primary, textDecoration: 'underline' }} />,
-                  privacy: <Link to="/privatliv" target="_blank" style={{ color: colors.primary, textDecoration: 'underline' }} />,
-                }}
-              />
-            </span>
-          </label>
+          <TermsAcceptance checked={consent} onChange={setConsent} forAssociation />
 
           {error && <p style={{ color: colors.dangerText, margin: 0, fontSize: '0.84rem' }}>{error}</p>}
 
