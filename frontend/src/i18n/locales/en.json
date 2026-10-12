@@ -531,6 +531,8 @@
       "invite": "Send invite email",
       "passwordReset": "Send reset email",
       "adminReset": "Send admin reset email",
+      "associationCreated": "Send association created",
+      "residentJoined": "Send resident joined",
       "sending": "Sending…",
       "sent": "Test email sent to {{email}}.",
       "error": "Could not send the test email. Try again."

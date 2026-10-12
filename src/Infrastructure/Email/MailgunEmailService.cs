@@ -77,6 +77,32 @@ public class MailgunEmailService(
         await SendAsync(domain, form, "admin password reset email", toEmail, cancellationToken);
     }
 
+    public async Task SendSignupConfirmationEmailAsync(
+        string toEmail,
+        string firstName,
+        string propertyName,
+        bool createdAssociation,
+        string termsVersion,
+        CancellationToken cancellationToken = default)
+    {
+        var (apiKey, domain, senderEmail, senderName) = ReadMailgunConfig();
+        var landingPageUrl = configuration["App:BaseUrl"] ?? "https://laundrybook.dk";
+
+        Authorize(apiKey);
+
+        var form = new FormUrlEncodedContent([
+            new KeyValuePair<string, string>("from", $"{senderName} <{senderEmail}>"),
+            new KeyValuePair<string, string>("to", toEmail),
+            new KeyValuePair<string, string>("subject", createdAssociation
+                ? $"{propertyName} er oprettet på LaundryBook"
+                : $"Din konto til {propertyName} på LaundryBook er oprettet"),
+            new KeyValuePair<string, string>("text", SignupConfirmationEmailTemplate.Text(firstName, propertyName, createdAssociation, termsVersion, landingPageUrl)),
+            new KeyValuePair<string, string>("html", SignupConfirmationEmailTemplate.Html(firstName, propertyName, createdAssociation, termsVersion, landingPageUrl)),
+        ]);
+
+        await SendAsync(domain, form, "signup confirmation email", toEmail, cancellationToken);
+    }
+
     private (string apiKey, string domain, string senderEmail, string senderName) ReadMailgunConfig()
     {
         var apiKey = configuration["Mailgun:ApiKey"]!;

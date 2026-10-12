@@ -531,6 +531,8 @@
       "invite": "Send invitations-mail",
       "passwordReset": "Send nulstillings-mail",
       "adminReset": "Send admin-nulstillings-mail",
+      "associationCreated": "Send oprettelse af forening",
+      "residentJoined": "Send oprettelse af beboer",
       "sending": "Sender…",
       "sent": "Test-mail sendt til {{email}}.",
       "error": "Kunne ikke sende test-mailen. Prøv igen."

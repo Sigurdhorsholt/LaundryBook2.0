@@ -3,6 +3,7 @@ using Application.Common.Interfaces;
 using Domain.Entities;
 using FluentValidation;
 using MediatR;
+using Microsoft.Extensions.Logging;
 
 namespace Application.Features.Auth.Commands;
 
@@ -20,7 +21,9 @@ public class AcceptInviteCommandValidator : AbstractValidator<AcceptInviteComman
 
 public class AcceptInviteCommandHandler(
     IAppDbContext db,
-    ICurrentUserService currentUser) : IRequestHandler<AcceptInviteCommand>
+    ICurrentUserService currentUser,
+    IEmailService emailService,
+    ILogger<AcceptInviteCommandHandler> logger) : IRequestHandler<AcceptInviteCommand>
 {
     public async Task Handle(AcceptInviteCommand request, CancellationToken cancellationToken)
     {
@@ -33,5 +36,6 @@ public class AcceptInviteCommandHandler(
 
         await InviteRedemption.ApplyAsync(db, invite, user, request.ApartmentNumber, cancellationToken);
         await db.SaveChangesAsync(cancellationToken);
+        await InviteRedemption.ConfirmAsync(db, emailService, logger, invite, user, cancellationToken);
     }
 }
