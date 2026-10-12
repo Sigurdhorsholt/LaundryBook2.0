@@ -5,6 +5,7 @@ using Domain.Enums;
 using FluentValidation;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 
 namespace Application.Features.Auth.Commands;
 
@@ -34,7 +35,9 @@ public class RegisterCommandValidator : AbstractValidator<RegisterCommand>
 public class RegisterCommandHandler(
     IAppDbContext db,
     IIdentityProvider identityProvider,
-    IJwtService jwtService) : IRequestHandler<RegisterCommand, RegisterResult>
+    IJwtService jwtService,
+    IEmailService emailService,
+    ILogger<RegisterCommandHandler> logger) : IRequestHandler<RegisterCommand, RegisterResult>
 {
     public async Task<RegisterResult> Handle(RegisterCommand request, CancellationToken cancellationToken)
     {
@@ -92,6 +95,7 @@ public class RegisterCommandHandler(
         });
 
         await db.SaveChangesAsync(cancellationToken);
+        await SignupConfirmation.SendAsync(emailService, logger, user, property.Name, createdAssociation: true, cancellationToken);
 
         var token = jwtService.GenerateToken(user);
         return new RegisterResult(token, user.Id, property.Id);

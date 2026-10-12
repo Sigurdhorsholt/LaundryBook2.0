@@ -1,6 +1,7 @@
 using Application.Common.Authorization;
 using Application.Common.Exceptions;
 using Application.Common.Interfaces;
+using Domain.Common;
 using FluentValidation;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
@@ -12,6 +13,8 @@ public enum TestEmailTemplate
     Invite = 0,
     PasswordReset = 1,
     AdminPasswordReset = 2,
+    AssociationCreated = 3,
+    ResidentJoined = 4,
 }
 
 public record SendTestEmailCommand(string ToEmail, TestEmailTemplate Template) : IRequest;
@@ -57,6 +60,12 @@ public class SendTestEmailCommandHandler(
             case TestEmailTemplate.AdminPasswordReset:
                 await emailService.SendAdminPasswordResetEmailAsync(
                     toEmail, SampleLink, SampleProperty, adminName, cancellationToken);
+                break;
+            case TestEmailTemplate.AssociationCreated:
+            case TestEmailTemplate.ResidentJoined:
+                await emailService.SendSignupConfirmationEmailAsync(
+                    toEmail, admin?.FirstName ?? "Test", SampleProperty, request.Template == TestEmailTemplate.AssociationCreated,
+                    TermsPolicy.CurrentVersion, cancellationToken);
                 break;
             default:
                 throw new ArgumentOutOfRangeException(nameof(request));

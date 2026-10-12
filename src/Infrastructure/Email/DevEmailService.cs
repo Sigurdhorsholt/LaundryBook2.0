@@ -39,4 +39,17 @@ public class DevEmailService(ILogger<DevEmailService> logger) : IEmailService
             toEmail, propertyName, adminName, resetLink);
         return Task.CompletedTask;
     }
+
+    public Task SendSignupConfirmationEmailAsync(
+        string toEmail,
+        string firstName,
+        string propertyName,
+        bool createdAssociation,
+        string termsVersion,
+        CancellationToken cancellationToken = default)
+    {
+        logger.LogInformation("[DEV] Signup confirmation for {Email} | Property: {Property} | New association: {Created} | Terms version: {Version}",
+            toEmail, propertyName, createdAssociation, termsVersion);
+        return Task.CompletedTask;
+    }
 }
