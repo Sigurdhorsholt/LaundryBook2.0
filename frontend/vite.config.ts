@@ -3,9 +3,9 @@ import react from '@vitejs/plugin-react'
 
 export default defineConfig({
   plugins: [react()],
-  // Render sets RENDER_GIT_COMMIT during the build; /system shows it next to the backend's commit
+  // GIT_COMMIT is host-agnostic; RENDER_GIT_COMMIT covers Render's own builds. /system shows it next to the backend's commit
   define: {
-    'import.meta.env.VITE_GIT_COMMIT': JSON.stringify(process.env.RENDER_GIT_COMMIT ?? ''),
+    'import.meta.env.VITE_GIT_COMMIT': JSON.stringify(process.env.GIT_COMMIT || process.env.RENDER_GIT_COMMIT || ''),
   },
   server: {
     port: 5173,

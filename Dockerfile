@@ -30,6 +30,10 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 
 COPY --from=build /app/publish .
 
+# Lets /system show the deployed commit on any host, not just Render
+ARG GIT_COMMIT=
+ENV GIT_COMMIT=$GIT_COMMIT
+
 # Render (and most PaaS) routes external traffic to $PORT
 ENV ASPNETCORE_URLS=http://+:8080
 ENV ASPNETCORE_ENVIRONMENT=Production

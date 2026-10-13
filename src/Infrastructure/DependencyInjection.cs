@@ -67,13 +67,15 @@ public static class DependencyInjection
         else
             services.AddScoped<IEmailService, DevEmailService>();
 
-        var commit = configuration["RENDER_GIT_COMMIT"];
+        var commit = configuration["GIT_COMMIT"];
+        if (string.IsNullOrEmpty(commit))
+            commit = configuration["RENDER_GIT_COMMIT"];
         services.AddSingleton(new SystemInfo(
             environment.EnvironmentName,
             mailgunConfigured,
             !string.IsNullOrEmpty(firebaseProjectId),
             !string.IsNullOrEmpty(configuration["Sentry:Dsn"]),
-            // Render sets this on every deploy; there is none when running locally
+            // Baked into the image by CI, or set by Render on its own builds; there is none when running locally
             string.IsNullOrEmpty(commit) ? null : commit,
             DateTime.UtcNow));
 
